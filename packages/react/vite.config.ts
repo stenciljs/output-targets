@@ -8,13 +8,17 @@ export default defineConfig({
         'react-output-target': 'src/react-output-target/index.ts',
         react: 'src/react/index.ts',
         ssr: 'src/react/ssr.tsx',
+        vite: 'src/react/vite.ts',
       },
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['@stencil/core', '@lit/react', 'typescript', 'react', 'react-dom/server', 'ts-morph', 'html-react-parser', 'node:path'],
+      external: [
+        '@stencil/core', '@lit/react', 'typescript', 'react', 'react-dom/server', 'ts-morph',
+        'html-react-parser', 'node:path', 'node:url', 'mlly'
+      ],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
