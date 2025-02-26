@@ -54,7 +54,11 @@
   "gitHead": "a3588e905186a0e86e7f88418fd5b2f9531b55e0",
   "dependencies": {
     "@lit/react": "^1.0.4",
+    "ast-types": "^0.14.2",
+    "decamelize": "^6.0.0",
     "html-react-parser": "^5.1.10",
+    "mlly": "^1.7.4",
+    "recast": "^0.23.9",
     "style-object-to-css-string": "^1.0.0",
     "ts-morph": "^22.0.0"
   },
@@ -93,6 +97,13 @@
         "default": "./dist/ssr.js"
       },
       "default": "./dist/ssr.js"
+    },
+    "./vite": {
+      "types": "./dist/react/vite.d.ts",
+      "browser": {
+        "default": "./dist/vite.js"
+      },
+      "default": "./dist/vite.js"
     }
   }
 }
