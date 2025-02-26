@@ -17,7 +17,7 @@ export default defineConfig({
       // into your library
       external: [
         '@stencil/core', '@lit/react', 'typescript', 'react', 'react-dom/server', 'ts-morph',
-        'html-react-parser', 'node:path', 'node:url', 'mlly'
+        'html-react-parser', 'node:path', 'node:url', 'mlly', 'esbuild', 'recast', 'ast-types',
       ],
       output: {
         // Provide global variables to use in the UMD build

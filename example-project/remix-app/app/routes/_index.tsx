@@ -1,5 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
-import { MyComponent } from "component-library-react";
+import { MyComponent, MyList, MyListItem } from "component-library-react";
+import Input from "../components/Input";
+
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -33,6 +35,13 @@ export default function Index() {
             What&apos;s next?
           </p>
           <MyComponent first="John" middle="William" last="Doe" />
+          <MyComponent />
+          <MyList>
+            <MyListItem>Item 1</MyListItem>
+            <MyListItem>Item 2</MyListItem>
+            <MyListItem>Item 3</MyListItem>
+          </MyList>
+          <Input />
           <ul>
             {resources.map(({ href, text, icon }) => (
               <li key={href}>
