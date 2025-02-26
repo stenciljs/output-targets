@@ -3,9 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/components.d.ts",
+      "default": "./dist/component-library-react.es.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "run-p build.*",
+    "build.app": "TARGET=app vite build",
+    "build.package": "TARGET=package vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier": "pnpm run prettier.base --write",
     "prettier.base": "prettier \"./({src,__tests__}/**/*.{ts,tsx,js,jsx})|*.{ts,tsx,js,jsx}\"",
@@ -33,10 +41,12 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.12",
     "expect-webdriverio": "^5.0.3",
+    "npm-run-all2": "^7.0.2",
     "react": "^18.3.1",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3",
     "vite": "^5.4.8",
+    "vite-plugin-dts": "^2.0.0",
     "wdio-vite-service": "^1.0.9",
     "webdriverio": "^9.1.5"
   }
