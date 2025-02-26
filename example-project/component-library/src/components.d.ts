@@ -26,6 +26,10 @@ export namespace Components {
          */
         "buttonType": string;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "button-type"?: string;
+        /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
         "color"?: Color;
@@ -131,6 +135,10 @@ export namespace Components {
          */
         "favoriteKidName": string;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "favorite-kid-name"?: string;
+        /**
           * The first name
          */
         "first": string;
@@ -173,9 +181,17 @@ export namespace Components {
          */
         "clearInput": boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "clear-input"?: boolean;
+        /**
           * If `true`, the value will be cleared after focus upon edit. Defaults to `true` when `type` is `"password"`, `false` for all other types.
          */
         "clearOnEdit"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "clear-on-edit"?: boolean;
         /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
@@ -279,6 +295,10 @@ export namespace Components {
          */
         "backdropDismiss": boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "backdrop-dismiss"?: boolean;
+        /**
           * The component to display inside of the popover.
          */
         "component": ComponentRef;
@@ -290,6 +310,10 @@ export namespace Components {
           * Additional classes to apply for custom CSS. If multiple classes are provided they should be separated by spaces.
          */
         "cssClass"?: string | string[];
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "css-class"?: string | string[];
         /**
           * Dismiss the popover overlay after it has been presented.
           * @param data Any data to emit in the dismiss events.
@@ -304,6 +328,10 @@ export namespace Components {
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */
         "keyboardClose": boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "keyboard-close"?: boolean;
         /**
           * The mode determines which platform styles to use.
          */
@@ -324,6 +352,10 @@ export namespace Components {
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop": boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "show-backdrop"?: boolean;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
@@ -357,6 +389,10 @@ export namespace Components {
          */
         "allowEmptySelection": boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "allow-empty-selection"?: boolean;
+        /**
           * The name of the control, which is submitted with the form data.
          */
         "name": string;
@@ -382,6 +418,10 @@ export namespace Components {
           * Show two knobs.
          */
         "dualKnobs": boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "dual-knobs"?: boolean;
         /**
           * Maximum integer value of the range.
          */
@@ -656,6 +696,10 @@ declare namespace LocalJSX {
          */
         "buttonType"?: string;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "button-type"?: string;
+        /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
         "color"?: Color;
@@ -780,6 +824,10 @@ declare namespace LocalJSX {
          */
         "favoriteKidName"?: string;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "favorite-kid-name"?: string;
+        /**
           * The first name
          */
         "first"?: string;
@@ -830,9 +878,17 @@ declare namespace LocalJSX {
          */
         "clearInput"?: boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "clear-input"?: boolean;
+        /**
           * If `true`, the value will be cleared after focus upon edit. Defaults to `true` when `type` is `"password"`, `false` for all other types.
          */
         "clearOnEdit"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "clear-on-edit"?: boolean;
         /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
@@ -944,6 +1000,10 @@ declare namespace LocalJSX {
          */
         "backdropDismiss"?: boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "backdrop-dismiss"?: boolean;
+        /**
           * The component to display inside of the popover.
          */
         "component": ComponentRef;
@@ -956,6 +1016,10 @@ declare namespace LocalJSX {
          */
         "cssClass"?: string | string[];
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "css-class"?: string | string[];
+        /**
           * The event to pass to the popover animation.
          */
         "event"?: any;
@@ -963,6 +1027,10 @@ declare namespace LocalJSX {
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */
         "keyboardClose"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "keyboard-close"?: boolean;
         /**
           * The mode determines which platform styles to use.
          */
@@ -987,6 +1055,10 @@ declare namespace LocalJSX {
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "show-backdrop"?: boolean;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
@@ -1036,6 +1108,10 @@ declare namespace LocalJSX {
          */
         "allowEmptySelection"?: boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "allow-empty-selection"?: boolean;
+        /**
           * The name of the control, which is submitted with the form data.
          */
         "name"?: string;
@@ -1065,6 +1141,10 @@ declare namespace LocalJSX {
           * Show two knobs.
          */
         "dualKnobs"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "dual-knobs"?: boolean;
         /**
           * Maximum integer value of the range.
          */
