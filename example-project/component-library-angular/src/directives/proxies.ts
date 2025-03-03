@@ -40,21 +40,21 @@ export declare interface MyButton extends Components.MyButton {
 
 
 @ProxyCmp({
-  inputs: ['checked', 'color', 'disabled', 'indeterminate', 'mode', 'name', 'value']
+  inputs: ['alignment', 'checked', 'color', 'disabled', 'indeterminate', 'justify', 'labelPlacement', 'mode', 'name', 'value']
 })
 @Component({
   selector: 'my-checkbox',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['checked', 'color', 'disabled', 'indeterminate', 'mode', 'name', 'value'],
+  inputs: ['alignment', 'checked', 'color', 'disabled', 'indeterminate', 'justify', 'labelPlacement', 'mode', 'name', 'value'],
 })
 export class MyCheckbox {
   protected el: HTMLMyCheckboxElement;
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myChange', 'myFocus', 'myBlur']);
+    proxyOutputs(this, this.el, ['ionChange', 'ionFocus', 'ionBlur']);
   }
 }
 
@@ -63,17 +63,19 @@ import type { CheckboxChangeEventDetail as IMyCheckboxCheckboxChangeEventDetail 
 
 export declare interface MyCheckbox extends Components.MyCheckbox {
   /**
-   * Emitted when the checked property has changed.
+   * Emitted when the checked property has changed as a result of a user action such as a click.
+
+This event will not emit when programmatically setting the `checked` property.
    */
-  myChange: EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeEventDetail>>;
+  ionChange: EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeEventDetail>>;
   /**
-   * Emitted when the toggle has focus.
+   * Emitted when the checkbox has focus.
    */
-  myFocus: EventEmitter<CustomEvent<void>>;
+  ionFocus: EventEmitter<CustomEvent<void>>;
   /**
-   * Emitted when the toggle loses focus.
+   * Emitted when the checkbox loses focus.
    */
-  myBlur: EventEmitter<CustomEvent<void>>;
+  ionBlur: EventEmitter<CustomEvent<void>>;
 }
 
 

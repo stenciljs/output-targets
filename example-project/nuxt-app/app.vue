@@ -1,5 +1,10 @@
 <script setup>
-import { MyComponent, MyRange, MyRadioGroup } from 'component-library-vue'
+import { MyCheckbox, MyComponent, MyRange, MyRadioGroup } from 'component-library-vue'
+
+function handleCheckboxChange(event) {
+  console.log('Checkbox changed:', event.detail.checked)
+}
+
 </script>
 
 <template>
@@ -15,5 +20,7 @@ import { MyComponent, MyRange, MyRadioGroup } from 'component-library-vue'
       <input type="radio" name="myRadioGroup" value="two" />
       <input type="radio" name="myRadioGroup" value="three" />
     </MyRadioGroup>
+
+    <MyCheckbox @ionChange="handleCheckboxChange">Checkbox!!!</MyCheckbox>
   </div>
 </template>

@@ -68,15 +68,16 @@ export const MyCheckbox = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.
   'indeterminate',
   'disabled',
   'value',
-  'myChange',
-  'myFocus',
-  'myBlur',
-  'myStyle'
+  'labelPlacement',
+  'justify',
+  'alignment',
+  'ionChange',
+  'ionFocus',
+  'ionBlur'
 ], [
-  'myChange',
-  'myFocus',
-  'myBlur',
-  'myStyle'
+  'ionChange',
+  'ionFocus',
+  'ionBlur'
 ],
 'checked', 'myChange') : defineStencilSSRComponent({
   tagName: 'my-checkbox',
@@ -87,11 +88,12 @@ export const MyCheckbox = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.
     'checked': [Boolean, "checked"],
     'indeterminate': [Boolean, "indeterminate"],
     'disabled': [Boolean, "disabled"],
-    'value': [String, "value"],
-    'onMyChange': [Function],
-    'onMyFocus': [Function],
-    'onMyBlur': [Function],
-    'onMyStyle': [Function]
+    'labelPlacement': [String, "label-placement"],
+    'justify': [String, "justify"],
+    'alignment': [String, "alignment"],
+    'onIonChange': [Function],
+    'onIonFocus': [Function],
+    'onIonBlur': [Function]
   }
 });
 
