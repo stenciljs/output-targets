@@ -254,7 +254,7 @@ let checkboxIds = 0;
 
 const hostContext = (selector: string, el: HTMLElement): boolean => {
   return el.closest(selector) !== null;
-}
+};
 
 const hasShadowDom = (el: HTMLElement) => {
   return !!el.shadowRoot && !!(el as any).attachShadow;
