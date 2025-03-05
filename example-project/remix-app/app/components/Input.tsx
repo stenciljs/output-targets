@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { MyInput } from '../components';
+import { MyInput } from 'component-library-react';
 
 function Input() {
   const [inputEvent, setInputEvent] = useState<string>('');
@@ -8,8 +8,8 @@ function Input() {
   return (
     <>
       <MyInput
-        onMyInput={(ev) => setInputEvent(`${ev.target.value}`)}
-        onMyChange={(ev) => setChangeEvent(`${ev.detail.value}`)}
+        onMyInput={(ev: CustomEvent) => setInputEvent(`${ev.detail.data}`)}
+        onMyChange={(ev: CustomEvent) => setChangeEvent(`${ev.detail.value}`)}
       />
       <div>
         <p>Input Event: {inputEvent}</p>

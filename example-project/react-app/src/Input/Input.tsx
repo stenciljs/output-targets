@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 
 import { MyInput } from 'component-library-react';
@@ -12,10 +10,8 @@ function Input() {
       <MyInput
         onMyInput={(ev) => setInputEvent(`${ev.target.value}`)}
         onMyChange={(ev) => setChangeEvent(`${ev.detail.value}`)}
-      >
-        {' '}
-      </MyInput>
-      <div className="inputResult">
+      />
+      <div>
         <p>Input Event: {inputEvent}</p>
         <p>Change Event: {changeEvent}</p>
       </div>

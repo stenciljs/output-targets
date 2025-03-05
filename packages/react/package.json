@@ -51,7 +51,6 @@
     "vite": "^5.0.0",
     "vite-plugin-dts": "^3.8.1"
   },
-  "gitHead": "a3588e905186a0e86e7f88418fd5b2f9531b55e0",
   "dependencies": {
     "@lit/react": "^1.0.4",
     "html-react-parser": "^5.1.10",
@@ -93,6 +92,13 @@
         "default": "./dist/ssr.js"
       },
       "default": "./dist/ssr.js"
+    },
+    "./vite": {
+      "types": "./dist/react/vite.d.ts",
+      "browser": {
+        "default": "./dist/vite.js"
+      },
+      "default": "./dist/vite.js"
     }
   }
 }

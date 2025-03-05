@@ -1,0 +1,58 @@
+{
+  "name": "@stencil/ssr",
+  "version": "0.0.0",
+  "description": "A package for server-side rendering Stencil components.",
+  "author": "Ionic Team",
+  "homepage": "https://stenciljs.com/",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stenciljs/output-targets.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stenciljs/output-targets/issues"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "pnpm run build",
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "version": "pnpm run build",
+    "prettier": "prettier \"./src/**/*.{html,ts,tsx,js,jsx}\" --write",
+    "release": "np",
+    "test": "vitest run",
+    "test.watch": "vitest --watch",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "typescript": "^5.4.4"
+  },
+  "dependencies": {
+    "ast-types": "^0.14.2",
+    "decamelize": "^6.0.0",
+    "esbuild": "^0.25.0",
+    "mlly": "^1.7.4",
+    "recast": "^0.23.9",
+    "ts-morph": "^22.0.0"
+  },
+  "peerDependencies": {
+    "vite": "^6.x"
+  }
+}
