@@ -15,6 +15,7 @@
     "@remix-run/react": "^2.15.3",
     "@remix-run/serve": "^2.15.3",
     "@stencil/react-output-target": "workspace:*",
+    "@stencil/ssr": "workspace:*",
     "component-library-react": "workspace:*",
     "component-library": "workspace:*",
     "isbot": "^4.1.0",

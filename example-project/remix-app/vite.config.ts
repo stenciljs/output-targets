@@ -1,7 +1,7 @@
 import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { hydrateStencilComponents } from "@stencil/react-output-target/vite";
+import { stencilSSR } from "@stencil/ssr";
 
 declare module "@remix-run/node" {
   interface Future {
@@ -21,7 +21,7 @@ export default defineConfig({
       },
     }),
     tsconfigPaths(),
-    hydrateStencilComponents({
+    stencilSSR({
       module: import('component-library-react'),
       from: 'component-library-react',
       hydrateModule: import('component-library/hydrate'),

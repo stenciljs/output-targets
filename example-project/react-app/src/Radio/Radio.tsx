@@ -1,4 +1,4 @@
-import { MyRadio } from '../components';
+import { MyRadio } from 'component-library-react';
 
 function Radio() {
   return (

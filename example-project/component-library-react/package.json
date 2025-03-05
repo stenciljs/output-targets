@@ -5,21 +5,17 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/components.d.ts",
-      "default": "./dist/component-library-react.es.js"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
   "scripts": {
-    "dev": "vite",
-    "build": "run-p build.*",
-    "build.app": "TARGET=app vite build",
-    "build.package": "TARGET=package vite build",
+    "dev": "tsc -p tsconfig.json --watch",
+    "build": "tsc",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier": "pnpm run prettier.base --write",
     "prettier.base": "prettier \"./({src,__tests__}/**/*.{ts,tsx,js,jsx})|*.{ts,tsx,js,jsx}\"",
-    "prettier.dry-run": "pnpm run prettier.base --list-different",
-    "preview": "vite preview",
-    "test": "wdio run ./wdio.conf.ts"
+    "prettier.dry-run": "pnpm run prettier.base --list-different"
   },
   "dependencies": {
     "@stencil/react-output-target": "workspace:*",
@@ -27,27 +23,16 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@types/node": "^22.13.9",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@types/mocha": "^10.0.9",
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
-    "@vitejs/plugin-react": "^4.3.2",
-    "@wdio/cli": "^9.4.5",
-    "@wdio/globals": "^9.1.5",
-    "@wdio/mocha-framework": "^9.1.3",
-    "@wdio/spec-reporter": "^9.1.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.12",
-    "expect-webdriverio": "^5.0.3",
-    "npm-run-all2": "^7.0.2",
     "react": "^18.3.1",
-    "tsx": "^4.19.1",
     "typescript": "^5.6.3",
-    "vite": "^5.4.8",
-    "vite-plugin-dts": "^2.0.0",
-    "wdio-vite-service": "^1.0.9",
-    "webdriverio": "^9.1.5"
+    "vite": "^5.4.8"
   }
 }
