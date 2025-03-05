@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { createComponentWrappers } from './create-component-wrappers';
 import { dedent } from 'ts-dedent';
 import { Project } from 'ts-morph';
+
+import { createComponentWrappers } from './create-component-wrappers.js';
 
 describe('createComponentWrappers', () => {
   it('should generate a react component wrapper', async () => {

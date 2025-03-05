@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { reactOutputTarget } from './react-output-target';
+import { reactOutputTarget } from './react-output-target.js';
 
 describe('reactOutputTarget', () => {
   it('should throw an error if the output target dist-custom-elements is not configured', () => {

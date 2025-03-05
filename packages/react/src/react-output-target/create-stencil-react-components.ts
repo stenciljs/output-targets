@@ -1,6 +1,6 @@
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
 import { Project, VariableDeclarationKind } from 'ts-morph';
-import { eventListenerName, kebabToPascalCase } from './utils/string-utils';
+import { eventListenerName, kebabToPascalCase } from './utils/string-utils.js';
 
 interface ReactEvent {
   originalName: string;

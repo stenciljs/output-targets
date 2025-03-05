@@ -1,8 +1,7 @@
-import { createComponent } from './create-component';
-
+import React from 'react';
 import { vi, describe, it, expect } from 'vitest';
 
-import React from 'react';
+import { createComponent } from './create-component';
 
 describe('createComponent', () => {
   it('should call defineCustomElement if it is defined', () => {

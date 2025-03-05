@@ -1,1 +1,1 @@
-export { reactOutputTarget } from './react-output-target';
+export { reactOutputTarget } from './react-output-target.js';

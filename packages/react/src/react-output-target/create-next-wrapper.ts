@@ -1,6 +1,6 @@
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
 import { Project } from 'ts-morph';
-import { kebabToPascalCase } from './utils/string-utils';
+import { kebabToPascalCase } from './utils/string-utils.js';
 
 export const createStencilNextComponents = ({
   components,
@@ -35,11 +35,11 @@ export const createStencilNextComponents = ({
   } else {
     /**
      * Explicitly export all components from the server file.
-     * Note: we can't do `export * from './components.server';` because Next.js fails with an error
+     * Note: we can't do `export * from './components.server.js';` because Next.js fails with an error
      *   `Error: It's currently unsupported to use "export *" in a client boundary. Please use named exports instead.`
      */
     sourceFile.addExportDeclaration({
-      moduleSpecifier: `./components.server`,
+      moduleSpecifier: `./components.server.js`,
       namedExports: components.map((c) => kebabToPascalCase(c.tagName)),
     });
   }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { kebabToPascalCase, kebabToCamelCase, eventListenerName } from './string-utils';
+import { kebabToPascalCase, kebabToCamelCase, eventListenerName } from './string-utils.js';
 
 describe('string-utils', () => {
   describe('kebabToPascalCase', () => {

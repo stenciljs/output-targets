@@ -1,6 +1,6 @@
 import type { BuildCtx, OutputTargetCustom, OutputTargetDistCustomElements } from '@stencil/core/internal';
 import { Project } from 'ts-morph';
-import { createComponentWrappers } from './create-component-wrappers';
+import { createComponentWrappers } from './create-component-wrappers.js';
 
 export interface ReactOutputTargetOptions {
   /**
