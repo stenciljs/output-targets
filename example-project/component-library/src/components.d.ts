@@ -112,6 +112,10 @@ export namespace Components {
          */
         "labelPlacement": 'start' | 'end' | 'fixed' | 'stacked';
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "label-placement"?: 'start' | 'end' | 'fixed' | 'stacked';
+        /**
           * The mode determines which platform styles to use.
          */
         "mode"?: "ios" | "md";
@@ -803,6 +807,10 @@ declare namespace LocalJSX {
           * Where to place the label relative to the checkbox. `"start"`: The label will appear to the left of the checkbox in LTR and to the right in RTL. `"end"`: The label will appear to the right of the checkbox in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the checkbox regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
          */
         "labelPlacement"?: 'start' | 'end' | 'fixed' | 'stacked';
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "label-placement"?: 'start' | 'end' | 'fixed' | 'stacked';
         /**
           * The mode determines which platform styles to use.
          */

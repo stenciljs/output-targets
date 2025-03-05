@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { MyInput } from '../components';
+import { MyInput } from 'component-library-react';
 
 function Input() {
   const [inputEvent, setInputEvent] = useState<string>('');

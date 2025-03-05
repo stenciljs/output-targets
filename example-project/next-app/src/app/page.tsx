@@ -1,5 +1,5 @@
 import Button from './Button/Button';
-import { MyComponent, MyRadio, MyRadioGroup, MyRange } from './components';
+import { MyComponent, MyRange } from 'component-library-react';
 import Input from './Input/Input';
 import { ToggleableContent } from './ToggleableContent/ToggleableContent';
 
