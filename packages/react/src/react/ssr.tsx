@@ -346,5 +346,3 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
 
   return resolvedType;
 };
-
-export * from './vite';

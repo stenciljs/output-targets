@@ -3,18 +3,20 @@ import { parse, visit } from 'recast'
 import { transformSync } from 'esbuild'
 import { namedTypes, builders as b } from 'ast-types'
 import { findStaticImports, parseStaticImport } from 'mlly'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
-interface HydrateStencilComponentsOptions {
+export interface StencilSSROptions {
   from: string
   module: Promise<any>
   hydrateModule: Promise<any>
 }
 
-export function hydrateStencilComponents(pluginOptions: HydrateStencilComponentsOptions) {
+export function stencilSSR(pluginOptions: StencilSSROptions) {
   return {
     name: 'stencil:vite:ssr',
-    transform: (code, id, options) => transform(code, id, options, pluginOptions),
+    transform: function (this: any, code, id, options) {
+      return transform(code, id, options, pluginOptions)
+    },
   } satisfies Plugin;
 }
 
@@ -22,7 +24,7 @@ export async function transform (
   code: string,
   id: string,
   options: { ssr?: boolean } | undefined,
-  { from, module, hydrateModule }: HydrateStencilComponentsOptions
+  { from, module, hydrateModule }: StencilSSROptions
 ) {
   /**
    * only run in SSR mode

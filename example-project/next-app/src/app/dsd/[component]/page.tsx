@@ -1,4 +1,4 @@
-import { MyButton, MyList, MyListItem } from '../../components';
+import { MyButton, MyList, MyListItem } from 'component-library-react';
 import { PureReactComponent } from '../../PureReactComponent/PureReactComponent';
 import { ToggleableContent } from '../../ToggleableContent/ToggleableContent';
 
