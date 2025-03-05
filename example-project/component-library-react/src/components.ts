@@ -42,9 +42,9 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
 });
 
 type MyCheckboxEvents = {
-    onMyChange: EventName<MyCheckboxCustomEvent<CheckboxChangeEventDetail>>,
-    onMyFocus: EventName<CustomEvent<void>>,
-    onMyBlur: EventName<CustomEvent<void>>
+    onIonChange: EventName<MyCheckboxCustomEvent<CheckboxChangeEventDetail>>,
+    onIonFocus: EventName<CustomEvent<void>>,
+    onIonBlur: EventName<CustomEvent<void>>
 };
 
 export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEvents> = /*@__PURE__*/ createComponent<MyCheckboxElement, MyCheckboxEvents>({
@@ -53,9 +53,9 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
     // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
     react: React,
     events: {
-        onMyChange: 'myChange',
-        onMyFocus: 'myFocus',
-        onMyBlur: 'myBlur'
+        onIonChange: 'ionChange',
+        onIonFocus: 'ionFocus',
+        onIonBlur: 'ionBlur'
     } as MyCheckboxEvents,
     defineCustomElement: defineMyCheckbox
 });

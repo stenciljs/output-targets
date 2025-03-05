@@ -6,15 +6,17 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
-import { CheckboxChangeEventDetail, Color as Color1, StyleEventDetail } from "./components/element-interface";
+import { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
 import { IMyComponent } from "./components/helpers";
 import { InputChangeEventDetail } from "./components/my-input/my-input";
+import { Color as Color1, StyleEventDetail } from "./components/element-interface";
 import { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
 import { RangeChangeEventDetail, RangeValue } from "./components/my-range/my-range";
 export { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
-export { CheckboxChangeEventDetail, Color as Color1, StyleEventDetail } from "./components/element-interface";
+export { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
 export { IMyComponent } from "./components/helpers";
 export { InputChangeEventDetail } from "./components/my-input/my-input";
+export { Color as Color1, StyleEventDetail } from "./components/element-interface";
 export { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
 export { RangeChangeEventDetail, RangeValue } from "./components/my-range/my-range";
 export namespace Components {
@@ -78,13 +80,17 @@ export namespace Components {
     }
     interface MyCheckbox {
         /**
+          * How to control the alignment of the checkbox and label on the cross axis. `"start"`: The label and control will appear on the left of the cross axis in LTR, and on the right side in RTL. `"center"`: The label and control will appear at the center of the cross axis in both LTR and RTL. Setting this property will change the checkbox `display` to `block`.
+         */
+        "alignment"?: 'start' | 'center';
+        /**
           * If `true`, the checkbox is selected.
          */
         "checked": boolean;
         /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
-        "color"?: Color1;
+        "color"?: string;
         /**
           * If `true`, the user cannot interact with the checkbox.
          */
@@ -94,6 +100,14 @@ export namespace Components {
          */
         "indeterminate": boolean;
         /**
+          * How to pack the label and checkbox within a line. `"start"`: The label and checkbox will appear on the left in LTR and on the right in RTL. `"end"`: The label and checkbox will appear on the right in LTR and on the left in RTL. `"space-between"`: The label and checkbox will appear on opposite ends of the line with space between the two elements. Setting this property will change the checkbox `display` to `block`.
+         */
+        "justify"?: 'start' | 'end' | 'space-between';
+        /**
+          * Where to place the label relative to the checkbox. `"start"`: The label will appear to the left of the checkbox in LTR and to the right in RTL. `"end"`: The label will appear to the right of the checkbox in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the checkbox regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
+         */
+        "labelPlacement": 'start' | 'end' | 'fixed' | 'stacked';
+        /**
           * The mode determines which platform styles to use.
          */
         "mode"?: "ios" | "md";
@@ -101,10 +115,11 @@ export namespace Components {
           * The name of the control, which is submitted with the form data.
          */
         "name": string;
+        "setFocus": () => Promise<void>;
         /**
-          * The value of the toggle does not mean if it's checked or not, use the `checked` property for that.  The value of a toggle is analogous to the value of a `<input type="checkbox">`, it's only used when the toggle participates in a native `<form>`.
+          * The value of the checkbox does not mean if it's checked or not, use the `checked` property for that.  The value of a checkbox is analogous to the value of an `<input type="checkbox">`, it's only used when the checkbox participates in a native `<form>`.
          */
-        "value": string;
+        "value": any | null;
     }
     interface MyComponent {
         /**
@@ -462,10 +477,9 @@ declare global {
         new (): HTMLMyButtonElement;
     };
     interface HTMLMyCheckboxElementEventMap {
-        "myChange": CheckboxChangeEventDetail;
-        "myFocus": void;
-        "myBlur": void;
-        "myStyle": StyleEventDetail;
+        "ionChange": CheckboxChangeEventDetail;
+        "ionFocus": void;
+        "ionBlur": void;
     }
     interface HTMLMyCheckboxElement extends Components.MyCheckbox, HTMLStencilElement {
         addEventListener<K extends keyof HTMLMyCheckboxElementEventMap>(type: K, listener: (this: HTMLMyCheckboxElement, ev: MyCheckboxCustomEvent<HTMLMyCheckboxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -704,13 +718,17 @@ declare namespace LocalJSX {
     }
     interface MyCheckbox {
         /**
+          * How to control the alignment of the checkbox and label on the cross axis. `"start"`: The label and control will appear on the left of the cross axis in LTR, and on the right side in RTL. `"center"`: The label and control will appear at the center of the cross axis in both LTR and RTL. Setting this property will change the checkbox `display` to `block`.
+         */
+        "alignment"?: 'start' | 'center';
+        /**
           * If `true`, the checkbox is selected.
          */
         "checked"?: boolean;
         /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
-        "color"?: Color1;
+        "color"?: string;
         /**
           * If `true`, the user cannot interact with the checkbox.
          */
@@ -720,6 +738,14 @@ declare namespace LocalJSX {
          */
         "indeterminate"?: boolean;
         /**
+          * How to pack the label and checkbox within a line. `"start"`: The label and checkbox will appear on the left in LTR and on the right in RTL. `"end"`: The label and checkbox will appear on the right in LTR and on the left in RTL. `"space-between"`: The label and checkbox will appear on opposite ends of the line with space between the two elements. Setting this property will change the checkbox `display` to `block`.
+         */
+        "justify"?: 'start' | 'end' | 'space-between';
+        /**
+          * Where to place the label relative to the checkbox. `"start"`: The label will appear to the left of the checkbox in LTR and to the right in RTL. `"end"`: The label will appear to the right of the checkbox in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the checkbox regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
+         */
+        "labelPlacement"?: 'start' | 'end' | 'fixed' | 'stacked';
+        /**
           * The mode determines which platform styles to use.
          */
         "mode"?: "ios" | "md";
@@ -728,25 +754,21 @@ declare namespace LocalJSX {
          */
         "name"?: string;
         /**
-          * Emitted when the toggle loses focus.
+          * Emitted when the checkbox loses focus.
          */
-        "onMyBlur"?: (event: MyCheckboxCustomEvent<void>) => void;
+        "onIonBlur"?: (event: MyCheckboxCustomEvent<void>) => void;
         /**
-          * Emitted when the checked property has changed.
+          * Emitted when the checked property has changed as a result of a user action such as a click.  This event will not emit when programmatically setting the `checked` property.
          */
-        "onMyChange"?: (event: MyCheckboxCustomEvent<CheckboxChangeEventDetail>) => void;
+        "onIonChange"?: (event: MyCheckboxCustomEvent<CheckboxChangeEventDetail>) => void;
         /**
-          * Emitted when the toggle has focus.
+          * Emitted when the checkbox has focus.
          */
-        "onMyFocus"?: (event: MyCheckboxCustomEvent<void>) => void;
+        "onIonFocus"?: (event: MyCheckboxCustomEvent<void>) => void;
         /**
-          * Emitted when the styles change.
+          * The value of the checkbox does not mean if it's checked or not, use the `checked` property for that.  The value of a checkbox is analogous to the value of an `<input type="checkbox">`, it's only used when the checkbox participates in a native `<form>`.
          */
-        "onMyStyle"?: (event: MyCheckboxCustomEvent<StyleEventDetail>) => void;
-        /**
-          * The value of the toggle does not mean if it's checked or not, use the `checked` property for that.  The value of a toggle is analogous to the value of a `<input type="checkbox">`, it's only used when the toggle participates in a native `<form>`.
-         */
-        "value"?: string;
+        "value"?: any | null;
     }
     interface MyComponent {
         /**
