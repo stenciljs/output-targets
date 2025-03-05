@@ -22,9 +22,9 @@ export default defineConfig({
     }),
     tsconfigPaths(),
     stencilSSR({
-      module: import('component-library-react'),
-      from: 'component-library-react',
-      hydrateModule: import('component-library/hydrate'),
+      // module: import('component-library-react'),
+      // from: 'component-library-react',
+      // hydrateModule: import('component-library/hydrate'),
     }),
   ],
 });

@@ -1,9 +1,9 @@
 import path from 'node:path';
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
 import { Project, SourceFile } from 'ts-morph';
-import { createStencilReactComponents } from './create-stencil-react-components';
-import { createStencilNextComponents } from './create-next-wrapper';
-import { kebabToPascalCase } from './utils/string-utils';
+import { createStencilReactComponents } from './create-stencil-react-components.js';
+import { createStencilNextComponents } from './create-next-wrapper.js';
+import { kebabToPascalCase } from './utils/string-utils.js';
 
 export const createComponentWrappers = async ({
   stencilPackageName,

@@ -2,7 +2,8 @@ import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react
 import React, { Component, JSXElementConstructor, ReactNode } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import styleToCss from 'style-object-to-css-string';
-import { possibleStandardNames } from './constants';
+
+import { possibleStandardNames } from './constants.js';
 
 const LOG_PREFIX = '[react-output-target]';
 
@@ -115,7 +116,7 @@ export const createComponentForServerSideRendering = <I extends HTMLElement, E e
        * parse the style object into a string
        */
       if (key === 'style' && typeof value === 'object') {
-        propValue = `"${styleToCss(value).replaceAll('\n', ' ')}"`;
+        propValue = `"${styleToCss.default(value).replaceAll('\n', ' ')}"`;
       }
 
       if (!propValue) {
@@ -200,7 +201,7 @@ export const createComponentForServerSideRendering = <I extends HTMLElement, E e
      * Parse the string back into a React component
      */
     const StencilElement = () =>
-      parse(html, {
+      parse.default(html, {
         transform(reactNode, domNode) {
           /**
            * only render the component we have been serializing before

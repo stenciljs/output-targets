@@ -1,7 +1,7 @@
 import type { EventName, Options } from '@lit/react';
 import { createComponent as createComponentWrapper, type ReactWebComponent, WebComponentProps } from '@lit/react';
 
-import type { RenderToString } from './ssr';
+import type { RenderToString } from './ssr.js';
 
 // A key value map matching React prop names to event names.
 type EventNames = Record<string, EventName | string>;
@@ -42,7 +42,7 @@ export const createSSRComponent = <I extends HTMLElement, E extends EventNames =
    * bundling them in the runtime and serving them in the browser.
    */
   return (async (props: WebComponentProps<I>) => {
-    const { createComponentForServerSideRendering } = await import('./ssr');
+    const { createComponentForServerSideRendering } = await import('./ssr.js');
     return createComponentForServerSideRendering<I, E>({
       tagName,
       properties,
