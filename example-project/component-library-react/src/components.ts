@@ -6,4 +6,4 @@
  */
 
 /* eslint-disable */
-export { MyButton, MyCheckbox, MyComponent, MyInput, MyList, MyListItem, MyPopover, MyRadio, MyRadioGroup, MyRange, MyToggle, MyToggleContent } from "./components.server";
+export { MyButton, MyCheckbox, MyComponent, MyInput, MyList, MyListItem, MyPopover, MyRadio, MyRadioGroup, MyRange, MyToggle, MyToggleContent } from "./components.server.js";

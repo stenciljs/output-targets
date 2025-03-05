@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { MyComponent } from '../src';
+import { MyComponent } from './index.js';
 import { expect, it, describe, vi } from 'vitest';
 
 describe('MyComponent', () => {
@@ -14,7 +14,7 @@ describe('MyComponent', () => {
         id: 'one',
       },
     });
-    expect((wrapper.element as HTMLMyComponentElement).getAttribute('id')).toEqual('one');
+    expect((wrapper.element as HTMLElement).getAttribute('id')).toEqual('one');
   });
 
   it('should get strings as props', () => {
