@@ -1,3 +1,10 @@
+## @stencil/vue-output-target@0.9.6 (2025-03-04)
+
+#### :bug: Bug Fix
+
+- `vue-output-target`
+  - [#627](https://github.com/stenciljs/output-targets/pull/627) add e2e test for Vue component changes and transform event names to camel case ([@christian-bromann](https://github.com/christian-bromann))
+
 ## @stencil/vue-output-target@0.9.5 (2025-02-20)
 
 #### :bug: Bug Fix
