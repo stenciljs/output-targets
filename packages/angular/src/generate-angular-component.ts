@@ -83,7 +83,7 @@ export const createAngularComponentDefinition = (
     proxyCmpOptions.push(`\n  methods: [${formattedMethods}]`);
   }
 
-  let standaloneOption = '';
+  let standaloneOption = '\n standalone: false';
 
   if (standalone && includeImportCustomElements) {
     standaloneOption = `\n  standalone: true`;
