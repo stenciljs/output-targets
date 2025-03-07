@@ -68,13 +68,15 @@ export const createComponentWrappers = async ({
   if (hydrateModule) {
     const outputPath = path.join(outDir, `components.server.ts`);
     const stencilReactComponent = createStencilReactComponents({
-      components: filteredComponents.filter((c) => !excludeServerSideRenderingFor || !excludeServerSideRenderingFor.includes(c.tagName)),
+      components: filteredComponents.filter(
+        (c) => !excludeServerSideRenderingFor || !excludeServerSideRenderingFor.includes(c.tagName)
+      ),
       stencilPackageName,
       customElementsDir,
       hydrateModule,
       serializeShadowRoot,
     });
-    fileContents[outputPath] = stencilReactComponent
+    fileContents[outputPath] = stencilReactComponent;
   }
 
   await Promise.all(

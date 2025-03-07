@@ -61,12 +61,16 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
     sourceFile.addVariableStatement({
       isExported: true,
       declarationKind: VariableDeclarationKind.Const,
-      declarations: [{
-        name: 'serializeShadowRoot',
-        type: 'SerializeShadowRootOptions',
-        initializer: serializeShadowRoot ? JSON.stringify(serializeShadowRoot) : '{ default: "declarative-shadow-dom" }',
-      }]
-    })
+      declarations: [
+        {
+          name: 'serializeShadowRoot',
+          type: 'SerializeShadowRootOptions',
+          initializer: serializeShadowRoot
+            ? JSON.stringify(serializeShadowRoot)
+            : '{ default: "declarative-shadow-dom" }',
+        },
+      ],
+    });
   }
 
   for (const component of components) {

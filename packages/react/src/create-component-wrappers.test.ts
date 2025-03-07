@@ -262,7 +262,8 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     const sourceFile = sourceFiles[1];
 
     const code = sourceFile.getFullText();
-    expect(code).toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
+    expect(code)
+      .toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
     tagName: 'my-component',
     properties: { hasMaxLength: 'max-length' },
     hydrateModule: import('my-package/hydrate'),

@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite'
+import type { Plugin } from 'vite';
 
 import { transform } from './transform.js';
 import type { StencilSSROptions } from './types.js';
@@ -11,19 +11,18 @@ export function stencilSSR(pluginOptions: StencilSSROptions) {
        * only run in SSR mode
        */
       if (!options?.ssr) {
-        return
+        return;
       }
 
       /**
        * transform Stencil component imports into wrapped serialized components
        */
-      const transformedCode = await transform(code, id, pluginOptions)
+      const transformedCode = await transform(code, id, pluginOptions);
 
       /**
        * if no components were imported, return the original code
        */
-      return transformedCode || code
+      return transformedCode || code;
     },
   } satisfies Plugin;
 }
-

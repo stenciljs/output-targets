@@ -23,7 +23,6 @@ const MyComponent = ({ children }) => {
     </p>
   </div>
 \` } }, void 0, false, {
-    fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
     lineNumber: 4,
     columnNumber: 5
   });
@@ -35,7 +34,6 @@ const MyList = ({ children }) => {
     <!--s.3.1.1.0.-->
   </ul>
 \` } }, void 0, false, {
-    fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
     lineNumber: 27,
     columnNumber: 5
   });
@@ -47,7 +45,6 @@ const MyListItem = ({ children }) => {
     <!--s.4.1.1.0.-->
   </li>
 \` } }, void 0, false, {
-    fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
     lineNumber: 37,
     columnNumber: 5
   });
@@ -70,7 +67,6 @@ const MyCounter = ({ children }) => {
     </button>
   </div>
 \` } }, void 0, false, {
-    fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
     lineNumber: 47,
     columnNumber: 5
   });
@@ -88,12 +84,10 @@ export default function Index() {
       /* @__PURE__ */ jsxDEV("h1", { className: "leading text-2xl font-bold text-gray-800 dark:text-gray-100", children: [
         "Welcome to ",
         /* @__PURE__ */ jsxDEV("span", { className: "sr-only", children: "Remix" }, void 0, false, {
-          fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
           lineNumber: 18,
           columnNumber: 24
         }, this)
       ] }, void 0, true, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 17,
         columnNumber: 11
       }, this),
@@ -108,7 +102,6 @@ export default function Index() {
           void 0,
           false,
           {
-            fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
             lineNumber: 21,
             columnNumber: 13
           },
@@ -124,66 +117,54 @@ export default function Index() {
           void 0,
           false,
           {
-            fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
             lineNumber: 26,
             columnNumber: 13
           },
           this
         )
       ] }, void 0, true, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 20,
         columnNumber: 11
       }, this)
     ] }, void 0, true, {
-      fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
       lineNumber: 16,
       columnNumber: 9
     }, this),
     /* @__PURE__ */ jsxDEV("nav", { className: "flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700", children: [
       /* @__PURE__ */ jsxDEV("p", { className: "leading-6 text-gray-700 dark:text-gray-200", children: "What's next?" }, void 0, false, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 34,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV(MyComponent, { first: "John", middle: "William", last: "Doe", kidsNames: ["John", "Jane", "Jim"] }, void 0, false, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 37,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV(MyComponent, {}, void 0, false, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 38,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV(MyList, { children: [
         /* @__PURE__ */ jsxDEV(MyListItem, { children: "Item 1" }, void 0, false, {
-          fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
           lineNumber: 40,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV(MyListItem, { children: "Item 2" }, void 0, false, {
-          fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
           lineNumber: 41,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV(MyListItem, { children: "Item 3" }, void 0, false, {
-          fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
           lineNumber: 42,
           columnNumber: 13
         }, this)
       ] }, void 0, true, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 39,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV(Input, {}, void 0, false, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 44,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV(MyCounter, {}, void 0, false, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 45,
         columnNumber: 11
       }, this),
@@ -202,31 +183,25 @@ export default function Index() {
         void 0,
         true,
         {
-          fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
           lineNumber: 49,
           columnNumber: 17
         },
         this
       ) }, href, false, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 48,
         columnNumber: 15
       }, this)) }, void 0, false, {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 46,
         columnNumber: 11
       }, this)
     ] }, void 0, true, {
-      fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
       lineNumber: 33,
       columnNumber: 9
     }, this)
   ] }, void 0, true, {
-    fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
     lineNumber: 15,
     columnNumber: 7
   }, this) }, void 0, false, {
-    fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
     lineNumber: 14,
     columnNumber: 5
   }, this);
@@ -255,7 +230,6 @@ const resources = [
           void 0,
           false,
           {
-            fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
             lineNumber: 80,
             columnNumber: 9
           },
@@ -265,7 +239,6 @@ const resources = [
       void 0,
       false,
       {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 72,
         columnNumber: 7
       },
@@ -295,7 +268,6 @@ const resources = [
           void 0,
           false,
           {
-            fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
             lineNumber: 101,
             columnNumber: 9
           },
@@ -305,7 +277,6 @@ const resources = [
       void 0,
       false,
       {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 93,
         columnNumber: 7
       },
@@ -334,7 +305,6 @@ const resources = [
           void 0,
           false,
           {
-            fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
             lineNumber: 122,
             columnNumber: 9
           },
@@ -344,7 +314,6 @@ const resources = [
       void 0,
       false,
       {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 114,
         columnNumber: 7
       },
@@ -372,7 +341,6 @@ const resources = [
           void 0,
           false,
           {
-            fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
             lineNumber: 142,
             columnNumber: 9
           },
@@ -382,7 +350,6 @@ const resources = [
       void 0,
       false,
       {
-        fileName: "/Users/christian.bromann/Sites/Ionic/stenciljs/output-targets/packages/ssr/test/__fixtures__/app.tsx",
         lineNumber: 134,
         columnNumber: 7
       },

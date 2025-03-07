@@ -44,7 +44,7 @@ export interface RenderToStringOptions {
    * *NOTE* `true` has been deprecated in favor of `declarative-shadow-dom` and `scoped`
    * @default 'declarative-shadow-dom'
    */
-  serializeShadowRoot?: SerializeShadowRootOptions
+  serializeShadowRoot?: SerializeShadowRootOptions;
 }
 type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
 interface CreateComponentForServerSideRenderingOptions {

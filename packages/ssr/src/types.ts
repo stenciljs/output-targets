@@ -9,9 +9,9 @@ export type SerializeShadowRootOptions =
   | boolean;
 
 export interface StencilSSROptions {
-  from: string
-  module: Promise<any>
-  hydrateModule: Promise<any>
+  from: string;
+  module: Promise<any>;
+  hydrateModule: Promise<any>;
   /**
    * Configure how Stencil serializes the components shadow root.
    * - If set to `declarative-shadow-dom` the component will be rendered within a Declarative Shadow DOM.
@@ -31,5 +31,5 @@ export interface StencilSSROptions {
    * *NOTE* `true` has been deprecated in favor of `declarative-shadow-dom` and `scoped`
    * @default 'declarative-shadow-dom'
    */
-  serializeShadowRoot?: SerializeShadowRootOptions
+  serializeShadowRoot?: SerializeShadowRootOptions;
 }

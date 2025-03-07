@@ -11,4 +11,4 @@ export default async function stencilLoader(this: LoaderContext<StencilSSROption
 
   const code = await transform(source, this.resourcePath, options);
   return code || source;
-};
+}
