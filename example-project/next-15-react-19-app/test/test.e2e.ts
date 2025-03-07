@@ -1,5 +1,5 @@
-/// <reference types="@wdio/mocha-framework" />
 /// <reference types="webdriverio" />
+
 import { $, browser, expect } from '@wdio/globals';
 
 describe('Stencil NextJS Integration', () => {
@@ -14,6 +14,12 @@ describe('Stencil NextJS Integration', () => {
   });
 
   it('should allow to interact with input element', async () => {
+    /**
+     * Clicking on the body is required to trigger the hydration of the input element
+     * This is a workaround for a bug in the Stencil SSR plugin
+     */
+    await $('body').click();
+
     await $('my-input').$('input').setValue('Hello World');
     await expect($('.inputResult')).toHaveText('Input Event: Hello World\nChange Event: Hello World');
   });

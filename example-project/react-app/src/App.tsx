@@ -29,7 +29,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <Input />
+      <Input data-testid="inputCheck" />
       <MyComponent first="Don't" middle="😉" last="call me a framework" kidsNames={['John', 'Jane']} />
       <MyCounter />
     </>

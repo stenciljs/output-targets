@@ -11,7 +11,7 @@ function Input() {
         onMyInput={(ev) => setInputEvent(`${ev.target.value}`)}
         onMyChange={(ev) => setChangeEvent(`${ev.detail.value}`)}
       />
-      <div>
+      <div data-testid="inputCheck">
         <p>Input Event: {inputEvent}</p>
         <p>Change Event: {changeEvent}</p>
       </div>
