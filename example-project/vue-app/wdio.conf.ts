@@ -48,7 +48,7 @@ export const config: WebdriverIO.Config = {
       // capabilities for local browser web tests
       browserName: 'chrome', // or "firefox", "microsoftedge", "safari"
       'goog:chromeOptions': {
-        args: ['--headless'],
+        args: process.env.CI ? ['--headless'] : [],
       },
     },
   ],
