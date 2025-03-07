@@ -44,7 +44,7 @@ import { createComponent } from '@stencil/react-output-target/runtime';
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
 
-type MyComponentEvents = NonNullable<unknown>;
+export type MyComponentEvents = NonNullable<unknown>;
 
 export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
     tagName: 'my-component',
@@ -98,9 +98,9 @@ import { createComponent } from '@stencil/react-output-target/runtime';
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
 
-type MyComponentEvents = NonNullable<unknown>;
+export type MyComponentEvents = NonNullable<unknown>;
 
-const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
+export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
     // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
@@ -108,8 +108,6 @@ const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> 
     events: {} as MyComponentEvents,
     defineCustomElement: defineMyComponent
 });
-
-export default MyComponent;
 
 `);
   });
@@ -213,7 +211,7 @@ import { type MyComponentCustomEvent } from "my-package";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
 
-type MyComponentEvents = { onMyEvent: EventName<MyComponentCustomEvent<IMyComponent.Events.Detail.MyComponentClicked>> };
+export type MyComponentEvents = { onMyEvent: EventName<MyComponentCustomEvent<IMyComponent.Events.Detail.MyComponentClicked>> };
 
 export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
     tagName: 'my-component',
@@ -260,11 +258,17 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
       project,
     });
 
-    const sourceFile = sourceFiles[0];
+    expect(sourceFiles.length).toBe(2);
+    const sourceFile = sourceFiles[1];
 
     const code = sourceFile.getFullText();
-    expect(code).toContain('createComponent<MyComponentElement, MyComponentEvents>({');
-    expect(code).toContain('createSSRComponent<MyComponentElement, MyComponentEvents>({');
+    expect(code).toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
+    tagName: 'my-component',
+    properties: { hasMaxLength: 'max-length' },
+    hydrateModule: import('my-package/hydrate'),
+    serializeShadowRoot
+});
+`);
   });
 
   it('can exclude components for server side rendering', async () => {
@@ -321,12 +325,10 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
       project,
     });
 
-    const sourceFile = sourceFiles[0];
+    const sourceFile = sourceFiles[1];
 
     const code = sourceFile.getFullText();
-    expect(code).toContain('createComponent<MyComponentAElement, MyComponentAEvents>({');
-    expect(code).not.toContain('createSSRComponent<MyComponentAElement, MyComponentAEvents>({');
+    expect(code).not.toContain('createComponent<MyComponentAElement, MyComponentAEvents>({');
     expect(code).toContain('createComponent<MyComponentBElement, MyComponentBEvents>({');
-    expect(code).toContain('createSSRComponent<MyComponentBElement, MyComponentBEvents>({');
   });
 });
