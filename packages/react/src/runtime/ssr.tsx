@@ -1,6 +1,5 @@
 import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react';
 import React, { Component, JSXElementConstructor, ReactNode } from 'react';
-import ReactDOMServer from 'react-dom/server';
 import styleToCss from 'style-object-to-css-string';
 
 import { possibleStandardNames } from './constants.js';
@@ -10,19 +9,49 @@ const LOG_PREFIX = '[react-output-target]';
 // A key value map matching React prop names to event names.
 type EventNames = Record<string, EventName | string>;
 
+export type SerializeShadowRootOptions =
+  | 'declarative-shadow-dom'
+  | 'scoped'
+  | {
+      'declarative-shadow-dom'?: string[];
+      scoped?: string[];
+      default: 'declarative-shadow-dom' | 'scoped';
+    }
+  | boolean;
+
 /**
  * these types are defined by a Stencil hydrate app so we have to copy the minimal types here
  */
-interface RenderToStringOptions {
+export interface RenderToStringOptions {
   fullDocument?: boolean;
-  serializeShadowRoot?: boolean;
   prettyHtml?: boolean;
+  /**
+   * Configure how Stencil serializes the components shadow root.
+   * - If set to `declarative-shadow-dom` the component will be rendered within a Declarative Shadow DOM.
+   * - If set to `scoped` Stencil will render the contents of the shadow root as a `scoped: true` component
+   *   and the shadow DOM will be created during client-side hydration.
+   * - Alternatively you can mix and match the two by providing an object with `declarative-shadow-dom` and `scoped` keys,
+   * the value arrays containing the tag names of the components that should be rendered in that mode.
+   *
+   * Examples:
+   * - `{ 'declarative-shadow-dom': ['my-component-1', 'another-component'], default: 'scoped' }`
+   * Render all components as `scoped` apart from `my-component-1` and `another-component`
+   * -  `{ 'scoped': ['an-option-component'], default: 'declarative-shadow-dom' }`
+   * Render all components within `declarative-shadow-dom` apart from `an-option-component`
+   * - `'scoped'` Render all components as `scoped`
+   * - `false` disables shadow root serialization
+   *
+   * *NOTE* `true` has been deprecated in favor of `declarative-shadow-dom` and `scoped`
+   * @default 'declarative-shadow-dom'
+   */
+  serializeShadowRoot?: SerializeShadowRootOptions
 }
-export type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
+type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
 interface CreateComponentForServerSideRenderingOptions {
   tagName: string;
   properties: Record<string, string>;
   renderToString: RenderToString;
+  serializeShadowRoot?: SerializeShadowRootOptions;
 }
 
 type StencilProps<I extends HTMLElement> = WebComponentProps<I>;
@@ -94,7 +123,7 @@ const isLazyExoticComponent = (value: unknown): value is LazyComponent<any, any>
  * e.g. `react-dom/server`, `html-react-parser` as well as the hydrate module, that when loaded on
  * the client side would increase the bundle size.
  */
-export const createComponentForServerSideRendering = <I extends HTMLElement, E extends EventNames = {}>(
+const createComponentForServerSideRendering = <I extends HTMLElement, E extends EventNames = {}>(
   options: CreateComponentForServerSideRenderingOptions
 ) => {
   return (async ({ children, ...props }: StencilProps<I> = {}) => {
@@ -102,7 +131,7 @@ export const createComponentForServerSideRendering = <I extends HTMLElement, E e
      * ensure we only run on server
      */
     if (!('process' in globalThis) || typeof window !== 'undefined') {
-      throw new Error('`createComponentForServerSideRendering` can only be run on the server');
+      throw new Error('`createComponent` can only be run on the server');
     }
 
     /**
@@ -143,7 +172,8 @@ export const createComponentForServerSideRendering = <I extends HTMLElement, E e
         console.error = () => {};
       }
       const awaitedChildren = await resolveComponentTypes(children);
-      serializedChildren = ReactDOMServer.renderToString(awaitedChildren);
+      const { renderToString } = await import('react-dom/server');
+      serializedChildren = renderToString(awaitedChildren);
     } catch (err: unknown) {
       /**
        * if rendering the light DOM fails, we log a warning and continue to render the component
@@ -168,7 +198,7 @@ export const createComponentForServerSideRendering = <I extends HTMLElement, E e
      */
     const { html } = await options.renderToString(toSerializeWithChildren, {
       fullDocument: false,
-      serializeShadowRoot: true,
+      serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
       prettyHtml: true,
     });
 
@@ -196,12 +226,13 @@ export const createComponentForServerSideRendering = <I extends HTMLElement, E e
      * run on the server and when needed.
      */
     const { default: parse } = await import('html-react-parser');
+    const typedParse = parse as unknown as typeof parse.default;
 
     /**
      * Parse the string back into a React component
      */
     const StencilElement = () =>
-      parse.default(html, {
+      typedParse(html, {
         transform(reactNode, domNode) {
           /**
            * only render the component we have been serializing before
@@ -250,7 +281,7 @@ export const createComponentForServerSideRendering = <I extends HTMLElement, E e
                   suppressHydrationWarning={true}
                   dangerouslySetInnerHTML={{ __html: hydrationComment + templateContent }}
                 ></template>
-                {children}
+                {/* {children} */}
               </CustomTag>
             );
           }
@@ -346,4 +377,36 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
   }
 
   return resolvedType;
+};
+
+/**
+ * Defines a custom element and creates a React component for server side rendering.
+ * @public
+ */
+export const createComponent = <I extends HTMLElement, E extends EventNames = {}>({
+  hydrateModule,
+  properties,
+  tagName,
+  serializeShadowRoot,
+}: {
+  hydrateModule: Promise<{ renderToString: RenderToString }>;
+  properties: Record<string, string>;
+  tagName: string;
+  serializeShadowRoot?: SerializeShadowRootOptions;
+}): ReactWebComponent<I, E> => {
+  /**
+   * IIFE to lazy load the `createComponentForServerSideRendering` function while allowing
+   * to return the correct type for the `ReactWebComponent`.
+   *
+   * Note: we want to lazy load the `./ssr` and `hydrateModule` modules to avoid
+   * bundling them in the runtime and serving them in the browser.
+   */
+  return (async (props: WebComponentProps<I>) => {
+    return createComponentForServerSideRendering<I, E>({
+      tagName,
+      properties,
+      renderToString: (await hydrateModule).renderToString,
+      serializeShadowRoot,
+    })(props as any);
+  }) as unknown as ReactWebComponent<I, E>;
 };
