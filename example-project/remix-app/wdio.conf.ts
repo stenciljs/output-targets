@@ -1,11 +1,11 @@
+import cp from 'node:child_process';
+import path from 'node:path';
+import url from 'node:url';
+
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+let server: cp.ChildProcess | undefined;
 
 export const config: WebdriverIO.Config = {
-  //
-  // ====================
-  // Runner Configuration
-  // ====================
-  // WebdriverIO supports running e2e tests as well as unit and component tests.
-  runner: 'local',
   //
   // ==================
   // Specify Test Files
@@ -21,7 +21,7 @@ export const config: WebdriverIO.Config = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
-  specs: ['./test/specs/**/*.mts'],
+  specs: ['./tests/**/*.e2e.ts'],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -50,7 +50,8 @@ export const config: WebdriverIO.Config = {
   //
   capabilities: [
     {
-      browserName: 'chrome',
+      // capabilities for local browser web tests
+      browserName: 'chrome', // or "firefox", "microsoftedge", "safari"
       'goog:chromeOptions': {
         args: ['--headless'],
       },
@@ -104,8 +105,8 @@ export const config: WebdriverIO.Config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: ['next'],
-  //
+  services: [],
+
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
   // see also: https://webdriver.io/docs/frameworks
@@ -113,6 +114,7 @@ export const config: WebdriverIO.Config = {
   // Make sure you have the wdio adapter package for the specific framework installed
   // before running any tests.
   framework: 'mocha',
+  baseUrl: 'http://localhost:5173',
 
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -149,8 +151,13 @@ export const config: WebdriverIO.Config = {
    * @param {object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  // onPrepare: function (config, capabilities) {
-  // },
+  onPrepare: function () {
+    console.log('Starting SSR server...');
+    server = cp.spawn('npx', ['remix', 'vite:dev'], {
+      cwd: __dirname,
+      stdio: 'inherit',
+    });
+  },
   /**
    * Gets executed before a worker process is spawned and can be used to initialize specific service
    * for that worker as well as modify runtime environments in an async fashion.
@@ -273,8 +280,12 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {<Object>} results object containing test results
    */
-  // onComplete: function(exitCode, config, capabilities, results) {
-  // },
+  onComplete: function() {
+    if (server) {
+      server.kill();
+      console.log('SSR server stopped');
+    }
+  },
   /**
    * Gets executed when a refresh happens.
    * @param {string} oldSessionId session ID of the old session

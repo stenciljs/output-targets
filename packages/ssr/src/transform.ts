@@ -97,7 +97,7 @@ export async function transform (
      * parse serializable properties into a plain object
      */
     const propObject = parseSimpleObjectExpression(b.objectExpression(properties))
-    const props = Object.entries(propObject).map(([key, value]) => `${key}="${value}"`).join(' ')
+    const props = Object.entries(propObject).map(([key, value]) => `${key}=${JSON.stringify(value)}`).join(' ')
 
     /**
      * render the component to a string

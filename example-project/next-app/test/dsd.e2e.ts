@@ -1,5 +1,3 @@
-/// <reference types="@wdio/mocha-framework" />
-/// <reference types="webdriverio" />
 import { browser, expect } from '@wdio/globals';
 import prettier from 'prettier';
 
