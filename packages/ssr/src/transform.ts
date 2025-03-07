@@ -1,12 +1,12 @@
-import decamelize from 'decamelize'
-import { parse, visit } from 'recast'
-import { transformSync } from 'esbuild'
-import { namedTypes, builders as b } from 'ast-types'
-import { findStaticImports, parseStaticImport } from 'mlly'
+import decamelize from 'decamelize';
+import { parse, visit } from 'recast';
+import { transformSync } from 'esbuild';
+import { namedTypes, builders as b } from 'ast-types';
+import { findStaticImports, parseStaticImport } from 'mlly';
 
 import type { StencilSSROptions } from './types.js';
 
-export async function transform (
+export async function transform(
   code: string,
   sourcefile: string,
   { from, module, hydrateModule, serializeShadowRoot }: StencilSSROptions
@@ -14,30 +14,34 @@ export async function transform (
   /**
    * Find all static imports of the component library used in the code
    */
-  const staticImports = findStaticImports(code)
-  const imports = staticImports.filter((importSpecifier) => {
-    return importSpecifier.specifier === from
-  }).map((importSpecifier) => ({
-    ...importSpecifier,
-    parsed: parseStaticImport(importSpecifier)
-  }))
+  const staticImports = findStaticImports(code);
+  const imports = staticImports
+    .filter((importSpecifier) => {
+      return importSpecifier.specifier === from;
+    })
+    .map((importSpecifier) => ({
+      ...importSpecifier,
+      parsed: parseStaticImport(importSpecifier),
+    }));
 
   /**
    * Check if the code uses the jsxDEV runtime
    */
-  const hasJsxDevRuntimeImports = staticImports.filter((importSpecifier) => {
-    return importSpecifier.specifier === 'react/jsx-dev-runtime'
-  }).some((importSpecifier) => {
-    const i = parseStaticImport(importSpecifier)
-    return i.namedImports?.['jsxDEV']
-  })
+  const hasJsxDevRuntimeImports = staticImports
+    .filter((importSpecifier) => {
+      return importSpecifier.specifier === 'react/jsx-dev-runtime';
+    })
+    .some((importSpecifier) => {
+      const i = parseStaticImport(importSpecifier);
+      return i.namedImports?.['jsxDEV'];
+    });
 
   /**
    * only proceed if the file contains JSX components and uses components from the
    * users component library
    */
   if (imports.length === 0 || !hasJsxDevRuntimeImports) {
-    return
+    return;
   }
 
   /**
@@ -45,160 +49,175 @@ export async function transform (
    * - the hydrate module which gives us the renderToString method
    * - the components from the user's component library
    */
-  const importedHydrateModule = await hydrateModule
-  const components = Object.keys(await module)
+  const importedHydrateModule = await hydrateModule;
+  const components = Object.keys(await module);
   const componentCalls: {
-    identifier: string
-    properties: namedTypes.ObjectExpression['properties']
-  }[] = []
+    identifier: string;
+    properties: namedTypes.ObjectExpression['properties'];
+  }[] = [];
 
   /**
    * parse the code into an AST and visit all `jsxDEV` calls.
    * Identify if the `jsxDEV` call is rendering a component from the user's
    * component library and if so, extract the component's properties.
    */
-  const ast = parse(code)
+  const ast = parse(code);
   visit(ast, {
     visitCallExpression(path) {
-      const node = path.node
+      const node = path.node;
       /**
        * Only interested in `jsxDEV` calls
        */
       if (!namedTypes.Identifier.check(node.callee) || node.callee.name !== 'jsxDEV') {
-        return this.traverse(path)
+        return this.traverse(path);
       }
 
-      const args = node.arguments
+      const args = node.arguments;
       /**
        * Only interested in `jsxDEV` calls that render components from the user's
        * component library
        */
-      if (!namedTypes.Identifier.check(args[0]) || !components.includes(args[0].name) || !namedTypes.ObjectExpression.check(args[1])) {
-        return this.traverse(path)
+      if (
+        !namedTypes.Identifier.check(args[0]) ||
+        !components.includes(args[0].name) ||
+        !namedTypes.ObjectExpression.check(args[1])
+      ) {
+        return this.traverse(path);
       }
 
       componentCalls.push({
         identifier: args[0].name,
         properties: args[1].properties,
-      })
+      });
 
-      return this.traverse(path)
-    }
-  })
+      return this.traverse(path);
+    },
+  });
 
   /**
    * For each component call, render the component to a string and return the
    * component's identifier and the rendered HTML.
    */
-  const declarations = await Promise.all(componentCalls.map(async ({ identifier, properties }) => {
-    const tagName = decamelize(identifier, { separator: '-' })
+  const declarations = await Promise.all(
+    componentCalls.map(async ({ identifier, properties }) => {
+      const tagName = decamelize(identifier, { separator: '-' });
 
-    /**
-     * parse serializable properties into a plain object
-     */
-    const propObject = parseSimpleObjectExpression(b.objectExpression(properties))
-    const props = Object.entries(propObject).map(([key, value]) => `${key}=${JSON.stringify(value)}`).join(' ')
+      /**
+       * parse serializable properties into a plain object
+       */
+      const propObject = parseSimpleObjectExpression(b.objectExpression(properties));
+      const props = Object.entries(propObject)
+        .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
+        .join(' ');
 
-    /**
-     * render the component to a string
-     *
-     * Note: we purposly don't parse in a light DOM as we can't evaluate the code during SSR.
-     */
-    const { html } = await importedHydrateModule.renderToString(`<${tagName} ${props} />`, {
-      prettyHtml: true,
-      fullDocument: false,
-      serializeShadowRoot,
+      /**
+       * render the component to a string
+       *
+       * Note: we purposly don't parse in a light DOM as we can't evaluate the code during SSR.
+       */
+      const { html } = await importedHydrateModule.renderToString(`<${tagName} ${props} />`, {
+        prettyHtml: true,
+        fullDocument: false,
+        serializeShadowRoot,
+      });
+
+      /**
+       * return the component's identifier and the rendered HTML split into lines
+       */
+      return [identifier, html.split('\n')] as [string, string[]];
     })
-
-    /**
-     * return the component's identifier and the rendered HTML split into lines
-     */
-    return [identifier, html.split('\n')] as [string, string[]]
-  }))
+  );
 
   /**
    * For each import of the user's component library, wrap the component's
    * identifier and the rendered HTML in a JSX component.
    */
-  let wrappedComponents = ''
+  let wrappedComponents = '';
   for (const cmpImport of imports) {
-    wrappedComponents += Object.entries(cmpImport.parsed.namedImports || []).filter(
-      ([cmpName]) => declarations.some(([identifier]) => cmpName === identifier)
-    ).reduce((acc, [cmpName, cmpImport]) => {
-      const html = declarations.find(([identifier]) => cmpName === identifier)?.[1]
-      if (!html) {
-        return acc
-      }
+    wrappedComponents += Object.entries(cmpImport.parsed.namedImports || [])
+      .filter(([cmpName]) => declarations.some(([identifier]) => cmpName === identifier))
+      .reduce((acc, [cmpName, cmpImport]) => {
+        const html = declarations.find(([identifier]) => cmpName === identifier)?.[1];
+        if (!html) {
+          return acc;
+        }
 
-      const cmpTag = html[0]
-      const tagName = cmpTag.split(' ')[0].slice(1)
+        const cmpTag = html[0];
+        const tagName = cmpTag.split(' ')[0].slice(1);
 
-      /**
-       * Determine if the component should be rendered in a scoped shadow root.
-       */
-      const isScoped = (
-        typeof serializeShadowRoot === 'string'
-          ? serializeShadowRoot === 'scoped'
-          : typeof serializeShadowRoot === 'object'
-            ? serializeShadowRoot.default === 'scoped'
-              ? true
-              : serializeShadowRoot['scoped']?.includes(tagName)
-            : false
-      )
+        /**
+         * Determine if the component should be rendered in a scoped shadow root.
+         */
+        const isScoped =
+          typeof serializeShadowRoot === 'string'
+            ? serializeShadowRoot === 'scoped'
+            : typeof serializeShadowRoot === 'object'
+              ? serializeShadowRoot.default === 'scoped'
+                ? true
+                : serializeShadowRoot['scoped']?.includes(tagName)
+              : false;
 
-      /**
-       * Let's reconstruct the rendered Stencil component into a JSX component
-       */
-      const cmpEndTag = html[html.length - 1]
-      const hydrateComment = html[html.length - 2]
+        /**
+         * Let's reconstruct the rendered Stencil component into a JSX component
+         */
+        const cmpEndTag = html[html.length - 1];
+        const hydrateComment = html[html.length - 2];
 
-      /**
-       * render scoped component
-       */
-      if (isScoped) {
-        const __html = html.slice(1, -1).join('\n')
-        return acc + `\nconst ${cmpImport} = ({ children }) => {
+        /**
+         * render scoped component
+         */
+        if (isScoped) {
+          const __html = html.slice(1, -1).join('\n');
+          return (
+            acc +
+            `\nconst ${cmpImport} = ({ children }) => {
   return (
     ${cmpTag.slice(0, -1)} dangerouslySetInnerHTML={{ __html: \`
 ${__html}
 \` }} />
   )
 }`
-      }
+          );
+        }
 
-      const __html = html.slice(2, -3).join('\n')
-      return acc + `\nconst ${cmpImport} = ({ children }) => {
+        const __html = html.slice(2, -3).join('\n');
+        return (
+          acc +
+          `\nconst ${cmpImport} = ({ children }) => {
 return (
 ${cmpTag}
-  ${!isScoped
-    ? `<template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html + hydrateComment}\` }}></template>`
-    : ''}
+  ${
+    !isScoped
+      ? `<template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html + hydrateComment}\` }}></template>`
+      : ''
+  }
   {children}
 ${cmpEndTag}
 )
 }\n`
-    }, '')
+        );
+      }, '');
 
     /**
-       * Transform the wrapped JSX components into a raw JavaScript string.
-       */
+     * Transform the wrapped JSX components into a raw JavaScript string.
+     */
     const result = transformSync(wrappedComponents, {
       loader: 'jsx',
       jsx: 'automatic', // Use React 17+ JSX transform
-      jsxDev: true,     // Include debug info (like in your example)
+      jsxDev: true, // Include debug info (like in your example)
       format: 'esm',
       target: ['esnext'],
       sourcemap: true,
       sourcefile,
-    })
+    });
 
     /**
      * Replace the original import with the wrapped JSX components.
      */
-    code = code.replace(cmpImport.code, result.code)
+    code = code.replace(cmpImport.code, result.code);
   }
 
-  return code
+  return code;
 }
 
 /**
@@ -231,16 +250,22 @@ function parseSimpleObjectExpression(astNode: any): object {
 
     // Extract value
     let value: any;
-    if (namedTypes.Literal.check(prop.value) ||
-        namedTypes.StringLiteral.check(prop.value) ||
-        namedTypes.NumericLiteral.check(prop.value) ||
-        namedTypes.BooleanLiteral.check(prop.value)) {
+    if (
+      namedTypes.Literal.check(prop.value) ||
+      namedTypes.StringLiteral.check(prop.value) ||
+      namedTypes.NumericLiteral.check(prop.value) ||
+      namedTypes.BooleanLiteral.check(prop.value)
+    ) {
       value = prop.value.value;
     } else if (namedTypes.ArrayExpression.check(prop.value)) {
       value = prop.value.elements
         .filter((el: any) => el !== null)
         .map((el: any) => {
-          if (namedTypes.Literal.check(el) || namedTypes.StringLiteral.check(el) || namedTypes.NumericLiteral.check(el)) {
+          if (
+            namedTypes.Literal.check(el) ||
+            namedTypes.StringLiteral.check(el) ||
+            namedTypes.NumericLiteral.check(el)
+          ) {
             return el.value;
           } else if (namedTypes.ObjectExpression.check(el)) {
             return parseSimpleObjectExpression(el);
