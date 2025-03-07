@@ -22,7 +22,7 @@ export default defineConfig({
     }),
     tsconfigPaths(),
     stencilSSR({
-      module: import('component-library-react/server'),
+      module: import('component-library-react'),
       from: 'component-library-react',
       hydrateModule: import('component-library/hydrate'),
       serializeShadowRoot: {
