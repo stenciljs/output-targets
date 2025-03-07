@@ -20,7 +20,7 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
-    "@stencil/react-output-target": "workspace:*",
+    "@stencil/ssr": "workspace:*",
     "@types/node": "^20",
     "@types/react": "19.0.4",
     "@types/react-dom": "19.0.2",

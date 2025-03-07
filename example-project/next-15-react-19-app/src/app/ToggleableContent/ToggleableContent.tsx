@@ -1,6 +1,6 @@
 'use client';
 
-import { MyToggle } from '../components.server';
+import { MyToggle } from 'component-library-react';
 import { List } from '../List/List';
 import { PureReactComponent } from '../PureReactComponent/PureReactComponent';
 
