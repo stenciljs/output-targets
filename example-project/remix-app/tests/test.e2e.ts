@@ -17,7 +17,7 @@ describe('Stencil NextJS Integration', () => {
     if (!page) {
       throw new Error('Page not found')
     }
-    const source = page.waitForResponse('http://localhost:5173/');
+    const source = page.waitForResponse('http://localhost:5001/');
     await browser.url('/')
     const html = await (await source).text()
     const checkUntil = '</my-counter><ul>'

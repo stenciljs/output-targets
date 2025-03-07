@@ -53,7 +53,7 @@ export const config: WebdriverIO.Config = {
       // capabilities for local browser web tests
       browserName: 'chrome', // or "firefox", "microsoftedge", "safari"
       'goog:chromeOptions': {
-        args: ['--headless'],
+        args: process.env.CI ? ['--headless'] : [],
       },
     },
   ],
@@ -114,7 +114,7 @@ export const config: WebdriverIO.Config = {
   // Make sure you have the wdio adapter package for the specific framework installed
   // before running any tests.
   framework: 'mocha',
-  baseUrl: 'http://localhost:5173',
+  baseUrl: 'http://localhost:5002',
 
   //
   // The number of times to retry the entire specfile when it fails as a whole

@@ -114,7 +114,7 @@ export const config: WebdriverIO.Config = {
   // Make sure you have the wdio adapter package for the specific framework installed
   // before running any tests.
   framework: 'mocha',
-  baseUrl: 'http://localhost:5173',
+  baseUrl: 'http://localhost:5001',
 
   //
   // The number of times to retry the entire specfile when it fails as a whole
