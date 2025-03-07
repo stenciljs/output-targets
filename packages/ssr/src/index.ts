@@ -5,10 +5,40 @@ import { namedTypes, builders as b } from 'ast-types'
 import { findStaticImports, parseStaticImport } from 'mlly'
 import type { Plugin } from 'vite'
 
+export type SerializeShadowRootOptions =
+  | 'declarative-shadow-dom'
+  | 'scoped'
+  | {
+      'declarative-shadow-dom'?: string[];
+      scoped?: string[];
+      default: 'declarative-shadow-dom' | 'scoped';
+    }
+  | boolean;
+
 export interface StencilSSROptions {
   from: string
   module: Promise<any>
   hydrateModule: Promise<any>
+  /**
+   * Configure how Stencil serializes the components shadow root.
+   * - If set to `declarative-shadow-dom` the component will be rendered within a Declarative Shadow DOM.
+   * - If set to `scoped` Stencil will render the contents of the shadow root as a `scoped: true` component
+   *   and the shadow DOM will be created during client-side hydration.
+   * - Alternatively you can mix and match the two by providing an object with `declarative-shadow-dom` and `scoped` keys,
+   * the value arrays containing the tag names of the components that should be rendered in that mode.
+   *
+   * Examples:
+   * - `{ 'declarative-shadow-dom': ['my-component-1', 'another-component'], default: 'scoped' }`
+   * Render all components as `scoped` apart from `my-component-1` and `another-component`
+   * -  `{ 'scoped': ['an-option-component'], default: 'declarative-shadow-dom' }`
+   * Render all components within `declarative-shadow-dom` apart from `an-option-component`
+   * - `'scoped'` Render all components as `scoped`
+   * - `false` disables shadow root serialization
+   *
+   * *NOTE* `true` has been deprecated in favor of `declarative-shadow-dom` and `scoped`
+   * @default 'declarative-shadow-dom'
+   */
+  serializeShadowRoot?: SerializeShadowRootOptions
 }
 
 export function stencilSSR(pluginOptions: StencilSSROptions) {
@@ -24,7 +54,7 @@ export async function transform (
   code: string,
   id: string,
   options: { ssr?: boolean } | undefined,
-  { from, module, hydrateModule }: StencilSSROptions
+  { from, module, hydrateModule, serializeShadowRoot }: StencilSSROptions
 ) {
   /**
    * only run in SSR mode
@@ -129,6 +159,7 @@ export async function transform (
     const { html } = await importedHydrateModule.renderToString(`<${tagName} ${props} />`, {
       prettyHtml: true,
       fullDocument: false,
+      serializeShadowRoot,
     })
 
     /**
@@ -150,22 +181,60 @@ export async function transform (
         return acc
       }
 
+      const cmpTag = html[0]
+      const tagName = cmpTag.split(' ')[0].slice(1)
+
+      console.log(html);
+
+
+      /**
+       * Determine if the component should be rendered in a scoped shadow root.
+       */
+      console.log(cmpName, serializeShadowRoot)
+      const isScoped = (
+        typeof serializeShadowRoot === 'string'
+          ? serializeShadowRoot === 'scoped'
+          : typeof serializeShadowRoot === 'object'
+            ? serializeShadowRoot.default === 'scoped'
+              ? true
+              : serializeShadowRoot['scoped']?.includes(tagName)
+            : false
+      )
+
       /**
        * Let's reconstruct the rendered Stencil component into a JSX component
        */
-      const cmpTag = html[0]
       const cmpEndTag = html[html.length - 1]
       const hydrateComment = html[html.length - 2]
+
+      /**
+       * render scoped component
+       */
+      if (isScoped) {
+        const __html = html.slice(1, -1).join('\n')
+        return acc + `\nconst ${cmpImport} = ({ children }) => {
+  return (
+    ${cmpTag.slice(0, -1)} dangerouslySetInnerHTML={{ __html: \`
+${__html}
+\` }} />
+  )
+}`
+      }
+
       const __html = html.slice(2, -3).join('\n')
       return acc + `\nconst ${cmpImport} = ({ children }) => {
 return (
 ${cmpTag}
-  <template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html + hydrateComment}\` }}></template>
+  ${!isScoped
+    ? `<template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html + hydrateComment}\` }}></template>`
+    : ''}
   {children}
 ${cmpEndTag}
 )
 }\n`
     }, '')
+
+    // console.log(wrappedComponents)
 
     /**
      * Transform the wrapped JSX components into a raw JavaScript string.

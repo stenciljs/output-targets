@@ -159,6 +159,16 @@ export namespace Components {
          */
         "middle": string;
     }
+    interface MyCounter {
+        /**
+          * The start value
+         */
+        "startValue": string;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "start-value"?: string;
+    }
     interface MyInput {
         /**
           * If the value of the type attribute is `"file"`, then this attribute will indicate the types of files that the server accepts, otherwise it will be ignored. The value must be a comma-separated list of unique content type specifiers.
@@ -496,6 +506,10 @@ export interface MyComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMyComponentElement;
 }
+export interface MyCounterCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMyCounterElement;
+}
 export interface MyInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMyInputElement;
@@ -571,6 +585,23 @@ declare global {
     var HTMLMyComponentElement: {
         prototype: HTMLMyComponentElement;
         new (): HTMLMyComponentElement;
+    };
+    interface HTMLMyCounterElementEventMap {
+        "count": number;
+    }
+    interface HTMLMyCounterElement extends Components.MyCounter, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMyCounterElementEventMap>(type: K, listener: (this: HTMLMyCounterElement, ev: MyCounterCustomEvent<HTMLMyCounterElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMyCounterElementEventMap>(type: K, listener: (this: HTMLMyCounterElement, ev: MyCounterCustomEvent<HTMLMyCounterElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMyCounterElement: {
+        prototype: HTMLMyCounterElement;
+        new (): HTMLMyCounterElement;
     };
     interface HTMLMyInputElementEventMap {
         "myInput": KeyboardEvent;
@@ -696,6 +727,7 @@ declare global {
         "my-button": HTMLMyButtonElement;
         "my-checkbox": HTMLMyCheckboxElement;
         "my-component": HTMLMyComponentElement;
+        "my-counter": HTMLMyCounterElement;
         "my-input": HTMLMyInputElement;
         "my-list": HTMLMyListElement;
         "my-list-item": HTMLMyListItemElement;
@@ -873,6 +905,20 @@ declare namespace LocalJSX {
           * Testing with nested namespaces
          */
         "onMyCustomNestedEvent"?: (event: MyComponentCustomEvent<IMyComponent.SomeMoreComplexType.SubType>) => void;
+    }
+    interface MyCounter {
+        /**
+          * Emitted when the count changes
+         */
+        "onCount"?: (event: MyCounterCustomEvent<number>) => void;
+        /**
+          * The start value
+         */
+        "startValue"?: string;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "start-value"?: string;
     }
     interface MyInput {
         /**
@@ -1237,6 +1283,7 @@ declare namespace LocalJSX {
         "my-button": MyButton;
         "my-checkbox": MyCheckbox;
         "my-component": MyComponent;
+        "my-counter": MyCounter;
         "my-input": MyInput;
         "my-list": MyList;
         "my-list-item": MyListItem;
@@ -1255,6 +1302,7 @@ declare module "@stencil/core" {
             "my-button": LocalJSX.MyButton & JSXBase.HTMLAttributes<HTMLMyButtonElement>;
             "my-checkbox": LocalJSX.MyCheckbox & JSXBase.HTMLAttributes<HTMLMyCheckboxElement>;
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "my-counter": LocalJSX.MyCounter & JSXBase.HTMLAttributes<HTMLMyCounterElement>;
             "my-input": LocalJSX.MyInput & JSXBase.HTMLAttributes<HTMLMyInputElement>;
             "my-list": LocalJSX.MyList & JSXBase.HTMLAttributes<HTMLMyListElement>;
             "my-list-item": LocalJSX.MyListItem & JSXBase.HTMLAttributes<HTMLMyListItemElement>;
