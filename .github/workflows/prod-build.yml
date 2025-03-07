@@ -11,6 +11,7 @@ on:
           - vue
           - angular
           - react
+          - ssr
       tag:
         required: true
         type: choice
@@ -53,7 +54,7 @@ jobs:
         with:
           tag: ${{ inputs.tag }} # "latest" or "next"
           preid: ${{ inputs.preid }} # Only needed when version is "prepatch", "preminor", "premajor", or "prerelease"
-          scope: '@stencil/${{ inputs.package }}-output-target'
+          scope: ${{ inputs.package == 'ssr' && '@stencil/ssr' || format('@stencil/{0}-output-target', inputs.package) }}
           # Look at package.json's name
           # Coupled to project structure. Update this when adding a new output target.
           # Examples: vue-output-target, angular-output-target, react-output-target
