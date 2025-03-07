@@ -34,7 +34,7 @@ describe('createComponentWrappers', () => {
  */
 
 /* eslint-disable */
-export { MyComponent, MyOtherComponent } from "./components.server";
+export { MyComponent, MyOtherComponent } from "./components.server.js";
 
 `);
   });

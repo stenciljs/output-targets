@@ -763,6 +763,12 @@ importers:
       '@types/node':
         specifier: ^20.14.12
         version: 20.17.19
+      component-library:
+        specifier: workspace:*
+        version: link:../../example-project/component-library
+      component-library-react:
+        specifier: workspace:*
+        version: link:../../example-project/component-library-react
       typescript:
         specifier: ^5.4.4
         version: 5.8.2

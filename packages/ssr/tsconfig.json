@@ -19,6 +19,6 @@
     "skipLibCheck": true,
     "jsx": "react"
   },
-  "include": ["src"],
+  "include": ["src", "test/loader/loader.test.ts", "test/transform.test.ts"],
   "exclude": ["**/*.test.ts"]
 }
