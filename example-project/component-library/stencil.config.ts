@@ -59,25 +59,25 @@ export const config: Config = {
   namespace: 'component-library',
   taskQueue: 'async',
   outputTargets: [
-    // angularOutputTarget({
-    //   componentCorePackage: 'component-library',
-    //   directivesProxyFile: '../component-library-angular/src/directives/proxies.ts',
-    //   valueAccessorConfigs: angularValueAccessorBindings,
-    // }),
+    angularOutputTarget({
+      componentCorePackage: 'component-library',
+      directivesProxyFile: '../component-library-angular/src/directives/proxies.ts',
+      valueAccessorConfigs: angularValueAccessorBindings,
+    }),
     reactOutputTarget({
       outDir: '../component-library-react/src',
       hydrateModule: 'component-library/hydrate',
       serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' }
     }),
-    // vueOutputTarget({
-    //   includeImportCustomElements: true,
-    //   includePolyfills: false,
-    //   includeDefineCustomElements: false,
-    //   componentCorePackage: 'component-library',
-    //   hydrateModule: 'component-library/hydrate',
-    //   proxiesFile: '../component-library-vue/src/index.ts',
-    //   componentModels: vueComponentModels,
-    // }),
+    vueOutputTarget({
+      includeImportCustomElements: true,
+      includePolyfills: false,
+      includeDefineCustomElements: false,
+      componentCorePackage: 'component-library',
+      hydrateModule: 'component-library/hydrate',
+      proxiesFile: '../component-library-vue/src/index.ts',
+      componentModels: vueComponentModels,
+    }),
     {
       type: 'dist-custom-elements',
       externalRuntime: false,

@@ -1,5 +1,5 @@
 import Button from './Button/Button';
-import { MyComponent, MyRange } from 'component-library-react';
+import { MyComponent, MyRange, MyCounter } from 'component-library-react';
 import Input from './Input/Input';
 import { ToggleableContent } from './ToggleableContent/ToggleableContent';
 
@@ -19,6 +19,8 @@ export default function Home() {
       <hr />
       <MyRange name="myRange">Hello World</MyRange>
       <ToggleableContent />
+      <hr />
+      <MyCounter />
     </>
   );
 }

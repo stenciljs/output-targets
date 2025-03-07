@@ -203,7 +203,7 @@ export const MyList: StencilVueComponent<JSX.MyList> = /*@__PURE__*/ globalThis.
   tagName: 'my-list',
   hydrateModule: import('component-library/hydrate'),
   props: {
-    
+
   }
 });
 
@@ -212,7 +212,7 @@ export const MyListItem: StencilVueComponent<JSX.MyListItem> = /*@__PURE__*/ glo
   tagName: 'my-list-item',
   hydrateModule: import('component-library/hydrate'),
   props: {
-    
+
   }
 });
 
@@ -359,7 +359,7 @@ export const MyToggle: StencilVueComponent<JSX.MyToggle> = /*@__PURE__*/ globalT
   tagName: 'my-toggle',
   hydrateModule: import('component-library/hydrate'),
   props: {
-    
+
   }
 });
 

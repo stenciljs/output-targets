@@ -6,7 +6,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "node": "./dist/components.server.js",
       "import": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/components.server.d.ts",
+      "import": "./dist/components.server.js"
     }
   },
   "scripts": {
