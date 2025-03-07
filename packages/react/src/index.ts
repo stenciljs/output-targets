@@ -1,6 +1,7 @@
 import type { BuildCtx, OutputTargetCustom, OutputTargetDistCustomElements } from '@stencil/core/internal';
 import { Project } from 'ts-morph';
 import { createComponentWrappers } from './create-component-wrappers.js';
+import type { RenderToStringOptions } from './runtime/ssr.js';
 
 export interface ReactOutputTargetOptions {
   /**
@@ -19,11 +20,6 @@ export interface ReactOutputTargetOptions {
    */
   stencilPackageName?: string;
   /**
-   * Enables generating the react components as ES modules.
-   * @default false
-   */
-  esModules?: boolean;
-  /**
    * The directory where the custom elements are saved.
    *
    * This value is automatically detected from the Stencil configuration file for the dist-custom-elements output target.
@@ -39,6 +35,26 @@ export interface ReactOutputTargetOptions {
    * Specify the components that should be excluded from server side rendering.
    */
   excludeServerSideRenderingFor?: string[];
+  /**
+   * Configure how Stencil serializes the components shadow root.
+   * - If set to `declarative-shadow-dom` the component will be rendered within a Declarative Shadow DOM.
+   * - If set to `scoped` Stencil will render the contents of the shadow root as a `scoped: true` component
+   *   and the shadow DOM will be created during client-side hydration.
+   * - Alternatively you can mix and match the two by providing an object with `declarative-shadow-dom` and `scoped` keys,
+   * the value arrays containing the tag names of the components that should be rendered in that mode.
+   *
+   * Examples:
+   * - `{ 'declarative-shadow-dom': ['my-component-1', 'another-component'], default: 'scoped' }`
+   * Render all components as `scoped` apart from `my-component-1` and `another-component`
+   * -  `{ 'scoped': ['an-option-component'], default: 'declarative-shadow-dom' }`
+   * Render all components within `declarative-shadow-dom` apart from `an-option-component`
+   * - `'scoped'` Render all components as `scoped`
+   * - `false` disables shadow root serialization
+   *
+   * *NOTE* `true` has been deprecated in favor of `declarative-shadow-dom` and `scoped`
+   * @default 'declarative-shadow-dom'
+   */
+  serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
 }
 
 const PLUGIN_NAME = 'react-output-target';
@@ -59,12 +75,12 @@ interface ReactOutputTarget extends OutputTargetCustom {
  */
 export const reactOutputTarget = ({
   outDir,
-  esModules,
   stencilPackageName,
   excludeComponents,
   customElementsDir: customElementsDirOverride,
   hydrateModule,
   excludeServerSideRenderingFor,
+  serializeShadowRoot,
 }: ReactOutputTargetOptions): ReactOutputTarget => {
   let customElementsDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
   return {
@@ -153,11 +169,11 @@ export const reactOutputTarget = ({
         components,
         stencilPackageName: stencilPackageName!,
         customElementsDir,
-        esModules: esModules === true,
         excludeComponents,
         project,
         hydrateModule,
         excludeServerSideRenderingFor,
+        serializeShadowRoot,
       });
 
       await Promise.all(

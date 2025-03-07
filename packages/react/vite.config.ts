@@ -1,13 +1,14 @@
 // vite.config.ts
 import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   build: {
     lib: {
       entry: {
-        'react-output-target': 'src/react-output-target/index.ts',
-        react: 'src/react/index.ts',
-        ssr: 'src/react/ssr.tsx',
+        index: 'src/index.ts',
+        runtime: 'src/runtime/index.ts',
+        ssr: 'src/runtime/ssr.tsx',
       },
       formats: ['es', 'cjs'],
     },
@@ -24,4 +25,5 @@ export default defineConfig({
       },
     },
   },
+  plugins: [dts()],
 });
