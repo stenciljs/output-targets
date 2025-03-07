@@ -8,7 +8,7 @@ export default stencilSSR({
   from: 'component-library-react',
   hydrateModule: import('component-library/hydrate'),
   serializeShadowRoot: {
-    'scoped': ['my-counter'],
+    scoped: ['my-counter'],
     default: 'declarative-shadow-dom',
   },
 })(nextConfig);
