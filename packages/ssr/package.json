@@ -45,6 +45,8 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.12",
+    "component-library": "workspace:*",
+    "component-library-react": "workspace:*",
     "typescript": "^5.4.4",
     "webpack": "^5.98.0"
   },
