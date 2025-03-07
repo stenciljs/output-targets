@@ -22,9 +22,13 @@ export default defineConfig({
     }),
     tsconfigPaths(),
     stencilSSR({
-      // module: import('component-library-react'),
-      // from: 'component-library-react',
-      // hydrateModule: import('component-library/hydrate'),
+      module: import('component-library-react/server'),
+      from: 'component-library-react',
+      hydrateModule: import('component-library/hydrate'),
+      serializeShadowRoot: {
+        'scoped': ['my-counter'],
+        default: 'declarative-shadow-dom',
+      },
     }),
   ],
 });
