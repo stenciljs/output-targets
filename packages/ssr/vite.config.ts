@@ -1,12 +1,14 @@
 // vite.config.ts
 import { defineConfig } from 'vite';
-
+import dts from 'vite-plugin-dts';
 export default defineConfig({
   build: {
     lib: {
       entry: {
-        index: 'src/index.ts',
-        next: 'src/next.ts'
+        vite: 'src/vite/index.ts',
+        next: 'src/next/index.ts',
+        webpack: 'src/webpack/index.ts',
+        loader: 'src/webpack/loader.ts',
       },
       formats: ['es', 'cjs'],
     },
@@ -14,10 +16,11 @@ export default defineConfig({
       // make sure to externalize deps that shouldn't be bundled
       // into your library
       external: [
-        'node:path', 'node:url', 'node:fs',
+        'node:path', 'node:url', 'node:fs', 'webpack', 'next', 'vite',
         '@stencil/core', '@lit/react', 'typescript', 'react', 'react-dom/server', 'ts-morph',
         'html-react-parser', 'mlly', 'esbuild', 'recast', 'ast-types',
       ]
     },
   },
+  plugins: [dts()]
 });

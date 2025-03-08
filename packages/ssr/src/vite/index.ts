@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite';
 
-import { transform } from './transform.js';
-import type { StencilSSROptions } from './types.js';
+import { transform } from '../transform.js';
+import type { StencilSSROptions } from '../types.js';
 
 export function stencilSSR(pluginOptions: StencilSSROptions) {
   return {

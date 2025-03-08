@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import stencilLoader from '../../src/next/loader.js';
+import stencilLoader from '../../src/webpack/loader.js';
 import { transform } from '../../src/transform.js';
 
 // Mock the transform module
