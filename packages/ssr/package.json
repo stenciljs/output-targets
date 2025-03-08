@@ -12,18 +12,30 @@
   "bugs": {
     "url": "https://github.com/stenciljs/output-targets/issues"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/vite.cjs",
+  "module": "./dist/vite.js",
+  "types": "./dist/vite/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/vite/index.d.ts",
+      "import": "./dist/vite.js",
+      "require": "./dist/vite.cjs"
+    },
+    "./vite": {
+      "types": "./dist/vite/index.d.ts",
+      "import": "./dist/vite.js",
+      "require": "./dist/vite.cjs"
     },
     "./next": {
-      "types": "./dist/next.d.ts",
-      "import": "./dist/next.js"
+      "types": "./dist/next/index.d.ts",
+      "import": "./dist/next.js",
+      "require": "./dist/next.cjs"
+    },
+    "./webpack": {
+      "types": "./dist/webpack/index.d.ts",
+      "import": "./dist/webpack.js",
+      "require": "./dist/webpack.cjs"
     }
   },
   "files": [
@@ -34,8 +46,8 @@
   },
   "scripts": {
     "prepublishOnly": "pnpm run build",
-    "build": "tsc -p tsconfig.json",
-    "dev": "tsc -p tsconfig.json --watch",
+    "build": "vite build",
+    "dev": "vite build --watch",
     "version": "pnpm run build",
     "prettier": "prettier \"./src/**/*.{html,ts,tsx,js,jsx}\" --write",
     "release": "np",
@@ -48,7 +60,7 @@
     "component-library": "workspace:*",
     "component-library-react": "workspace:*",
     "typescript": "^5.4.4",
-    "webpack": "^5.98.0"
+    "vite-plugin-dts": "^4.5.3"
   },
   "dependencies": {
     "ast-types": "^0.14.2",
@@ -60,6 +72,7 @@
   },
   "peerDependencies": {
     "vite": "^6.x",
-    "next": "13 || 14 || 15"
+    "next": "13 || 14 || 15",
+    "webpack": "^5.x"
   }
 }
