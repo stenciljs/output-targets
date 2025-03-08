@@ -114,6 +114,34 @@ export declare interface MyComponent extends Components.MyComponent {
 
 
 @ProxyCmp({
+  inputs: ['startValue']
+})
+@Component({
+  selector: 'my-counter',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['startValue'],
+})
+export class MyCounter {
+  protected el: HTMLMyCounterElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+    proxyOutputs(this, this.el, ['count']);
+  }
+}
+
+
+export declare interface MyCounter extends Components.MyCounter {
+  /**
+   * Emitted when the count changes
+   */
+  count: EventEmitter<CustomEvent<number>>;
+}
+
+
+@ProxyCmp({
   inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', 'autofocus', 'clearInput', 'clearOnEdit', 'color', 'disabled', 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'spellcheck', 'step', 'type', 'value'],
   methods: ['setFocus', 'getInputElement']
 })

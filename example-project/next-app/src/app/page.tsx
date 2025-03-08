@@ -1,5 +1,10 @@
 import Button from './Button/Button';
-import { MyComponent, MyRadioGroup, MyRange } from './components';
+import {
+  MyComponent,
+  MyRadioGroup,
+  MyRange,
+  MyCounter,
+} from 'component-library-react';
 import Input from './Input/Input';
 import { ToggleableContent } from './ToggleableContent/ToggleableContent';
 
@@ -25,6 +30,8 @@ export default function Home() {
         <input type="radio" name="myRadioGroup" value="three" />
       </MyRadioGroup>
       <ToggleableContent />
+      <hr />
+      <MyCounter />
     </>
   );
 }

@@ -13,6 +13,7 @@ import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEven
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "component-library/components/my-component.js";
+import { MyCounter as MyCounterElement, defineCustomElement as defineMyCounter } from "component-library/components/my-counter.js";
 import { MyInput as MyInputElement, defineCustomElement as defineMyInput } from "component-library/components/my-input.js";
 import { MyListItem as MyListItemElement, defineCustomElement as defineMyListItem } from "component-library/components/my-list-item.js";
 import { MyList as MyListElement, defineCustomElement as defineMyList } from "component-library/components/my-list.js";
@@ -24,7 +25,7 @@ import { MyToggleContent as MyToggleContentElement, defineCustomElement as defin
 import { MyToggle as MyToggleElement, defineCustomElement as defineMyToggle } from "component-library/components/my-toggle.js";
 import React from 'react';
 
-type MyButtonEvents = {
+export type MyButtonEvents = {
     onMyFocus: EventName<CustomEvent<void>>,
     onMyBlur: EventName<CustomEvent<void>>
 };
@@ -41,7 +42,7 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
     defineCustomElement: defineMyButton
 });
 
-type MyCheckboxEvents = {
+export type MyCheckboxEvents = {
     onIonChange: EventName<MyCheckboxCustomEvent<CheckboxChangeEventDetail>>,
     onIonFocus: EventName<CustomEvent<void>>,
     onIonBlur: EventName<CustomEvent<void>>
@@ -60,7 +61,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
     defineCustomElement: defineMyCheckbox
 });
 
-type MyComponentEvents = {
+export type MyComponentEvents = {
     onMyCustomEvent: EventName<MyComponentCustomEvent<IMyComponent.someVar>>,
     onMyCustomNestedEvent: EventName<MyComponentCustomEvent<IMyComponent.SomeMoreComplexType.SubType>>
 };
@@ -77,7 +78,18 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     defineCustomElement: defineMyComponent
 });
 
-type MyInputEvents = {
+export type MyCounterEvents = { onCount: EventName<CustomEvent<number>> };
+
+export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents> = /*@__PURE__*/ createComponent<MyCounterElement, MyCounterEvents>({
+    tagName: 'my-counter',
+    elementClass: MyCounterElement,
+    // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
+    react: React,
+    events: { onCount: 'count' } as MyCounterEvents,
+    defineCustomElement: defineMyCounter
+});
+
+export type MyInputEvents = {
     onMyInput: EventName<MyInputCustomEvent<KeyboardEvent>>,
     onMyChange: EventName<MyInputCustomEvent<InputChangeEventDetail>>,
     onMyBlur: EventName<CustomEvent<void>>,
@@ -98,7 +110,7 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@
     defineCustomElement: defineMyInput
 });
 
-type MyListEvents = NonNullable<unknown>;
+export type MyListEvents = NonNullable<unknown>;
 
 export const MyList: StencilReactComponent<MyListElement, MyListEvents> = /*@__PURE__*/ createComponent<MyListElement, MyListEvents>({
     tagName: 'my-list',
@@ -109,7 +121,7 @@ export const MyList: StencilReactComponent<MyListElement, MyListEvents> = /*@__P
     defineCustomElement: defineMyList
 });
 
-type MyListItemEvents = NonNullable<unknown>;
+export type MyListItemEvents = NonNullable<unknown>;
 
 export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEvents> = /*@__PURE__*/ createComponent<MyListItemElement, MyListItemEvents>({
     tagName: 'my-list-item',
@@ -120,7 +132,7 @@ export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEven
     defineCustomElement: defineMyListItem
 });
 
-type MyPopoverEvents = {
+export type MyPopoverEvents = {
     onMyPopoverDidPresent: EventName<CustomEvent<void>>,
     onMyPopoverWillPresent: EventName<CustomEvent<void>>,
     onMyPopoverWillDismiss: EventName<MyPopoverCustomEvent<OverlayEventDetail>>,
@@ -141,7 +153,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
     defineCustomElement: defineMyPopover
 });
 
-type MyRadioEvents = {
+export type MyRadioEvents = {
     onMyFocus: EventName<CustomEvent<void>>,
     onMyBlur: EventName<CustomEvent<void>>,
     onMySelect: EventName<CustomEvent<void>>
@@ -160,7 +172,7 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
     defineCustomElement: defineMyRadio
 });
 
-type MyRadioGroupEvents = { onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>> };
+export type MyRadioGroupEvents = { onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>> };
 
 export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGroupEvents> = /*@__PURE__*/ createComponent<MyRadioGroupElement, MyRadioGroupEvents>({
     tagName: 'my-radio-group',
@@ -171,7 +183,7 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
     defineCustomElement: defineMyRadioGroup
 });
 
-type MyRangeEvents = {
+export type MyRangeEvents = {
     onMyChange: EventName<MyRangeCustomEvent<RangeChangeEventDetail>>,
     onMyFocus: EventName<CustomEvent<void>>,
     onMyBlur: EventName<CustomEvent<void>>
@@ -190,7 +202,7 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = /*@
     defineCustomElement: defineMyRange
 });
 
-type MyToggleEvents = NonNullable<unknown>;
+export type MyToggleEvents = NonNullable<unknown>;
 
 export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = /*@__PURE__*/ createComponent<MyToggleElement, MyToggleEvents>({
     tagName: 'my-toggle',
@@ -201,7 +213,7 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = 
     defineCustomElement: defineMyToggle
 });
 
-type MyToggleContentEvents = NonNullable<unknown>;
+export type MyToggleContentEvents = NonNullable<unknown>;
 
 export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyToggleContentEvents> = /*@__PURE__*/ createComponent<MyToggleContentElement, MyToggleContentEvents>({
     tagName: 'my-toggle-content',

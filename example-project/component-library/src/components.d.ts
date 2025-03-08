@@ -26,6 +26,10 @@ export namespace Components {
          */
         "buttonType": string;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "button-type"?: string;
+        /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
         "color"?: Color;
@@ -108,6 +112,10 @@ export namespace Components {
          */
         "labelPlacement": 'start' | 'end' | 'fixed' | 'stacked';
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "label-placement"?: 'start' | 'end' | 'fixed' | 'stacked';
+        /**
           * The mode determines which platform styles to use.
          */
         "mode"?: "ios" | "md";
@@ -131,6 +139,10 @@ export namespace Components {
          */
         "favoriteKidName": string;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "favorite-kid-name"?: string;
+        /**
           * The first name
          */
         "first": string;
@@ -146,6 +158,16 @@ export namespace Components {
           * The middle name
          */
         "middle": string;
+    }
+    interface MyCounter {
+        /**
+          * The start value
+         */
+        "startValue": string;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "start-value"?: string;
     }
     interface MyInput {
         /**
@@ -173,9 +195,17 @@ export namespace Components {
          */
         "clearInput": boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "clear-input"?: boolean;
+        /**
           * If `true`, the value will be cleared after focus upon edit. Defaults to `true` when `type` is `"password"`, `false` for all other types.
          */
         "clearOnEdit"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "clear-on-edit"?: boolean;
         /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
@@ -279,6 +309,10 @@ export namespace Components {
          */
         "backdropDismiss": boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "backdrop-dismiss"?: boolean;
+        /**
           * The component to display inside of the popover.
          */
         "component": ComponentRef;
@@ -290,6 +324,10 @@ export namespace Components {
           * Additional classes to apply for custom CSS. If multiple classes are provided they should be separated by spaces.
          */
         "cssClass"?: string | string[];
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "css-class"?: string | string[];
         /**
           * Dismiss the popover overlay after it has been presented.
           * @param data Any data to emit in the dismiss events.
@@ -304,6 +342,10 @@ export namespace Components {
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */
         "keyboardClose": boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "keyboard-close"?: boolean;
         /**
           * The mode determines which platform styles to use.
          */
@@ -324,6 +366,10 @@ export namespace Components {
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop": boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "show-backdrop"?: boolean;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
@@ -357,6 +403,10 @@ export namespace Components {
          */
         "allowEmptySelection": boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "allow-empty-selection"?: boolean;
+        /**
           * The name of the control, which is submitted with the form data.
          */
         "name": string;
@@ -382,6 +432,10 @@ export namespace Components {
           * Show two knobs.
          */
         "dualKnobs": boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "dual-knobs"?: boolean;
         /**
           * Maximum integer value of the range.
          */
@@ -436,6 +490,10 @@ export interface MyCheckboxCustomEvent<T> extends CustomEvent<T> {
 export interface MyComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMyComponentElement;
+}
+export interface MyCounterCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMyCounterElement;
 }
 export interface MyInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -512,6 +570,23 @@ declare global {
     var HTMLMyComponentElement: {
         prototype: HTMLMyComponentElement;
         new (): HTMLMyComponentElement;
+    };
+    interface HTMLMyCounterElementEventMap {
+        "count": number;
+    }
+    interface HTMLMyCounterElement extends Components.MyCounter, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMyCounterElementEventMap>(type: K, listener: (this: HTMLMyCounterElement, ev: MyCounterCustomEvent<HTMLMyCounterElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMyCounterElementEventMap>(type: K, listener: (this: HTMLMyCounterElement, ev: MyCounterCustomEvent<HTMLMyCounterElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMyCounterElement: {
+        prototype: HTMLMyCounterElement;
+        new (): HTMLMyCounterElement;
     };
     interface HTMLMyInputElementEventMap {
         "myInput": KeyboardEvent;
@@ -638,6 +713,7 @@ declare global {
         "my-button": HTMLMyButtonElement;
         "my-checkbox": HTMLMyCheckboxElement;
         "my-component": HTMLMyComponentElement;
+        "my-counter": HTMLMyCounterElement;
         "my-input": HTMLMyInputElement;
         "my-list": HTMLMyListElement;
         "my-list-item": HTMLMyListItemElement;
@@ -655,6 +731,10 @@ declare namespace LocalJSX {
           * The type of button.
          */
         "buttonType"?: string;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "button-type"?: string;
         /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
@@ -746,6 +826,10 @@ declare namespace LocalJSX {
          */
         "labelPlacement"?: 'start' | 'end' | 'fixed' | 'stacked';
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "label-placement"?: 'start' | 'end' | 'fixed' | 'stacked';
+        /**
           * The mode determines which platform styles to use.
          */
         "mode"?: "ios" | "md";
@@ -780,6 +864,10 @@ declare namespace LocalJSX {
          */
         "favoriteKidName"?: string;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "favorite-kid-name"?: string;
+        /**
           * The first name
          */
         "first"?: string;
@@ -803,6 +891,20 @@ declare namespace LocalJSX {
           * Testing with nested namespaces
          */
         "onMyCustomNestedEvent"?: (event: MyComponentCustomEvent<IMyComponent.SomeMoreComplexType.SubType>) => void;
+    }
+    interface MyCounter {
+        /**
+          * Emitted when the count changes
+         */
+        "onCount"?: (event: MyCounterCustomEvent<number>) => void;
+        /**
+          * The start value
+         */
+        "startValue"?: string;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "start-value"?: string;
     }
     interface MyInput {
         /**
@@ -830,9 +932,17 @@ declare namespace LocalJSX {
          */
         "clearInput"?: boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "clear-input"?: boolean;
+        /**
           * If `true`, the value will be cleared after focus upon edit. Defaults to `true` when `type` is `"password"`, `false` for all other types.
          */
         "clearOnEdit"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "clear-on-edit"?: boolean;
         /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
@@ -944,6 +1054,10 @@ declare namespace LocalJSX {
          */
         "backdropDismiss"?: boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "backdrop-dismiss"?: boolean;
+        /**
           * The component to display inside of the popover.
          */
         "component": ComponentRef;
@@ -956,6 +1070,10 @@ declare namespace LocalJSX {
          */
         "cssClass"?: string | string[];
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "css-class"?: string | string[];
+        /**
           * The event to pass to the popover animation.
          */
         "event"?: any;
@@ -963,6 +1081,10 @@ declare namespace LocalJSX {
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */
         "keyboardClose"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "keyboard-close"?: boolean;
         /**
           * The mode determines which platform styles to use.
          */
@@ -987,6 +1109,10 @@ declare namespace LocalJSX {
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "show-backdrop"?: boolean;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
@@ -1036,6 +1162,10 @@ declare namespace LocalJSX {
          */
         "allowEmptySelection"?: boolean;
         /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "allow-empty-selection"?: boolean;
+        /**
           * The name of the control, which is submitted with the form data.
          */
         "name"?: string;
@@ -1065,6 +1195,10 @@ declare namespace LocalJSX {
           * Show two knobs.
          */
         "dualKnobs"?: boolean;
+        /**
+         * @deprecated use camelCase instead. Support for dash-casing will be removed in Stencil v5.
+         */
+        "dual-knobs"?: boolean;
         /**
           * Maximum integer value of the range.
          */
@@ -1127,6 +1261,7 @@ declare namespace LocalJSX {
         "my-button": MyButton;
         "my-checkbox": MyCheckbox;
         "my-component": MyComponent;
+        "my-counter": MyCounter;
         "my-input": MyInput;
         "my-list": MyList;
         "my-list-item": MyListItem;
@@ -1145,6 +1280,7 @@ declare module "@stencil/core" {
             "my-button": LocalJSX.MyButton & JSXBase.HTMLAttributes<HTMLMyButtonElement>;
             "my-checkbox": LocalJSX.MyCheckbox & JSXBase.HTMLAttributes<HTMLMyCheckboxElement>;
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "my-counter": LocalJSX.MyCounter & JSXBase.HTMLAttributes<HTMLMyCounterElement>;
             "my-input": LocalJSX.MyInput & JSXBase.HTMLAttributes<HTMLMyInputElement>;
             "my-list": LocalJSX.MyList & JSXBase.HTMLAttributes<HTMLMyListElement>;
             "my-list-item": LocalJSX.MyListItem & JSXBase.HTMLAttributes<HTMLMyListItemElement>;
