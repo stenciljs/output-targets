@@ -37,7 +37,7 @@ export function generateProxies(
   const pathToCorePackageLoader = getPathToCorePackageLoader(config, outputTarget);
   const importKeys = [
     'defineContainer',
-    typeof outputTarget.hydrateModule === 'string' ? 'defineStencilSSRComponent' : undefined,
+    typeof outputTarget.hydrateModule === 'string' ? 'defineStencilSSRComponent, type StencilVueComponent' : undefined,
   ].filter(Boolean);
 
   const imports = `/* eslint-disable */

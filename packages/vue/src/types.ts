@@ -1,3 +1,5 @@
+import type { DefineSetupFnComponent } from 'vue';
+
 /**
  * Options for the Vue Output Target
  */
@@ -78,4 +80,15 @@ export interface PackageJSON {
  */
 declare global {
   interface ToggleEvent {}
+}
+
+export type StencilVueComponent<Props, VModelType = string | number | boolean> = DefineSetupFnComponent<
+  Props & InputProps<VModelType>,
+  {},
+  {},
+  Props & InputProps<VModelType>
+>;
+export interface InputProps<T> {
+  modelValue?: T;
+  routerLink?: Symbol;
 }

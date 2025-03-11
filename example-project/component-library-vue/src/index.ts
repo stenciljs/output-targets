@@ -1,7 +1,7 @@
 /* eslint-disable */
 /* tslint:disable */
 /* auto-generated vue proxies */
-import { defineContainer, defineStencilSSRComponent } from '@stencil/vue-output-target/runtime';
+import { defineContainer, defineStencilSSRComponent, type StencilVueComponent } from '@stencil/vue-output-target/runtime';
 
 import type { JSX } from 'component-library';
 
@@ -19,7 +19,7 @@ import { defineCustomElement as defineMyToggle } from 'component-library/compone
 import { defineCustomElement as defineMyToggleContent } from 'component-library/components/my-toggle-content.js';
 
 
-export const MyButton = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyButton>('my-button', defineMyButton, [
+export const MyButton: StencilVueComponent<JSX.MyButton> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyButton>('my-button', defineMyButton, [
   'color',
   'buttonType',
   'disabled',
@@ -38,7 +38,7 @@ export const MyButton = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.My
 ], [
   'myFocus',
   'myBlur'
-]) : defineStencilSSRComponent({
+]) : defineStencilSSRComponent<JSX.MyButton>({
   tagName: 'my-button',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -61,7 +61,7 @@ export const MyButton = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.My
 });
 
 
-export const MyCheckbox = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>('my-checkbox', defineMyCheckbox, [
+export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["checked"]> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>('my-checkbox', defineMyCheckbox, [
   'color',
   'name',
   'checked',
@@ -79,7 +79,7 @@ export const MyCheckbox = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.
   'ionFocus',
   'ionBlur'
 ],
-'checked', 'myChange') : defineStencilSSRComponent({
+'checked', 'myChange') : defineStencilSSRComponent<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>({
   tagName: 'my-checkbox',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -98,7 +98,7 @@ export const MyCheckbox = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.
 });
 
 
-export const MyComponent = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComponent>('my-component', defineMyComponent, [
+export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComponent>('my-component', defineMyComponent, [
   'first',
   'middle',
   'last',
@@ -110,7 +110,7 @@ export const MyComponent = /*@__PURE__*/ globalThis.window ? defineContainer<JSX
 ], [
   'myCustomEvent',
   'myCustomNestedEvent'
-]) : defineStencilSSRComponent({
+]) : defineStencilSSRComponent<JSX.MyComponent>({
   tagName: 'my-component',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -125,7 +125,7 @@ export const MyComponent = /*@__PURE__*/ globalThis.window ? defineContainer<JSX
 });
 
 
-export const MyInput = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyInput, JSX.MyInput["value"]>('my-input', defineMyInput, [
+export const MyInput: StencilVueComponent<JSX.MyInput, JSX.MyInput["value"]> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyInput, JSX.MyInput["value"]>('my-input', defineMyInput, [
   'color',
   'accept',
   'autocapitalize',
@@ -162,7 +162,7 @@ export const MyInput = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyI
   'myBlur',
   'myFocus'
 ],
-'value', 'myChange') : defineStencilSSRComponent({
+'value', 'myChange') : defineStencilSSRComponent<JSX.MyInput, JSX.MyInput["value"]>({
   tagName: 'my-input',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -199,7 +199,7 @@ export const MyInput = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyI
 });
 
 
-export const MyList = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyList>('my-list', defineMyList) : defineStencilSSRComponent({
+export const MyList: StencilVueComponent<JSX.MyList> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyList>('my-list', defineMyList) : defineStencilSSRComponent<JSX.MyList>({
   tagName: 'my-list',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -208,7 +208,7 @@ export const MyList = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyLi
 });
 
 
-export const MyListItem = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListItem>('my-list-item', defineMyListItem) : defineStencilSSRComponent({
+export const MyListItem: StencilVueComponent<JSX.MyListItem> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListItem>('my-list-item', defineMyListItem) : defineStencilSSRComponent<JSX.MyListItem>({
   tagName: 'my-list-item',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -217,7 +217,7 @@ export const MyListItem = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.
 });
 
 
-export const MyPopover = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyPopover>('my-popover', defineMyPopover, [
+export const MyPopover: StencilVueComponent<JSX.MyPopover> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyPopover>('my-popover', defineMyPopover, [
   'component',
   'componentProps',
   'keyboardClose',
@@ -236,7 +236,7 @@ export const MyPopover = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.M
   'myPopoverWillPresent',
   'myPopoverWillDismiss',
   'myPopoverDidDismiss'
-]) : defineStencilSSRComponent({
+]) : defineStencilSSRComponent<JSX.MyPopover>({
   tagName: 'my-popover',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -255,7 +255,7 @@ export const MyPopover = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.M
 });
 
 
-export const MyRadio = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyRadio>('my-radio', defineMyRadio, [
+export const MyRadio: StencilVueComponent<JSX.MyRadio> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyRadio>('my-radio', defineMyRadio, [
   'color',
   'name',
   'disabled',
@@ -269,7 +269,7 @@ export const MyRadio = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyR
   'myFocus',
   'myBlur',
   'mySelect'
-]) : defineStencilSSRComponent({
+]) : defineStencilSSRComponent<JSX.MyRadio>({
   tagName: 'my-radio',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -284,7 +284,7 @@ export const MyRadio = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyR
 });
 
 
-export const MyRadioGroup = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>('my-radio-group', defineMyRadioGroup, [
+export const MyRadioGroup: StencilVueComponent<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>('my-radio-group', defineMyRadioGroup, [
   'allowEmptySelection',
   'name',
   'value',
@@ -292,7 +292,7 @@ export const MyRadioGroup = /*@__PURE__*/ globalThis.window ? defineContainer<JS
 ], [
   'myChange'
 ],
-'value', 'myChange') : defineStencilSSRComponent({
+'value', 'myChange') : defineStencilSSRComponent<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>({
   tagName: 'my-radio-group',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -303,7 +303,7 @@ export const MyRadioGroup = /*@__PURE__*/ globalThis.window ? defineContainer<JS
 });
 
 
-export const MyRange = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyRange, JSX.MyRange["value"]>('my-range', defineMyRange, [
+export const MyRange: StencilVueComponent<JSX.MyRange, JSX.MyRange["value"]> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyRange, JSX.MyRange["value"]>('my-range', defineMyRange, [
   'color',
   'debounce',
   'name',
@@ -326,7 +326,7 @@ export const MyRange = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyR
   'myFocus',
   'myBlur'
 ],
-'value', 'myChange') : defineStencilSSRComponent({
+'value', 'myChange') : defineStencilSSRComponent<JSX.MyRange, JSX.MyRange["value"]>({
   tagName: 'my-range',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -350,7 +350,7 @@ export const MyRange = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyR
 });
 
 
-export const MyToggle = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyToggle>('my-toggle', defineMyToggle) : defineStencilSSRComponent({
+export const MyToggle: StencilVueComponent<JSX.MyToggle> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyToggle>('my-toggle', defineMyToggle) : defineStencilSSRComponent<JSX.MyToggle>({
   tagName: 'my-toggle',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -359,9 +359,9 @@ export const MyToggle = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.My
 });
 
 
-export const MyToggleContent = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyToggleContent>('my-toggle-content', defineMyToggleContent, [
+export const MyToggleContent: StencilVueComponent<JSX.MyToggleContent> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyToggleContent>('my-toggle-content', defineMyToggleContent, [
   'visible'
-]) : defineStencilSSRComponent({
+]) : defineStencilSSRComponent<JSX.MyToggleContent>({
   tagName: 'my-toggle-content',
   hydrateModule: import('component-library/hydrate'),
   props: {

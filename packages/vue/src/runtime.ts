@@ -1,10 +1,18 @@
-import { defineComponent, getCurrentInstance, h, inject, onMounted, ref, Ref, withDirectives } from 'vue';
+import {
+  defineComponent,
+  getCurrentInstance,
+  ComponentObjectPropsOptions,
+  h,
+  inject,
+  onMounted,
+  PropType,
+  ref,
+  Ref,
+  withDirectives,
+} from 'vue';
 
 export { defineStencilSSRComponent } from './ssr';
-export interface InputProps<T> {
-  modelValue?: T;
-  routerLink?: Symbol;
-}
+import { InputProps } from './types';
 
 const UPDATE_VALUE_EVENT = 'update:modelValue';
 const MODEL_VALUE = 'modelValue';
@@ -43,6 +51,8 @@ const getElementClasses = (
   );
 };
 
+type ModelValuePropType<Props, VModelType> = PropType<(Props & InputProps<VModelType>)['modelValue']>;
+
 /**
  * Create a callback to define a Vue component wrapper around a Web Component.
  *
@@ -76,202 +86,194 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
     defineCustomElement();
   }
 
-  const Container = defineComponent<Props & InputProps<VModelType>>((props, { attrs, slots, emit }) => {
-    let modelPropValue = modelProp ? props[modelProp as keyof InputProps<VModelType>] : undefined;
-    const containerRef = ref<HTMLElement>();
-    const classes = new Set(getComponentClasses(attrs.class));
+  const emits: string[] = emitProps;
+  const props = componentProps.reduce(
+    (acc, prop) => {
+      acc[prop] = { type: null as unknown as PropType<any>, default: EMPTY_PROP };
+      return acc;
+    },
+    {} as Record<string, { type: PropType<any>; default: Symbol }>
+  ) as unknown as ComponentObjectPropsOptions<Props & InputProps<VModelType>>;
+  props[ROUTER_LINK_VALUE] = { type: null, default: DEFAULT_EMPTY_PROP };
+  if (modelProp) {
+    emits.push(UPDATE_VALUE_EVENT);
+    props[MODEL_VALUE] = { type: null as unknown as ModelValuePropType<Props, VModelType>, default: undefined };
+  }
 
-    onMounted(() => {
-      /**
-       * we register the event emmiter for @Event definitions
-       * so we can use @event
-       */
-      emitProps.forEach((eventName: string) => {
-        containerRef.value!.addEventListener(eventName, (e: Event) => {
-          emit(eventName, e);
-        });
-      });
-    });
+  return defineComponent<Props & InputProps<VModelType>>(
+    (props, { attrs, slots, emit }) => {
+      let modelPropValue = modelProp ? props[modelProp as keyof InputProps<VModelType>] : undefined;
+      const containerRef = ref<HTMLElement>();
+      const classes = new Set(getComponentClasses(attrs.class));
 
-    /**
-     * This directive is responsible for updating any reactive
-     * reference associated with v-model on the component.
-     * This code must be run inside of the "created" callback.
-     * Since the following listener callbacks as well as any potential
-     * event callback defined in the developer's app are set on
-     * the same element, we need to make sure the following callbacks
-     * are set first so they fire first. If the developer's callback fires first
-     * then the reactive reference will not have been updated yet.
-     */
-    const vModelDirective = {
-      created: (el: HTMLElement) => {
-        const eventsNames = (Array.isArray(modelUpdateEvent) ? modelUpdateEvent : [modelUpdateEvent]).map((ev) =>
-          ev.replace(/-([a-z])/g, (g: string) => g[1].toUpperCase())
-        );
-        eventsNames.forEach((eventName: string) => {
-          el.addEventListener(eventName, (e: Event) => {
-            /**
-             * Only update the v-model binding if the event's target is the element we are
-             * listening on. For example, Component A could emit ionChange, but it could also
-             * have a descendant Component B that also emits ionChange. We only want to update
-             * the v-model for Component A when ionChange originates from that element and not
-             * when ionChange bubbles up from Component B.
-             */
-            if ((e.target as HTMLElement).tagName === el.tagName && modelProp) {
-              modelPropValue = (e?.target as any)[modelProp];
-              emit(UPDATE_VALUE_EVENT, modelPropValue);
-            }
+      onMounted(() => {
+        /**
+         * we register the event emmiter for @Event definitions
+         * so we can use @event
+         */
+        emitProps.forEach((eventName: string) => {
+          containerRef.value!.addEventListener(eventName, (e: Event) => {
+            emit(eventName, e);
           });
         });
-      },
-    };
+      });
 
-    const currentInstance = getCurrentInstance();
-    const hasRouter = currentInstance?.appContext?.provides[NAV_MANAGER];
-    const navManager: NavManager | undefined = hasRouter ? inject(NAV_MANAGER) : undefined;
-    const handleRouterLink = (ev: Event) => {
-      const { routerLink } = props;
-      if (routerLink === EMPTY_PROP) return;
+      /**
+       * This directive is responsible for updating any reactive
+       * reference associated with v-model on the component.
+       * This code must be run inside of the "created" callback.
+       * Since the following listener callbacks as well as any potential
+       * event callback defined in the developer's app are set on
+       * the same element, we need to make sure the following callbacks
+       * are set first so they fire first. If the developer's callback fires first
+       * then the reactive reference will not have been updated yet.
+       */
+      const vModelDirective = {
+        created: (el: HTMLElement) => {
+          const eventsNames = (Array.isArray(modelUpdateEvent) ? modelUpdateEvent : [modelUpdateEvent]).map((ev) =>
+            ev.replace(/-([a-z])/g, (g: string) => g[1].toUpperCase())
+          );
+          eventsNames.forEach((eventName: string) => {
+            el.addEventListener(eventName, (e: Event) => {
+              /**
+               * Only update the v-model binding if the event's target is the element we are
+               * listening on. For example, Component A could emit ionChange, but it could also
+               * have a descendant Component B that also emits ionChange. We only want to update
+               * the v-model for Component A when ionChange originates from that element and not
+               * when ionChange bubbles up from Component B.
+               */
+              if ((e.target as HTMLElement).tagName === el.tagName && modelProp) {
+                modelPropValue = (e?.target as any)[modelProp];
+                emit(UPDATE_VALUE_EVENT, modelPropValue);
+              }
+            });
+          });
+        },
+      };
 
-      if (navManager !== undefined) {
+      const currentInstance = getCurrentInstance();
+      const hasRouter = currentInstance?.appContext?.provides[NAV_MANAGER];
+      const navManager: NavManager | undefined = hasRouter ? inject(NAV_MANAGER) : undefined;
+      const handleRouterLink = (ev: Event) => {
+        const { routerLink } = props;
+        if (routerLink === EMPTY_PROP) return;
+
+        if (navManager !== undefined) {
+          /**
+           * This prevents the browser from
+           * performing a page reload when pressing
+           * an Ionic component with routerLink.
+           * The page reload interferes with routing
+           * and causes ion-back-button to disappear
+           * since the local history is wiped on reload.
+           */
+          ev.preventDefault();
+
+          let navigationPayload: any = { event: ev };
+          for (const key in props) {
+            const value = props[key as keyof InputProps<VModelType>];
+            if (props.hasOwnProperty(key) && key.startsWith(ROUTER_PROP_PREFIX) && value !== EMPTY_PROP) {
+              navigationPayload[key] = value;
+            }
+          }
+
+          navManager.navigate(navigationPayload);
+        } else {
+          console.warn('Tried to navigate, but no router was found. Make sure you have mounted Vue Router.');
+        }
+      };
+
+      return () => {
+        modelPropValue = props[modelProp as keyof InputProps<VModelType>];
+
+        getComponentClasses(attrs.class).forEach((value) => {
+          classes.add(value);
+        });
+
+        // @ts-expect-error
+        const oldClick = props.onClick;
+        const handleClick = (ev: Event) => {
+          if (oldClick !== undefined) {
+            oldClick(ev);
+          }
+          if (!ev.defaultPrevented) {
+            handleRouterLink(ev);
+          }
+        };
+
+        let propsToAdd: any = {
+          ref: containerRef,
+          class: getElementClasses(containerRef, classes),
+          onClick: handleClick,
+        };
+
         /**
-         * This prevents the browser from
-         * performing a page reload when pressing
-         * an Ionic component with routerLink.
-         * The page reload interferes with routing
-         * and causes ion-back-button to disappear
-         * since the local history is wiped on reload.
+         * We can use Object.entries here
+         * to avoid the hasOwnProperty check,
+         * but that would require 2 iterations
+         * where as this only requires 1.
          */
-        ev.preventDefault();
-
-        let navigationPayload: any = { event: ev };
         for (const key in props) {
           const value = props[key as keyof InputProps<VModelType>];
-          if (props.hasOwnProperty(key) && key.startsWith(ROUTER_PROP_PREFIX) && value !== EMPTY_PROP) {
-            navigationPayload[key] = value;
+          if ((props.hasOwnProperty(key) && value !== EMPTY_PROP) || key.startsWith(ARIA_PROP_PREFIX)) {
+            propsToAdd[key] = value;
+          }
+
+          /**
+           * register event handlers on the component
+           */
+          const eventHandlerKey = 'on' + key.slice(0, 1).toUpperCase() + key.slice(1);
+          const eventHandler = attrs[eventHandlerKey] as EventListenerOrEventListenerObject;
+          if (containerRef.value && attrs.hasOwnProperty(eventHandlerKey) && 'addEventListener' in containerRef.value) {
+            containerRef.value.addEventListener(key, eventHandler);
           }
         }
 
-        navManager.navigate(navigationPayload);
-      } else {
-        console.warn('Tried to navigate, but no router was found. Make sure you have mounted Vue Router.');
-      }
-    };
-
-    return () => {
-      modelPropValue = props[modelProp as keyof InputProps<VModelType>];
-
-      getComponentClasses(attrs.class).forEach((value) => {
-        classes.add(value);
-      });
-
-      // @ts-expect-error
-      const oldClick = props.onClick;
-      const handleClick = (ev: Event) => {
-        if (oldClick !== undefined) {
-          oldClick(ev);
+        if (modelProp) {
+          /**
+           * If form value property was set using v-model
+           * then we should use that value.
+           * Otherwise, check to see if form value property
+           * was set as a static value (i.e. no v-model).
+           */
+          if (props[MODEL_VALUE] !== EMPTY_PROP) {
+            propsToAdd = {
+              ...propsToAdd,
+              [modelProp]: props[MODEL_VALUE],
+            };
+          } else if (modelPropValue !== EMPTY_PROP) {
+            propsToAdd = {
+              ...propsToAdd,
+              [modelProp]: modelPropValue,
+            };
+          }
         }
-        if (!ev.defaultPrevented) {
-          handleRouterLink(ev);
-        }
-      };
 
-      let propsToAdd: any = {
-        ref: containerRef,
-        class: getElementClasses(containerRef, classes),
-        onClick: handleClick,
-      };
-
-      /**
-       * We can use Object.entries here
-       * to avoid the hasOwnProperty check,
-       * but that would require 2 iterations
-       * where as this only requires 1.
-       */
-      for (const key in props) {
-        const value = props[key as keyof InputProps<VModelType>];
-        if ((props.hasOwnProperty(key) && value !== EMPTY_PROP) || key.startsWith(ARIA_PROP_PREFIX)) {
-          propsToAdd[key] = value;
+        // If router link is defined, add href to props
+        // in order to properly render an anchor tag inside
+        // of components that should become activatable and
+        // focusable with router link.
+        if (ROUTER_LINK_VALUE in props && props[ROUTER_LINK_VALUE] !== EMPTY_PROP) {
+          propsToAdd = {
+            ...propsToAdd,
+            href: props[ROUTER_LINK_VALUE],
+          };
         }
 
         /**
-         * register event handlers on the component
+         * vModelDirective is only needed on components that support v-model.
+         * As a result, we conditionally call withDirectives with v-model components.
          */
-        const eventHandlerKey = 'on' + key.slice(0, 1).toUpperCase() + key.slice(1);
-        const eventHandler = attrs[eventHandlerKey] as EventListenerOrEventListenerObject;
-        if (containerRef.value && attrs.hasOwnProperty(eventHandlerKey) && 'addEventListener' in containerRef.value) {
-          containerRef.value.addEventListener(key, eventHandler);
-        }
-      }
-
-      if (modelProp) {
-        /**
-         * If form value property was set using v-model
-         * then we should use that value.
-         * Otherwise, check to see if form value property
-         * was set as a static value (i.e. no v-model).
-         */
-        if (props[MODEL_VALUE] !== EMPTY_PROP) {
-          propsToAdd = {
-            ...propsToAdd,
-            [modelProp]: props[MODEL_VALUE],
-          };
-        } else if (modelPropValue !== EMPTY_PROP) {
-          propsToAdd = {
-            ...propsToAdd,
-            [modelProp]: modelPropValue,
-          };
-        }
-      }
-
-      // If router link is defined, add href to props
-      // in order to properly render an anchor tag inside
-      // of components that should become activatable and
-      // focusable with router link.
-      if (ROUTER_LINK_VALUE in props && props[ROUTER_LINK_VALUE] !== EMPTY_PROP) {
-        propsToAdd = {
-          ...propsToAdd,
-          href: props[ROUTER_LINK_VALUE],
-        };
-      }
-
-      /**
-       * vModelDirective is only needed on components that support v-model.
-       * As a result, we conditionally call withDirectives with v-model components.
-       */
-      const node = h(name, propsToAdd, slots.default && slots.default());
-      return modelProp === undefined ? node : withDirectives(node, [[vModelDirective]]);
-    };
-  });
-
-  if (typeof Container !== 'function') {
-    let emits: string[] = [];
-    let props: Record<string, unknown> = {};
-
-    props[ROUTER_LINK_VALUE] = DEFAULT_EMPTY_PROP;
-
-    componentProps.forEach((componentProp) => (props[componentProp] = DEFAULT_EMPTY_PROP));
-
-    emits = emitProps;
-
-    if (modelProp) {
-      props[MODEL_VALUE] = DEFAULT_EMPTY_PROP;
-      emits.push(UPDATE_VALUE_EVENT);
+        const node = h(name, propsToAdd, slots.default && slots.default());
+        return modelProp === undefined ? node : withDirectives(node, [[vModelDirective]]);
+      };
+    },
+    {
+      name,
+      props,
+      emits,
     }
-
-    /**
-     * Add emit props to the component.
-     * This is necessary for Vue to know
-     * which events to listen to.
-     * @see https://v3.vuejs.org/guide/component-custom-events.html#event-names
-     */
-    // @ts-expect-error
-    Container.name = name;
-    // @ts-expect-error
-    Container.emits = emits;
-    // @ts-expect-error
-    Container.props = props;
-  }
-
-  return Container;
+  );
 };
+
+export * from './types';
