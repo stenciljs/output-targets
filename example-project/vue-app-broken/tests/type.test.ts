@@ -16,13 +16,19 @@ describe('type check', () => {
       child.stdout?.on('data', (data) => {
         stdout += data
       })
+
+      child.stderr?.on('data', (data) => {
+        console.log(2, data)
+      })
+
       child.on('exit', (code) => {
+        console.log(1, stdout);
         if (code !== 2) {
           rejects(new Error(`Command failed with exit code ${code}`))
         }
         resolve(stdout)
       })
-    })
+    });
 
     expect(result).toContain(
       `App.vue(7,5): error TS2322: Type 'string' is not assignable to type 'string[]'.`
