@@ -29,7 +29,9 @@ function isPrimitive(value: any) {
   return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
 }
 
-export function defineStencilSSRComponent<Props, VModelType = string | number | boolean>(options: StencilSSRComponentOptions) {
+export function defineStencilSSRComponent<Props, VModelType = string | number | boolean>(
+  options: StencilSSRComponentOptions
+) {
   return defineComponent<Props & InputProps<VModelType>>({
     async setup(props: LooseRequired<Readonly<{}> & Readonly<{}> & {}>, context: SetupContext) {
       /**
