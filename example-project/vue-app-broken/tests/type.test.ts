@@ -24,8 +24,6 @@ describe('type check', () => {
       })
     });
 
-    console.log('---->', result);
-
     expect(result).toContain(
       `App.vue(7,5): error TS2322: Type 'string' is not assignable to type 'string[]'.`
     )
