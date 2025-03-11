@@ -8,10 +8,20 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 describe('type check', () => {
   it('should fail type check', async () => {
-    const result = await new Promise((resolve) => {
-      cp.exec(`npx vue-tsc --noEmit -p ${path.resolve(__dirname, '../tsconfig.json')}`, {
+    const result = await new Promise((resolve, rejects) => {
+      const  child = cp.exec(`npx vue-tsc --noEmit -p ${path.resolve(__dirname, '../tsconfig.json')}`, {
         cwd: path.resolve(__dirname, '..'),
       }, (error, stdout, stderr) => resolve(stdout))
+
+      child.on('exit', (code) => {
+        if (code !== 1) {
+          rejects(new Error(`Command failed with exit code ${code}`))
+        }
+      })
+
+      child.stderr?.on('data', (data) => {
+        console.log(data)
+      })
     })
     expect(result).toMatchInlineSnapshot(`
       "src/App.vue(7,5): error TS2322: Type 'string' is not assignable to type 'string[]'.
