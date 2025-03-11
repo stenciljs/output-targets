@@ -1,3 +1,10 @@
+## @stencil/vue-output-target@0.10.0 (2025-03-11)
+
+#### :bug: Bug Fix
+
+- `vue-output-target`
+  - [#630](https://github.com/stenciljs/output-targets/pull/630) vue: improve types for Vue Stencil components ([@christian-bromann](https://github.com/christian-bromann))
+
 ## @stencil/vue-output-target@0.9.6 (2025-03-04)
 
 #### :bug: Bug Fix
