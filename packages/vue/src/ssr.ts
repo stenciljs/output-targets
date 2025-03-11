@@ -1,5 +1,6 @@
 import { defineComponent, useSlots, compile, createSSRApp, type SetupContext } from 'vue';
 import { type LooseRequired } from '@vue/shared';
+import { type InputProps } from './types';
 
 const LOG_PREFIX = '[vue-output-target]';
 
@@ -11,7 +12,7 @@ interface RenderToStringOptions {
   serializeShadowRoot?: boolean;
   prettyHtml?: boolean;
 }
-export type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
+type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
 
 interface StencilSSRComponentOptions {
   tagName: string;
@@ -28,8 +29,8 @@ function isPrimitive(value: any) {
   return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
 }
 
-export function defineStencilSSRComponent(options: StencilSSRComponentOptions) {
-  return defineComponent<Record<string, any>, {}, string, {}>({
+export function defineStencilSSRComponent<Props, VModelType = string | number | boolean>(options: StencilSSRComponentOptions) {
+  return defineComponent<Props & InputProps<VModelType>>({
     async setup(props: LooseRequired<Readonly<{}> & Readonly<{}> & {}>, context: SetupContext) {
       /**
        * resolve light dom into a string

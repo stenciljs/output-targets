@@ -1,10 +1,18 @@
-import { defineComponent, getCurrentInstance, h, inject, onMounted, ref, Ref, withDirectives } from 'vue';
+import {
+  defineComponent,
+  getCurrentInstance,
+  ComponentObjectPropsOptions,
+  h,
+  inject,
+  onMounted,
+  PropType,
+  ref,
+  Ref,
+  withDirectives
+} from 'vue';
 
-export { defineStencilSSRComponent } from './ssr';
-export interface InputProps<T> {
-  modelValue?: T;
-  routerLink?: Symbol;
-}
+export { defineStencilSSRComponent} from './ssr';
+import { InputProps } from './types';
 
 const UPDATE_VALUE_EVENT = 'update:modelValue';
 const MODEL_VALUE = 'modelValue';
@@ -43,6 +51,8 @@ const getElementClasses = (
   );
 };
 
+type ModelValuePropType<Props, VModelType> = PropType<(Props & InputProps<VModelType>)['modelValue']>
+
 /**
  * Create a callback to define a Vue component wrapper around a Web Component.
  *
@@ -76,7 +86,18 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
     defineCustomElement();
   }
 
-  const Container = defineComponent<Props & InputProps<VModelType>>((props, { attrs, slots, emit }) => {
+  const emits: string[] = emitProps;
+  const props = componentProps.reduce((acc, prop) => {
+    acc[prop] = { type: (null as unknown) as PropType<any>, default: EMPTY_PROP };
+    return acc;
+  }, {} as Record<string, { type: PropType<any>; default: Symbol }>) as unknown as ComponentObjectPropsOptions<Props & InputProps<VModelType>>;
+  props[ROUTER_LINK_VALUE] = { type: null, default: DEFAULT_EMPTY_PROP };
+  if (modelProp) {
+    emits.push(UPDATE_VALUE_EVENT);
+    props[MODEL_VALUE] = { type: null as unknown as ModelValuePropType<Props, VModelType>, default: undefined };
+  }
+
+  return defineComponent<Props & InputProps<VModelType>>((props, { attrs, slots, emit }) => {
     let modelPropValue = modelProp ? props[modelProp as keyof InputProps<VModelType>] : undefined;
     const containerRef = ref<HTMLElement>();
     const classes = new Set(getComponentClasses(attrs.class));
@@ -242,36 +263,11 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
       const node = h(name, propsToAdd, slots.default && slots.default());
       return modelProp === undefined ? node : withDirectives(node, [[vModelDirective]]);
     };
+  }, {
+    name,
+    props,
+    emits
   });
-
-  if (typeof Container !== 'function') {
-    let emits: string[] = [];
-    let props: Record<string, unknown> = {};
-
-    props[ROUTER_LINK_VALUE] = DEFAULT_EMPTY_PROP;
-
-    componentProps.forEach((componentProp) => (props[componentProp] = DEFAULT_EMPTY_PROP));
-
-    emits = emitProps;
-
-    if (modelProp) {
-      props[MODEL_VALUE] = DEFAULT_EMPTY_PROP;
-      emits.push(UPDATE_VALUE_EVENT);
-    }
-
-    /**
-     * Add emit props to the component.
-     * This is necessary for Vue to know
-     * which events to listen to.
-     * @see https://v3.vuejs.org/guide/component-custom-events.html#event-names
-     */
-    // @ts-expect-error
-    Container.name = name;
-    // @ts-expect-error
-    Container.emits = emits;
-    // @ts-expect-error
-    Container.props = props;
-  }
-
-  return Container;
 };
+
+export * from './types';

@@ -11,7 +11,7 @@ describe('createComponentDefinition', () => {
       events: [],
     });
     expect(output).toEqual(`
-export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined);
+export const MyComponent: StencilVueComponent<Components.MyComponent> = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined);
 `);
   });
   it('should create a Vue component with custom element support', () => {
@@ -23,7 +23,7 @@ export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent>
       events: [],
     });
     expect(output).toEqual(`
-export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined);
+export const MyComponent: StencilVueComponent<Components.MyComponent> = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined);
 `);
   });
 
@@ -84,7 +84,7 @@ export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent>
     });
 
     expect(output).toEqual(`
-export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent, Components.MyComponent["value"]>('my-component', undefined, [
+export const MyComponent: StencilVueComponent<Components.MyComponent, Components.MyComponent["value"]> = /*@__PURE__*/ defineContainer<Components.MyComponent, Components.MyComponent["value"]>('my-component', undefined, [
   'value',
   'ionChange'
 ], [
@@ -151,7 +151,7 @@ export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent,
     });
 
     expect(output).toEqual(`
-export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent, Components.MyComponent["value"]>('my-component', undefined, [
+export const MyComponent: StencilVueComponent<Components.MyComponent, Components.MyComponent["value"]> = /*@__PURE__*/ defineContainer<Components.MyComponent, Components.MyComponent["value"]>('my-component', undefined, [
   'value',
   'ionChange'
 ], [
@@ -189,7 +189,7 @@ export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent,
     });
 
     expect(output).toEqual(`
-export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined, [
+export const MyComponent: StencilVueComponent<Components.MyComponent> = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined, [
   'my-event'
 ], [
   'my-event'
@@ -227,7 +227,7 @@ export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent>
     });
 
     expect(output).toEqual(`
-export const MyComponent = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined, [
+export const MyComponent: StencilVueComponent<Components.MyComponent> = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined, [
   'myProp'
 ]);
 `);

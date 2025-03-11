@@ -1,0 +1,18 @@
+{
+  "name": "vue-app-broken",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build.app": "vue-tsc --noEmit -p ./tsconfig.app.json",
+    "test": "vitest --run"
+  },
+  "dependencies": {
+    "component-library-vue": "workspace:*",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "vue-tsc": "^2.2.8",
+    "vitest": "^3.0.8"
+  }
+}

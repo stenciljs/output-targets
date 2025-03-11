@@ -39,7 +39,7 @@ export const createComponentDefinition =
     const supportSSR = typeof outputTarget.hydrateModule === 'string';
     const ssrTernary = supportSSR ? ' globalThis.window ? ' : ' ';
     const ssrCondition = supportSSR
-      ? ` : defineStencilSSRComponent({
+      ? ` : defineStencilSSRComponent<${componentType}${modelType}>({
   tagName: '${cmpMeta.tagName}',
   hydrateModule: import('${outputTarget.hydrateModule}'),
   props: {
@@ -51,7 +51,7 @@ export const createComponentDefinition =
       : '';
 
     let templateString = `
-export const ${tagNameAsPascal} = /*@__PURE__*/${ssrTernary}defineContainer<${componentType}${modelType}>('${cmpMeta.tagName}', ${importAs}`;
+export const ${tagNameAsPascal}: StencilVueComponent<${componentType}${modelType}> = /*@__PURE__*/${ssrTernary}defineContainer<${componentType}${modelType}>('${cmpMeta.tagName}', ${importAs}`;
 
     if (props.length > 0) {
       templateString += `, [
