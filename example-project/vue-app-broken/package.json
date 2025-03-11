@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build.app": "vue-tsc --noEmit -p ./tsconfig.app.json",
+    "build.app": "vue-tsc --noEmit -p ./tsconfig.json",
     "test": "vitest --run"
   },
   "dependencies": {
