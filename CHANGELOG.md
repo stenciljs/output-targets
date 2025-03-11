@@ -1,3 +1,11 @@
+## @stencil/vue-output-target@0.10.1 (2025-03-11)
+
+#### :bug: Bug Fix
+
+- `vue-output-target`
+  - [`6abc0e30`](https://github.com/stenciljs/output-targets/commit/59838b71a0ea7241fe768eee465815eeabf27082) fix(vue): always import StencilVueComponent type
+ ([@christian-bromann](https://github.com/christian-bromann))
+
 ## @stencil/vue-output-target@0.10.0 (2025-03-11)
 
 #### :bug: Bug Fix
