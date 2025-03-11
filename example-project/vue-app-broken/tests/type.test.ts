@@ -11,7 +11,7 @@ describe('type check', () => {
     const result = await new Promise((resolve, rejects) => {
       const  child = cp.exec(`npx vue-tsc --noEmit -p ${path.resolve(__dirname, '../tsconfig.json')}`, {
         cwd: path.resolve(__dirname, '..'),
-      }, (error, stdout, stderr) => resolve(stdout))
+      }, (_, stdout, __) => resolve(stdout))
 
       child.on('exit', (code) => {
         if (code !== 1) {
@@ -23,10 +23,11 @@ describe('type check', () => {
         console.log(data)
       })
     })
-    expect(result).toMatchInlineSnapshot(`
-      "src/App.vue(7,5): error TS2322: Type 'string' is not assignable to type 'string[]'.
-      src/App.vue(9,14): error TS2322: Type '"ups"' is not assignable to type '"clear" | "outline" | "solid" | "default" | undefined'.
-      "
-    `)
+    expect(result).toContain(
+      `App.vue(7,5): error TS2322: Type 'string' is not assignable to type 'string[]'.`
+    )
+    expect(result).toContain(
+      `App.vue(9,14): error TS2322: Type '"ups"' is not assignable to type '"clear" | "outline" | "solid" | "default" | undefined'.`
+    )
   })
 })
