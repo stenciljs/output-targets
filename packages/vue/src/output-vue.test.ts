@@ -25,7 +25,7 @@ describe('generateProxies', () => {
       `/* eslint-disable */
 /* tslint:disable */
 /* auto-generated vue proxies */
-import { defineContainer } from '@stencil/vue-output-target/runtime';
+import { defineContainer, type StencilVueComponent } from '@stencil/vue-output-target/runtime';
 
 import type { JSX } from 'component-library';
 
@@ -50,7 +50,7 @@ applyPolyfills().then(() => defineCustomElements());
       `/* eslint-disable */
 /* tslint:disable */
 /* auto-generated vue proxies */
-import { defineContainer } from '@stencil/vue-output-target/runtime';
+import { defineContainer, type StencilVueComponent } from '@stencil/vue-output-target/runtime';
 
 import type { JSX } from 'component-library';
 
@@ -75,7 +75,7 @@ defineCustomElements();
       `/* eslint-disable */
 /* tslint:disable */
 /* auto-generated vue proxies */
-import { defineContainer } from '@stencil/vue-output-target/runtime';
+import { defineContainer, type StencilVueComponent } from '@stencil/vue-output-target/runtime';
 
 import type { JSX } from 'component-library';
 
@@ -97,7 +97,7 @@ import type { JSX } from 'component-library';
       `/* eslint-disable */
 /* tslint:disable */
 /* auto-generated vue proxies */
-import { defineContainer } from '@stencil/vue-output-target/runtime';
+import { defineContainer, type StencilVueComponent } from '@stencil/vue-output-target/runtime';
 
 import type { JSX } from 'component-library';
 
@@ -120,7 +120,7 @@ import type { JSX } from 'component-library';
       `/* eslint-disable */
 /* tslint:disable */
 /* auto-generated vue proxies */
-import { defineContainer } from '@stencil/vue-output-target/runtime';
+import { defineContainer, type StencilVueComponent } from '@stencil/vue-output-target/runtime';
 
 import type { JSX } from 'component-library/custom-dir/hello';
 
