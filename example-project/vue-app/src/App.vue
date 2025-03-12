@@ -9,6 +9,8 @@ const isClicked = ref(false)
 const handleCustomEvent = () => {
   isClicked.value = true
 }
+
+const kidsNames = ['John', 'Jane']
 </script>
 
 <template>
@@ -21,7 +23,15 @@ const handleCustomEvent = () => {
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
-  <MyComponent @myCustomEvent="handleCustomEvent" />
+  <MyComponent
+    @myCustomEvent="handleCustomEvent"
+    :kidsNames="kidsNames"
+    first="John"
+    middle="Sir"
+    favoriteKidName="John"
+    :age=20
+    last="Doe"
+  />
   <p data-testid="mycomponent-click" v-show="isClicked">MyComponent was clicked</p>
   <Input />
   <MyCheckbox @ionChange="console.log">Checkbox!!!</MyCheckbox>

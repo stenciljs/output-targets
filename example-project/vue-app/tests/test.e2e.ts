@@ -17,4 +17,13 @@ describe('Stencil Vue Integration', () => {
     await $('my-component').$('div').click();
     await expect(await $('[data-testid="mycomponent-click"]').getText()).toEqual('MyComponent was clicked');
   });
+
+  it('should render all properties correctly', async () => {
+    await expect($('my-component')).toHaveText([
+      'Hello, World! I\'m John Sir Doe',
+      'Age: 20',
+      'Kids: John, Jane',
+      'Favorite kid: John'
+    ].join('\n'));
+  })
 });
