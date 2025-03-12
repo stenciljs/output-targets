@@ -142,9 +142,8 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
 });
 
 type MyRadioEvents = {
-    onMyFocus: EventName<CustomEvent<void>>,
-    onMyBlur: EventName<CustomEvent<void>>,
-    onMySelect: EventName<CustomEvent<void>>
+    onIonFocus: EventName<CustomEvent<void>>,
+    onIonBlur: EventName<CustomEvent<void>>
 };
 
 export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@__PURE__*/ createComponent<MyRadioElement, MyRadioEvents>({
@@ -153,9 +152,8 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
     // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
     react: React,
     events: {
-        onMyFocus: 'myFocus',
-        onMyBlur: 'myBlur',
-        onMySelect: 'mySelect'
+        onIonFocus: 'ionFocus',
+        onIonBlur: 'ionBlur'
     } as MyRadioEvents,
     defineCustomElement: defineMyRadio
 });

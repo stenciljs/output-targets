@@ -1,5 +1,6 @@
 import type { ComponentInterface, EventEmitter } from '@stencil/core';
 import { Component, Element, Event, Host, Method, Prop, h } from '@stencil/core';
+import { createColorClasses, hasShadowDom, hostContext } from '../helpers';
 
 export interface CheckboxChangeEventDetail<T = any> {
   value: T;
@@ -251,24 +252,6 @@ export class Checkbox implements ComponentInterface {
 }
 
 let checkboxIds = 0;
-
-const hostContext = (selector: string, el: HTMLElement): boolean => {
-  return el.closest(selector) !== null;
-};
-
-const hasShadowDom = (el: HTMLElement) => {
-  return !!el.shadowRoot && !!(el as any).attachShadow;
-};
-
-const createColorClasses = (color: string | undefined | null, cssClassMap: any): any => {
-  return typeof color === 'string' && color.length > 0
-    ? {
-        'ion-color': true,
-        [`ion-color-${color}`]: true,
-        ...cssClassMap,
-      }
-    : cssClassMap;
-};
 
 /**
  * This method is used to add a hidden input to a host element that contains

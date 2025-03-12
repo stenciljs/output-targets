@@ -2,7 +2,7 @@
 import HelloWorld from '../components/HelloWorld.vue'
 // @ts-ignore
 import Input from '../components/Input.vue'
-import { MyComponent, MyCheckbox, MyInput } from 'component-library-vue'
+import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup } from 'component-library-vue'
 import { ref } from 'vue'
 
 const input = ref('');
@@ -12,6 +12,7 @@ const handleCustomEvent = () => {
 }
 
 const kidsNames = ['John', 'Jane']
+const radioGroupValue = ref('option1')
 </script>
 
 <template>
@@ -39,6 +40,13 @@ const kidsNames = ['John', 'Jane']
   <hr />
   <my-input v-model="input" />
   <p>Input v-model: {{ input }}</p>
+  <hr />
+  <my-radio-group v-model="radioGroupValue" name="radioGroup">
+    <my-radio value="option1">Option 1</my-radio>
+    <my-radio value="option2">Option 2</my-radio>
+    <my-radio value="option3">Option 3</my-radio>
+  </my-radio-group>
+  <p data-testid="radio-group-value">Radio Group Value: {{ radioGroupValue }}</p>
 </template>
 
 <style scoped>

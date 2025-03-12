@@ -242,21 +242,21 @@ export declare interface MyPopover extends Components.MyPopover {
 
 
 @ProxyCmp({
-  inputs: ['color', 'disabled', 'mode', 'name', 'value']
+  inputs: ['alignment', 'color', 'disabled', 'justify', 'labelPlacement', 'mode', 'name', 'value']
 })
 @Component({
   selector: 'my-radio',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['color', 'disabled', 'mode', 'name', 'value'],
+  inputs: ['alignment', 'color', 'disabled', 'justify', 'labelPlacement', 'mode', 'name', 'value'],
 })
 export class MyRadio {
   protected el: HTMLMyRadioElement;
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myFocus', 'myBlur', 'mySelect']);
+    proxyOutputs(this, this.el, ['ionFocus', 'ionBlur']);
   }
 }
 
@@ -265,27 +265,23 @@ export declare interface MyRadio extends Components.MyRadio {
   /**
    * Emitted when the radio button has focus.
    */
-  myFocus: EventEmitter<CustomEvent<void>>;
+  ionFocus: EventEmitter<CustomEvent<void>>;
   /**
    * Emitted when the radio button loses focus.
    */
-  myBlur: EventEmitter<CustomEvent<void>>;
-  /**
-   * Emitted when the radio button loses focus.
-   */
-  mySelect: EventEmitter<CustomEvent<void>>;
+  ionBlur: EventEmitter<CustomEvent<void>>;
 }
 
 
 @ProxyCmp({
-  inputs: ['allowEmptySelection', 'name', 'value']
+  inputs: ['allowEmptySelection', 'compareWith', 'name', 'value']
 })
 @Component({
   selector: 'my-radio-group',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['allowEmptySelection', 'name', 'value'],
+  inputs: ['allowEmptySelection', 'compareWith', 'name', 'value'],
 })
 export class MyRadioGroup {
   protected el: HTMLMyRadioGroupElement;
@@ -302,6 +298,8 @@ import type { RadioGroupChangeEventDetail as IMyRadioGroupRadioGroupChangeEventD
 export declare interface MyRadioGroup extends Components.MyRadioGroup {
   /**
    * Emitted when the value has changed.
+
+This event will not emit when programmatically setting the `value` property.
    */
   myChange: EventEmitter<CustomEvent<IMyRadioGroupRadioGroupChangeEventDetail>>;
 }

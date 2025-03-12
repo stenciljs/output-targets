@@ -15,6 +15,7 @@ describe('Static Declarative Shadow DOM (DSD)', () => {
       const sanitizedHtml = formattedHtml
         .replaceAll(/r\.\d+/g, 'r.X')
         .replaceAll(/t\.\d+/g, 't.X')
+        .replaceAll(/s-id="\d+/g, 's-id="X')
         .replaceAll(/c-id="\d+/g, 'c-id="X');
 
       expect(sanitizedHtml).toMatchSnapshot();

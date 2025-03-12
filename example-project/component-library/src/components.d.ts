@@ -9,15 +9,15 @@ import { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDet
 import { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
 import { IMyComponent } from "./components/helpers";
 import { InputChangeEventDetail } from "./components/my-input/my-input";
-import { Color as Color1, StyleEventDetail } from "./components/element-interface";
 import { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
+import { Color as Color1, StyleEventDetail } from "./components/element-interface";
 import { RangeChangeEventDetail, RangeValue } from "./components/my-range/my-range";
 export { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
 export { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
 export { IMyComponent } from "./components/helpers";
 export { InputChangeEventDetail } from "./components/my-input/my-input";
-export { Color as Color1, StyleEventDetail } from "./components/element-interface";
 export { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
+export { Color as Color1, StyleEventDetail } from "./components/element-interface";
 export { RangeChangeEventDetail, RangeValue } from "./components/my-range/my-range";
 export namespace Components {
     interface MyButton {
@@ -331,13 +331,25 @@ export namespace Components {
     }
     interface MyRadio {
         /**
+          * How to control the alignment of the radio and label on the cross axis. `"start"`: The label and control will appear on the left of the cross axis in LTR, and on the right side in RTL. `"center"`: The label and control will appear at the center of the cross axis in both LTR and RTL. Setting this property will change the radio `display` to `block`.
+         */
+        "alignment"?: 'start' | 'center';
+        /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
-        "color"?: Color1;
+        "color"?: string;
         /**
           * If `true`, the user cannot interact with the radio.
          */
         "disabled": boolean;
+        /**
+          * How to pack the label and radio within a line. `"start"`: The label and radio will appear on the left in LTR and on the right in RTL. `"end"`: The label and radio will appear on the right in LTR and on the left in RTL. `"space-between"`: The label and radio will appear on opposite ends of the line with space between the two elements. Setting this property will change the radio `display` to `block`.
+         */
+        "justify"?: 'start' | 'end' | 'space-between';
+        /**
+          * Where to place the label relative to the radio. `"start"`: The label will appear to the left of the radio in LTR and to the right in RTL. `"end"`: The label will appear to the right of the radio in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the radio regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
+         */
+        "labelPlacement": 'start' | 'end' | 'fixed' | 'stacked';
         /**
           * The mode determines which platform styles to use.
          */
@@ -346,6 +358,8 @@ export namespace Components {
           * The name of the control, which is submitted with the form data.
          */
         "name": string;
+        "setButtonTabindex": (value: number) => Promise<void>;
+        "setFocus": (ev?: globalThis.Event) => Promise<void>;
         /**
           * the value of the radio.
          */
@@ -357,9 +371,14 @@ export namespace Components {
          */
         "allowEmptySelection": boolean;
         /**
+          * This property allows developers to specify a custom function or property name for comparing objects when determining the selected option in the ion-radio-group. When not specified, the default behavior will use strict equality (===) for comparison.
+         */
+        "compareWith"?: string | Function | null;
+        /**
           * The name of the control, which is submitted with the form data.
          */
         "name": string;
+        "setFocus": () => Promise<void>;
         /**
           * the value of the radio group.
          */
@@ -566,10 +585,8 @@ declare global {
         new (): HTMLMyPopoverElement;
     };
     interface HTMLMyRadioElementEventMap {
-        "myStyle": StyleEventDetail;
-        "myFocus": void;
-        "myBlur": void;
-        "mySelect": void;
+        "ionFocus": void;
+        "ionBlur": void;
     }
     interface HTMLMyRadioElement extends Components.MyRadio, HTMLStencilElement {
         addEventListener<K extends keyof HTMLMyRadioElementEventMap>(type: K, listener: (this: HTMLMyRadioElement, ev: MyRadioCustomEvent<HTMLMyRadioElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -587,6 +604,7 @@ declare global {
     };
     interface HTMLMyRadioGroupElementEventMap {
         "myChange": RadioGroupChangeEventDetail;
+        "myValueChange": RadioGroupChangeEventDetail;
     }
     interface HTMLMyRadioGroupElement extends Components.MyRadioGroup, HTMLStencilElement {
         addEventListener<K extends keyof HTMLMyRadioGroupElementEventMap>(type: K, listener: (this: HTMLMyRadioGroupElement, ev: MyRadioGroupCustomEvent<HTMLMyRadioGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -994,13 +1012,25 @@ declare namespace LocalJSX {
     }
     interface MyRadio {
         /**
+          * How to control the alignment of the radio and label on the cross axis. `"start"`: The label and control will appear on the left of the cross axis in LTR, and on the right side in RTL. `"center"`: The label and control will appear at the center of the cross axis in both LTR and RTL. Setting this property will change the radio `display` to `block`.
+         */
+        "alignment"?: 'start' | 'center';
+        /**
           * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
          */
-        "color"?: Color1;
+        "color"?: string;
         /**
           * If `true`, the user cannot interact with the radio.
          */
         "disabled"?: boolean;
+        /**
+          * How to pack the label and radio within a line. `"start"`: The label and radio will appear on the left in LTR and on the right in RTL. `"end"`: The label and radio will appear on the right in LTR and on the left in RTL. `"space-between"`: The label and radio will appear on opposite ends of the line with space between the two elements. Setting this property will change the radio `display` to `block`.
+         */
+        "justify"?: 'start' | 'end' | 'space-between';
+        /**
+          * Where to place the label relative to the radio. `"start"`: The label will appear to the left of the radio in LTR and to the right in RTL. `"end"`: The label will appear to the right of the radio in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the radio regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
+         */
+        "labelPlacement"?: 'start' | 'end' | 'fixed' | 'stacked';
         /**
           * The mode determines which platform styles to use.
          */
@@ -1012,19 +1042,11 @@ declare namespace LocalJSX {
         /**
           * Emitted when the radio button loses focus.
          */
-        "onMyBlur"?: (event: MyRadioCustomEvent<void>) => void;
+        "onIonBlur"?: (event: MyRadioCustomEvent<void>) => void;
         /**
           * Emitted when the radio button has focus.
          */
-        "onMyFocus"?: (event: MyRadioCustomEvent<void>) => void;
-        /**
-          * Emitted when the radio button loses focus.
-         */
-        "onMySelect"?: (event: MyRadioCustomEvent<void>) => void;
-        /**
-          * Emitted when the styles change.
-         */
-        "onMyStyle"?: (event: MyRadioCustomEvent<StyleEventDetail>) => void;
+        "onIonFocus"?: (event: MyRadioCustomEvent<void>) => void;
         /**
           * the value of the radio.
          */
@@ -1036,13 +1058,21 @@ declare namespace LocalJSX {
          */
         "allowEmptySelection"?: boolean;
         /**
+          * This property allows developers to specify a custom function or property name for comparing objects when determining the selected option in the ion-radio-group. When not specified, the default behavior will use strict equality (===) for comparison.
+         */
+        "compareWith"?: string | Function | null;
+        /**
           * The name of the control, which is submitted with the form data.
          */
         "name"?: string;
         /**
-          * Emitted when the value has changed.
+          * Emitted when the value has changed.  This event will not emit when programmatically setting the `value` property.
          */
         "onMyChange"?: (event: MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>) => void;
+        /**
+          * Emitted when the `value` property has changed. This is used to ensure that `ion-radio` can respond to any value property changes from the group.
+         */
+        "onMyValueChange"?: (event: MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>) => void;
         /**
           * the value of the radio group.
          */

@@ -1,13 +1,13 @@
 // Snapshot v1
 
 exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'complex-use-client' correctly 1`] = `
-"<my-toggle class="hydrated" s-id="47" suppresshydrationwarning="true"
+"<my-toggle class="hydrated" s-id="X" suppresshydrationwarning="true"
   ><template shadowrootmode="open"
     ><!--r.X--><button c-id="X.0.0.0">
       <!--t.X.1.1.0-->
       Open Modal
     </button>
-    <my-toggle-content c-id="X.2.0.1" class="hydrated" s-id="48">
+    <my-toggle-content c-id="X.2.0.1" class="hydrated" s-id="X">
       <template shadowrootmode="open"></template>
       <!--r.X-->
       <slot c-id="X.3.1.0"></slot> </my-toggle-content
@@ -53,24 +53,24 @@ exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'complex-use
       </button>
     </div>
   </div>
-  <my-list class="hydrated" s-id="52" suppresshydrationwarning="true"
+  <my-list class="hydrated" s-id="X" suppresshydrationwarning="true"
     ><template shadowrootmode="open"
       ><!--r.X-->
       <ul c-id="X.0.0.0">
         <slot c-id="X.1.1.0"></slot></ul></template
-    ><my-list-item class="hydrated" s-id="56" suppresshydrationwarning="true"
+    ><my-list-item class="hydrated" s-id="X" suppresshydrationwarning="true"
       ><template shadowrootmode="open"
         ><!--r.X-->
         <li c-id="X.0.0.0">
           <slot c-id="X.1.1.0"></slot></li></template
       >Item 1</my-list-item
-    ><my-list-item class="hydrated" s-id="57" suppresshydrationwarning="true"
+    ><my-list-item class="hydrated" s-id="X" suppresshydrationwarning="true"
       ><template shadowrootmode="open"
         ><!--r.X-->
         <li c-id="X.0.0.0">
           <slot c-id="X.1.1.0"></slot></li></template
       >Item 2</my-list-item
-    ><my-list-item class="hydrated" s-id="58" suppresshydrationwarning="true"
+    ><my-list-item class="hydrated" s-id="X" suppresshydrationwarning="true"
       ><template shadowrootmode="open"
         ><!--r.X-->
         <li c-id="X.0.0.0">
@@ -83,24 +83,24 @@ exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'complex-use
 `;
 
 exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'nested' correctly 1`] = `
-"<my-list class="hydrated" s-id="27" suppresshydrationwarning="true"
+"<my-list class="hydrated" s-id="X" suppresshydrationwarning="true"
   ><template shadowrootmode="open"
     ><!--r.X-->
     <ul c-id="X.0.0.0">
       <slot c-id="X.1.1.0"></slot></ul></template
-  ><my-list-item class="hydrated" s-id="28" suppresshydrationwarning="true"
+  ><my-list-item class="hydrated" s-id="X" suppresshydrationwarning="true"
     ><template shadowrootmode="open"
       ><!--r.X-->
       <li c-id="X.0.0.0">
         <slot c-id="X.1.1.0"></slot></li></template
     >Item 1</my-list-item
-  ><my-list-item class="hydrated" s-id="29" suppresshydrationwarning="true"
+  ><my-list-item class="hydrated" s-id="X" suppresshydrationwarning="true"
     ><template shadowrootmode="open"
       ><!--r.X-->
       <li c-id="X.0.0.0">
         <slot c-id="X.1.1.0"></slot></li></template
     >Item 2</my-list-item
-  ><my-list-item class="hydrated" s-id="30" suppresshydrationwarning="true"
+  ><my-list-item class="hydrated" s-id="X" suppresshydrationwarning="true"
     ><template shadowrootmode="open"
       ><!--r.X-->
       <li c-id="X.0.0.0">
@@ -112,12 +112,12 @@ exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'nested' cor
 `;
 
 exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'nested-with-react' correctly 1`] = `
-"<my-list class="hydrated" s-id="33" suppresshydrationwarning="true"
+"<my-list class="hydrated" s-id="X" suppresshydrationwarning="true"
   ><template shadowrootmode="open"
     ><!--r.X-->
     <ul c-id="X.0.0.0">
       <slot c-id="X.1.1.0"></slot></ul></template
-  ><my-list-item class="hydrated" s-id="34" suppresshydrationwarning="true"
+  ><my-list-item class="hydrated" s-id="X" suppresshydrationwarning="true"
     ><template shadowrootmode="open"
       ><!--r.X-->
       <li c-id="X.0.0.0">
@@ -148,7 +148,7 @@ exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'simple' cor
 "<my-button
   class="button button-solid hydrated my-activatable my-focusable"
   href="#"
-  s-id="22"
+  s-id="X"
   suppresshydrationwarning="true"
   ><template shadowrootmode="open"
     ><!--r.X--><a c-id="X.0.0.0" class="button-native" href="#">

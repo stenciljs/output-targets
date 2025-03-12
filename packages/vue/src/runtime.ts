@@ -51,8 +51,6 @@ const getElementClasses = (
   );
 };
 
-type ModelValuePropType<Props, VModelType> = PropType<(Props & InputProps<VModelType>)['modelValue']>;
-
 /**
  * Create a callback to define a Vue component wrapper around a Web Component.
  *
@@ -92,12 +90,12 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
       acc[prop] = { type: null as unknown as PropType<any>, default: EMPTY_PROP };
       return acc;
     },
-    {} as Record<string, { type: PropType<any>; default: Symbol }>
-  ) as unknown as ComponentObjectPropsOptions<Props & InputProps<VModelType>>;
+    {} as Record<string, { type?: PropType<any>; default: Symbol }>
+  ) as ComponentObjectPropsOptions<Props & InputProps<VModelType>>;
   props[ROUTER_LINK_VALUE] = { type: null, default: DEFAULT_EMPTY_PROP };
   if (modelProp) {
     emits.push(UPDATE_VALUE_EVENT);
-    props[MODEL_VALUE] = { type: null as unknown as ModelValuePropType<Props, VModelType>, default: undefined };
+    props[MODEL_VALUE] = DEFAULT_EMPTY_PROP as unknown as PropType<any>;
   }
 
   return defineComponent<Props & InputProps<VModelType>>(

@@ -18,12 +18,6 @@ export default function Home() {
       />
       <hr />
       <MyRange name="myRange">Hello World</MyRange>
-      <hr />
-      <MyRadioGroup name="myRadioGroup" value="two">
-        <input type="radio" name="myRadioGroup" value="one" />
-        <input type="radio" name="myRadioGroup" value="two" />
-        <input type="radio" name="myRadioGroup" value="three" />
-      </MyRadioGroup>
       <ToggleableContent />
     </>
   );

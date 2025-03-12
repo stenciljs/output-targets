@@ -35,7 +35,17 @@ describe('Stencil Vue Integration', () => {
           'Kids: John, Jane',
           'Favorite kid: John'
         ].join('\n'));
-      })
+      });
+
+      it('should render radio group value correctly', async () => {
+        const radioBtns = $$('my-radio');
+        const radioGroup = $('[data-testid="radio-group-value"]');
+        await expect(await radioGroup.getText()).toEqual('Radio Group Value: option1');
+        await radioBtns[1].click();
+        await expect(await radioGroup.getText()).toEqual('Radio Group Value: option2');
+        await radioBtns[2].click();
+        await expect(await radioGroup.getText()).toEqual('Radio Group Value: option3');
+      });
     })
   })
 });

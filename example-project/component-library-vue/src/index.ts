@@ -260,15 +260,14 @@ export const MyRadio: StencilVueComponent<JSX.MyRadio> = /*@__PURE__*/ globalThi
   'name',
   'disabled',
   'value',
-  'myStyle',
-  'myFocus',
-  'myBlur',
-  'mySelect'
+  'labelPlacement',
+  'justify',
+  'alignment',
+  'ionFocus',
+  'ionBlur'
 ], [
-  'myStyle',
-  'myFocus',
-  'myBlur',
-  'mySelect'
+  'ionFocus',
+  'ionBlur'
 ]) : defineStencilSSRComponent<JSX.MyRadio>({
   tagName: 'my-radio',
   hydrateModule: import('component-library/hydrate'),
@@ -276,29 +275,35 @@ export const MyRadio: StencilVueComponent<JSX.MyRadio> = /*@__PURE__*/ globalThi
     'color': [String, "color"],
     'name': [String, "name"],
     'disabled': [Boolean, "disabled"],
-    'onMyStyle': [Function],
-    'onMyFocus': [Function],
-    'onMyBlur': [Function],
-    'onMySelect': [Function]
+    'labelPlacement': [String, "label-placement"],
+    'justify': [String, "justify"],
+    'alignment': [String, "alignment"],
+    'onIonFocus': [Function],
+    'onIonBlur': [Function]
   }
 });
 
 
 export const MyRadioGroup: StencilVueComponent<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>('my-radio-group', defineMyRadioGroup, [
   'allowEmptySelection',
+  'compareWith',
   'name',
   'value',
-  'myChange'
+  'myChange',
+  'myValueChange'
 ], [
-  'myChange'
+  'myChange',
+  'myValueChange'
 ],
 'value', 'myChange') : defineStencilSSRComponent<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>({
   tagName: 'my-radio-group',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'allowEmptySelection': [Boolean, "allow-empty-selection"],
+    'compareWith': [String, "compare-with"],
     'name': [String, "name"],
-    'onMyChange': [Function]
+    'onMyChange': [Function],
+    'onMyValueChange': [Function]
   }
 });
 

@@ -23,6 +23,13 @@
   <hr />
   <my-input v-model="input" />
   <p>Input v-model: {{ input }}</p>
+  <hr />
+  <my-radio-group v-model="radioGroupValue" name="radioGroup">
+    <my-radio value="option1">Option 1</my-radio>
+    <my-radio value="option2">Option 2</my-radio>
+    <my-radio value="option3">Option 3</my-radio>
+  </my-radio-group>
+  <p data-testid="radio-group-value">Radio Group Value: {{ radioGroupValue }}</p>
 </template>
 
 <script lang="ts">
@@ -30,7 +37,7 @@ import { defineComponent, ref } from 'vue'
 import HelloWorld from '../components/HelloWorld.vue'
 // @ts-ignore
 import Input from '../components/Input.vue'
-import { MyComponent, MyCheckbox, MyInput } from 'component-library-vue'
+import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup } from 'component-library-vue'
 
 export default defineComponent({
   name: 'BasicComposition',
@@ -39,7 +46,9 @@ export default defineComponent({
     Input,
     MyComponent,
     MyCheckbox,
-    MyInput
+    MyInput,
+    MyRadio,
+    MyRadioGroup
   },
   setup() {
     console.log('BasicComposition')
@@ -51,12 +60,14 @@ export default defineComponent({
     }
 
     const kidsNames = ['John', 'Jane']
+    const radioGroupValue = ref('option1')
 
     return {
       input,
       isClicked,
       handleCustomEvent,
-      kidsNames
+      kidsNames,
+      radioGroupValue
     }
   }
 })

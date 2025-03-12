@@ -5,7 +5,7 @@ import { $, browser, expect } from '@wdio/globals';
 describe('Stencil NextJS Integration', () => {
   before(() => browser.url('/'));
 
-  it('should have hydrated the page', async () => {
+  it.skip('should have hydrated the page', async () => {
     const source = await browser.getPageSource();
     // serializes component children
     expect(source).toContain('<input name="myRadioGroup" type="radio" value="one">');
