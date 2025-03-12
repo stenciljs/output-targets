@@ -155,7 +155,6 @@ export const createColorClasses = (color: string | undefined | null, cssClassMap
     : cssClassMap;
 };
 
-
 /**
  * Uses the compareWith param to compare two values to determine if they are equal.
  *

@@ -1,3 +1,11 @@
+## @stencil/vue-output-target@0.10.2 (2025-03-12)
+
+#### :bug: Bug Fix
+
+- `vue-output-target`
+  - [`acd18913`](https://github.com/stenciljs/output-targets/commit/acd18913e11c4516ab9def64ad01562a9ec7c3)  fix(vue): correctly reference model value and more testing ([@christian-bromann](https://github.com/christian-bromann))
+  - adding various more e2e test to verify functionality of the framework wrapper
+
 ## @stencil/vue-output-target@0.10.1 (2025-03-11)
 
 #### :bug: Bug Fix

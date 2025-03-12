@@ -100,8 +100,10 @@ Check out our [example project](https://github.com/stenciljs/output-targets/blob
 - [`component-library-angular`](https://github.com/stenciljs/output-targets/blob/main/example-project/component-library-angular) - An Angular project that consumes Stencil components and exports them as an Angular module
 - [`component-library-react`](https://github.com/stenciljs/output-targets/blob/main/example-project/component-library-react) - A React + Vite project that uses Stencil components and exports them as a React component
 - [`next-app`](https://github.com/stenciljs/output-targets/blob/main/example-project/next-app) - A Next.js application that consumes the Stencil components from the `component-library-react` project
+- [`next-15-react-19-app`](https://github.com/stenciljs/output-targets/blob/main/example-project/next-15-react-19-app) - A Next.js v15 application using React v19 that consumes the Stencil components from the `component-library-react` project
 - [`nuxt-app`](https://github.com/stenciljs/output-targets/blob/main/example-project/nuxt-app) - A Nuxt application that consumes the Stencil components from the `component-library-vue` project
 - [`vue-app`](https://github.com/stenciljs/output-targets/blob/main/example-project/vue-app) - A Vue + Vite example application that consumes the Stencil components from the `component-library-vue` project
+- [`vue-app-broken`](https://github.com/stenciljs/output-targets/blob/main/example-project/vue-app-broken) - A Vue + Vite example application with invalid type use for testing purposes, ensuring Vue component properties types are propagated correctly
 
 Detailed information for each output target can be found in each package's README.
 

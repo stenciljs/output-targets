@@ -42,7 +42,7 @@ export class RadioGroup implements ComponentInterface {
   @Watch('value')
   valueChanged(value: any | undefined) {
     this.setRadioTabindex(value);
-    this.emitValueChange
+    this.emitValueChange;
     this.myValueChange.emit({ value });
   }
 
