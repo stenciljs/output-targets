@@ -1,9 +1,5 @@
 import Button from './Button/Button';
-import {
-  MyComponent,
-  MyRange,
-  MyCounter,
-} from 'component-library-react';
+import { MyComponent, MyRange, MyCounter } from 'component-library-react';
 import Input from './Input/Input';
 import { ToggleableContent } from './ToggleableContent/ToggleableContent';
 

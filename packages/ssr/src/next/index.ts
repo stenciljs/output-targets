@@ -7,33 +7,34 @@ import type { StencilSSROptions } from '../types.js';
 
 type StencilNextPlugin = (nextConfig: any) => NextConfig;
 
-export default (pluginOptions: StencilSSROptions): StencilNextPlugin => (nextConfig: NextConfig = {}) => {
-  const stencilSSRWebpackPlugin = new StencilSSRWebpackPlugin({
-    ...pluginOptions,
-    include: /\/pages\/.*\.(?:j|t)sx?$|\/app\/.*\.(?:j|t)sx?$/,
-    exclude: [/next\/dist\//, /node_modules/]
-  });
+export default (pluginOptions: StencilSSROptions): StencilNextPlugin =>
+  (nextConfig: NextConfig = {}) => {
+    const stencilSSRWebpackPlugin = new StencilSSRWebpackPlugin({
+      ...pluginOptions,
+      include: /\/pages\/.*\.(?:j|t)sx?$|\/app\/.*\.(?:j|t)sx?$/,
+      exclude: [/next\/dist\//, /node_modules/],
+    });
 
-  const webpack: NextJsWebpackConfig = (config: Configuration, options: WebpackConfigContext) => {
-    if (!config.module) {
-      config.module = {}
-    }
+    const webpack: NextJsWebpackConfig = (config: Configuration, options: WebpackConfigContext) => {
+      if (!config.module) {
+        config.module = {};
+      }
 
-    if (!config.module.rules) {
-      config.module.rules = []
-    }
+      if (!config.module.rules) {
+        config.module.rules = [];
+      }
 
-    stencilSSRWebpackPlugin.apply({ options: config as MinimalWebpackConfig['options'] });
+      stencilSSRWebpackPlugin.apply({ options: config as MinimalWebpackConfig['options'] });
 
-    // Apply user provided custom webpack config function if it exists.
-    if (typeof nextConfig.webpack === 'function') {
-      return nextConfig.webpack(config, options);
-    }
+      // Apply user provided custom webpack config function if it exists.
+      if (typeof nextConfig.webpack === 'function') {
+        return nextConfig.webpack(config, options);
+      }
 
-    return config;
+      return config;
+    };
+
+    return Object.assign({}, nextConfig, { webpack });
   };
-
-  return Object.assign({}, nextConfig, { webpack });
-};
 
 export * from '../types.js';

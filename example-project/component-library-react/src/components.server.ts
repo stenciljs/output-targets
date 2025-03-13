@@ -226,9 +226,8 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
 });
 
 export type MyRadioEvents = {
-  onMyFocus: EventName<CustomEvent<void>>;
-  onMyBlur: EventName<CustomEvent<void>>;
-  onMySelect: EventName<CustomEvent<void>>;
+  onIonFocus: EventName<CustomEvent<void>>;
+  onIonBlur: EventName<CustomEvent<void>>;
 };
 
 export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@__PURE__*/ createComponent<
@@ -241,6 +240,9 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
     name: 'name',
     disabled: 'disabled',
     value: 'value',
+    labelPlacement: 'label-placement',
+    justify: 'justify',
+    alignment: 'alignment',
   },
   hydrateModule: import('component-library/hydrate'),
   serializeShadowRoot,
@@ -253,6 +255,7 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
     tagName: 'my-radio-group',
     properties: {
       allowEmptySelection: 'allow-empty-selection',
+      compareWith: 'compare-with',
       name: 'name',
       value: 'value',
     },
