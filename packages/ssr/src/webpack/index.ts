@@ -39,7 +39,7 @@ export class StencilSSRWebpackPlugin {
   #exclude: RegExp[];
   constructor(options: StencilSSRWebpackPluginOptions) {
     this.#options = options;
-    this.#include = options.include ?? /\.(jsx|tsx)$/;
+    this.#include = options.include ?? /\.js$/;
     this.#exclude = options.exclude ?? [/node_modules/];
   }
 
@@ -50,7 +50,7 @@ export class StencilSSRWebpackPlugin {
     compiler.options.module.rules.push({
       test: this.#include,
       exclude: this.#exclude,
-      enforce: 'pre',
+      enforce: 'post',
       use: [
         {
           loader: path.resolve(__dirname, 'loader.js'),
