@@ -85,14 +85,13 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
   }
 
   const emits: string[] = emitProps;
-  const props = componentProps.reduce(
+  const props = [ROUTER_LINK_VALUE, ...componentProps].reduce(
     (acc, prop) => {
-      acc[prop] = { type: null as unknown as PropType<any>, default: EMPTY_PROP };
+      acc[prop] = DEFAULT_EMPTY_PROP;
       return acc;
     },
     {} as Record<string, { type?: PropType<any>; default: Symbol }>
   ) as ComponentObjectPropsOptions<Props & InputProps<VModelType>>;
-  props[ROUTER_LINK_VALUE] = { type: null, default: DEFAULT_EMPTY_PROP };
   if (modelProp) {
     emits.push(UPDATE_VALUE_EVENT);
     props[MODEL_VALUE] = DEFAULT_EMPTY_PROP as unknown as PropType<any>;
@@ -109,8 +108,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
          * we register the event emmiter for @Event definitions
          * so we can use @event
          */
-        emitProps.forEach((eventName: string) => {
-          containerRef.value!.addEventListener(eventName, (e: Event) => {
+        emitProps.forEach((eventName) => {
+          containerRef.value?.addEventListener(eventName, (e) => {
             emit(eventName, e);
           });
         });
@@ -199,7 +198,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
           }
         };
 
-        let propsToAdd: any = {
+        const propsToAdd: Record<string, unknown> = {
           ref: containerRef,
           class: getElementClasses(containerRef, classes),
           onClick: handleClick,
@@ -214,7 +213,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
         for (const key in props) {
           const value = props[key as keyof InputProps<VModelType>];
           if ((props.hasOwnProperty(key) && value !== EMPTY_PROP) || key.startsWith(ARIA_PROP_PREFIX)) {
-            propsToAdd[key] = value;
+            propsToAdd[key as 'ariaLabel'] = value as string;
           }
 
           /**
@@ -235,15 +234,9 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
            * was set as a static value (i.e. no v-model).
            */
           if (props[MODEL_VALUE] !== EMPTY_PROP) {
-            propsToAdd = {
-              ...propsToAdd,
-              [modelProp]: props[MODEL_VALUE],
-            };
+            propsToAdd[modelProp] = props[MODEL_VALUE]
           } else if (modelPropValue !== EMPTY_PROP) {
-            propsToAdd = {
-              ...propsToAdd,
-              [modelProp]: modelPropValue,
-            };
+            propsToAdd[modelProp] = modelPropValue
           }
         }
 
@@ -252,10 +245,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
         // of components that should become activatable and
         // focusable with router link.
         if (ROUTER_LINK_VALUE in props && props[ROUTER_LINK_VALUE] !== EMPTY_PROP) {
-          propsToAdd = {
-            ...propsToAdd,
-            href: props[ROUTER_LINK_VALUE],
-          };
+          propsToAdd.href = props[ROUTER_LINK_VALUE]
         }
 
         /**
