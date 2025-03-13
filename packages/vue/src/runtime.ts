@@ -234,9 +234,9 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
            * was set as a static value (i.e. no v-model).
            */
           if (props[MODEL_VALUE] !== EMPTY_PROP) {
-            propsToAdd[modelProp] = props[MODEL_VALUE]
+            propsToAdd[modelProp] = props[MODEL_VALUE];
           } else if (modelPropValue !== EMPTY_PROP) {
-            propsToAdd[modelProp] = modelPropValue
+            propsToAdd[modelProp] = modelPropValue;
           }
         }
 
@@ -245,7 +245,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
         // of components that should become activatable and
         // focusable with router link.
         if (ROUTER_LINK_VALUE in props && props[ROUTER_LINK_VALUE] !== EMPTY_PROP) {
-          propsToAdd.href = props[ROUTER_LINK_VALUE]
+          propsToAdd.href = props[ROUTER_LINK_VALUE];
         }
 
         /**
