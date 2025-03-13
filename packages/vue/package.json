@@ -6,7 +6,8 @@
   "homepage": "https://stenciljs.com/",
   "license": "MIT",
   "files": [
-    "dist/"
+    "dist/",
+    "runtime.d.ts"
   ],
   "repository": {
     "type": "git",
