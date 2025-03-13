@@ -10,9 +10,9 @@ type StencilNextPlugin = (nextConfig: any) => NextConfig;
 export default (pluginOptions: StencilSSROptions): StencilNextPlugin =>
   (nextConfig: NextConfig = {}) => {
     const stencilSSRWebpackPlugin = new StencilSSRWebpackPlugin({
-      ...pluginOptions,
       include: /\/pages\/.*\.(?:j|t)sx?$|\/app\/.*\.(?:j|t)sx?$/,
       exclude: [/next\/dist\//, /node_modules/],
+      ...pluginOptions,
     });
 
     const webpack: NextJsWebpackConfig = (config: Configuration, options: WebpackConfigContext) => {

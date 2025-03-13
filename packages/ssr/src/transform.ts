@@ -25,23 +25,26 @@ export async function transform(
     }));
 
   /**
-   * Check if the code uses the jsxDEV runtime
+   * Check if the code uses the jsxDEV runtime to ensure we only do the transformation
+   * after JSX is transformed.
    */
-  const hasJsxDevRuntimeImports = staticImports
+  const jsxImportReference = staticImports
     .filter((importSpecifier) => {
       return importSpecifier.specifier === 'react/jsx-dev-runtime';
     })
-    .some((importSpecifier) => {
+    .map((importSpecifier) => {
       const i = parseStaticImport(importSpecifier);
       return i.namedImports?.['jsxDEV'];
-    });
+    })
+    .filter(Boolean).pop();
+
 
   /**
    * only proceed if the file contains JSX components and uses components from the
    * users component library
    */
-  if (imports.length === 0 || !hasJsxDevRuntimeImports) {
-    return;
+  if (imports.length === 0 || !jsxImportReference || !sourcefile.endsWith('page.tsx')) {
+    return code;
   }
 
   /**
@@ -56,6 +59,8 @@ export async function transform(
     properties: namedTypes.ObjectExpression['properties'];
   }[] = [];
 
+  console.log('source', code);
+
   /**
    * parse the code into an AST and visit all `jsxDEV` calls.
    * Identify if the `jsxDEV` call is rendering a component from the user's
@@ -68,7 +73,7 @@ export async function transform(
       /**
        * Only interested in `jsxDEV` calls
        */
-      if (!namedTypes.Identifier.check(node.callee) || node.callee.name !== 'jsxDEV') {
+      if (!namedTypes.Identifier.check(node.callee) || node.callee.name !== jsxImportReference) {
         return this.traverse(path);
       }
 
@@ -107,6 +112,7 @@ export async function transform(
        */
       const propObject = parseSimpleObjectExpression(b.objectExpression(properties));
       const props = Object.entries(propObject)
+        .filter(([key]) => key !== 'children')
         .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
         .join(' ');
 
@@ -115,7 +121,11 @@ export async function transform(
        *
        * Note: we purposly don't parse in a light DOM as we can't evaluate the code during SSR.
        */
-      const { html } = await importedHydrateModule.renderToString(`<${tagName} ${props} />`, {
+      const children = (propObject as Record<string, any>).children;
+      const toRender = typeof children === 'string'
+        ? `<${tagName} ${props}>${children}</${tagName}>`
+        : `<${tagName} ${props} />`;
+      const { html } = await importedHydrateModule.renderToString(toRender, {
         prettyHtml: true,
         fullDocument: false,
         serializeShadowRoot,
@@ -167,12 +177,14 @@ export async function transform(
          * render scoped component
          */
         if (isScoped) {
+          console.log('!!!', html);
+
           const __html = html.slice(1, -1).join('\n');
           return (
             acc +
             `\nconst ${cmpImport} = ({ children }) => {
   return (
-    ${cmpTag.slice(0, -1)} dangerouslySetInnerHTML={{ __html: \`
+    ${cmpTag.slice(0, -1)} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: \`
 ${__html}
 \` }} />
   )
@@ -188,7 +200,7 @@ return (
 ${cmpTag}
   ${
     !isScoped
-      ? `<template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html + hydrateComment}\` }}></template>`
+      ? `<template shadowrootmode="open" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: \`${__html + hydrateComment}\` }}></template>`
       : ''
   }
   {children}
