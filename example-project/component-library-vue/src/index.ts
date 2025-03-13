@@ -8,6 +8,7 @@ import type { JSX } from 'component-library';
 import { defineCustomElement as defineMyButton } from 'component-library/components/my-button.js';
 import { defineCustomElement as defineMyCheckbox } from 'component-library/components/my-checkbox.js';
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
+import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
 import { defineCustomElement as defineMyList } from 'component-library/components/my-list.js';
 import { defineCustomElement as defineMyListItem } from 'component-library/components/my-list-item.js';
@@ -125,6 +126,21 @@ export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ g
 });
 
 
+export const MyCounter: StencilVueComponent<JSX.MyCounter> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyCounter>('my-counter', defineMyCounter, [
+  'startValue',
+  'count'
+], [
+  'count'
+]) : defineStencilSSRComponent<JSX.MyCounter>({
+  tagName: 'my-counter',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'startValue': [String, "start-value"],
+    'onCount': [Function]
+  }
+});
+
+
 export const MyInput: StencilVueComponent<JSX.MyInput, JSX.MyInput["value"]> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyInput, JSX.MyInput["value"]>('my-input', defineMyInput, [
   'color',
   'accept',
@@ -203,7 +219,7 @@ export const MyList: StencilVueComponent<JSX.MyList> = /*@__PURE__*/ globalThis.
   tagName: 'my-list',
   hydrateModule: import('component-library/hydrate'),
   props: {
-
+    
   }
 });
 
@@ -212,7 +228,7 @@ export const MyListItem: StencilVueComponent<JSX.MyListItem> = /*@__PURE__*/ glo
   tagName: 'my-list-item',
   hydrateModule: import('component-library/hydrate'),
   props: {
-
+    
   }
 });
 
@@ -359,7 +375,7 @@ export const MyToggle: StencilVueComponent<JSX.MyToggle> = /*@__PURE__*/ globalT
   tagName: 'my-toggle',
   hydrateModule: import('component-library/hydrate'),
   props: {
-
+    
   }
 });
 
