@@ -90,5 +90,14 @@ export type StencilVueComponent<Props, VModelType = string | number | boolean> =
 >;
 export interface InputProps<T> {
   modelValue?: T;
-  routerLink?: Symbol;
+  /**
+   * The `router-link` attribute can be set on any Ionic Vue component, and the
+   * router will navigate to the route specified when the component is clicked.
+   * The `router-link` attribute accepts string values as well as named routes,
+   * just like router.push from Vue Router.
+   *
+   * For more information
+   * @see https://ionicframework.com/docs/vue/navigation#navigating-using-router-link
+   */
+  routerLink?: string | Symbol;
 }
