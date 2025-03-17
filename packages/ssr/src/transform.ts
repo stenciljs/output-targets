@@ -56,7 +56,7 @@ export async function transform(
   const components = Object.keys(await module);
   const componentCalls: {
     identifier: string;
-    tagName: string
+    tagName: string;
     properties: namedTypes.ObjectExpression['properties'];
   }[] = [];
 
@@ -77,7 +77,7 @@ export async function transform(
       /**
        * remove the import declaration
        */
-      path.replace()
+      path.replace();
       return this.traverse(path);
     },
     visitCallExpression(path) {
@@ -110,10 +110,14 @@ export async function transform(
       });
 
       path.get('arguments', 0).replace(b.identifier(identifier));
-      path.get('arguments', 1).replace(b.objectExpression([
-        ...args[1].properties,
-        b.property('init', b.identifier('suppressHydrationWarning'), b.booleanLiteral(true))
-      ]));
+      path
+        .get('arguments', 1)
+        .replace(
+          b.objectExpression([
+            ...args[1].properties,
+            b.property('init', b.identifier('suppressHydrationWarning'), b.booleanLiteral(true)),
+          ])
+        );
       return this.traverse(path);
     },
   });
@@ -276,11 +280,11 @@ function parseSimpleObjectExpression(astNode: any): object {
 function serializeScopedComponent(html: string[], identifier: string) {
   const cmpTag = html[0];
   const __html = html.slice(1, -1).join('\n');
-      return `\nconst ${identifier} = ({ children }) => {
+  return `\nconst ${identifier} = ({ children }) => {
   return (
     ${cmpTag.slice(0, -1)} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
   );
-}`
+}`;
 }
 
 /**
@@ -306,9 +310,9 @@ function serializeShadowComponent(html: string[], identifier: string) {
       {children}
     ${cmpEndTag}
   )
-}\n`
+}\n`;
 }
 
-function camelToKebab (str: string) {
+function camelToKebab(str: string) {
   return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 }

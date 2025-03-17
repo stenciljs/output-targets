@@ -2,10 +2,8 @@
 
 exports[`transform > should transform the code 1`] = `
 "import { jsxDEV } from "react/jsx-dev-runtime";
-import { jsxDEV } from "react/jsx-dev-runtime";
-const MyComponent = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", kidsnames: '["John","Jane","Jim"]', last: "Doe", middle: "William", "s-id": "1", dangerouslySetInnerHTML: { __html: \`
-  <!--r.1-->
+const MyComponent$0 = ({ children }) => {
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": '["John","Jane","Jim"]', last: "Doe", middle: "William", "s-id": "1", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.1-->
   <div c-id="1.0.0.0" class="sc-my-component">
     <!--t.1.1.1.0-->
     Hello, World! I'm John William Doe
@@ -15,43 +13,86 @@ const MyComponent = ({ children }) => {
     </p>
     <p c-id="1.4.1.2" class="sc-my-component">
       <!--t.1.5.2.0-->
-      Kids: John, Jane, Jim
+      Kids:
     </p>
     <p c-id="1.6.1.3" class="sc-my-component">
       <!--t.1.7.2.0-->
       Favorite kid:
     </p>
-  </div>
-\` } }, void 0, false, {
+  </div>\` } }, void 0, false, {
     lineNumber: 4,
     columnNumber: 5
   });
 };
-const MyList = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-list", { children: "[]", class: "hydrated sc-my-list-h", "s-id": "3", dangerouslySetInnerHTML: { __html: \`
-  <!--r.3-->
+const MyComponent$1 = ({ children }) => {
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", "s-id": "2", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.2-->
+  <div c-id="2.0.0.0" class="sc-my-component">
+    <!--t.2.1.1.0-->
+    Hello, World! I'm undefined undefined undefined
+    <p c-id="2.2.1.1" class="sc-my-component">
+      <!--t.2.3.2.0-->
+      Age:
+    </p>
+    <p c-id="2.4.1.2" class="sc-my-component">
+      <!--t.2.5.2.0-->
+      Kids:
+    </p>
+    <p c-id="2.6.1.3" class="sc-my-component">
+      <!--t.2.7.2.0-->
+      Favorite kid:
+    </p>
+  </div>\` } }, void 0, false, {
+    lineNumber: 25,
+    columnNumber: 5
+  });
+};
+const MyList$2 = ({ children }) => {
+  return /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "3", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.3-->
   <ul c-id="3.0.0.0" class="sc-my-list sc-my-list-s">
     <!--s.3.1.1.0.-->
-  </ul>
-\` } }, void 0, false, {
-    lineNumber: 27,
+  </ul>\` } }, void 0, false, {
+    lineNumber: 46,
     columnNumber: 5
   });
 };
-const MyListItem = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-list-item", { children: "Item 1", class: "hydrated sc-my-list-item-h", "s-id": "4", dangerouslySetInnerHTML: { __html: \`
-  <!--r.4-->
+const MyListItem$3 = ({ children }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "4", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.4-->
+  <!--o.0.1.-->
   <li c-id="4.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.4.1.1.0.-->
-  </li>
-\` } }, void 0, false, {
-    lineNumber: 37,
+    <!--t.0.1-->
+    Item 1
+  </li>\` } }, void 0, false, {
+    lineNumber: 54,
     columnNumber: 5
   });
 };
-const MyCounter = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "7", dangerouslySetInnerHTML: { __html: \`
-  <!--r.7-->
+const MyListItem$4 = ({ children }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "5", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.5-->
+  <!--o.0.2.-->
+  <li c-id="5.0.0.0" class="sc-my-list-item sc-my-list-item-s">
+    <!--s.5.1.1.0.-->
+    <!--t.0.2-->
+    Item 2
+  </li>\` } }, void 0, false, {
+    lineNumber: 65,
+    columnNumber: 5
+  });
+};
+const MyListItem$5 = ({ children }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "6", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.6-->
+  <!--o.0.3.-->
+  <li c-id="6.0.0.0" class="sc-my-list-item sc-my-list-item-s">
+    <!--s.6.1.1.0.-->
+    <!--t.0.3-->
+    Item 3
+  </li>\` } }, void 0, false, {
+    lineNumber: 76,
+    columnNumber: 5
+  });
+};
+const MyCounter$6 = ({ children }) => {
+  return /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "7", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.7-->
   <div c-id="7.0.0.0" class="sc-my-counter">
     <button c-id="7.1.1.0" class="sc-my-counter">
       <!--t.7.2.2.0-->
@@ -65,12 +106,12 @@ const MyCounter = ({ children }) => {
       <!--t.7.6.2.0-->
       +
     </button>
-  </div>
-\` } }, void 0, false, {
-    lineNumber: 47,
+  </div>\` } }, void 0, false, {
+    lineNumber: 87,
     columnNumber: 5
   });
 };
+import { jsxDEV } from "react/jsx-dev-runtime";
 import Input from "../components/Input";
 export const meta = () => {
   return [
@@ -79,132 +120,157 @@ export const meta = () => {
   ];
 };
 export default function Index() {
-  return /* @__PURE__ */ jsxDEV("div", { className: "flex h-screen items-center justify-center", children: /* @__PURE__ */ jsxDEV("div", { className: "flex flex-col items-center gap-16", children: [
-    /* @__PURE__ */ jsxDEV("header", { className: "flex flex-col items-center gap-9", children: [
-      /* @__PURE__ */ jsxDEV("h1", { className: "leading text-2xl font-bold text-gray-800 dark:text-gray-100", children: [
-        "Welcome to ",
-        /* @__PURE__ */ jsxDEV("span", { className: "sr-only", children: "Remix" }, void 0, false, {
-          lineNumber: 18,
-          columnNumber: 24
+  return (
+    /* @__PURE__ */ jsxDEV("div", { className: "flex h-screen items-center justify-center", children: /* @__PURE__ */ jsxDEV("div", { className: "flex flex-col items-center gap-16", children: [
+      /* @__PURE__ */ jsxDEV("header", { className: "flex flex-col items-center gap-9", children: [
+        /* @__PURE__ */ jsxDEV("h1", { className: "leading text-2xl font-bold text-gray-800 dark:text-gray-100", children: [
+          "Welcome to ",
+          /* @__PURE__ */ jsxDEV("span", { className: "sr-only", children: "Remix" }, void 0, false, {
+            lineNumber: 18,
+            columnNumber: 24
+          }, this)
+        ] }, void 0, true, {
+          lineNumber: 17,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "h-[144px] w-[434px]", children: [
+          /* @__PURE__ */ jsxDEV(
+            "img",
+            {
+              src: "/logo-light.png",
+              alt: "Remix",
+              className: "block w-full dark:hidden"
+            },
+            void 0,
+            false,
+            {
+              lineNumber: 21,
+              columnNumber: 13
+            },
+            this
+          ),
+          /* @__PURE__ */ jsxDEV(
+            "img",
+            {
+              src: "/logo-dark.png",
+              alt: "Remix",
+              className: "hidden w-full dark:block"
+            },
+            void 0,
+            false,
+            {
+              lineNumber: 26,
+              columnNumber: 13
+            },
+            this
+          )
+        ] }, void 0, true, {
+          lineNumber: 20,
+          columnNumber: 11
         }, this)
       ] }, void 0, true, {
-        lineNumber: 17,
-        columnNumber: 11
+        lineNumber: 16,
+        columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV("div", { className: "h-[144px] w-[434px]", children: [
-        /* @__PURE__ */ jsxDEV(
-          "img",
+      /* @__PURE__ */ jsxDEV("nav", { className: "flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700", children: [
+        /* @__PURE__ */ jsxDEV("p", { className: "leading-6 text-gray-700 dark:text-gray-200", children: "What's next?" }, void 0, false, {
+          lineNumber: 34,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(MyComponent$0, {
+      first: "John",
+      middle: "William",
+      last: "Doe",
+      kidsNames: ["John", "Jane", "Jim"],
+      suppressHydrationWarning: true
+    }, void 0, false, {
+          lineNumber: 37,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(MyComponent$1, {
+      suppressHydrationWarning: true
+    }, void 0, false, {
+          lineNumber: 38,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(MyList$2, {
+      children: [
+            /* @__PURE__ */ jsxDEV(MyListItem$3, {
+        children: "Item 1",
+        suppressHydrationWarning: true
+      }, void 0, false, {
+              lineNumber: 40,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV(MyListItem$4, {
+        children: "Item 2",
+        suppressHydrationWarning: true
+      }, void 0, false, {
+              lineNumber: 41,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV(MyListItem$5, {
+        children: "Item 3",
+        suppressHydrationWarning: true
+      }, void 0, false, {
+              lineNumber: 42,
+              columnNumber: 13
+            }, this)
+          ],
+
+      suppressHydrationWarning: true
+    }, void 0, true, {
+          lineNumber: 39,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(Input, {}, void 0, false, {
+          lineNumber: 44,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(MyCounter$6, {
+      suppressHydrationWarning: true
+    }, void 0, false, {
+          lineNumber: 45,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("ul", { children: resources.map(({ href, text, icon }) => /* @__PURE__ */ jsxDEV("li", { children: /* @__PURE__ */ jsxDEV(
+          "a",
           {
-            src: "/logo-light.png",
-            alt: "Remix",
-            className: "block w-full dark:hidden"
+            className: "group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500",
+            href,
+            target: "_blank",
+            rel: "noreferrer",
+            children: [
+              icon,
+              text
+            ]
           },
           void 0,
-          false,
+          true,
           {
-            lineNumber: 21,
-            columnNumber: 13
+            lineNumber: 49,
+            columnNumber: 17
           },
           this
-        ),
-        /* @__PURE__ */ jsxDEV(
-          "img",
-          {
-            src: "/logo-dark.png",
-            alt: "Remix",
-            className: "hidden w-full dark:block"
-          },
-          void 0,
-          false,
-          {
-            lineNumber: 26,
-            columnNumber: 13
-          },
-          this
-        )
-      ] }, void 0, true, {
-        lineNumber: 20,
-        columnNumber: 11
-      }, this)
-    ] }, void 0, true, {
-      lineNumber: 16,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV("nav", { className: "flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700", children: [
-      /* @__PURE__ */ jsxDEV("p", { className: "leading-6 text-gray-700 dark:text-gray-200", children: "What's next?" }, void 0, false, {
-        lineNumber: 34,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV(MyComponent, { first: "John", middle: "William", last: "Doe", kidsNames: ["John", "Jane", "Jim"] }, void 0, false, {
-        lineNumber: 37,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV(MyComponent, {}, void 0, false, {
-        lineNumber: 38,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV(MyList, { children: [
-        /* @__PURE__ */ jsxDEV(MyListItem, { children: "Item 1" }, void 0, false, {
-          lineNumber: 40,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV(MyListItem, { children: "Item 2" }, void 0, false, {
-          lineNumber: 41,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV(MyListItem, { children: "Item 3" }, void 0, false, {
-          lineNumber: 42,
-          columnNumber: 13
+        ) }, href, false, {
+          lineNumber: 48,
+          columnNumber: 15
+        }, this)) }, void 0, false, {
+          lineNumber: 46,
+          columnNumber: 11
         }, this)
       ] }, void 0, true, {
-        lineNumber: 39,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV(Input, {}, void 0, false, {
-        lineNumber: 44,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV(MyCounter, {}, void 0, false, {
-        lineNumber: 45,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV("ul", { children: resources.map(({ href, text, icon }) => /* @__PURE__ */ jsxDEV("li", { children: /* @__PURE__ */ jsxDEV(
-        "a",
-        {
-          className: "group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500",
-          href,
-          target: "_blank",
-          rel: "noreferrer",
-          children: [
-            icon,
-            text
-          ]
-        },
-        void 0,
-        true,
-        {
-          lineNumber: 49,
-          columnNumber: 17
-        },
-        this
-      ) }, href, false, {
-        lineNumber: 48,
-        columnNumber: 15
-      }, this)) }, void 0, false, {
-        lineNumber: 46,
-        columnNumber: 11
+        lineNumber: 33,
+        columnNumber: 9
       }, this)
     ] }, void 0, true, {
-      lineNumber: 33,
-      columnNumber: 9
+      lineNumber: 15,
+      columnNumber: 7
+    }, this) }, void 0, false, {
+      lineNumber: 14,
+      columnNumber: 5
     }, this)
-  ] }, void 0, true, {
-    lineNumber: 15,
-    columnNumber: 7
-  }, this) }, void 0, false, {
-    lineNumber: 14,
-    columnNumber: 5
-  }, this);
+  );
 }
 const resources = [
   {

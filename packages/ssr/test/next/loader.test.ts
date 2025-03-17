@@ -47,10 +47,10 @@ describe('stencilLoader', () => {
     expect(result).toBe(transformedCode);
   });
 
-  it('should return original source if transform returns falsy value', async () => {
+  it('should return original source if transform throws an error', async () => {
     const source = 'import { something } from "component-library-react";';
 
-    (transform as any).mockResolvedValue(null);
+    (transform as any).mockRejectedValueOnce(new Error('test error'));
 
     const result = await stencilLoader.call(mockContext, source);
 
