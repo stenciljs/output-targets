@@ -8,7 +8,7 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 describe('type check', () => {
   it('should fail type check', async () => {
-    const result = await new Promise((resolve, rejects) => {
+    const result = await new Promise<string>((resolve, rejects) => {
       let stdout = ''
       const  child = cp.exec(`npm run build.app`, {
         cwd: path.resolve(__dirname, '..'),
@@ -24,11 +24,12 @@ describe('type check', () => {
       })
     });
 
-    expect(result).toContain(
-      `App.vue(7,5): error TS2322: Type 'string' is not assignable to type 'string[]'.`
-    )
-    expect(result).toContain(
-      `App.vue(9,14): error TS2322: Type '"ups"' is not assignable to type '"clear" | "outline" | "solid" | "default" | undefined'.`
-    )
+    const typeErrors = result.split('\n').filter((line) => line.startsWith('src/App.vue'))
+    expect(typeErrors).toMatchInlineSnapshot(`
+      [
+        "src/App.vue(7,5): error TS2322: Type 'string' is not assignable to type 'string[]'.",
+        "src/App.vue(9,14): error TS2322: Type '"ups"' is not assignable to type '"clear" | "outline" | "solid" | "default" | undefined'.",
+      ]
+    `)
   })
 })

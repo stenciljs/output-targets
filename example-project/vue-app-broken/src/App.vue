@@ -7,4 +7,5 @@ import { MyComponent, MyButton } from 'component-library-vue'
     kidsNames="John"
   />
   <my-button fill="ups">Button</my-button>
+  <my-button router-link="/">Button</my-button>
 </template>
