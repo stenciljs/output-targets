@@ -1,3 +1,11 @@
+## @stencil/vue-output-target@0.10.6 (2025-03-17)
+
+#### :bug: Bug Fix
+
+- `@stencil/vue-output-target`
+  - [`22805963`](https://github.com/stenciljs/output-targets/commit/228059631895aca6089e70d3ae10733bf86ef64d) fix(vue): fix typing for routerLink attribute
+ ([@christian-bromann](https://github.com/christian-bromann))
+
 ## @stencil/vue-output-target@0.10.4 (2025-03-13)
 
 #### :bug: Bug Fix
