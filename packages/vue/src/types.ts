@@ -1,4 +1,5 @@
-import type { DefineSetupFnComponent } from 'vue';
+import type { DefineSetupFnComponent, VNodeProps, AllowedComponentProps, ComponentCustomProps } from 'vue';
+import type { RouteLocationAsRelativeGeneric, RouteLocationAsPathGeneric } from 'vue-router';
 
 /**
  * Options for the Vue Output Target
@@ -83,10 +84,10 @@ declare global {
 }
 
 export type StencilVueComponent<Props, VModelType = string | number | boolean> = DefineSetupFnComponent<
-  Props & InputProps<VModelType>,
+  Props & InputProps<VModelType> & VNodeProps & AllowedComponentProps & ComponentCustomProps,
   {},
   {},
-  Props & InputProps<VModelType>
+  Props & InputProps<VModelType> & VNodeProps & AllowedComponentProps & ComponentCustomProps
 >;
 export interface InputProps<T> {
   modelValue?: T;
@@ -99,5 +100,5 @@ export interface InputProps<T> {
    * For more information
    * @see https://ionicframework.com/docs/vue/navigation#navigating-using-router-link
    */
-  routerLink?: string | Symbol;
+  routerLink?: Symbol | string | RouteLocationAsRelativeGeneric | RouteLocationAsPathGeneric;
 }
