@@ -2,6 +2,7 @@ import type { EventName, Options } from '@lit/react';
 import { createComponent as createComponentWrapper, type ReactWebComponent, WebComponentProps } from '@lit/react';
 
 import type { RenderToString } from './ssr';
+import { tagNameTransformer } from './tagNameTransformer';
 
 // A key value map matching React prop names to event names.
 type EventNames = Record<string, EventName | string>;
@@ -18,6 +19,11 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
   if (typeof defineCustomElement !== 'undefined') {
     defineCustomElement();
   }
+
+  if (typeof tagNameTransformer === 'function') {
+    options.tagName = tagNameTransformer(options.tagName);
+  }
+
   return createComponentWrapper<I, E>(options);
 };
 
