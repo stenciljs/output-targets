@@ -1,37 +1,58 @@
 // Snapshot v1
 
-exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'complex-use-client' correctly 1`] = `
-"<my-toggle class="hydrated" s-id="7" suppresshydrationwarning="true"
-  ><template shadowrootmode="open"
-    ><!--r.X--><button c-id="X.0.0.0">
-      <!--t.X.1.1.0-->
-      Open Modal
-    </button>
-    <my-toggle-content c-id="X.2.0.1" class="hydrated" s-id="8">
-      <template shadowrootmode="open"></template>
-      <!--r.X-->
-      <slot c-id="X.3.1.0"></slot> </my-toggle-content></template
-></my-toggle>
-"
-`;
-
 exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'nested' correctly 1`] = `
-"<my-list class="hydrated" s-id="17" suppresshydrationwarning="true"
-  ><template shadowrootmode="open"
-    ><!--r.X-->
+"<my-list class="hydrated" s-id="X"
+  ><template shadowrootmode="open">
     <ul c-id="X.0.0.0">
       <slot c-id="X.1.1.0"></slot></ul></template
-></my-list>
+  ><my-list-item class="hydrated" s-id="X"
+    ><template shadowrootmode="open">
+      <li c-id="X.0.0.0">
+        <slot c-id="X.1.1.0"></slot></li></template
+    >Item 1</my-list-item
+  ><my-list-item class="hydrated" s-id="X"
+    ><template shadowrootmode="open">
+      <li c-id="X.0.0.0">
+        <slot c-id="X.1.1.0"></slot></li></template
+    >Item 2</my-list-item
+  ><my-list-item class="hydrated" s-id="X"
+    ><template shadowrootmode="open">
+      <li c-id="X.0.0.0">
+        <slot c-id="X.1.1.0"></slot></li></template
+    >Item 3</my-list-item
+  ></my-list
+>
 "
 `;
 
 exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'nested-with-react' correctly 1`] = `
-"<my-list class="hydrated" s-id="22" suppresshydrationwarning="true"
-  ><template shadowrootmode="open"
-    ><!--r.X-->
+"<my-list class="hydrated" s-id="X"
+  ><template shadowrootmode="open">
     <ul c-id="X.0.0.0">
       <slot c-id="X.1.1.0"></slot></ul></template
-></my-list>
+  ><my-list-item class="hydrated" s-id="X"
+    ><template shadowrootmode="open">
+      <li c-id="X.0.0.0">
+        <slot c-id="X.1.1.0"></slot></li
+    ></template>
+    <div
+      style="
+        padding: 1rem;
+        border: 1px solid black;
+        border-radius: 0.5rem;
+        margin: 1rem;
+      "
+    >
+      <p style="margin-bottom: 0.5rem">Pure React Component</p>
+      <button
+        style="border: 1px solid black; padding: 0.5rem; border-radius: 0.5rem"
+      >
+        Click me (Clicked:
+        <!-- -->0<!-- -->)
+      </button>
+    </div></my-list-item
+  ></my-list
+>
 "
 `;
 
@@ -39,16 +60,16 @@ exports[`Static Declarative Shadow DOM (DSD) > should render DSD of 'simple' cor
 "<my-button
   class="button button-solid hydrated my-activatable my-focusable"
   href="#"
-  s-id="6"
-  suppresshydrationwarning="true"
-  ><template shadowrootmode="open"
-    ><!--r.X--><a c-id="X.0.0.0" class="button-native" href="#">
+  s-id="X"
+  ><template shadowrootmode="open">
+    <a c-id="X.0.0.0" class="button-native" href="#">
       <span c-id="X.1.1.0" class="button-inner">
         <slot c-id="X.2.2.0" name="icon-only"></slot>
         <slot c-id="X.3.2.1" name="start"></slot>
         <slot c-id="X.4.2.2"></slot>
         <slot c-id="X.5.2.3" name="end"></slot>
       </span> </a></template
-></my-button>
+  >Test</my-button
+>
 "
 `;

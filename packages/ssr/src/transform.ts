@@ -1,5 +1,5 @@
 import decamelize from 'decamelize';
-import { parse, visit } from 'recast';
+import { parse, visit, print } from 'recast';
 import { transformSync } from 'esbuild';
 import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
@@ -36,14 +36,14 @@ export async function transform(
       const i = parseStaticImport(importSpecifier);
       return i.namedImports?.['jsxDEV'];
     })
-    .filter(Boolean).pop();
-
+    .filter(Boolean)
+    .pop();
 
   /**
    * only proceed if the file contains JSX components and uses components from the
    * users component library
    */
-  if (imports.length === 0 || !jsxImportReference || !sourcefile.endsWith('page.tsx')) {
+  if (imports.length === 0 || !jsxImportReference) {
     return code;
   }
 
@@ -56,10 +56,9 @@ export async function transform(
   const components = Object.keys(await module);
   const componentCalls: {
     identifier: string;
+    tagName: string
     properties: namedTypes.ObjectExpression['properties'];
   }[] = [];
-
-  console.log('source', code);
 
   /**
    * parse the code into an AST and visit all `jsxDEV` calls.
@@ -67,7 +66,20 @@ export async function transform(
    * component library and if so, extract the component's properties.
    */
   const ast = parse(code);
+  let index = 0;
   visit(ast, {
+    visitImportDeclaration(path) {
+      const node = path.node;
+      if (node.source.value !== from) {
+        return this.traverse(path);
+      }
+
+      /**
+       * remove the import declaration
+       */
+      path.replace()
+      return this.traverse(path);
+    },
     visitCallExpression(path) {
       const node = path.node;
       /**
@@ -90,11 +102,18 @@ export async function transform(
         return this.traverse(path);
       }
 
+      const identifier = `${args[0].name}$${index++}`;
       componentCalls.push({
-        identifier: args[0].name,
+        identifier,
+        tagName: decamelize(args[0].name, { separator: '-' }),
         properties: args[1].properties,
       });
 
+      path.get('arguments', 0).replace(b.identifier(identifier));
+      path.get('arguments', 1).replace(b.objectExpression([
+        ...args[1].properties,
+        b.property('init', b.identifier('suppressHydrationWarning'), b.booleanLiteral(true))
+      ]));
       return this.traverse(path);
     },
   });
@@ -104,16 +123,14 @@ export async function transform(
    * component's identifier and the rendered HTML.
    */
   const declarations = await Promise.all(
-    componentCalls.map(async ({ identifier, properties }) => {
-      const tagName = decamelize(identifier, { separator: '-' });
-
+    componentCalls.map(async ({ identifier, tagName, properties }) => {
       /**
        * parse serializable properties into a plain object
        */
       const propObject = parseSimpleObjectExpression(b.objectExpression(properties));
       const props = Object.entries(propObject)
         .filter(([key]) => key !== 'children')
-        .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
+        .map(([key, value]) => `${key === 'className' ? 'class' : camelToKebab(key)}=${JSON.stringify(value)}`)
         .join(' ');
 
       /**
@@ -122,9 +139,8 @@ export async function transform(
        * Note: we purposly don't parse in a light DOM as we can't evaluate the code during SSR.
        */
       const children = (propObject as Record<string, any>).children;
-      const toRender = typeof children === 'string'
-        ? `<${tagName} ${props}>${children}</${tagName}>`
-        : `<${tagName} ${props} />`;
+      const toRender =
+        typeof children === 'string' ? `<${tagName} ${props}>${children}</${tagName}>` : `<${tagName} ${props} />`;
       const { html } = await importedHydrateModule.renderToString(toRender, {
         prettyHtml: true,
         fullDocument: false,
@@ -134,102 +150,53 @@ export async function transform(
       /**
        * return the component's identifier and the rendered HTML split into lines
        */
-      return [identifier, html.split('\n')] as [string, string[]];
+      return [identifier, tagName, html.split('\n')] as [string, string, string[]];
     })
   );
 
   /**
-   * For each import of the user's component library, wrap the component's
-   * identifier and the rendered HTML in a JSX component.
+   * Create a stringified version of each component
    */
-  let wrappedComponents = '';
-  for (const cmpImport of imports) {
-    wrappedComponents += Object.entries(cmpImport.parsed.namedImports || [])
-      .filter(([cmpName]) => declarations.some(([identifier]) => cmpName === identifier))
-      .reduce((acc, [cmpName, cmpImport]) => {
-        const html = declarations.find(([identifier]) => cmpName === identifier)?.[1];
-        if (!html) {
-          return acc;
-        }
-
-        const cmpTag = html[0];
-        const tagName = cmpTag.split(' ')[0].slice(1);
-
-        /**
-         * Determine if the component should be rendered in a scoped shadow root.
-         */
-        const isScoped =
-          typeof serializeShadowRoot === 'string'
-            ? serializeShadowRoot === 'scoped'
-            : typeof serializeShadowRoot === 'object'
-              ? serializeShadowRoot.default === 'scoped'
-                ? true
-                : serializeShadowRoot['scoped']?.includes(tagName)
-              : false;
-
-        /**
-         * Let's reconstruct the rendered Stencil component into a JSX component
-         */
-        const cmpEndTag = html[html.length - 1];
-        const hydrateComment = html[html.length - 2];
-
-        /**
-         * render scoped component
-         */
-        if (isScoped) {
-          console.log('!!!', html);
-
-          const __html = html.slice(1, -1).join('\n');
-          return (
-            acc +
-            `\nconst ${cmpImport} = ({ children }) => {
-  return (
-    ${cmpTag.slice(0, -1)} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: \`
-${__html}
-\` }} />
-  )
-}`
-          );
-        }
-
-        const __html = html.slice(2, -3).join('\n');
-        return (
-          acc +
-          `\nconst ${cmpImport} = ({ children }) => {
-return (
-${cmpTag}
-  ${
-    !isScoped
-      ? `<template shadowrootmode="open" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: \`${__html + hydrateComment}\` }}></template>`
-      : ''
-  }
-  {children}
-${cmpEndTag}
-)
-}\n`
-        );
-      }, '');
+  const wrappedComponents = declarations.reduce((acc, [identifier, tagName, html]) => {
+    /**
+     * Determine if the component should be rendered in a scoped shadow root.
+     */
+    const isScoped =
+      typeof serializeShadowRoot === 'string'
+        ? serializeShadowRoot === 'scoped'
+        : typeof serializeShadowRoot === 'object'
+          ? serializeShadowRoot.default === 'scoped'
+            ? true
+            : serializeShadowRoot['scoped']?.includes(tagName)
+          : false;
 
     /**
-     * Transform the wrapped JSX components into a raw JavaScript string.
+     * serialize scoped component
      */
-    const result = transformSync(wrappedComponents, {
-      loader: 'jsx',
-      jsx: 'automatic', // Use React 17+ JSX transform
-      jsxDev: true, // Include debug info (like in your example)
-      format: 'esm',
-      target: ['esnext'],
-      sourcemap: true,
-      sourcefile,
-    });
+    if (isScoped) {
+      return acc + serializeScopedComponent(html, identifier);
+    }
 
     /**
-     * Replace the original import with the wrapped JSX components.
+     * serialize shadow component
      */
-    code = code.replace(cmpImport.code, result.code);
-  }
+    return acc + serializeShadowComponent(html, identifier);
+  }, '');
 
-  return code;
+  /**
+   * Transform the wrapped JSX components into a raw JavaScript string.
+   */
+  const result = transformSync(wrappedComponents, {
+    loader: 'jsx',
+    jsx: 'automatic', // Use React 17+ JSX transform
+    jsxDev: true, // Include debug info (like in your example)
+    format: 'esm',
+    target: ['esnext'],
+    sourcemap: true,
+    sourcefile,
+  });
+
+  return result.code + print(ast).code;
 }
 
 /**
@@ -297,4 +264,51 @@ function parseSimpleObjectExpression(astNode: any): object {
   }
 
   return result;
+}
+
+/**
+ * Serialize a scoped component
+ *
+ * @param html - The HTML of the component retrieved via `renderToString`
+ * @param identifier - The identifier of the component
+ * @returns The serialized component
+ */
+function serializeScopedComponent(html: string[], identifier: string) {
+  const cmpTag = html[0];
+  const __html = html.slice(1, -1).join('\n');
+      return `\nconst ${identifier} = ({ children }) => {
+  return (
+    ${cmpTag.slice(0, -1)} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
+  );
+}`
+}
+
+/**
+ * Serialize a shadow component
+ *
+ * @param html - The HTML of the component retrieved via `renderToString`
+ * @param identifier - The identifier of the component
+ * @returns The serialized component
+ */
+function serializeShadowComponent(html: string[], identifier: string) {
+  const cmpTag = html[0];
+
+  /**
+   * Let's reconstruct the rendered Stencil component into a JSX component
+   */
+  const cmpEndTag = html[html.length - 1];
+  const templateClosingIndex = html.findIndex((line) => line.includes('</template>'));
+  const __html = html.slice(2, templateClosingIndex).join('\n');
+  return `\nconst ${identifier} = ({ children }) => {
+  return (
+    ${cmpTag}
+      <template shadowrootmode="open" suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+      {children}
+    ${cmpEndTag}
+  )
+}\n`
+}
+
+function camelToKebab (str: string) {
+  return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 }

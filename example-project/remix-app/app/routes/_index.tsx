@@ -35,7 +35,6 @@ export default function Index() {
             What&apos;s next?
           </p>
           <MyComponent first="John" middle="William" last="Doe" kidsNames={['John', 'Jane', 'Jim']} />
-          <MyComponent />
           <MyList>
             <MyListItem>Item 1</MyListItem>
             <MyListItem>Item 2</MyListItem>

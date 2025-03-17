@@ -1,6 +1,12 @@
-import Button from './Button/Button';
-import { MyComponent, MyRange, MyCounter, MyRadioGroup, MyRadio } from 'component-library-react';
+import {
+  MyComponent,
+  MyRange,
+  MyCounter,
+  MyRadioGroup,
+  MyRadio,
+} from 'component-library-react';
 import Input from './Input/Input';
+import Button from './Button/Button';
 import { ToggleableContent } from './ToggleableContent/ToggleableContent';
 
 export default function Home() {
@@ -8,7 +14,7 @@ export default function Home() {
     <>
       <Input />
       <hr />
-      {/* <Button /> */}
+      <Button />
       <hr />
       <MyComponent
         first="Stencil"

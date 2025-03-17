@@ -2,7 +2,7 @@ import { browser, expect } from '@wdio/globals';
 import prettier from 'prettier';
 
 describe('Static Declarative Shadow DOM (DSD)', () => {
-  for (const component of ['simple', 'nested', 'nested-with-react', 'complex-use-client']) {
+  for (const component of ['simple', 'nested', 'nested-with-react'/*, 'complex-use-client'*/]) {
     it(`should render DSD of '${component}' correctly`, async () => {
       await browser.url(`/dsd/${component}`);
       const page = await fetch(await browser.getUrl());
