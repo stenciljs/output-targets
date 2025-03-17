@@ -24,7 +24,9 @@ describe('type check', () => {
       })
     });
 
-    const typeErrors = result.split('\n').filter((line) => line.startsWith('src/App.vue'))
+    const typeErrors = result.split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith('src/App.vue'))
     expect(typeErrors).toMatchInlineSnapshot(`
       [
         "src/App.vue(7,5): error TS2322: Type 'string' is not assignable to type 'string[]'.",
