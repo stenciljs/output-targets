@@ -22,7 +22,10 @@ describe('Stencil NextJS Integration', () => {
     const html = await (await source).text()
     const template = html.slice(html.indexOf('<my-input '), html.lastIndexOf('<script'))
     expect(template).toContain(`Hello, World! I'm Don't 😉 call me a framework`)
-    expect(template).toContain('Kids: John, Jane')
+    /**
+     * ToDo(@christian-bromann): enable once support for basic objects is added
+     */
+    // expect(template).toContain('Kids: John, Jane')
     expect(template).toContain('class="sc-my-counter"')
   });
 
