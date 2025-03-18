@@ -1,3 +1,10 @@
+## @stencil/vue-output-target@0.10.7 (2025-03-17)
+
+#### :bug: Bug Fix
+
+- `@stencil/vue-output-target`
+  - [`50ed60f0`](https://github.com/stenciljs/output-targets/commit/50ed60f00d9b417246b251a426347ef034fa5ed6) fix(vue): support more complex types for routerLink ([@christian-bromann](https://github.com/christian-bromann))
+
 ## @stencil/vue-output-target@0.10.6 (2025-03-17)
 
 #### :bug: Bug Fix
