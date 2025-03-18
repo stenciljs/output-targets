@@ -1,7 +1,7 @@
 import './App.css'
 import { useState } from 'react'
 import Input from './Input/Input'
-import { MyComponent, MyCounter } from 'component-library-react'
+import { MyComponent, MyCounter, MyComplexProps } from 'component-library-react'
 import reactLogo from './assets/react.svg'
 
 function App() {
@@ -32,6 +32,12 @@ function App() {
       <Input data-testid="inputCheck" />
       <MyComponent first="Don't" middle="😉" last="call me a framework" kidsNames={['John', 'Jane']} />
       <MyCounter />
+      <MyComplexProps
+        foo={{ bar: 'baz', loo: [1, 2, 3], qux: { quux: Symbol('quux') } }}
+        baz={new Map([['foo', { qux: Symbol('quux') }]])}
+        quux={new Set(['foo'])}
+        grault={Infinity}
+        waldo={null} />
     </>
   )
 }

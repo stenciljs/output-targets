@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
 import { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
+import { Baz, Foo, Grault, Quux, Waldo } from "./components/my-complex-props/my-complex-props";
 import { IMyComponent } from "./components/helpers";
 import { InputChangeEventDetail } from "./components/my-input/my-input";
 import { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
@@ -14,6 +15,7 @@ import { Color as Color1, StyleEventDetail } from "./components/element-interfac
 import { RangeChangeEventDetail, RangeValue } from "./components/my-range/my-range";
 export { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
 export { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
+export { Baz, Foo, Grault, Quux, Waldo } from "./components/my-complex-props/my-complex-props";
 export { IMyComponent } from "./components/helpers";
 export { InputChangeEventDetail } from "./components/my-input/my-input";
 export { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
@@ -120,6 +122,28 @@ export namespace Components {
           * The value of the checkbox does not mean if it's checked or not, use the `checked` property for that.  The value of a checkbox is analogous to the value of an `<input type="checkbox">`, it's only used when the checkbox participates in a native `<form>`.
          */
         "value": any | null;
+    }
+    interface MyComplexProps {
+        /**
+          * map objects
+         */
+        "baz": Baz;
+        /**
+          * basic object
+         */
+        "foo": Foo;
+        /**
+          * infinity
+         */
+        "grault": Grault;
+        /**
+          * set objects
+         */
+        "quux": Quux;
+        /**
+          * null
+         */
+        "waldo": Waldo;
     }
     interface MyComponent {
         /**
@@ -524,6 +548,12 @@ declare global {
         prototype: HTMLMyCheckboxElement;
         new (): HTMLMyCheckboxElement;
     };
+    interface HTMLMyComplexPropsElement extends Components.MyComplexProps, HTMLStencilElement {
+    }
+    var HTMLMyComplexPropsElement: {
+        prototype: HTMLMyComplexPropsElement;
+        new (): HTMLMyComplexPropsElement;
+    };
     interface HTMLMyComponentElementEventMap {
         "myCustomEvent": IMyComponent.someVar;
         "myCustomNestedEvent": IMyComponent.SomeMoreComplexType.SubType;
@@ -682,6 +712,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "my-button": HTMLMyButtonElement;
         "my-checkbox": HTMLMyCheckboxElement;
+        "my-complex-props": HTMLMyComplexPropsElement;
         "my-component": HTMLMyComponentElement;
         "my-counter": HTMLMyCounterElement;
         "my-input": HTMLMyInputElement;
@@ -815,6 +846,28 @@ declare namespace LocalJSX {
           * The value of the checkbox does not mean if it's checked or not, use the `checked` property for that.  The value of a checkbox is analogous to the value of an `<input type="checkbox">`, it's only used when the checkbox participates in a native `<form>`.
          */
         "value"?: any | null;
+    }
+    interface MyComplexProps {
+        /**
+          * map objects
+         */
+        "baz"?: Baz;
+        /**
+          * basic object
+         */
+        "foo"?: Foo;
+        /**
+          * infinity
+         */
+        "grault"?: Grault;
+        /**
+          * set objects
+         */
+        "quux"?: Quux;
+        /**
+          * null
+         */
+        "waldo"?: Waldo;
     }
     interface MyComponent {
         /**
@@ -1194,6 +1247,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "my-button": MyButton;
         "my-checkbox": MyCheckbox;
+        "my-complex-props": MyComplexProps;
         "my-component": MyComponent;
         "my-counter": MyCounter;
         "my-input": MyInput;
@@ -1213,6 +1267,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "my-button": LocalJSX.MyButton & JSXBase.HTMLAttributes<HTMLMyButtonElement>;
             "my-checkbox": LocalJSX.MyCheckbox & JSXBase.HTMLAttributes<HTMLMyCheckboxElement>;
+            "my-complex-props": LocalJSX.MyComplexProps & JSXBase.HTMLAttributes<HTMLMyComplexPropsElement>;
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "my-counter": LocalJSX.MyCounter & JSXBase.HTMLAttributes<HTMLMyCounterElement>;
             "my-input": LocalJSX.MyInput & JSXBase.HTMLAttributes<HTMLMyInputElement>;

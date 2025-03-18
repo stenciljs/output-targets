@@ -7,6 +7,7 @@ import type { JSX } from 'component-library';
 
 import { defineCustomElement as defineMyButton } from 'component-library/components/my-button.js';
 import { defineCustomElement as defineMyCheckbox } from 'component-library/components/my-checkbox.js';
+import { defineCustomElement as defineMyComplexProps } from 'component-library/components/my-complex-props.js';
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
 import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
@@ -95,6 +96,21 @@ export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["che
     'onIonChange': [Function],
     'onIonFocus': [Function],
     'onIonBlur': [Function]
+  }
+});
+
+
+export const MyComplexProps: StencilVueComponent<JSX.MyComplexProps> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComplexProps>('my-complex-props', defineMyComplexProps, [
+  'foo',
+  'baz',
+  'quux',
+  'grault',
+  'waldo'
+]) : defineStencilSSRComponent<JSX.MyComplexProps>({
+  tagName: 'my-complex-props',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'grault': [Number, "grault"]
   }
 });
 

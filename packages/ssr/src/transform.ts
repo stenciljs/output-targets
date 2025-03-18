@@ -134,7 +134,7 @@ export async function transform(
       const propObject = parseSimpleObjectExpression(b.objectExpression(properties));
       const props = Object.entries(propObject)
         .filter(([key]) => key !== 'children')
-        .map(([key, value]) => `${key === 'className' ? 'class' : camelToKebab(key)}=${JSON.stringify(value)}`)
+        .map(([key, value]) => `${key === 'className' ? 'class' : camelToKebab(key)}=${importedHydrateModule.serializeProperty(value)}`)
         .join(' ');
 
       /**
@@ -145,11 +145,14 @@ export async function transform(
       const children = (propObject as Record<string, any>).children;
       const toRender =
         typeof children === 'string' ? `<${tagName} ${props}>${children}</${tagName}>` : `<${tagName} ${props} />`;
+      console.log(11, toRender);
+
       const { html } = await importedHydrateModule.renderToString(toRender, {
         prettyHtml: true,
         fullDocument: false,
         serializeShadowRoot,
       });
+      console.log(22, html);
 
       /**
        * return the component's identifier and the rendered HTML split into lines
@@ -207,7 +210,6 @@ export async function transform(
  * Parse serializable properties into a plain object.
  */
 function parseSimpleObjectExpression(astNode: any): object {
-  // Only handle ObjectExpressions at the top level
   if (!namedTypes.ObjectExpression.check(astNode)) {
     throw new Error('Not an ObjectExpression');
   }
@@ -215,59 +217,88 @@ function parseSimpleObjectExpression(astNode: any): object {
   const result: Record<string, any> = {};
 
   for (const prop of astNode.properties) {
-    // Only handle regular properties
     if (!namedTypes.Property.check(prop) || prop.kind !== 'init') {
       continue;
     }
 
-    // Extract key (assuming identifier key)
-    let key: string;
-    if (namedTypes.Identifier.check(prop.key)) {
-      key = prop.key.name;
-    } else if (namedTypes.Literal.check(prop.key) || namedTypes.StringLiteral.check(prop.key)) {
-      key = String(prop.key.value);
-    } else {
-      // Skip complex keys
-      continue;
-    }
+    let key = namedTypes.Identifier.check(prop.key)
+      ? prop.key.name
+      : (namedTypes.Literal.check(prop.key) || namedTypes.StringLiteral.check(prop.key))
+        ? String(prop.key.value)
+        : null;
 
-    // Extract value
+    if (key === null) {
+      console.error(`Invalid key: "${prop.key}", skipping property`);
+      continue;
+    };
+
     let value: any;
-    if (
-      namedTypes.Literal.check(prop.value) ||
-      namedTypes.StringLiteral.check(prop.value) ||
-      namedTypes.NumericLiteral.check(prop.value) ||
-      namedTypes.BooleanLiteral.check(prop.value)
+    if (namedTypes.NewExpression.check(prop.value)) {
+      // Handle Map and Set
+      if (namedTypes.Identifier.check(prop.value.callee) && prop.value.callee.name === 'Map') {
+        const mapArgs = prop.value.arguments[0];
+        if (namedTypes.ArrayExpression.check(mapArgs)) {
+          value = new Map(mapArgs.elements
+            .map((el: any) => {
+              if (namedTypes.ArrayExpression.check(el) && el.elements.length === 2) {
+                const [key, val] = el.elements;
+                return [parseValue(key), parseValue(val)] as [unknown, unknown];
+              }
+              return null;
+            })
+            .filter((entry): entry is [unknown, unknown] => entry !== null)
+          );
+        }
+      } else if (namedTypes.Identifier.check(prop.value.callee) && prop.value.callee.name === 'Set') {
+        const setArgs = prop.value.arguments[0];
+        if (namedTypes.ArrayExpression.check(setArgs)) {
+          value = new Set(setArgs.elements.map((el: any) => parseValue(el)));
+        }
+      }
+    } else if (
+      /**
+       * Handle Symbol
+       */
+      namedTypes.CallExpression.check(prop.value) &&
+      namedTypes.Identifier.check(prop.value.callee) &&
+      prop.value.callee.name === 'Symbol'
     ) {
-      value = prop.value.value;
-    } else if (namedTypes.ArrayExpression.check(prop.value)) {
-      value = prop.value.elements
-        .filter((el: any) => el !== null)
-        .map((el: any) => {
-          if (
-            namedTypes.Literal.check(el) ||
-            namedTypes.StringLiteral.check(el) ||
-            namedTypes.NumericLiteral.check(el)
-          ) {
-            return el.value;
-          } else if (namedTypes.ObjectExpression.check(el)) {
-            return parseSimpleObjectExpression(el);
-          }
-          return null;
-        })
-        .filter((v: any) => v !== null);
-    } else if (namedTypes.ObjectExpression.check(prop.value)) {
-      // Recursively parse nested objects
-      value = parseSimpleObjectExpression(prop.value);
+      const symbolArg = prop.value.arguments[0];
+      if (namedTypes.Literal.check(symbolArg) || namedTypes.StringLiteral.check(symbolArg)) {
+        const symbolValue = symbolArg.value;
+        if (typeof symbolValue === 'string' || typeof symbolValue === 'number') {
+          value = Symbol(symbolValue);
+        }
+      }
     } else {
-      // Skip complex values
-      value = null;
+      value = parseValue(prop.value);
     }
 
     result[key] = value;
   }
 
   return result;
+}
+
+function parseValue(node: any): any {
+  if (namedTypes.Literal.check(node) ||
+      namedTypes.StringLiteral.check(node) ||
+      namedTypes.NumericLiteral.check(node) ||
+      namedTypes.BooleanLiteral.check(node)) {
+    return node.value;
+  } else if (namedTypes.ArrayExpression.check(node)) {
+    return node.elements
+      .filter((el: any) => el !== null)
+      .map((el: any) => parseValue(el))
+      .filter((v: any) => v !== null);
+  } else if (namedTypes.ObjectExpression.check(node)) {
+    return parseSimpleObjectExpression(node);
+  } else if (namedTypes.Identifier.check(node) && node.name === 'Infinity') {
+    return Infinity;
+  } else if (namedTypes.Identifier.check(node) && node.name === 'null') {
+    return null;
+  }
+  return null;
 }
 
 /**

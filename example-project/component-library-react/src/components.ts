@@ -12,6 +12,7 @@ import { createComponent } from '@stencil/react-output-target/runtime';
 import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentCustomEvent, type MyInputCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
+import { MyComplexProps as MyComplexPropsElement, defineCustomElement as defineMyComplexProps } from "component-library/components/my-complex-props.js";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "component-library/components/my-component.js";
 import { MyCounter as MyCounterElement, defineCustomElement as defineMyCounter } from "component-library/components/my-counter.js";
 import { MyInput as MyInputElement, defineCustomElement as defineMyInput } from "component-library/components/my-input.js";
@@ -59,6 +60,17 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
         onIonBlur: 'ionBlur'
     } as MyCheckboxEvents,
     defineCustomElement: defineMyCheckbox
+});
+
+export type MyComplexPropsEvents = NonNullable<unknown>;
+
+export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents> = /*@__PURE__*/ createComponent<MyComplexPropsElement, MyComplexPropsEvents>({
+    tagName: 'my-complex-props',
+    elementClass: MyComplexPropsElement,
+    // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
+    react: React,
+    events: {} as MyComplexPropsEvents,
+    defineCustomElement: defineMyComplexProps
 });
 
 export type MyComponentEvents = {
