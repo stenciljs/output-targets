@@ -4,6 +4,8 @@ import { transformSync } from 'esbuild';
 import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
 
+import { possibleStandardNames } from './constants.js';
+import { styleObjectToPlain, serializeScopedComponent, serializeShadowComponent, parseSimpleObjectExpression, type StyleObject } from './utils.js';
 import type { StencilSSROptions } from './types.js';
 
 export async function transform(
@@ -131,10 +133,23 @@ export async function transform(
       /**
        * parse serializable properties into a plain object
        */
+      const style = properties.find((p) => 'key' in p && 'name' in p.key && p.key.name === 'style')
+      let styleObject: StyleObject | undefined = undefined
+      if (namedTypes.Property.check(style) && namedTypes.ObjectExpression.check(style.value)) {
+        styleObject = styleObjectToPlain(style.value)
+      }
+
       const propObject = parseSimpleObjectExpression(b.objectExpression(properties));
-      const props = Object.entries(propObject)
-        .filter(([key]) => key !== 'children')
-        .map(([key, value]) => `${key === 'className' ? 'class' : camelToKebab(key)}=${importedHydrateModule.serializeProperty(value)}`)
+      let props = Object.entries(propObject)
+        /**
+         * we don't want to serialize the children and style properties as we
+         * will handle them separately
+         */
+        .filter(([key]) => !['children', 'style'].includes(key))
+        .map(([key, value]) => {
+          const propKey = possibleStandardNames[key as keyof typeof possibleStandardNames] || key;
+          return `${propKey}="${importedHydrateModule.serializeProperty(value)}"`
+        })
         .join(' ');
 
       /**
@@ -145,26 +160,23 @@ export async function transform(
       const children = (propObject as Record<string, any>).children;
       const toRender =
         typeof children === 'string' ? `<${tagName} ${props}>${children}</${tagName}>` : `<${tagName} ${props} />`;
-      console.log(11, toRender);
-
       const { html } = await importedHydrateModule.renderToString(toRender, {
         prettyHtml: true,
         fullDocument: false,
         serializeShadowRoot,
       });
-      console.log(22, html);
 
       /**
        * return the component's identifier and the rendered HTML split into lines
        */
-      return [identifier, tagName, html.split('\n')] as [string, string, string[]];
+      return [identifier, tagName, html.split('\n'), styleObject] as [string, string, string[], StyleObject | undefined];
     })
   );
 
   /**
    * Create a stringified version of each component
    */
-  const wrappedComponents = declarations.reduce((acc, [identifier, tagName, html]) => {
+  const wrappedComponents = declarations.reduce((acc, [identifier, tagName, html, styleObject]) => {
     /**
      * Determine if the component should be rendered in a scoped shadow root.
      */
@@ -181,13 +193,13 @@ export async function transform(
      * serialize scoped component
      */
     if (isScoped) {
-      return acc + serializeScopedComponent(html, identifier);
+      return acc + serializeScopedComponent(html, identifier, styleObject);
     }
 
     /**
      * serialize shadow component
      */
-    return acc + serializeShadowComponent(html, identifier);
+    return acc + serializeShadowComponent(html, identifier, styleObject);
   }, '');
 
   /**
@@ -204,146 +216,4 @@ export async function transform(
   });
 
   return result.code + print(ast).code;
-}
-
-/**
- * Parse serializable properties into a plain object.
- */
-function parseSimpleObjectExpression(astNode: any): object {
-  if (!namedTypes.ObjectExpression.check(astNode)) {
-    throw new Error('Not an ObjectExpression');
-  }
-
-  const result: Record<string, any> = {};
-
-  for (const prop of astNode.properties) {
-    if (!namedTypes.Property.check(prop) || prop.kind !== 'init') {
-      continue;
-    }
-
-    let key = namedTypes.Identifier.check(prop.key)
-      ? prop.key.name
-      : (namedTypes.Literal.check(prop.key) || namedTypes.StringLiteral.check(prop.key))
-        ? String(prop.key.value)
-        : null;
-
-    if (key === null) {
-      console.error(`Invalid key: "${prop.key}", skipping property`);
-      continue;
-    };
-
-    let value: any;
-    if (namedTypes.NewExpression.check(prop.value)) {
-      // Handle Map and Set
-      if (namedTypes.Identifier.check(prop.value.callee) && prop.value.callee.name === 'Map') {
-        const mapArgs = prop.value.arguments[0];
-        if (namedTypes.ArrayExpression.check(mapArgs)) {
-          value = new Map(mapArgs.elements
-            .map((el: any) => {
-              if (namedTypes.ArrayExpression.check(el) && el.elements.length === 2) {
-                const [key, val] = el.elements;
-                return [parseValue(key), parseValue(val)] as [unknown, unknown];
-              }
-              return null;
-            })
-            .filter((entry): entry is [unknown, unknown] => entry !== null)
-          );
-        }
-      } else if (namedTypes.Identifier.check(prop.value.callee) && prop.value.callee.name === 'Set') {
-        const setArgs = prop.value.arguments[0];
-        if (namedTypes.ArrayExpression.check(setArgs)) {
-          value = new Set(setArgs.elements.map((el: any) => parseValue(el)));
-        }
-      }
-    } else if (
-      /**
-       * Handle Symbol
-       */
-      namedTypes.CallExpression.check(prop.value) &&
-      namedTypes.Identifier.check(prop.value.callee) &&
-      prop.value.callee.name === 'Symbol'
-    ) {
-      const symbolArg = prop.value.arguments[0];
-      if (namedTypes.Literal.check(symbolArg) || namedTypes.StringLiteral.check(symbolArg)) {
-        const symbolValue = symbolArg.value;
-        if (typeof symbolValue === 'string' || typeof symbolValue === 'number') {
-          value = Symbol(symbolValue);
-        }
-      }
-    } else {
-      value = parseValue(prop.value);
-    }
-
-    result[key] = value;
-  }
-
-  return result;
-}
-
-function parseValue(node: any): any {
-  if (namedTypes.Literal.check(node) ||
-      namedTypes.StringLiteral.check(node) ||
-      namedTypes.NumericLiteral.check(node) ||
-      namedTypes.BooleanLiteral.check(node)) {
-    return node.value;
-  } else if (namedTypes.ArrayExpression.check(node)) {
-    return node.elements
-      .filter((el: any) => el !== null)
-      .map((el: any) => parseValue(el))
-      .filter((v: any) => v !== null);
-  } else if (namedTypes.ObjectExpression.check(node)) {
-    return parseSimpleObjectExpression(node);
-  } else if (namedTypes.Identifier.check(node) && node.name === 'Infinity') {
-    return Infinity;
-  } else if (namedTypes.Identifier.check(node) && node.name === 'null') {
-    return null;
-  }
-  return null;
-}
-
-/**
- * Serialize a scoped component
- *
- * @param html - The HTML of the component retrieved via `renderToString`
- * @param identifier - The identifier of the component
- * @returns The serialized component
- */
-function serializeScopedComponent(html: string[], identifier: string) {
-  const cmpTag = html[0];
-  const __html = html.slice(1, -1).join('\n');
-  return `\nconst ${identifier} = ({ children }) => {
-  return (
-    ${cmpTag.slice(0, -1)} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
-  );
-}`;
-}
-
-/**
- * Serialize a shadow component
- *
- * @param html - The HTML of the component retrieved via `renderToString`
- * @param identifier - The identifier of the component
- * @returns The serialized component
- */
-function serializeShadowComponent(html: string[], identifier: string) {
-  const cmpTag = html[0];
-
-  /**
-   * Let's reconstruct the rendered Stencil component into a JSX component
-   */
-  const cmpEndTag = html[html.length - 1];
-  const templateClosingIndex = html.findIndex((line) => line.includes('</template>'));
-  const __html = html.slice(2, templateClosingIndex).join('\n');
-  return `\nconst ${identifier} = ({ children }) => {
-  return (
-    ${cmpTag}
-      <template shadowrootmode="open" suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
-      {children}
-    ${cmpEndTag}
-  )
-}\n`;
-}
-
-function camelToKebab(str: string) {
-  return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 }

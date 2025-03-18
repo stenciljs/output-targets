@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@stencil/angular-output-target": "workspace:*",
-    "@stencil/core": "4.28.2-dev.1742303553.90ea840",
+    "@stencil/core": "4.28.2-dev.1742328872.ce86124",
     "@stencil/react-output-target": "workspace:*",
     "@stencil/vue-output-target": "workspace:*",
     "@types/puppeteer": "2.0.1"

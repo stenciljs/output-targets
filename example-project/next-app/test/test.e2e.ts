@@ -1,17 +1,31 @@
 /// <reference types="webdriverio" />
-
+import type { Browser as PuppeteerBrowser } from 'puppeteer-core';
 import { $, browser, expect } from '@wdio/globals';
 
 describe('Stencil NextJS Integration', () => {
   before(() => browser.url('/'));
 
-  it.skip('should have hydrated the page', async () => {
-    const source = await browser.getPageSource();
-
-    // serializes component children
-    expect(source).toContain('<input name="myRadioGroup" type="radio" value="one">');
-    expect(source).toContain('<input name="myRadioGroup" type="radio" value="two">');
-    expect(source).toContain('<input name="myRadioGroup" type="radio" value="three">');
+  it('should have hydrated the page', async () => {
+    /**
+     * to capture the response from the server we have
+     * to use Puppeteer for now until this lands in WebDriver Bidi
+     * @see https://github.com/w3c/webdriver-bidi/pull/856
+     */
+    const pptr = await browser.getPuppeteer() as PuppeteerBrowser
+    const page = (await pptr.pages()).find((p) => {
+      console.log(p.url());
+      return p.url() === 'about:blank'
+    })
+    if (!page) {
+      throw new Error('Page not found')
+    }
+    const source = page.waitForResponse('http://localhost:5002/');
+    await browser.url('/')
+    const html = await (await source).text()
+    console.log('-->', html);
+    expect(html).toContain(`Hello, World! I'm Don't 😉 call me a framework`)
+    expect(html).toContain('Kids: John, Jane')
+    expect(html).toContain('class="sc-my-counter"')
   });
 
   it('should allow to interact with input element', async () => {

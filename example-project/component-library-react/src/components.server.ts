@@ -81,7 +81,13 @@ export type MyComplexPropsEvents = NonNullable<unknown>;
 
 export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents> = /*@__PURE__*/ createComponent<MyComplexPropsElement, MyComplexPropsEvents>({
     tagName: 'my-complex-props',
-    properties: { grault: 'grault' },
+    properties: {
+        foo: 'foo',
+        baz: 'baz',
+        quux: 'quux',
+        grault: 'grault',
+        waldo: 'waldo'
+    },
     hydrateModule: import('component-library/hydrate'),
     serializeShadowRoot
 });
@@ -98,6 +104,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
         middle: 'middle',
         last: 'last',
         age: 'age',
+        kidsNames: 'kids-names',
         favoriteKidName: 'favorite-kid-name'
     },
     hydrateModule: import('component-library/hydrate'),
@@ -183,6 +190,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
     tagName: 'my-popover',
     properties: {
         component: 'component',
+        componentProps: 'component-props',
         keyboardClose: 'keyboard-close',
         cssClass: 'css-class',
         backdropDismiss: 'backdrop-dismiss',
