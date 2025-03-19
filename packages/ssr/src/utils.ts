@@ -22,7 +22,7 @@ export function styleObjectToPlain(objectExpression: namedTypes.ObjectExpression
       ? prop.key.name
       : namedTypes.StringLiteral.check(prop.key) || namedTypes.Literal.check(prop.key)
         ? String(prop.key.value)
-        : undefined
+        : undefined;
 
     if (!key) {
       return;
@@ -36,11 +36,15 @@ export function styleObjectToPlain(objectExpression: namedTypes.ObjectExpression
       (namedTypes.Literal.check(prop.value) && typeof prop.value.value === 'string')
     ) {
       result[key] = String(prop.value.value);
-    } else if (namedTypes.NumericLiteral.check(prop.value) ||
-              (namedTypes.Literal.check(prop.value) && typeof prop.value.value === 'number')) {
+    } else if (
+      namedTypes.NumericLiteral.check(prop.value) ||
+      (namedTypes.Literal.check(prop.value) && typeof prop.value.value === 'number')
+    ) {
       result[key] = Number(prop.value.value);
-    } else if (namedTypes.BooleanLiteral.check(prop.value) ||
-              (namedTypes.Literal.check(prop.value) && typeof prop.value.value === 'boolean')) {
+    } else if (
+      namedTypes.BooleanLiteral.check(prop.value) ||
+      (namedTypes.Literal.check(prop.value) && typeof prop.value.value === 'boolean')
+    ) {
       result[key] = Boolean(prop.value.value);
     } else if (namedTypes.ObjectExpression.check(prop.value)) {
       // Recursively process nested objects
@@ -53,7 +57,6 @@ export function styleObjectToPlain(objectExpression: namedTypes.ObjectExpression
 
   return result;
 }
-
 
 /**
  * Parse serializable properties into a plain object.
@@ -72,14 +75,14 @@ export function parseSimpleObjectExpression(astNode: any): object {
 
     let key = namedTypes.Identifier.check(prop.key)
       ? prop.key.name
-      : (namedTypes.Literal.check(prop.key) || namedTypes.StringLiteral.check(prop.key))
+      : namedTypes.Literal.check(prop.key) || namedTypes.StringLiteral.check(prop.key)
         ? String(prop.key.value)
         : null;
 
     if (key === null) {
       console.error(`Invalid key: "${prop.key}", skipping property`);
       continue;
-    };
+    }
 
     let value: any;
     if (namedTypes.NewExpression.check(prop.value)) {
@@ -87,15 +90,16 @@ export function parseSimpleObjectExpression(astNode: any): object {
       if (namedTypes.Identifier.check(prop.value.callee) && prop.value.callee.name === 'Map') {
         const mapArgs = prop.value.arguments[0];
         if (namedTypes.ArrayExpression.check(mapArgs)) {
-          value = new Map(mapArgs.elements
-            .map((el: any) => {
-              if (namedTypes.ArrayExpression.check(el) && el.elements.length === 2) {
-                const [key, val] = el.elements;
-                return [parseValue(key), parseValue(val)] as [unknown, unknown];
-              }
-              return null;
-            })
-            .filter((entry): entry is [unknown, unknown] => entry !== null)
+          value = new Map(
+            mapArgs.elements
+              .map((el: any) => {
+                if (namedTypes.ArrayExpression.check(el) && el.elements.length === 2) {
+                  const [key, val] = el.elements;
+                  return [parseValue(key), parseValue(val)] as [unknown, unknown];
+                }
+                return null;
+              })
+              .filter((entry): entry is [unknown, unknown] => entry !== null)
           );
         }
       } else if (namedTypes.Identifier.check(prop.value.callee) && prop.value.callee.name === 'Set') {
@@ -130,10 +134,12 @@ export function parseSimpleObjectExpression(astNode: any): object {
 }
 
 export function parseValue(node: any): any {
-  if (namedTypes.Literal.check(node) ||
-      namedTypes.StringLiteral.check(node) ||
-      namedTypes.NumericLiteral.check(node) ||
-      namedTypes.BooleanLiteral.check(node)) {
+  if (
+    namedTypes.Literal.check(node) ||
+    namedTypes.StringLiteral.check(node) ||
+    namedTypes.NumericLiteral.check(node) ||
+    namedTypes.BooleanLiteral.check(node)
+  ) {
     return node.value;
   } else if (namedTypes.ArrayExpression.check(node)) {
     return node.elements

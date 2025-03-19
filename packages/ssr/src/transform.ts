@@ -5,7 +5,13 @@ import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
 
 import { possibleStandardNames } from './constants.js';
-import { styleObjectToPlain, serializeScopedComponent, serializeShadowComponent, parseSimpleObjectExpression, type StyleObject } from './utils.js';
+import {
+  styleObjectToPlain,
+  serializeScopedComponent,
+  serializeShadowComponent,
+  parseSimpleObjectExpression,
+  type StyleObject,
+} from './utils.js';
 import type { StencilSSROptions } from './types.js';
 
 export async function transform(
@@ -133,10 +139,10 @@ export async function transform(
       /**
        * parse serializable properties into a plain object
        */
-      const style = properties.find((p) => 'key' in p && 'name' in p.key && p.key.name === 'style')
-      let styleObject: StyleObject | undefined = undefined
+      const style = properties.find((p) => 'key' in p && 'name' in p.key && p.key.name === 'style');
+      let styleObject: StyleObject | undefined = undefined;
       if (namedTypes.Property.check(style) && namedTypes.ObjectExpression.check(style.value)) {
-        styleObject = styleObjectToPlain(style.value)
+        styleObject = styleObjectToPlain(style.value);
       }
 
       const propObject = parseSimpleObjectExpression(b.objectExpression(properties));
@@ -148,7 +154,7 @@ export async function transform(
         .filter(([key]) => !['children', 'style'].includes(key))
         .map(([key, value]) => {
           const propKey = possibleStandardNames[key as keyof typeof possibleStandardNames] || key;
-          return `${propKey}="${importedHydrateModule.serializeProperty(value)}"`
+          return `${propKey}="${importedHydrateModule.serializeProperty(value)}"`;
         })
         .join(' ');
 
@@ -169,7 +175,12 @@ export async function transform(
       /**
        * return the component's identifier and the rendered HTML split into lines
        */
-      return [identifier, tagName, html.split('\n'), styleObject] as [string, string, string[], StyleObject | undefined];
+      return [identifier, tagName, html.split('\n'), styleObject] as [
+        string,
+        string,
+        string[],
+        StyleObject | undefined,
+      ];
     })
   );
 
