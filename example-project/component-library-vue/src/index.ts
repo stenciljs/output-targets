@@ -8,6 +8,7 @@ import type { JSX } from 'component-library';
 import { defineCustomElement as defineMyButton } from 'component-library/components/my-button.js';
 import { defineCustomElement as defineMyCheckbox } from 'component-library/components/my-checkbox.js';
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
+import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
 import { defineCustomElement as defineMyList } from 'component-library/components/my-list.js';
 import { defineCustomElement as defineMyListItem } from 'component-library/components/my-list-item.js';
@@ -121,6 +122,21 @@ export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ g
     'favoriteKidName': [String, "favorite-kid-name"],
     'onMyCustomEvent': [Function],
     'onMyCustomNestedEvent': [Function]
+  }
+});
+
+
+export const MyCounter: StencilVueComponent<JSX.MyCounter> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyCounter>('my-counter', defineMyCounter, [
+  'startValue',
+  'count'
+], [
+  'count'
+]) : defineStencilSSRComponent<JSX.MyCounter>({
+  tagName: 'my-counter',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'startValue': [String, "start-value"],
+    'onCount': [Function]
   }
 });
 

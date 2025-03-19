@@ -1,6 +1,6 @@
 'use client';
 
-import { MyList, MyListItem } from '../components.server';
+import { MyList, MyListItem } from 'component-library-react';
 import { LazyComponent } from '../LazyComponent/LazyComponent';
 import { ThemeContext } from '../ThemeContext/ThemeContext';
 

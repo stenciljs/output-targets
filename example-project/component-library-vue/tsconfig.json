@@ -7,8 +7,8 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "lib": ["dom", "esnext"],
-    "module": "NodeNext",
-    "moduleResolution": "Node16",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
@@ -21,7 +21,7 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["./__tests__/**", "node_modules", "setupTests.ts"],
+  "exclude": ["node_modules"],
   "compileOnSave": false,
   "buildOnSave": false
 }
