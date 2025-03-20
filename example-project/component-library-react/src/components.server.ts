@@ -26,6 +26,7 @@ import {
 } from 'component-library';
 import { MyButton as MyButtonElement } from 'component-library/components/my-button.js';
 import { MyCheckbox as MyCheckboxElement } from 'component-library/components/my-checkbox.js';
+import { MyComplexProps as MyComplexPropsElement } from 'component-library/components/my-complex-props.js';
 import { MyComponent as MyComponentElement } from 'component-library/components/my-component.js';
 import { MyCounter as MyCounterElement } from 'component-library/components/my-counter.js';
 import { MyInput as MyInputElement } from 'component-library/components/my-input.js';
@@ -98,6 +99,22 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
   serializeShadowRoot,
 });
 
+export type MyComplexPropsEvents = NonNullable<unknown>;
+
+export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents> =
+  /*@__PURE__*/ createComponent<MyComplexPropsElement, MyComplexPropsEvents>({
+    tagName: 'my-complex-props',
+    properties: {
+      foo: 'foo',
+      baz: 'baz',
+      quux: 'quux',
+      grault: 'grault',
+      waldo: 'waldo',
+    },
+    hydrateModule: import('component-library/hydrate'),
+    serializeShadowRoot,
+  });
+
 export type MyComponentEvents = {
   onMyCustomEvent: EventName<MyComponentCustomEvent<IMyComponent.someVar>>;
   onMyCustomNestedEvent: EventName<MyComponentCustomEvent<IMyComponent.SomeMoreComplexType.SubType>>;
@@ -113,6 +130,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     middle: 'middle',
     last: 'last',
     age: 'age',
+    kidsNames: 'kids-names',
     favoriteKidName: 'favorite-kid-name',
   },
   hydrateModule: import('component-library/hydrate'),
@@ -213,6 +231,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
   tagName: 'my-popover',
   properties: {
     component: 'component',
+    componentProps: 'component-props',
     keyboardClose: 'keyboard-close',
     cssClass: 'css-class',
     backdropDismiss: 'backdrop-dismiss',

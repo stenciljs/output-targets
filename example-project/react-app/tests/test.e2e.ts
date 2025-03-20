@@ -10,23 +10,16 @@ describe('Stencil NextJS Integration', () => {
      * @see https://github.com/w3c/webdriver-bidi/pull/856
      */
     const pptr = await browser.getPuppeteer() as PuppeteerBrowser
-    const page = (await pptr.pages()).find((p) => {
-      console.log(p.url());
-      return p.url() === 'about:blank'
-    })
+    const page = (await pptr.pages()).find((p) => p.url() === 'about:blank')
     if (!page) {
       throw new Error('Page not found')
     }
     const source = page.waitForResponse('http://localhost:5002/');
     await browser.url('/')
     const html = await (await source).text()
-    const template = html.slice(html.indexOf('<my-input '), html.lastIndexOf('<script'))
-    expect(template).toContain(`Hello, World! I'm Don't 😉 call me a framework`)
-    /**
-     * ToDo(@christian-bromann): enable once support for basic objects is added
-     */
-    // expect(template).toContain('Kids: John, Jane')
-    expect(template).toContain('class="sc-my-counter"')
+    expect(html).toContain(`Hello, World! I'm Don't 😉 call me a framework`)
+    expect(html).toContain('Kids: John, Jane')
+    expect(html).toContain('class="sc-my-counter"')
   });
 
   it('should allow to interact with input element', async () => {

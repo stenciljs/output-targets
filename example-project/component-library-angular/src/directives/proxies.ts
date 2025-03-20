@@ -80,6 +80,28 @@ This event will not emit when programmatically setting the `checked` property.
 
 
 @ProxyCmp({
+  inputs: ['baz', 'foo', 'grault', 'quux', 'waldo']
+})
+@Component({
+  selector: 'my-complex-props',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['baz', 'foo', 'grault', 'quux', 'waldo'],
+})
+export class MyComplexProps {
+  protected el: HTMLMyComplexPropsElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}
+
+
+export declare interface MyComplexProps extends Components.MyComplexProps {}
+
+
+@ProxyCmp({
   inputs: ['age', 'favoriteKidName', 'first', 'kidsNames', 'last', 'middle']
 })
 @Component({
