@@ -4,7 +4,7 @@ import { transformSync } from 'esbuild';
 import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
 
-import { possibleStandardNames } from './constants.js';
+import { getReactPropertyName } from './react.js';
 import {
   styleObjectToPlain,
   serializeScopedComponent,
@@ -12,7 +12,12 @@ import {
   parseSimpleObjectExpression,
   type StyleObject,
 } from './utils.js';
-import type { StencilSSROptions } from './types.js';
+import type { StencilSSROptions, SerializeShadowRootOptions } from './types.js';
+
+interface HydrateModule {
+  serializeProperty: (value: any) => string,
+  renderToString: (tpl: string, options: { prettyHtml?: boolean, fullDocument?: boolean, serializeShadowRoot?: SerializeShadowRootOptions }) => Promise<{ html: string }>
+}
 
 export async function transform(
   code: string,
@@ -60,7 +65,7 @@ export async function transform(
    * - the hydrate module which gives us the renderToString method
    * - the components from the user's component library
    */
-  const importedHydrateModule = await hydrateModule;
+  const importedHydrateModule = await hydrateModule as HydrateModule;
   const components = Object.keys(await module);
   const componentCalls: {
     identifier: string;
@@ -134,7 +139,7 @@ export async function transform(
    * For each component call, render the component to a string and return the
    * component's identifier and the rendered HTML.
    */
-  const declarations = await Promise.all(
+  const componentDeclarations = await Promise.all(
     componentCalls.map(async ({ identifier, tagName, properties }) => {
       /**
        * parse serializable properties into a plain object
@@ -152,10 +157,7 @@ export async function transform(
          * will handle them separately
          */
         .filter(([key]) => !['children', 'style'].includes(key))
-        .map(([key, value]) => {
-          const propKey = possibleStandardNames[key as keyof typeof possibleStandardNames] || key;
-          return `${propKey}="${importedHydrateModule.serializeProperty(value)}"`;
-        })
+        .map(([key, value]) => `${getReactPropertyName(key)}="${importedHydrateModule.serializeProperty(value)}"`)
         .join(' ');
 
       /**
@@ -163,7 +165,7 @@ export async function transform(
        *
        * Note: we purposly don't parse in a light DOM as we can't evaluate the code during SSR.
        */
-      const children = (propObject as Record<string, any>).children;
+      let children = (propObject as Record<string, any>).children;
       const toRender =
         typeof children === 'string' ? `<${tagName} ${props}>${children}</${tagName}>` : `<${tagName} ${props} />`;
       const { html } = await importedHydrateModule.renderToString(toRender, {
@@ -172,27 +174,8 @@ export async function transform(
         serializeShadowRoot,
       });
 
-      /**
-       * return the component's identifier and the rendered HTML split into lines
-       */
-      return [identifier, tagName, html.split('\n'), styleObject] as [
-        string,
-        string,
-        string[],
-        StyleObject | undefined,
-      ];
-    })
-  );
-
-  /**
-   * Create a stringified version of each component
-   */
-  const wrappedComponents = declarations.reduce((acc, [identifier, tagName, html, styleObject]) => {
-    /**
-     * Determine if the component should be rendered in a scoped shadow root.
-     */
-    const isScoped =
-      typeof serializeShadowRoot === 'string'
+      const isScopedComponent = !html.includes('<template shadowrootmode="open">');
+      const isScoped = typeof serializeShadowRoot === 'string'
         ? serializeShadowRoot === 'scoped'
         : typeof serializeShadowRoot === 'object'
           ? serializeShadowRoot.default === 'scoped'
@@ -200,23 +183,24 @@ export async function transform(
             : serializeShadowRoot['scoped']?.includes(tagName)
           : false;
 
-    /**
-     * serialize scoped component
-     */
-    if (isScoped) {
-      return acc + serializeScopedComponent(html, identifier, styleObject);
-    }
+      /**
+       * serialize scoped component
+       */
+      if (isScoped || isScopedComponent) {
+        return serializeScopedComponent(html.split('\n'), identifier);
+      }
 
-    /**
-     * serialize shadow component
-     */
-    return acc + serializeShadowComponent(html, identifier, styleObject);
-  }, '');
+      /**
+       * serialize shadow component
+       */
+      return serializeShadowComponent(html.split('\n'), identifier, styleObject);
+    })
+  );
 
   /**
    * Transform the wrapped JSX components into a raw JavaScript string.
    */
-  const result = transformSync(wrappedComponents, {
+  const result = transformSync(componentDeclarations.join('\n'), {
     loader: 'jsx',
     jsx: 'automatic', // Use React 17+ JSX transform
     jsxDev: true, // Include debug info (like in your example)

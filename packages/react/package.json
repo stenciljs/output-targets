@@ -57,7 +57,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@stencil/core": "4.28.2-dev.1742410675.302a004",
+    "@stencil/core": "4.28.2-dev.1742453865.0e5a479",
     "@types/node": "^20.14.12",
     "@types/react": "^18 || ^19",
     "@types/react-dom": "^18 || ^19",

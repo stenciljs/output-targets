@@ -5,14 +5,6 @@ import { $, browser, expect } from '@wdio/globals';
 describe('Stencil NextJS Integration', () => {
   before(() => browser.url('/'));
 
-  it.skip('should have hydrated the page', async () => {
-    const source = await browser.getPageSource();
-    // serializes component children
-    expect(source).toContain('<input name="myRadioGroup" type="radio" value="one">');
-    expect(source).toContain('<input name="myRadioGroup" type="radio" value="two">');
-    expect(source).toContain('<input name="myRadioGroup" type="radio" value="three">');
-  });
-
   it('should allow to interact with input element', async () => {
     /**
      * Clicking on the body is required to trigger the hydration of the input element

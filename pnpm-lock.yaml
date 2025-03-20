@@ -47,8 +47,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/angular
       '@stencil/core':
-        specifier: 4.28.2-dev.1742410675.302a004
-        version: 4.28.2-dev.1742410675.302a004
+        specifier: 4.28.2-dev.1742453865.0e5a479
+        version: 4.28.2-dev.1742453865.0e5a479
       '@stencil/react-output-target':
         specifier: workspace:*
         version: link:../../packages/react
@@ -666,8 +666,8 @@ importers:
         specifier: 8.2.14
         version: 8.2.14(@angular/common@16.2.12(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.13.3))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.13.3))(@angular/platform-browser@16.2.12(@angular/common@16.2.12(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.13.3))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.13.3)))(rxjs@7.8.2)
       '@stencil/core':
-        specifier: 4.28.2-dev.1742410675.302a004
-        version: 4.28.2-dev.1742410675.302a004
+        specifier: 4.28.2-dev.1742453865.0e5a479
+        version: 4.28.2-dev.1742453865.0e5a479
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.76
@@ -709,8 +709,8 @@ importers:
         version: 22.0.0
     devDependencies:
       '@stencil/core':
-        specifier: 4.28.2-dev.1742410675.302a004
-        version: 4.28.2-dev.1742410675.302a004
+        specifier: 4.28.2-dev.1742453865.0e5a479
+        version: 4.28.2-dev.1742453865.0e5a479
       '@types/node':
         specifier: ^20.14.12
         version: 20.17.19
@@ -4102,8 +4102,8 @@ packages:
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
-  '@stencil/core@4.28.2-dev.1742410675.302a004':
-    resolution: {integrity: sha512-psB17y/jvKAzCtTiz2yMRTbayyPbXoNWO5HdE73G/4GufAH5HnzPC/HRTO9dXdoSAJlzyriQkjWY1BX4/vg8cg==}
+  '@stencil/core@4.28.2-dev.1742453865.0e5a479':
+    resolution: {integrity: sha512-D1agdPZdgHKoT0+VhKER4Kg/lV0T1EwxDyxw1mFBaOMSC2w7Xr3kuyZEfaIDrWvCkCCeSmG0Z3AUqjX+go/YZg==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
@@ -16701,7 +16701,7 @@ snapshots:
       '@rollup/rollup-win32-arm64-msvc': 4.34.9
       '@rollup/rollup-win32-x64-msvc': 4.34.9
 
-  '@stencil/core@4.28.2-dev.1742410675.302a004':
+  '@stencil/core@4.28.2-dev.1742453865.0e5a479':
     optionalDependencies:
       '@rollup/rollup-darwin-arm64': 4.34.9
       '@rollup/rollup-darwin-x64': 4.34.9

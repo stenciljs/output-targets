@@ -69,7 +69,19 @@ export function parseSimpleObjectExpression(astNode: any): object {
   const result: Record<string, any> = {};
 
   for (const prop of astNode.properties) {
-    if (!namedTypes.Property.check(prop) || prop.kind !== 'init') {
+    /**
+     * skip if
+     */
+    if (
+      /**
+       * AST node is not a property
+       */
+      !namedTypes.Property.check(prop) || prop.kind !== 'init' ||
+      /**
+       * property is a function
+       */
+      namedTypes.FunctionDeclaration.check(prop.value) || namedTypes.ArrowFunctionExpression.check(prop.value)
+    ) {
       continue;
     }
 
@@ -163,15 +175,15 @@ export function parseValue(node: any): any {
  * @param identifier - The identifier of the component
  * @returns The serialized component
  */
-export function serializeScopedComponent(html: string[], identifier: string, styleObject?: StyleObject) {
-  const cmpTag = html[0];
-  const __html = html.slice(1, -1).join('\n');
-  const style = styleObject ? ` style={${JSON.stringify(styleObject)}}` : '';
-  return `\nconst ${identifier} = ({ children }) => {
-  return (
-    ${cmpTag.slice(0, -1) + style} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
-  );
-}`;
+export function serializeScopedComponent(html: string[], identifier: string) {
+  /**
+   * If the component has no child nodes, we can just return a React element
+   * with the dangerouslySetInnerHTML prop set to the HTML of the component.
+   */
+  const cmpTag = html[0].slice(0, -1) + ' suppressHydrationWarning={true}';
+  return `\nconst ${identifier} = ({ children, ...props }) => {
+    return ${cmpTag} dangerouslySetInnerHTML={{ __html: \`${html.slice(1, -1).join('\n').trim()}\` }} />
+  }\n`;
 }
 
 /**
@@ -189,7 +201,7 @@ export function serializeShadowComponent(html: string[], identifier: string, sty
    * Let's reconstruct the rendered Stencil component into a JSX component
    */
   const cmpEndTag = html[html.length - 1];
-  const templateClosingIndex = html.findIndex((line) => line.includes('</template>'));
+  const templateClosingIndex = html.findLastIndex((line) => line.includes('</template>'));
   const __html = html.slice(2, templateClosingIndex).join('\n');
   return `\nconst ${identifier} = ({ children }) => {
   return (

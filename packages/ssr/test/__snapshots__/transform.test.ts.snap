@@ -2,8 +2,8 @@
 
 exports[`transform > should transform the code 1`] = `
 "import { jsxDEV } from "react/jsx-dev-runtime";
-const MyComponent$0 = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", kidsnames: "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "1", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.1-->
+const MyComponent$0 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "1", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.1-->
   <div c-id="1.0.0.0" class="sc-my-component">
     <!--t.1.1.1.0-->
     Hello, World! I'm John William Doe
@@ -13,22 +13,22 @@ const MyComponent$0 = ({ children }) => {
     </p>
     <p c-id="1.4.1.2" class="sc-my-component">
       <!--t.1.5.2.0-->
-      Kids:
+      Kids: John, Jane, Jim
     </p>
     <p c-id="1.6.1.3" class="sc-my-component">
       <!--t.1.7.2.0-->
       Favorite kid:
     </p>
   </div>\` } }, void 0, false, {
-    lineNumber: 4,
-    columnNumber: 5
+    lineNumber: 3,
+    columnNumber: 12
   });
 };
-const MyComponent$1 = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", "s-id": "2", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.2-->
+const MyComponent$1 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", "s-id": "2", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.2-->
   <div c-id="2.0.0.0" class="sc-my-component">
     <!--t.2.1.1.0-->
-    Hello, World! I'm null null null
+    Hello, World! I'm undefined undefined undefined
     <p c-id="2.2.1.1" class="sc-my-component">
       <!--t.2.3.2.0-->
       Age:
@@ -42,57 +42,57 @@ const MyComponent$1 = ({ children }) => {
       Favorite kid:
     </p>
   </div>\` } }, void 0, false, {
-    lineNumber: 25,
-    columnNumber: 5
+    lineNumber: 24,
+    columnNumber: 12
   });
 };
-const MyList$2 = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "3", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.3-->
+const MyList$2 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "3", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.3-->
   <ul c-id="3.0.0.0" class="sc-my-list sc-my-list-s">
     <!--s.3.1.1.0.-->
   </ul>\` } }, void 0, false, {
-    lineNumber: 46,
-    columnNumber: 5
+    lineNumber: 45,
+    columnNumber: 12
   });
 };
-const MyListItem$3 = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "4", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.4-->
+const MyListItem$3 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "4", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.4-->
   <!--o.0.1.-->
   <li c-id="4.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.4.1.1.0.-->
     <!--t.0.1-->
     Item 1
   </li>\` } }, void 0, false, {
-    lineNumber: 54,
-    columnNumber: 5
+    lineNumber: 53,
+    columnNumber: 12
   });
 };
-const MyListItem$4 = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "5", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.5-->
+const MyListItem$4 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "5", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.5-->
   <!--o.0.2.-->
   <li c-id="5.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.5.1.1.0.-->
     <!--t.0.2-->
     Item 2
   </li>\` } }, void 0, false, {
-    lineNumber: 65,
-    columnNumber: 5
+    lineNumber: 64,
+    columnNumber: 12
   });
 };
-const MyListItem$5 = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "6", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.6-->
+const MyListItem$5 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "6", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.6-->
   <!--o.0.3.-->
   <li c-id="6.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.6.1.1.0.-->
     <!--t.0.3-->
     Item 3
   </li>\` } }, void 0, false, {
-    lineNumber: 76,
-    columnNumber: 5
+    lineNumber: 75,
+    columnNumber: 12
   });
 };
-const MyCounter$6 = ({ children }) => {
-  return /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "7", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`  <!--r.7-->
+const MyCounter$6 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "7", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.7-->
   <div c-id="7.0.0.0" class="sc-my-counter">
     <button c-id="7.1.1.0" class="sc-my-counter">
       <!--t.7.2.2.0-->
@@ -107,8 +107,8 @@ const MyCounter$6 = ({ children }) => {
       +
     </button>
   </div>\` } }, void 0, false, {
-    lineNumber: 87,
-    columnNumber: 5
+    lineNumber: 86,
+    columnNumber: 12
   });
 };
 import { jsxDEV } from "react/jsx-dev-runtime";

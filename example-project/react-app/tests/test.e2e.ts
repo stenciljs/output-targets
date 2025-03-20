@@ -10,10 +10,7 @@ describe('Stencil NextJS Integration', () => {
      * @see https://github.com/w3c/webdriver-bidi/pull/856
      */
     const pptr = await browser.getPuppeteer() as PuppeteerBrowser
-    const page = (await pptr.pages()).find((p) => {
-      console.log(p.url());
-      return p.url() === 'about:blank'
-    })
+    const page = (await pptr.pages()).find((p) => p.url() === 'about:blank')
     if (!page) {
       throw new Error('Page not found')
     }
