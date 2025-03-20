@@ -165,7 +165,7 @@ export async function transform(
        *
        * Note: we purposly don't parse in a light DOM as we can't evaluate the code during SSR.
        */
-      let children = (propObject as Record<string, any>).children;
+      const children = (propObject as Record<string, any>).children;
       const toRender =
         typeof children === 'string' ? `<${tagName} ${props}>${children}</${tagName}>` : `<${tagName} ${props} />`;
       const { html } = await importedHydrateModule.renderToString(toRender, {
