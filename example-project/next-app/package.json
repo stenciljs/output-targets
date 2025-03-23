@@ -35,6 +35,7 @@
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
     "puppeteer-core": "^24.4.0",
+    "react-test-components": "workspace:*",
     "tailwindcss": "^3.4.13",
     "tsx": "^4.19.1",
     "typescript": "^5",

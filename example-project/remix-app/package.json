@@ -45,6 +45,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.38",
     "puppeteer-core": "^24.4.0",
+    "react-test-components": "workspace:*",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.1.6",
     "webdriverio": "^9.11.0",

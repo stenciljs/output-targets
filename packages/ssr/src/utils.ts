@@ -181,8 +181,9 @@ export function serializeScopedComponent(html: string[], identifier: string) {
    * with the dangerouslySetInnerHTML prop set to the HTML of the component.
    */
   const cmpTag = html[0].slice(0, -1) + ' suppressHydrationWarning={true}';
+  const __html = html.slice(1, -1).join('\n').trim();
   return `\nconst ${identifier} = ({ children, ...props }) => {
-    return ${cmpTag} dangerouslySetInnerHTML={{ __html: \`${html.slice(1, -1).join('\n').trim()}\` }} />
+    return ${cmpTag} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
   }\n`;
 }
 

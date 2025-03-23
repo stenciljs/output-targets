@@ -80,6 +80,64 @@ export namespace Components {
          */
         "type": 'submit' | 'reset' | 'button';
     }
+    interface MyButtonScoped {
+        /**
+          * The type of button.
+         */
+        "buttonType": string;
+        /**
+          * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
+         */
+        "color"?: Color;
+        /**
+          * If `true`, the user cannot interact with the button.
+         */
+        "disabled": boolean;
+        /**
+          * This attribute instructs browsers to download a URL instead of navigating to it, so the user will be prompted to save it as a local file. If the attribute has a value, it is used as the pre-filled file name in the Save prompt (the user can still change the file name if they want).
+         */
+        "download": string | undefined;
+        /**
+          * Set to `"block"` for a full-width button or to `"full"` for a full-width button without left and right borders.
+         */
+        "expand"?: 'full' | 'block';
+        /**
+          * Set to `"clear"` for a transparent button, to `"outline"` for a transparent button with a border, or to `"solid"`. The default style is `"solid"` except inside of a toolbar, where the default is `"clear"`.
+         */
+        "fill"?: 'clear' | 'outline' | 'solid' | 'default';
+        /**
+          * Contains a URL or a URL fragment that the hyperlink points to. If this property is set, an anchor tag will be rendered.
+         */
+        "href": string | undefined;
+        /**
+          * The mode determines which platform styles to use.
+         */
+        "mode"?: "ios" | "md";
+        /**
+          * Specifies the relationship of the target object to the link object. The value is a space-separated list of [link types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types).
+         */
+        "rel": string | undefined;
+        /**
+          * The button shape.
+         */
+        "shape"?: 'round';
+        /**
+          * The button size.
+         */
+        "size"?: 'small' | 'default' | 'large';
+        /**
+          * If `true`, activates a button with a heavier font weight.
+         */
+        "strong": boolean;
+        /**
+          * Specifies where to display the linked URL. Only applies when an `href` is provided. Special keywords: `"_blank"`, `"_self"`, `"_parent"`, `"_top"`.
+         */
+        "target": string | undefined;
+        /**
+          * The type of the button.
+         */
+        "type": 'submit' | 'reset' | 'button';
+    }
     interface MyCheckbox {
         /**
           * How to control the alignment of the checkbox and label on the cross axis. `"start"`: The label and control will appear on the left of the cross axis in LTR, and on the right side in RTL. `"center"`: The label and control will appear at the center of the cross axis in both LTR and RTL. Setting this property will change the checkbox `display` to `block`.
@@ -147,29 +205,31 @@ export namespace Components {
     }
     interface MyComponent {
         /**
-          * The age
-         */
-        "age": number;
-        /**
-          * The favorite kid
-         */
-        "favoriteKidName": string;
-        /**
           * The first name
          */
         "first": string;
-        /**
-          * The array of child names
-         */
-        "kidsNames": string[];
         /**
           * The last name
          */
         "last": string;
         /**
-          * The middle name
+          * The middle name (using kebab case name)
          */
-        "middle": string;
+        "middleName": string;
+    }
+    interface MyComponentScoped {
+        /**
+          * The first name
+         */
+        "first": string;
+        /**
+          * The last name
+         */
+        "last": string;
+        /**
+          * The middle name (using kebab case name)
+         */
+        "middleName": string;
     }
     interface MyCounter {
         /**
@@ -298,6 +358,10 @@ export namespace Components {
     interface MyList {
     }
     interface MyListItem {
+    }
+    interface MyListItemScoped {
+    }
+    interface MyListScoped {
     }
     interface MyPopover {
         /**
@@ -478,13 +542,17 @@ export interface MyButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMyButtonElement;
 }
+export interface MyButtonScopedCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMyButtonScopedElement;
+}
 export interface MyCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMyCheckboxElement;
 }
-export interface MyComponentCustomEvent<T> extends CustomEvent<T> {
+export interface MyComponentScopedCustomEvent<T> extends CustomEvent<T> {
     detail: T;
-    target: HTMLMyComponentElement;
+    target: HTMLMyComponentScopedElement;
 }
 export interface MyCounterCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -529,6 +597,24 @@ declare global {
         prototype: HTMLMyButtonElement;
         new (): HTMLMyButtonElement;
     };
+    interface HTMLMyButtonScopedElementEventMap {
+        "myFocus": void;
+        "myBlur": void;
+    }
+    interface HTMLMyButtonScopedElement extends Components.MyButtonScoped, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMyButtonScopedElementEventMap>(type: K, listener: (this: HTMLMyButtonScopedElement, ev: MyButtonScopedCustomEvent<HTMLMyButtonScopedElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMyButtonScopedElementEventMap>(type: K, listener: (this: HTMLMyButtonScopedElement, ev: MyButtonScopedCustomEvent<HTMLMyButtonScopedElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMyButtonScopedElement: {
+        prototype: HTMLMyButtonScopedElement;
+        new (): HTMLMyButtonScopedElement;
+    };
     interface HTMLMyCheckboxElementEventMap {
         "ionChange": CheckboxChangeEventDetail;
         "ionFocus": void;
@@ -554,23 +640,28 @@ declare global {
         prototype: HTMLMyComplexPropsElement;
         new (): HTMLMyComplexPropsElement;
     };
-    interface HTMLMyComponentElementEventMap {
-        "myCustomEvent": IMyComponent.someVar;
-        "myCustomNestedEvent": IMyComponent.SomeMoreComplexType.SubType;
-    }
     interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLMyComponentElementEventMap>(type: K, listener: (this: HTMLMyComponentElement, ev: MyComponentCustomEvent<HTMLMyComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLMyComponentElementEventMap>(type: K, listener: (this: HTMLMyComponentElement, ev: MyComponentCustomEvent<HTMLMyComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLMyComponentElement: {
         prototype: HTMLMyComponentElement;
         new (): HTMLMyComponentElement;
+    };
+    interface HTMLMyComponentScopedElementEventMap {
+        "myCustomEvent": IMyComponent.someVar;
+    }
+    interface HTMLMyComponentScopedElement extends Components.MyComponentScoped, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMyComponentScopedElementEventMap>(type: K, listener: (this: HTMLMyComponentScopedElement, ev: MyComponentScopedCustomEvent<HTMLMyComponentScopedElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMyComponentScopedElementEventMap>(type: K, listener: (this: HTMLMyComponentScopedElement, ev: MyComponentScopedCustomEvent<HTMLMyComponentScopedElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMyComponentScopedElement: {
+        prototype: HTMLMyComponentScopedElement;
+        new (): HTMLMyComponentScopedElement;
     };
     interface HTMLMyCounterElementEventMap {
         "count": number;
@@ -620,6 +711,18 @@ declare global {
     var HTMLMyListItemElement: {
         prototype: HTMLMyListItemElement;
         new (): HTMLMyListItemElement;
+    };
+    interface HTMLMyListItemScopedElement extends Components.MyListItemScoped, HTMLStencilElement {
+    }
+    var HTMLMyListItemScopedElement: {
+        prototype: HTMLMyListItemScopedElement;
+        new (): HTMLMyListItemScopedElement;
+    };
+    interface HTMLMyListScopedElement extends Components.MyListScoped, HTMLStencilElement {
+    }
+    var HTMLMyListScopedElement: {
+        prototype: HTMLMyListScopedElement;
+        new (): HTMLMyListScopedElement;
     };
     interface HTMLMyPopoverElementEventMap {
         "myPopoverDidPresent": void;
@@ -711,13 +814,17 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "my-button": HTMLMyButtonElement;
+        "my-button-scoped": HTMLMyButtonScopedElement;
         "my-checkbox": HTMLMyCheckboxElement;
         "my-complex-props": HTMLMyComplexPropsElement;
         "my-component": HTMLMyComponentElement;
+        "my-component-scoped": HTMLMyComponentScopedElement;
         "my-counter": HTMLMyCounterElement;
         "my-input": HTMLMyInputElement;
         "my-list": HTMLMyListElement;
         "my-list-item": HTMLMyListItemElement;
+        "my-list-item-scoped": HTMLMyListItemScopedElement;
+        "my-list-scoped": HTMLMyListScopedElement;
         "my-popover": HTMLMyPopoverElement;
         "my-radio": HTMLMyRadioElement;
         "my-radio-group": HTMLMyRadioGroupElement;
@@ -768,6 +875,72 @@ declare namespace LocalJSX {
           * Emitted when the button has focus.
          */
         "onMyFocus"?: (event: MyButtonCustomEvent<void>) => void;
+        /**
+          * Specifies the relationship of the target object to the link object. The value is a space-separated list of [link types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types).
+         */
+        "rel"?: string | undefined;
+        /**
+          * The button shape.
+         */
+        "shape"?: 'round';
+        /**
+          * The button size.
+         */
+        "size"?: 'small' | 'default' | 'large';
+        /**
+          * If `true`, activates a button with a heavier font weight.
+         */
+        "strong"?: boolean;
+        /**
+          * Specifies where to display the linked URL. Only applies when an `href` is provided. Special keywords: `"_blank"`, `"_self"`, `"_parent"`, `"_top"`.
+         */
+        "target"?: string | undefined;
+        /**
+          * The type of the button.
+         */
+        "type"?: 'submit' | 'reset' | 'button';
+    }
+    interface MyButtonScoped {
+        /**
+          * The type of button.
+         */
+        "buttonType"?: string;
+        /**
+          * The color to use from your application's color palette. Default options are: `"primary"`, `"secondary"`, `"tertiary"`, `"success"`, `"warning"`, `"danger"`, `"light"`, `"medium"`, and `"dark"`. For more information on colors, see [theming](/docs/theming/basics).
+         */
+        "color"?: Color;
+        /**
+          * If `true`, the user cannot interact with the button.
+         */
+        "disabled"?: boolean;
+        /**
+          * This attribute instructs browsers to download a URL instead of navigating to it, so the user will be prompted to save it as a local file. If the attribute has a value, it is used as the pre-filled file name in the Save prompt (the user can still change the file name if they want).
+         */
+        "download"?: string | undefined;
+        /**
+          * Set to `"block"` for a full-width button or to `"full"` for a full-width button without left and right borders.
+         */
+        "expand"?: 'full' | 'block';
+        /**
+          * Set to `"clear"` for a transparent button, to `"outline"` for a transparent button with a border, or to `"solid"`. The default style is `"solid"` except inside of a toolbar, where the default is `"clear"`.
+         */
+        "fill"?: 'clear' | 'outline' | 'solid' | 'default';
+        /**
+          * Contains a URL or a URL fragment that the hyperlink points to. If this property is set, an anchor tag will be rendered.
+         */
+        "href"?: string | undefined;
+        /**
+          * The mode determines which platform styles to use.
+         */
+        "mode"?: "ios" | "md";
+        /**
+          * Emitted when the button loses focus.
+         */
+        "onMyBlur"?: (event: MyButtonScopedCustomEvent<void>) => void;
+        /**
+          * Emitted when the button has focus.
+         */
+        "onMyFocus"?: (event: MyButtonScopedCustomEvent<void>) => void;
         /**
           * Specifies the relationship of the target object to the link object. The value is a space-separated list of [link types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types).
          */
@@ -871,37 +1044,35 @@ declare namespace LocalJSX {
     }
     interface MyComponent {
         /**
-          * The age
-         */
-        "age"?: number;
-        /**
-          * The favorite kid
-         */
-        "favoriteKidName"?: string;
-        /**
           * The first name
          */
         "first"?: string;
-        /**
-          * The array of child names
-         */
-        "kidsNames"?: string[];
         /**
           * The last name
          */
         "last"?: string;
         /**
-          * The middle name
+          * The middle name (using kebab case name)
          */
-        "middle"?: string;
+        "middleName"?: string;
+    }
+    interface MyComponentScoped {
+        /**
+          * The first name
+         */
+        "first"?: string;
+        /**
+          * The last name
+         */
+        "last"?: string;
+        /**
+          * The middle name (using kebab case name)
+         */
+        "middleName"?: string;
         /**
           * Testing an event without value
          */
-        "onMyCustomEvent"?: (event: MyComponentCustomEvent<IMyComponent.someVar>) => void;
-        /**
-          * Testing with nested namespaces
-         */
-        "onMyCustomNestedEvent"?: (event: MyComponentCustomEvent<IMyComponent.SomeMoreComplexType.SubType>) => void;
+        "onMyCustomEvent"?: (event: MyComponentScopedCustomEvent<IMyComponent.someVar>) => void;
     }
     interface MyCounter {
         /**
@@ -1042,6 +1213,10 @@ declare namespace LocalJSX {
     interface MyList {
     }
     interface MyListItem {
+    }
+    interface MyListItemScoped {
+    }
+    interface MyListScoped {
     }
     interface MyPopover {
         /**
@@ -1246,13 +1421,17 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "my-button": MyButton;
+        "my-button-scoped": MyButtonScoped;
         "my-checkbox": MyCheckbox;
         "my-complex-props": MyComplexProps;
         "my-component": MyComponent;
+        "my-component-scoped": MyComponentScoped;
         "my-counter": MyCounter;
         "my-input": MyInput;
         "my-list": MyList;
         "my-list-item": MyListItem;
+        "my-list-item-scoped": MyListItemScoped;
+        "my-list-scoped": MyListScoped;
         "my-popover": MyPopover;
         "my-radio": MyRadio;
         "my-radio-group": MyRadioGroup;
@@ -1266,13 +1445,17 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "my-button": LocalJSX.MyButton & JSXBase.HTMLAttributes<HTMLMyButtonElement>;
+            "my-button-scoped": LocalJSX.MyButtonScoped & JSXBase.HTMLAttributes<HTMLMyButtonScopedElement>;
             "my-checkbox": LocalJSX.MyCheckbox & JSXBase.HTMLAttributes<HTMLMyCheckboxElement>;
             "my-complex-props": LocalJSX.MyComplexProps & JSXBase.HTMLAttributes<HTMLMyComplexPropsElement>;
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "my-component-scoped": LocalJSX.MyComponentScoped & JSXBase.HTMLAttributes<HTMLMyComponentScopedElement>;
             "my-counter": LocalJSX.MyCounter & JSXBase.HTMLAttributes<HTMLMyCounterElement>;
             "my-input": LocalJSX.MyInput & JSXBase.HTMLAttributes<HTMLMyInputElement>;
             "my-list": LocalJSX.MyList & JSXBase.HTMLAttributes<HTMLMyListElement>;
             "my-list-item": LocalJSX.MyListItem & JSXBase.HTMLAttributes<HTMLMyListItemElement>;
+            "my-list-item-scoped": LocalJSX.MyListItemScoped & JSXBase.HTMLAttributes<HTMLMyListItemScopedElement>;
+            "my-list-scoped": LocalJSX.MyListScoped & JSXBase.HTMLAttributes<HTMLMyListScopedElement>;
             "my-popover": LocalJSX.MyPopover & JSXBase.HTMLAttributes<HTMLMyPopoverElement>;
             "my-radio": LocalJSX.MyRadio & JSXBase.HTMLAttributes<HTMLMyRadioElement>;
             "my-radio-group": LocalJSX.MyRadioGroup & JSXBase.HTMLAttributes<HTMLMyRadioGroupElement>;

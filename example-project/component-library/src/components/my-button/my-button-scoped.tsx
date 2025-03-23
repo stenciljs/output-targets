@@ -13,11 +13,11 @@ import { AnchorInterface, ButtonInterface } from '../element-interface';
  * @slot end - Content is placed to the right of the button text in LTR, and to the left in RTL.
  */
 @Component({
-  tag: 'my-button',
+  tag: 'my-button-scoped',
   styleUrl: 'my-button.css',
-  shadow: true,
+  scoped: true,
 })
-export class Button implements ComponentInterface, AnchorInterface, ButtonInterface {
+export class ButtonScoped implements ComponentInterface, AnchorInterface, ButtonInterface {
   private inItem = false;
   private inListHeader = false;
   private inToolbar = false;

@@ -1,0 +1,21 @@
+{
+  "name": "react-test-components",
+  "private": true,
+  "dependencies": {
+    "component-library-react": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@wdio/globals": "^9.12.1",
+    "node-html-parser": "^7.0.1",
+    "webdriverio": "^9.12.1"
+  },
+  "exports": {
+    ".": "./src/TestComponent.tsx",
+    "./scenarios": "./tests/scenarios.ts"
+  }
+}

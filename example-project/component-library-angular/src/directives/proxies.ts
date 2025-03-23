@@ -40,6 +40,38 @@ export declare interface MyButton extends Components.MyButton {
 
 
 @ProxyCmp({
+  inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type']
+})
+@Component({
+  selector: 'my-button-scoped',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type'],
+})
+export class MyButtonScoped {
+  protected el: HTMLMyButtonScopedElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+    proxyOutputs(this, this.el, ['myFocus', 'myBlur']);
+  }
+}
+
+
+export declare interface MyButtonScoped extends Components.MyButtonScoped {
+  /**
+   * Emitted when the button has focus.
+   */
+  myFocus: EventEmitter<CustomEvent<void>>;
+  /**
+   * Emitted when the button loses focus.
+   */
+  myBlur: EventEmitter<CustomEvent<void>>;
+}
+
+
+@ProxyCmp({
   inputs: ['alignment', 'checked', 'color', 'disabled', 'indeterminate', 'justify', 'labelPlacement', 'mode', 'name', 'value']
 })
 @Component({
@@ -102,36 +134,54 @@ export declare interface MyComplexProps extends Components.MyComplexProps {}
 
 
 @ProxyCmp({
-  inputs: ['age', 'favoriteKidName', 'first', 'kidsNames', 'last', 'middle']
+  inputs: ['first', 'last', 'middleName']
 })
 @Component({
   selector: 'my-component',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['age', 'favoriteKidName', 'first', 'kidsNames', 'last', 'middle'],
+  inputs: ['first', 'last', 'middleName'],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myCustomEvent', 'myCustomNestedEvent']);
   }
 }
 
 
-import type { IMyComponent as IMyComponentIMyComponent } from 'component-library';
+export declare interface MyComponent extends Components.MyComponent {}
 
-export declare interface MyComponent extends Components.MyComponent {
+
+@ProxyCmp({
+  inputs: ['first', 'last', 'middleName']
+})
+@Component({
+  selector: 'my-component-scoped',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['first', 'last', 'middleName'],
+})
+export class MyComponentScoped {
+  protected el: HTMLMyComponentScopedElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+    proxyOutputs(this, this.el, ['myCustomEvent']);
+  }
+}
+
+
+import type { IMyComponent as IMyComponentScopedIMyComponent } from 'component-library';
+
+export declare interface MyComponentScoped extends Components.MyComponentScoped {
   /**
    * Testing an event without value
    */
-  myCustomEvent: EventEmitter<CustomEvent<IMyComponentIMyComponent.someVar>>;
-  /**
-   * Testing with nested namespaces
-   */
-  myCustomNestedEvent: EventEmitter<CustomEvent<IMyComponentIMyComponent.SomeMoreComplexType.SubType>>;
+  myCustomEvent: EventEmitter<CustomEvent<IMyComponentScopedIMyComponent.someVar>>;
 }
 
 
@@ -246,6 +296,48 @@ export class MyListItem {
 
 
 export declare interface MyListItem extends Components.MyListItem {}
+
+
+@ProxyCmp({
+})
+@Component({
+  selector: 'my-list-item-scoped',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: [],
+})
+export class MyListItemScoped {
+  protected el: HTMLMyListItemScopedElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}
+
+
+export declare interface MyListItemScoped extends Components.MyListItemScoped {}
+
+
+@ProxyCmp({
+})
+@Component({
+  selector: 'my-list-scoped',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: [],
+})
+export class MyListScoped {
+  protected el: HTMLMyListScopedElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}
+
+
+export declare interface MyListScoped extends Components.MyListScoped {}
 
 
 @ProxyCmp({

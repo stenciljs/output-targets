@@ -34,9 +34,9 @@ if (!isProduction) {
 
 // Serve HTML
 app.use('*all', async (req, res) => {
-  try {
-    const url = req.originalUrl.replace(base, '');
+  const url = new URL(req.originalUrl, `http://localhost:${port}`)
 
+  try {
     /** @type {string} */
     let template;
     /** @type {import('./src/entry-server.ts').render} */
@@ -44,7 +44,7 @@ app.use('*all', async (req, res) => {
     if (!isProduction) {
       // Always read fresh template in development
       template = await fs.readFile('./index.html', 'utf-8');
-      template = await vite.transformIndexHtml(url, template);
+      template = await vite.transformIndexHtml(url.href, template);
       render = (await vite.ssrLoadModule('/src/entry-server.tsx')).render;
     } else {
       template = templateHtml;
