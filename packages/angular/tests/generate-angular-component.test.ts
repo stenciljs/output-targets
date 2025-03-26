@@ -15,6 +15,7 @@ describe('createAngularComponentDefinition()', () => {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: [],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -36,6 +37,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['my-input', 'my-other-input'],
+  outputs: [],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -63,6 +65,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: ['my-output', 'my-other-output'],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -86,6 +89,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: [],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -110,6 +114,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: [],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -133,6 +138,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['my-input', 'my-other-input'],
+  outputs: [],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -160,6 +166,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: ['my-output', 'my-other-output'],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -184,6 +191,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: [],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -206,6 +214,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: [],
   standalone: true
 })
 export class MyComponent {
@@ -239,6 +248,7 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['myMember'],
+  outputs: [],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
