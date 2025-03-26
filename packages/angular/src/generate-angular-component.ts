@@ -111,8 +111,7 @@ export const createAngularComponentDefinition = (
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [${formattedInputs}],
-  outputs: [${formattedOutputs}]
-  ${standaloneOption}
+  outputs: [${formattedOutputs}],${standaloneOption}
 })
 export class ${tagNameAsPascal} {
   ${propertiesDeclarationText}
