@@ -9,7 +9,7 @@
 /* eslint-disable */
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent, createSSRComponent } from '@stencil/react-output-target/runtime';
+import { createComponent, createSSRComponent, tagNameTransformer } from '@stencil/react-output-target/runtime';
 import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentCustomEvent, type MyInputCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
@@ -40,7 +40,7 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
             onMyFocus: 'myFocus',
             onMyBlur: 'myBlur'
         } as MyButtonEvents,
-        defineCustomElement: defineMyButton
+        defineCustomElement: () => defineMyButton(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyButtonElement, MyButtonEvents>({
         tagName: 'my-button',
@@ -79,7 +79,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
             onIonFocus: 'ionFocus',
             onIonBlur: 'ionBlur'
         } as MyCheckboxEvents,
-        defineCustomElement: defineMyCheckbox
+        defineCustomElement: () => defineMyCheckbox(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyCheckboxElement, MyCheckboxEvents>({
         tagName: 'my-checkbox',
@@ -112,7 +112,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
             onMyCustomEvent: 'myCustomEvent',
             onMyCustomNestedEvent: 'myCustomNestedEvent'
         } as MyComponentEvents,
-        defineCustomElement: defineMyComponent
+        defineCustomElement: () => defineMyComponent(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyComponentElement, MyComponentEvents>({
         tagName: 'my-component',
@@ -145,7 +145,7 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = typ
             onMyBlur: 'myBlur',
             onMyFocus: 'myFocus'
         } as MyInputEvents,
-        defineCustomElement: defineMyInput
+        defineCustomElement: () => defineMyInput(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyInputElement, MyInputEvents>({
         tagName: 'my-input',
@@ -189,7 +189,7 @@ export const MyList: StencilReactComponent<MyListElement, MyListEvents> = typeof
         // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
         react: React,
         events: {} as MyListEvents,
-        defineCustomElement: defineMyList
+        defineCustomElement: () => defineMyList(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyListElement, MyListEvents>({
         tagName: 'my-list',
@@ -206,7 +206,7 @@ export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEven
         // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
         react: React,
         events: {} as MyListItemEvents,
-        defineCustomElement: defineMyListItem
+        defineCustomElement: () => defineMyListItem(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyListItemElement, MyListItemEvents>({
         tagName: 'my-list-item',
@@ -233,7 +233,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
             onMyPopoverWillDismiss: 'myPopoverWillDismiss',
             onMyPopoverDidDismiss: 'myPopoverDidDismiss'
         } as MyPopoverEvents,
-        defineCustomElement: defineMyPopover
+        defineCustomElement: () => defineMyPopover(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyPopoverElement, MyPopoverEvents>({
         tagName: 'my-popover',
@@ -265,7 +265,7 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = typ
             onIonFocus: 'ionFocus',
             onIonBlur: 'ionBlur'
         } as MyRadioEvents,
-        defineCustomElement: defineMyRadio
+        defineCustomElement: () => defineMyRadio(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyRadioElement, MyRadioEvents>({
         tagName: 'my-radio',
@@ -290,7 +290,7 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
         // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
         react: React,
         events: { onMyChange: 'myChange' } as MyRadioGroupEvents,
-        defineCustomElement: defineMyRadioGroup
+        defineCustomElement: () => defineMyRadioGroup(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyRadioGroupElement, MyRadioGroupEvents>({
         tagName: 'my-radio-group',
@@ -320,7 +320,7 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = typ
             onMyFocus: 'myFocus',
             onMyBlur: 'myBlur'
         } as MyRangeEvents,
-        defineCustomElement: defineMyRange
+        defineCustomElement: () => defineMyRange(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyRangeElement, MyRangeEvents>({
         tagName: 'my-range',
@@ -350,7 +350,7 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = 
         // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
         react: React,
         events: {} as MyToggleEvents,
-        defineCustomElement: defineMyToggle
+        defineCustomElement: () => defineMyToggle(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyToggleElement, MyToggleEvents>({
         tagName: 'my-toggle',
@@ -367,7 +367,7 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyTo
         // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
         react: React,
         events: {} as MyToggleContentEvents,
-        defineCustomElement: defineMyToggleContent
+        defineCustomElement: () => defineMyToggleContent(tagNameTransformer),
     })
     : /*@__PURE__*/ createSSRComponent<MyToggleContentElement, MyToggleContentEvents>({
         tagName: 'my-toggle-content',

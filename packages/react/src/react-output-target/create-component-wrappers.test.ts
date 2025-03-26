@@ -39,7 +39,7 @@ describe('createComponentWrappers', () => {
 /* eslint-disable */
 
 import type { StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent } from '@stencil/react-output-target/runtime';
+import { createComponent, tagNameTransformer } from '@stencil/react-output-target/runtime';
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
 
@@ -51,7 +51,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
     react: React,
     events: {} as MyComponentEvents,
-    defineCustomElement: defineMyComponent
+    defineCustomElement: () => defineMyComponent(tagNameTransformer),
 });
 
 `);
@@ -93,7 +93,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
 /* eslint-disable */
 
 import type { StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent } from '@stencil/react-output-target/runtime';
+import { createComponent, tagNameTransformer } from '@stencil/react-output-target/runtime';
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
 
@@ -105,7 +105,7 @@ const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> 
     // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
     react: React,
     events: {} as MyComponentEvents,
-    defineCustomElement: defineMyComponent
+    defineCustomElement: () => defineMyComponent(tagNameTransformer),
 });
 
 export default MyComponent;
@@ -207,7 +207,7 @@ export default MyComponent;
 /* eslint-disable */
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent } from '@stencil/react-output-target/runtime';
+import { createComponent, tagNameTransformer } from '@stencil/react-output-target/runtime';
 import { type MyComponentCustomEvent } from "my-package";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
@@ -220,7 +220,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
     react: React,
     events: { onMyEvent: 'myEvent' } as MyComponentEvents,
-    defineCustomElement: defineMyComponent
+    defineCustomElement: () => defineMyComponent(tagNameTransformer),
 });
 
     `);
