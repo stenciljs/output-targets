@@ -1,4 +1,5 @@
-import type { DefineSetupFnComponent } from 'vue';
+import type { DefineSetupFnComponent, VNodeProps, AllowedComponentProps, ComponentCustomProps } from 'vue';
+import type { RouteLocationAsRelativeGeneric, RouteLocationAsPathGeneric } from 'vue-router';
 
 /**
  * Options for the Vue Output Target
@@ -83,12 +84,21 @@ declare global {
 }
 
 export type StencilVueComponent<Props, VModelType = string | number | boolean> = DefineSetupFnComponent<
-  Props & InputProps<VModelType>,
+  Props & InputProps<VModelType> & VNodeProps & AllowedComponentProps & ComponentCustomProps,
   {},
   {},
-  Props & InputProps<VModelType>
+  Props & InputProps<VModelType> & VNodeProps & AllowedComponentProps & ComponentCustomProps
 >;
 export interface InputProps<T> {
   modelValue?: T;
-  routerLink?: Symbol;
+  /**
+   * The `router-link` attribute can be set on any Ionic Vue component, and the
+   * router will navigate to the route specified when the component is clicked.
+   * The `router-link` attribute accepts string values as well as named routes,
+   * just like router.push from Vue Router.
+   *
+   * For more information
+   * @see https://ionicframework.com/docs/vue/navigation#navigating-using-router-link
+   */
+  routerLink?: Symbol | string | RouteLocationAsRelativeGeneric | RouteLocationAsPathGeneric;
 }
