@@ -20,7 +20,6 @@ export default function Home() {
         first="Stencil"
         last="'Don't call me a framework' JS"
         className="my-8"
-        favoriteKidName="foobar"
       />
       <hr />
       <MyRange name="myRange">Hello World</MyRange>

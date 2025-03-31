@@ -56,7 +56,7 @@ export const testScenarios: Record<TransformedComponents, () => void> = {
       await browser.url('/transform-scoped-to-shadow')
       await expect($('my-counter').$('span')).toHaveText('42')
 
-      const [minusButton, plusButton] = await $('my-counter').$$('button')
+      const [minusButton, plusButton] = await $('my-counter').$$('button') as unknown as WebdriverIO.Element[]
       await plusButton.click()
       await plusButton.click()
       await plusButton.click()

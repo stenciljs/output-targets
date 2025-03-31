@@ -1,6 +1,7 @@
 import { browser } from '@wdio/globals'
 import type { local } from 'webdriver'
 
+// @ts-ignore this may fail in Next.js as it can't resolve the module
 import toDiffableHtml from 'diffable-html'
 import { parse } from 'node-html-parser'
 
@@ -23,7 +24,7 @@ export async function fetchSourceCode (scenario: TestComponent, retried = false)
     if (!testComponent) {
       throw new Error(`Test component ${scenario} not found in document: ${html}`)
     }
-    return toDiffableHtml(
+    return (toDiffableHtml(
       testComponent
         .toString()
         /**
@@ -31,8 +32,8 @@ export async function fetchSourceCode (scenario: TestComponent, retried = false)
          */
         .replaceAll(/c-id="[^"]*"/g, 'c-id="x"')
         .replaceAll(/s-id="[^"]*"/g, 's-id="x"')
-    ).split('\n')
-      .filter((l) => !l.includes('suppresshydrationwarning'))
+    ) as string).split('\n')
+      .filter((l: string) => !l.includes('suppresshydrationwarning'))
       .join('\n')
   } catch (err) {
     /**

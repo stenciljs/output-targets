@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { MyComponent, MyComplexProps } from './index.js';
+import { MyComponent } from './index.js';
 import { expect, it, describe, vi } from 'vitest';
 
 describe('MyComponent', () => {
