@@ -113,5 +113,15 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
         'this.waldo: true',
       ].join('\n'))
     })
+  },
+  'input-scoped': () => {
+    it('should support React state handler as component parameter', async () => {
+      await browser.url('/input-scoped')
+      await $('input').setValue('Hello World!')
+      await expect($('.inputResult')).toHaveText([
+        'Scoped Input Event: Hello World!',
+        'Scoped Change Event: Hello World!',
+      ].join('\n'))
+    })
   }
 }

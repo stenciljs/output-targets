@@ -117,5 +117,15 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
         'this.waldo: true',
       ].join('\n'))
     })
+  },
+  'input-shadow': () => {
+    it('should support React state handler as component parameter', async () => {
+      await browser.url('/input-shadow')
+      await $('input').setValue('Hello World!')
+      await expect($('.inputResult')).toHaveText([
+        'Shadow Input Event: Hello World!',
+        'Shadow Change Event: Hello World!',
+      ].join('\n'))
+    })
   }
 }

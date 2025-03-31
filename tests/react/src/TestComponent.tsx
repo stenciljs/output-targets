@@ -1,15 +1,16 @@
 import {
   MyComponent, MyComponentScoped, MyButton, MyButtonScoped, MyList, MyListItem,
-  MyListScoped, MyListItemScoped, MyCounter, MyComplexProps, MyComplexPropsScoped
+  MyListScoped, MyListItemScoped, MyCounter, MyComplexProps, MyComplexPropsScoped,
 } from 'component-library-react';
+import { InputShadow, InputScoped } from './Input';
 
 const testComponents = [
   // scoped tests
   'single-no-child-scoped', 'single-children-scoped',
-  'nested-scoped', 'complex-props-scoped',
+  'nested-scoped', 'complex-props-scoped', 'input-scoped',
   // shadow tests
   'single-no-child-shadow', 'single-children-shadow',
-  'nested-shadow', 'complex-props-shadow',
+  'nested-shadow', 'complex-props-shadow', 'input-shadow',
   // transformed tests
   'transform-scoped-to-shadow'
 ] as const;
@@ -74,6 +75,12 @@ const TestComponent = ({ name }: TestComponentProps) => {
       grault={Infinity}
       waldo={null}
     />;
+  }
+  if (name === 'input-scoped') {
+    return <InputScoped />;
+  }
+  if (name === 'input-shadow') {
+    return <InputShadow />;
   }
 
   return <div>

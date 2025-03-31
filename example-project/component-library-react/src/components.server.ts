@@ -10,7 +10,7 @@
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
-import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyInputCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import { MyButtonScoped as MyButtonScopedElement } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement } from "component-library/components/my-checkbox.js";
@@ -19,6 +19,7 @@ import { MyComplexProps as MyComplexPropsElement } from "component-library/compo
 import { MyComponentScoped as MyComponentScopedElement } from "component-library/components/my-component-scoped.js";
 import { MyComponent as MyComponentElement } from "component-library/components/my-component.js";
 import { MyCounter as MyCounterElement } from "component-library/components/my-counter.js";
+import { MyInputScoped as MyInputScopedElement } from "component-library/components/my-input-scoped.js";
 import { MyInput as MyInputElement } from "component-library/components/my-input.js";
 import { MyListItemScoped as MyListItemScopedElement } from "component-library/components/my-list-item-scoped.js";
 import { MyListItem as MyListItemElement } from "component-library/components/my-list-item.js";
@@ -182,6 +183,47 @@ export type MyInputEvents = {
 
 export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@__PURE__*/ createComponent<MyInputElement, MyInputEvents>({
     tagName: 'my-input',
+    properties: {
+        color: 'color',
+        accept: 'accept',
+        autocapitalize: 'autocapitalize',
+        autocomplete: 'autocomplete',
+        autocorrect: 'autocorrect',
+        autofocus: 'autofocus',
+        clearInput: 'clear-input',
+        clearOnEdit: 'clear-on-edit',
+        disabled: 'disabled',
+        enterkeyhint: 'enterkeyhint',
+        inputmode: 'inputmode',
+        max: 'max',
+        maxlength: 'maxlength',
+        min: 'min',
+        minlength: 'minlength',
+        multiple: 'multiple',
+        name: 'name',
+        pattern: 'pattern',
+        placeholder: 'placeholder',
+        readonly: 'readonly',
+        required: 'required',
+        spellcheck: 'spellcheck',
+        step: 'step',
+        size: 'size',
+        type: 'type',
+        value: 'value'
+    },
+    hydrateModule: import('component-library/hydrate'),
+    serializeShadowRoot
+});
+
+export type MyInputScopedEvents = {
+    onMyInput: EventName<MyInputScopedCustomEvent<KeyboardEvent>>,
+    onMyChange: EventName<MyInputScopedCustomEvent<InputChangeEventDetail>>,
+    onMyBlur: EventName<CustomEvent<void>>,
+    onMyFocus: EventName<CustomEvent<void>>
+};
+
+export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputScopedEvents> = /*@__PURE__*/ createComponent<MyInputScopedElement, MyInputScopedEvents>({
+    tagName: 'my-input-scoped',
     properties: {
         color: 'color',
         accept: 'accept',

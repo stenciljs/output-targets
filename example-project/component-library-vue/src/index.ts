@@ -14,6 +14,7 @@ import { defineCustomElement as defineMyComponent } from 'component-library/comp
 import { defineCustomElement as defineMyComponentScoped } from 'component-library/components/my-component-scoped.js';
 import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
+import { defineCustomElement as defineMyInputScoped } from 'component-library/components/my-input-scoped.js';
 import { defineCustomElement as defineMyList } from 'component-library/components/my-list.js';
 import { defineCustomElement as defineMyListItem } from 'component-library/components/my-list-item.js';
 import { defineCustomElement as defineMyListItemScoped } from 'component-library/components/my-list-item-scoped.js';
@@ -265,6 +266,79 @@ export const MyInput: StencilVueComponent<JSX.MyInput, JSX.MyInput["value"]> = /
 ],
 'value', 'myChange') : defineStencilSSRComponent<JSX.MyInput, JSX.MyInput["value"]>({
   tagName: 'my-input',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'color': [String, "color"],
+    'accept': [String, "accept"],
+    'autocapitalize': [String, "autocapitalize"],
+    'autocomplete': [String, "autocomplete"],
+    'autocorrect': [String, "autocorrect"],
+    'autofocus': [Boolean, "autofocus"],
+    'clearInput': [Boolean, "clear-input"],
+    'clearOnEdit': [Boolean, "clear-on-edit"],
+    'disabled': [Boolean, "disabled"],
+    'enterkeyhint': [String, "enterkeyhint"],
+    'inputmode': [String, "inputmode"],
+    'max': [String, "max"],
+    'maxlength': [Number, "maxlength"],
+    'min': [String, "min"],
+    'minlength': [Number, "minlength"],
+    'multiple': [Boolean, "multiple"],
+    'name': [String, "name"],
+    'pattern': [String, "pattern"],
+    'placeholder': [String, "placeholder"],
+    'readonly': [Boolean, "readonly"],
+    'required': [Boolean, "required"],
+    'spellcheck': [Boolean, "spellcheck"],
+    'step': [String, "step"],
+    'size': [Number, "size"],
+    'type': [String, "type"],
+    'onMyInput': [Function],
+    'onMyChange': [Function],
+    'onMyBlur': [Function],
+    'onMyFocus': [Function]
+  }
+});
+
+
+export const MyInputScoped: StencilVueComponent<JSX.MyInputScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyInputScoped>('my-input-scoped', defineMyInputScoped, [
+  'color',
+  'accept',
+  'autocapitalize',
+  'autocomplete',
+  'autocorrect',
+  'autofocus',
+  'clearInput',
+  'clearOnEdit',
+  'disabled',
+  'enterkeyhint',
+  'inputmode',
+  'max',
+  'maxlength',
+  'min',
+  'minlength',
+  'multiple',
+  'name',
+  'pattern',
+  'placeholder',
+  'readonly',
+  'required',
+  'spellcheck',
+  'step',
+  'size',
+  'type',
+  'value',
+  'myInput',
+  'myChange',
+  'myBlur',
+  'myFocus'
+], [
+  'myInput',
+  'myChange',
+  'myBlur',
+  'myFocus'
+]) : defineStencilSSRComponent<JSX.MyInputScoped>({
+  tagName: 'my-input-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'color': [String, "color"],

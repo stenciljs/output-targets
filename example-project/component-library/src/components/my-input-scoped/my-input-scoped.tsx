@@ -22,10 +22,10 @@ export interface InputChangeEventDetail {
  * @virtualProp {"ios" | "md"} mode - The mode determines which platform styles to use.
  */
 @Component({
-  tag: 'my-input',
-  shadow: true,
+  tag: 'my-input-scoped',
+  scoped: true,
 })
-export class MyInput implements ComponentInterface {
+export class MyInputScoped implements ComponentInterface {
   private nativeInput?: HTMLInputElement;
   private inputId = `my-input-${inputIds++}`;
   private didBlurAfterEdit = false;
