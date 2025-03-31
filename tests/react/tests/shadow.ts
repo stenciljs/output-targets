@@ -65,5 +65,57 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
     </li></template>Bar Shadow</my-list-item><my-list-item class=\"hydrated\" s-id=\"8\"><template shadowrootmode=\"open\">    <li c-id=\"8.0.0.0\">
       <slot c-id=\"8.1.1.0\"></slot>`)
     })
+  },
+  'complex-props-shadow': () => {
+    it('should correctly server side render complex props', async () => {
+      const url = `${browser.options.baseUrl}/complex-props-shadow`
+      const response = await fetch(url)
+      const html = await response.text()
+      expect(html).toContain(`<div id=\"complex-props-shadow\"><my-complex-props baz=\"serialized:eyJ0eXBlIjoibWFwIiwidmFsdWUiOltbeyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJmb28ifSx7InR5cGUiOiJvYmplY3QiLCJ2YWx1ZSI6W1sicXV4Iix7InR5cGUiOiJzeW1ib2wiLCJ2YWx1ZSI6InF1dXgifV1dfV1dfQ==\" class=\"hydrated\" foo=\"serialized:eyJ0eXBlIjoib2JqZWN0IiwidmFsdWUiOltbImJhciIseyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJiYXoifV0sWyJsb28iLHsidHlwZSI6ImFycmF5IiwidmFsdWUiOlt7InR5cGUiOiJudW1iZXIiLCJ2YWx1ZSI6MX0seyJ0eXBlIjoibnVtYmVyIiwidmFsdWUiOjJ9LHsidHlwZSI6Im51bWJlciIsInZhbHVlIjozfV19XSxbInF1eCIseyJ0eXBlIjoib2JqZWN0IiwidmFsdWUiOltbInF1dXgiLHsidHlwZSI6InN5bWJvbCIsInZhbHVlIjoicXV1eCJ9XV19XV19\" grault=\"serialized:eyJ0eXBlIjoibnVtYmVyIiwidmFsdWUiOiJJbmZpbml0eSJ9\" quux=\"serialized:eyJ0eXBlIjoic2V0IiwidmFsdWUiOlt7InR5cGUiOiJzdHJpbmciLCJ2YWx1ZSI6ImZvbyJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiYmFyIn0seyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJiYXoifV19\" s-id=\"14\" waldo=\"serialized:eyJ0eXBlIjoibnVsbCJ9\"><template shadowrootmode=\"open\">    <ul c-id=\"14.0.0.0\">
+      <li c-id=\"14.1.1.0\">
+        <!--t.14.2.2.0-->
+        this.foo.bar: baz
+      </li>
+      <li c-id=\"14.3.1.1\">
+        <!--t.14.4.2.0-->
+        this.foo.loo: 1, 2, 3
+      </li>
+      <li c-id=\"14.5.1.2\">
+        <!--t.14.6.2.0-->
+        this.foo.qux: symbol
+      </li>
+      <li c-id=\"14.7.1.3\">
+        <!--t.14.8.2.0-->
+        this.baz.get('foo'): symbol
+      </li>
+      <li c-id=\"14.9.1.4\">
+        <!--t.14.10.2.0-->
+        this.quux.has('foo'): true
+      </li>
+      <li c-id=\"14.11.1.5\">
+        <!--t.14.12.2.0-->
+        this.grault: true
+      </li>
+      <li c-id=\"14.13.1.6\">
+        <!--t.14.14.2.0-->
+        this.waldo: true
+      </li>
+    </ul></template></my-complex-props></div>`)
+    })
+
+    it('should correctly adopt complex props in runtime', async () => {
+      await browser.url('/complex-props-shadow')
+      await expect($('my-complex-props')).toBePresent()
+      await expect($('my-complex-props').$('ul')).toBePresent()
+      await expect($('my-complex-props').$('ul')).toHaveText([
+        'this.foo.bar: baz',
+        'this.foo.loo: 1, 2, 3',
+        'this.foo.qux: symbol',
+        'this.baz.get(\'foo\'): symbol',
+        'this.quux.has(\'foo\'): true',
+        'this.grault: true',
+        'this.waldo: true',
+      ].join('\n'))
+    })
   }
 }

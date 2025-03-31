@@ -9,6 +9,7 @@ import { defineCustomElement as defineMyButton } from 'component-library/compone
 import { defineCustomElement as defineMyButtonScoped } from 'component-library/components/my-button-scoped.js';
 import { defineCustomElement as defineMyCheckbox } from 'component-library/components/my-checkbox.js';
 import { defineCustomElement as defineMyComplexProps } from 'component-library/components/my-complex-props.js';
+import { defineCustomElement as defineMyComplexPropsScoped } from 'component-library/components/my-complex-props-scoped.js';
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
 import { defineCustomElement as defineMyComponentScoped } from 'component-library/components/my-component-scoped.js';
 import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
@@ -161,6 +162,21 @@ export const MyComplexProps: StencilVueComponent<JSX.MyComplexProps> = /*@__PURE
 });
 
 
+export const MyComplexPropsScoped: StencilVueComponent<JSX.MyComplexPropsScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComplexPropsScoped>('my-complex-props-scoped', defineMyComplexPropsScoped, [
+  'foo',
+  'baz',
+  'quux',
+  'grault',
+  'waldo'
+]) : defineStencilSSRComponent<JSX.MyComplexPropsScoped>({
+  tagName: 'my-complex-props-scoped',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'grault': [Number, "grault"]
+  }
+});
+
+
 export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComponent>('my-component', defineMyComponent, [
   'first',
   'middleName',
@@ -204,7 +220,7 @@ export const MyCounter: StencilVueComponent<JSX.MyCounter> = /*@__PURE__*/ globa
   tagName: 'my-counter',
   hydrateModule: import('component-library/hydrate'),
   props: {
-    'startValue': [String, "start-value"],
+    'startValue': [Number, "start-value"],
     'onCount': [Function]
   }
 });

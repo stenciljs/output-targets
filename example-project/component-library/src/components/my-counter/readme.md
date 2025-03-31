@@ -9,7 +9,7 @@
 
 | Property     | Attribute     | Description     | Type     | Default     |
 | ------------ | ------------- | --------------- | -------- | ----------- |
-| `startValue` | `start-value` | The start value | `string` | `undefined` |
+| `startValue` | `start-value` | The start value | `number` | `undefined` |
 
 
 ## Events

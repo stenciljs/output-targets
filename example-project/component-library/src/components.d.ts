@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
 import { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
 import { Baz, Foo, Grault, Quux, Waldo } from "./components/my-complex-props/my-complex-props";
+import { Baz as Baz1, Foo as Foo1, Grault as Grault1, Quux as Quux1, Waldo as Waldo1 } from "./components/my-complex-props-scoped/my-complex-props-scoped";
 import { IMyComponent } from "./components/helpers";
 import { InputChangeEventDetail } from "./components/my-input/my-input";
 import { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
@@ -16,6 +17,7 @@ import { RangeChangeEventDetail, RangeValue } from "./components/my-range/my-ran
 export { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
 export { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
 export { Baz, Foo, Grault, Quux, Waldo } from "./components/my-complex-props/my-complex-props";
+export { Baz as Baz1, Foo as Foo1, Grault as Grault1, Quux as Quux1, Waldo as Waldo1 } from "./components/my-complex-props-scoped/my-complex-props-scoped";
 export { IMyComponent } from "./components/helpers";
 export { InputChangeEventDetail } from "./components/my-input/my-input";
 export { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
@@ -203,6 +205,28 @@ export namespace Components {
          */
         "waldo": Waldo;
     }
+    interface MyComplexPropsScoped {
+        /**
+          * map objects
+         */
+        "baz": Baz1;
+        /**
+          * basic object
+         */
+        "foo": Foo1;
+        /**
+          * infinity
+         */
+        "grault": Grault1;
+        /**
+          * set objects
+         */
+        "quux": Quux1;
+        /**
+          * null
+         */
+        "waldo": Waldo1;
+    }
     interface MyComponent {
         /**
           * The first name
@@ -235,7 +259,7 @@ export namespace Components {
         /**
           * The start value
          */
-        "startValue": string;
+        "startValue": number;
     }
     interface MyInput {
         /**
@@ -640,6 +664,12 @@ declare global {
         prototype: HTMLMyComplexPropsElement;
         new (): HTMLMyComplexPropsElement;
     };
+    interface HTMLMyComplexPropsScopedElement extends Components.MyComplexPropsScoped, HTMLStencilElement {
+    }
+    var HTMLMyComplexPropsScopedElement: {
+        prototype: HTMLMyComplexPropsScopedElement;
+        new (): HTMLMyComplexPropsScopedElement;
+    };
     interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
     }
     var HTMLMyComponentElement: {
@@ -817,6 +847,7 @@ declare global {
         "my-button-scoped": HTMLMyButtonScopedElement;
         "my-checkbox": HTMLMyCheckboxElement;
         "my-complex-props": HTMLMyComplexPropsElement;
+        "my-complex-props-scoped": HTMLMyComplexPropsScopedElement;
         "my-component": HTMLMyComponentElement;
         "my-component-scoped": HTMLMyComponentScopedElement;
         "my-counter": HTMLMyCounterElement;
@@ -1042,6 +1073,28 @@ declare namespace LocalJSX {
          */
         "waldo"?: Waldo;
     }
+    interface MyComplexPropsScoped {
+        /**
+          * map objects
+         */
+        "baz"?: Baz1;
+        /**
+          * basic object
+         */
+        "foo"?: Foo1;
+        /**
+          * infinity
+         */
+        "grault"?: Grault1;
+        /**
+          * set objects
+         */
+        "quux"?: Quux1;
+        /**
+          * null
+         */
+        "waldo"?: Waldo1;
+    }
     interface MyComponent {
         /**
           * The first name
@@ -1082,7 +1135,7 @@ declare namespace LocalJSX {
         /**
           * The start value
          */
-        "startValue"?: string;
+        "startValue"?: number;
     }
     interface MyInput {
         /**
@@ -1424,6 +1477,7 @@ declare namespace LocalJSX {
         "my-button-scoped": MyButtonScoped;
         "my-checkbox": MyCheckbox;
         "my-complex-props": MyComplexProps;
+        "my-complex-props-scoped": MyComplexPropsScoped;
         "my-component": MyComponent;
         "my-component-scoped": MyComponentScoped;
         "my-counter": MyCounter;
@@ -1448,6 +1502,7 @@ declare module "@stencil/core" {
             "my-button-scoped": LocalJSX.MyButtonScoped & JSXBase.HTMLAttributes<HTMLMyButtonScopedElement>;
             "my-checkbox": LocalJSX.MyCheckbox & JSXBase.HTMLAttributes<HTMLMyCheckboxElement>;
             "my-complex-props": LocalJSX.MyComplexProps & JSXBase.HTMLAttributes<HTMLMyComplexPropsElement>;
+            "my-complex-props-scoped": LocalJSX.MyComplexPropsScoped & JSXBase.HTMLAttributes<HTMLMyComplexPropsScopedElement>;
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "my-component-scoped": LocalJSX.MyComponentScoped & JSXBase.HTMLAttributes<HTMLMyComponentScopedElement>;
             "my-counter": LocalJSX.MyCounter & JSXBase.HTMLAttributes<HTMLMyCounterElement>;

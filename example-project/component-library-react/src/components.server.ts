@@ -14,6 +14,7 @@ import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEven
 import { MyButtonScoped as MyButtonScopedElement } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement } from "component-library/components/my-checkbox.js";
+import { MyComplexPropsScoped as MyComplexPropsScopedElement } from "component-library/components/my-complex-props-scoped.js";
 import { MyComplexProps as MyComplexPropsElement } from "component-library/components/my-complex-props.js";
 import { MyComponentScoped as MyComponentScopedElement } from "component-library/components/my-component-scoped.js";
 import { MyComponent as MyComponentElement } from "component-library/components/my-component.js";
@@ -111,6 +112,21 @@ export type MyComplexPropsEvents = NonNullable<unknown>;
 
 export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents> = /*@__PURE__*/ createComponent<MyComplexPropsElement, MyComplexPropsEvents>({
     tagName: 'my-complex-props',
+    properties: {
+        foo: 'foo',
+        baz: 'baz',
+        quux: 'quux',
+        grault: 'grault',
+        waldo: 'waldo'
+    },
+    hydrateModule: import('component-library/hydrate'),
+    serializeShadowRoot
+});
+
+export type MyComplexPropsScopedEvents = NonNullable<unknown>;
+
+export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents> = /*@__PURE__*/ createComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents>({
+    tagName: 'my-complex-props-scoped',
     properties: {
         foo: 'foo',
         baz: 'baz',

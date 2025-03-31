@@ -1,16 +1,22 @@
-import { MyComponent, MyComponentScoped, MyButton, MyButtonScoped, MyList, MyListItem, MyListScoped, MyListItemScoped } from 'component-library-react';
+import {
+  MyComponent, MyComponentScoped, MyButton, MyButtonScoped, MyList, MyListItem,
+  MyListScoped, MyListItemScoped, MyCounter, MyComplexProps, MyComplexPropsScoped
+} from 'component-library-react';
 
 const testComponents = [
   // scoped tests
   'single-no-child-scoped', 'single-children-scoped',
-  'nested-scoped',
+  'nested-scoped', 'complex-props-scoped',
   // shadow tests
   'single-no-child-shadow', 'single-children-shadow',
-  'nested-shadow'
+  'nested-shadow', 'complex-props-shadow',
+  // transformed tests
+  'transform-scoped-to-shadow'
 ] as const;
 export type TestComponent = typeof testComponents[number];
-export type ShadowComponents = Extract<TestComponent, `${string}shadow`>;
-export type ScopedComponents = Extract<TestComponent, `${string}scoped`>;
+export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
+export type ScopedComponents = Exclude<Extract<TestComponent, `${string}scoped`>, 'transform-scoped-to-shadow'>;
+export type TransformedComponents = Extract<TestComponent, 'transform-scoped-to-shadow'>;
 interface TestComponentProps {
   name: TestComponent;
 }
@@ -47,6 +53,27 @@ const TestComponent = ({ name }: TestComponentProps) => {
       <MyListItemScoped>Bar Scoped</MyListItemScoped>
       <MyListItemScoped>Loo Scoped</MyListItemScoped>
     </MyListScoped>
+  }
+  if (name === 'transform-scoped-to-shadow') {
+    return <MyCounter startValue={42} />;
+  }
+  if (name === 'complex-props-shadow') {
+    return <MyComplexProps
+      foo={{ bar: 'baz', loo: [1, 2, 3], qux: { quux: Symbol('quux') } }}
+      baz={new Map([['foo', { qux: Symbol('quux') }]])}
+      quux={new Set(['foo', 'bar', 'baz'])}
+      grault={Infinity}
+      waldo={null}
+    />;
+  }
+  if (name === 'complex-props-scoped') {
+    return <MyComplexPropsScoped
+      foo={{ bar: 'baz', loo: [1, 2, 3], qux: { quux: Symbol('quux') } }}
+      baz={new Map([['foo', { qux: Symbol('quux') }]])}
+      quux={new Set(['foo', 'bar', 'baz'])}
+      grault={Infinity}
+      waldo={null}
+    />;
   }
 
   return <div>

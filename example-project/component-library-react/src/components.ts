@@ -13,6 +13,7 @@ import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEven
 import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
+import { MyComplexPropsScoped as MyComplexPropsScopedElement, defineCustomElement as defineMyComplexPropsScoped } from "component-library/components/my-complex-props-scoped.js";
 import { MyComplexProps as MyComplexPropsElement, defineCustomElement as defineMyComplexProps } from "component-library/components/my-complex-props.js";
 import { MyComponentScoped as MyComponentScopedElement, defineCustomElement as defineMyComponentScoped } from "component-library/components/my-component-scoped.js";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "component-library/components/my-component.js";
@@ -92,6 +93,17 @@ export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComp
     react: React,
     events: {} as MyComplexPropsEvents,
     defineCustomElement: defineMyComplexProps
+});
+
+export type MyComplexPropsScopedEvents = NonNullable<unknown>;
+
+export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents> = /*@__PURE__*/ createComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents>({
+    tagName: 'my-complex-props-scoped',
+    elementClass: MyComplexPropsScopedElement,
+    // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
+    react: React,
+    events: {} as MyComplexPropsScopedEvents,
+    defineCustomElement: defineMyComplexPropsScoped
 });
 
 export type MyComponentEvents = NonNullable<unknown>;

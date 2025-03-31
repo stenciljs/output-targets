@@ -13,7 +13,13 @@ export async function fetchSourceCode (scenario: TestComponent) {
     if (!testComponent) {
       throw new Error(`Test component ${scenario} not found in document: ${html}`)
     }
-    return testComponent.toString();
+    return testComponent
+      .toString()
+      .replaceAll('\t', '    ')
+      .split('\n')
+        .map((l) => l.trimEnd())
+        .filter((l) => l.length > 0)
+        .join('\n');
   } catch (err) {
     const error = err instanceof Error ? err : new Error(String(err))
     throw new Error(`Failed to fetch source code for ${scenario}: ${error.message}`)
