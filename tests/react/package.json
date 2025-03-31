@@ -12,6 +12,7 @@
     "@types/react-dom": "^19.0.4",
     "@wdio/globals": "^9.12.1",
     "node-html-parser": "^7.0.1",
+    "webdriver": "^9.12.2",
     "webdriverio": "^9.12.1"
   },
   "exports": {
