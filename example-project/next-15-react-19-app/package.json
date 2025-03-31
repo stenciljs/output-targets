@@ -38,6 +38,7 @@
     "eslint": "^8",
     "eslint-config-next": "^15",
     "postcss": "^8",
+    "react-test-components": "workspace:*",
     "tailwindcss": "^3.4.13",
     "tsx": "^4.19.3",
     "typescript": "^5",

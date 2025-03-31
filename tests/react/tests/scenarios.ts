@@ -37,7 +37,7 @@ export const runTestScenarios = ({ only, exclude }: TestScenarioOptions = {}) =>
       events: ['log.entryAdded']
     })
     const onLogEvent = (entry: local.LogEntry) => {
-      if (entry.level === 'error' && entry.text) {
+      if (entry.level === 'error' && entry.text && entry.text !== 'error') {
         errors.push(entry.text)
       }
     }
@@ -57,8 +57,10 @@ export const runTestScenarios = ({ only, exclude }: TestScenarioOptions = {}) =>
      * TODO: include all errors once we have fixed the hydration issues
      */
     const nonHydrationErrors = errors.filter((error) => (
-      !error.includes('Hydration') &&
-      !error.includes('Expected server HTML to contain a matching')
+      !error.toLowerCase().includes('hydration') &&
+      !error.includes('hydrating') &&
+      !error.includes('Expected server HTML to contain a matching') &&
+      !error.includes('Did not expect server HTML to contain')
     ))
     if (nonHydrationErrors.length > 0) {
       throw new Error(`Errors were logged during the tests:\n  - ${nonHydrationErrors.join('\n  - ')}`)

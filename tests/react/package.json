@@ -11,6 +11,7 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@wdio/globals": "^9.12.1",
+    "diffable-html": "^6.0.1",
     "node-html-parser": "^7.0.1",
     "webdriver": "^9.12.2",
     "webdriverio": "^9.12.1"

@@ -1,3 +1,5 @@
+'use client'
+
 import {
   MyComponent, MyComponentScoped, MyButton, MyButtonScoped, MyList, MyListItem,
   MyListScoped, MyListItemScoped, MyCounter, MyComplexProps, MyComplexPropsScoped,

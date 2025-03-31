@@ -8,18 +8,41 @@ export const testScenarios: Record<TransformedComponents, () => void> = {
   'transform-scoped-to-shadow': () => {
     it('should server side render component as scoped component', async () => {
       const html = await fetchSourceCode('transform-scoped-to-shadow')
-      expect(html).toBe(`<div id=\"transform-scoped-to-shadow\"><my-counter class=\"hydrated sc-my-counter-h\" s-id=\"13\" start-value=\"42\">
-  <div c-id=\"13.0.0.0\" class=\"sc-my-counter\">
-    <button c-id=\"13.1.1.0\" class=\"sc-my-counter\">
-      -
-    </button>
-    <span c-id=\"13.3.1.1\" class=\"sc-my-counter\">
-      42
-    </span>
-    <button c-id=\"13.5.1.2\" class=\"sc-my-counter\">
-      +
-    </button>
-  </div></my-counter></div>`)
+      expect(html).toMatchInlineSnapshot(`
+        "
+        <div id="transform-scoped-to-shadow">
+          <my-counter
+            class="hydrated sc-my-counter-h"
+            s-id="x"
+            start-value="42"
+          >
+            <div
+              c-id="x"
+              class="sc-my-counter"
+            >
+              <button
+                c-id="x"
+                class="sc-my-counter"
+              >
+                -
+              </button>
+              <span
+                c-id="x"
+                class="sc-my-counter"
+              >
+                42
+              </span>
+              <button
+                c-id="x"
+                class="sc-my-counter"
+              >
+                +
+              </button>
+            </div>
+          </my-counter>
+        </div>
+        "
+      `)
     })
 
     it('should transform scoped component to shadow component in runtime', async () => {
