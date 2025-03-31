@@ -5,7 +5,7 @@ import { possibleStandardNames } from './constants.js';
  * @param propName - The Stencil property name
  * @returns The React property name
  */
-export function getReactPropertyName (propName: string) {
+export function getReactPropertyName(propName: string) {
   return (
     /**
      * Either use a known standard name
@@ -16,5 +16,5 @@ export function getReactPropertyName (propName: string) {
      * Stencil only supports kebab-casing using HTML templates.
      */
     propName.replace(/([A-Z])/g, '-$1').toLowerCase()
-  )
+  );
 }

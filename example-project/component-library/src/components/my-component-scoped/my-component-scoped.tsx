@@ -32,10 +32,6 @@ export class MyComponentScoped {
   }
 
   render() {
-    return (
-      <div>
-        Hello, World! I'm {this.getText()}
-      </div>
-    );
+    return <div>Hello, World! I'm {this.getText()}</div>;
   }
 }

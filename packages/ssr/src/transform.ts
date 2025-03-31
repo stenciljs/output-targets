@@ -15,8 +15,11 @@ import {
 import type { StencilSSROptions, SerializeShadowRootOptions } from './types.js';
 
 interface HydrateModule {
-  serializeProperty: (value: any) => string,
-  renderToString: (tpl: string, options: { prettyHtml?: boolean, fullDocument?: boolean, serializeShadowRoot?: SerializeShadowRootOptions }) => Promise<{ html: string }>
+  serializeProperty: (value: any) => string;
+  renderToString: (
+    tpl: string,
+    options: { prettyHtml?: boolean; fullDocument?: boolean; serializeShadowRoot?: SerializeShadowRootOptions }
+  ) => Promise<{ html: string }>;
 }
 
 export async function transform(
@@ -65,7 +68,7 @@ export async function transform(
    * - the hydrate module which gives us the renderToString method
    * - the components from the user's component library
    */
-  const importedHydrateModule = await hydrateModule as HydrateModule;
+  const importedHydrateModule = (await hydrateModule) as HydrateModule;
   const components = Object.keys(await module);
   const componentCalls: {
     identifier: string;
@@ -175,13 +178,14 @@ export async function transform(
       });
 
       const isScopedComponent = !html.includes('<template shadowrootmode="open">');
-      const isScoped = typeof serializeShadowRoot === 'string'
-        ? serializeShadowRoot === 'scoped'
-        : typeof serializeShadowRoot === 'object'
-          ? serializeShadowRoot.default === 'scoped'
-            ? true
-            : serializeShadowRoot['scoped']?.includes(tagName)
-          : false;
+      const isScoped =
+        typeof serializeShadowRoot === 'string'
+          ? serializeShadowRoot === 'scoped'
+          : typeof serializeShadowRoot === 'object'
+            ? serializeShadowRoot.default === 'scoped'
+              ? true
+              : serializeShadowRoot['scoped']?.includes(tagName)
+            : false;
 
       /**
        * serialize scoped component

@@ -16,6 +16,9 @@
     "webdriver": "^9.12.2",
     "webdriverio": "^9.12.1"
   },
+  "scripts": {
+    "prettier": "prettier \"./src/**/*.{html,ts,tsx,js,jsx}\" --write"
+  },
   "exports": {
     ".": "./src/TestComponent.tsx",
     "./scenarios": "./tests/scenarios.ts"

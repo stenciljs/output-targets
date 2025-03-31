@@ -76,11 +76,13 @@ export function parseSimpleObjectExpression(astNode: any): object {
       /**
        * AST node is not a property
        */
-      !namedTypes.Property.check(prop) || prop.kind !== 'init' ||
+      !namedTypes.Property.check(prop) ||
+      prop.kind !== 'init' ||
       /**
        * property is a function
        */
-      namedTypes.FunctionDeclaration.check(prop.value) || namedTypes.ArrowFunctionExpression.check(prop.value)
+      namedTypes.FunctionDeclaration.check(prop.value) ||
+      namedTypes.ArrowFunctionExpression.check(prop.value)
     ) {
       continue;
     }
