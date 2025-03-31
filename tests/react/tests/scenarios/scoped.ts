@@ -1,8 +1,8 @@
 /// <reference types="webdriverio" />
 import { browser, expect, $ } from '@wdio/globals'
 
-import { fetchSourceCode } from './helpers.js'
-import type { ScopedComponents } from '../src/TestComponent'
+import { fetchSourceCode } from '../helpers.js'
+import type { ScopedComponents } from '../../src/TestComponent.js'
 
 export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
   'single-no-child-scoped': () => {

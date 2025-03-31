@@ -1,8 +1,8 @@
 /// <reference types="webdriverio" />
 import { browser, expect, $ } from '@wdio/globals'
 
-import { fetchSourceCode } from './helpers.js'
-import type { TransformedComponents } from '../src/TestComponent'
+import { fetchSourceCode } from '../helpers.js'
+import type { TransformedComponents } from '../../src/TestComponent.js'
 
 export const testScenarios: Record<TransformedComponents, () => void> = {
   'transform-scoped-to-shadow': () => {

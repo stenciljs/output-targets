@@ -1,8 +1,8 @@
 /// <reference types="webdriverio" />
 import { browser, expect, $ } from '@wdio/globals'
 
-import { fetchSourceCode } from './helpers.js'
-import type { ShadowComponents } from '../src/TestComponent'
+import { fetchSourceCode } from '../helpers.js'
+import type { ShadowComponents } from '../../src/TestComponent.js'
 
 export const testScenarios: Record<ShadowComponents, () => void> = {
   'single-no-child-shadow': () => {

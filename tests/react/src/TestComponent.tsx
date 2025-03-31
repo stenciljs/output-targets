@@ -15,6 +15,11 @@ import {
 } from 'component-library-react';
 import { InputShadow, InputScoped } from './Input';
 
+/**
+ * A list of all test components that are available to be
+ * used in the test scenarios. If you want to add a new test,
+ * add the component to this list and create a new test scenario.
+ */
 const testComponents = [
   // scoped tests
   'single-no-child-scoped',
