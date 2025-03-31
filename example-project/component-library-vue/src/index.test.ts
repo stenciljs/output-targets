@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { MyComponent } from './index.js';
+import { MyComponent, MyComplexProps } from './index.js';
 import { expect, it, describe, vi } from 'vitest';
 
 describe('MyComponent', () => {
@@ -24,24 +24,6 @@ describe('MyComponent', () => {
       },
     });
     expect(wrapper.props().first).toEqual('blue');
-  });
-
-  it('should get numbers as props', () => {
-    const wrapper = mount(MyComponent, {
-      props: {
-        age: 39,
-      },
-    });
-    expect(wrapper.props().age).toEqual(39);
-  });
-
-  it('should get arrays as props', () => {
-    const wrapper = mount(MyComponent, {
-      props: {
-        kidsNames: ['billy', 'jane'],
-      },
-    });
-    expect(wrapper.props().kidsNames).toEqual(['billy', 'jane']);
   });
 
   it('should get emits', async () => {

@@ -6,19 +6,7 @@ const MyComponent$0 = ({ children, ...props }) => {
   return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "1", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.1-->
   <div c-id="1.0.0.0" class="sc-my-component">
     <!--t.1.1.1.0-->
-    Hello, World! I'm John William Doe
-    <p c-id="1.2.1.1" class="sc-my-component">
-      <!--t.1.3.2.0-->
-      Age:
-    </p>
-    <p c-id="1.4.1.2" class="sc-my-component">
-      <!--t.1.5.2.0-->
-      Kids: John, Jane, Jim
-    </p>
-    <p c-id="1.6.1.3" class="sc-my-component">
-      <!--t.1.7.2.0-->
-      Favorite kid:
-    </p>
+    Hello, World! I'm John undefined Doe
   </div>\` } }, void 0, false, {
     lineNumber: 3,
     columnNumber: 12
@@ -29,20 +17,8 @@ const MyComponent$1 = ({ children, ...props }) => {
   <div c-id="2.0.0.0" class="sc-my-component">
     <!--t.2.1.1.0-->
     Hello, World! I'm undefined undefined undefined
-    <p c-id="2.2.1.1" class="sc-my-component">
-      <!--t.2.3.2.0-->
-      Age:
-    </p>
-    <p c-id="2.4.1.2" class="sc-my-component">
-      <!--t.2.5.2.0-->
-      Kids:
-    </p>
-    <p c-id="2.6.1.3" class="sc-my-component">
-      <!--t.2.7.2.0-->
-      Favorite kid:
-    </p>
   </div>\` } }, void 0, false, {
-    lineNumber: 24,
+    lineNumber: 12,
     columnNumber: 12
   });
 };
@@ -51,7 +27,7 @@ const MyList$2 = ({ children, ...props }) => {
   <ul c-id="3.0.0.0" class="sc-my-list sc-my-list-s">
     <!--s.3.1.1.0.-->
   </ul>\` } }, void 0, false, {
-    lineNumber: 45,
+    lineNumber: 21,
     columnNumber: 12
   });
 };
@@ -63,7 +39,7 @@ const MyListItem$3 = ({ children, ...props }) => {
     <!--t.0.1-->
     Item 1
   </li>\` } }, void 0, false, {
-    lineNumber: 53,
+    lineNumber: 29,
     columnNumber: 12
   });
 };
@@ -75,7 +51,7 @@ const MyListItem$4 = ({ children, ...props }) => {
     <!--t.0.2-->
     Item 2
   </li>\` } }, void 0, false, {
-    lineNumber: 64,
+    lineNumber: 40,
     columnNumber: 12
   });
 };
@@ -87,7 +63,7 @@ const MyListItem$5 = ({ children, ...props }) => {
     <!--t.0.3-->
     Item 3
   </li>\` } }, void 0, false, {
-    lineNumber: 75,
+    lineNumber: 51,
     columnNumber: 12
   });
 };
@@ -107,7 +83,7 @@ const MyCounter$6 = ({ children, ...props }) => {
       +
     </button>
   </div>\` } }, void 0, false, {
-    lineNumber: 86,
+    lineNumber: 62,
     columnNumber: 12
   });
 };

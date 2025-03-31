@@ -3,7 +3,7 @@ import { expect, $, browser } from '@wdio/globals';
 describe('Stencil NuxtJS Integration', () => {
   it('should have hydrated the page', async () => {
     await browser.url('/');
-    const input = await $('my-input input');
+    const input = await $('my-input').$('input');
     await input.setValue('test');
     await expect($('.inputResult').getText()).toMatchInlineSnapshot(`
       "Input Event: test

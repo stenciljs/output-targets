@@ -12,7 +12,7 @@ import type { TestComponent } from '../src/TestComponent'
  * @param scenario - The name of the test scenario
  * @returns The formatted source code of the test scenario
  */
-export async function fetchSourceCode (scenario: TestComponent) {
+export async function fetchSourceCode (scenario: TestComponent, retried = false) {
   const url = `${browser.options.baseUrl}/${scenario}`
 
   try {
@@ -35,6 +35,13 @@ export async function fetchSourceCode (scenario: TestComponent) {
       .filter((l) => !l.includes('suppresshydrationwarning'))
       .join('\n')
   } catch (err) {
+    /**
+     * at least retry once to avoid startup flakes
+     */
+    if (!retried) {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      return fetchSourceCode(scenario, true)
+    }
     const error = err instanceof Error ? err : new Error(String(err))
     throw new Error(`Failed to fetch source code for ${scenario}: ${error.message}`)
   }
