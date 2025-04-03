@@ -36,6 +36,11 @@ export interface ReactOutputTargetOptions {
    */
   excludeServerSideRenderingFor?: string[];
   /**
+   * If `true`, the output target will generate a separate ES module for each React component wrapper. Defaults to `false`.
+   * @default false
+   */
+  esModules?: boolean;
+  /**
    * Configure how Stencil serializes the components shadow root.
    * - If set to `declarative-shadow-dom` the component will be rendered within a Declarative Shadow DOM.
    * - If set to `scoped` Stencil will render the contents of the shadow root as a `scoped: true` component
@@ -75,6 +80,7 @@ interface ReactOutputTarget extends OutputTargetCustom {
  */
 export const reactOutputTarget = ({
   outDir,
+  esModules,
   stencilPackageName,
   excludeComponents,
   customElementsDir: customElementsDirOverride,
@@ -170,6 +176,7 @@ export const reactOutputTarget = ({
         stencilPackageName: stencilPackageName!,
         customElementsDir,
         excludeComponents,
+        esModules: esModules === true,
         project,
         hydrateModule,
         excludeServerSideRenderingFor,

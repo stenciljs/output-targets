@@ -8,6 +8,7 @@ export const createComponentWrappers = async ({
   stencilPackageName,
   components,
   outDir,
+  esModules,
   customElementsDir,
   excludeComponents,
   project,
@@ -50,33 +51,55 @@ export const createComponentWrappers = async ({
   }
 
   const fileContents: Record<string, string> = {};
-  const outputPath = path.join(outDir, `components.ts`);
 
   /**
-   * create a client side component
+   * create a single file with all components or a separate file for each component
+   * @param components - the components to create the file for
+   * @param filename - the filename of the file to create
    */
-  const stencilReactComponent = createStencilReactComponents({
-    components: filteredComponents,
-    stencilPackageName,
-    customElementsDir,
-  });
-  fileContents[outputPath] = stencilReactComponent;
+  function createComponentFile (components: ComponentCompilerMeta[], filename = 'components') {
+    /**
+     * create a single file with all components
+     */
+    const outputPath = path.join(outDir, `${filename}.ts`);
 
-  /**
-   * create a server side component
-   */
-  if (hydrateModule) {
-    const outputPath = path.join(outDir, `components.server.ts`);
+    /**
+     * create a client side component
+     */
     const stencilReactComponent = createStencilReactComponents({
-      components: filteredComponents.filter(
-        (c) => !excludeServerSideRenderingFor || !excludeServerSideRenderingFor.includes(c.tagName)
-      ),
+      components,
       stencilPackageName,
       customElementsDir,
-      hydrateModule,
-      serializeShadowRoot,
     });
     fileContents[outputPath] = stencilReactComponent;
+
+    /**
+     * create a server side component
+     */
+    if (hydrateModule) {
+      const outputPath = path.join(outDir, `${filename}.server.ts`);
+      const stencilReactComponent = createStencilReactComponents({
+        components: components.filter(
+          (c) => !excludeServerSideRenderingFor || !excludeServerSideRenderingFor.includes(c.tagName)
+        ),
+        stencilPackageName,
+        customElementsDir,
+        hydrateModule,
+        serializeShadowRoot,
+      });
+      fileContents[outputPath] = stencilReactComponent;
+    }
+  }
+
+  if (esModules) {
+    /**
+     * create a separate file for each component
+     */
+    for (const component of filteredComponents) {
+      createComponentFile([component], component.tagName);
+    }
+  } else {
+    createComponentFile(filteredComponents);
   }
 
   await Promise.all(
