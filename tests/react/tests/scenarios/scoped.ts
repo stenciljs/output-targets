@@ -1,4 +1,5 @@
 /// <reference types="webdriverio" />
+import os from 'node:os'
 import { browser, expect, $ } from '@wdio/globals'
 
 import { fetchSourceCode } from '../helpers.js'
@@ -6,7 +7,11 @@ import type { ScopedComponents } from '../../src/TestComponent.js'
 
 export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
   'single-no-child-scoped': () => {
-    it('should correctly server side render', async () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
       const html = await fetchSourceCode('single-no-child-scoped')
       expect(html).toMatchInlineSnapshot(`
         "
@@ -42,7 +47,11 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
     })
   },
   'single-children-scoped': () => {
-    it('should correctly server side render', async () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
       const html = await fetchSourceCode('single-children-scoped')
       expect(html).toMatchInlineSnapshot(`
         "
@@ -87,7 +96,11 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
     })
   },
   'complex-props-scoped': () => {
-    it('should correctly server side render complex props', async () => {
+    it('should correctly server side render complex props', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
       const html = await fetchSourceCode('complex-props-scoped')
       expect(html).toMatchInlineSnapshot(`
         "

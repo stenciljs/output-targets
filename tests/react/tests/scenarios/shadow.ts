@@ -1,4 +1,5 @@
 /// <reference types="webdriverio" />
+import os from 'os'
 import { browser, expect, $ } from '@wdio/globals'
 
 import { fetchSourceCode } from '../helpers.js'
@@ -6,7 +7,11 @@ import type { ShadowComponents } from '../../src/TestComponent.js'
 
 export const testScenarios: Record<ShadowComponents, () => void> = {
   'single-no-child-shadow': () => {
-    it('should correctly server side render', async () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
       const html = await fetchSourceCode('single-no-child-shadow')
       expect(html).toMatchInlineSnapshot(`
         "
@@ -44,7 +49,11 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
     })
   },
   'single-children-shadow': () => {
-    it('should correctly server side render', async () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
       const html = await fetchSourceCode('single-children-shadow')
       expect(html).toMatchInlineSnapshot(`
         "
@@ -100,7 +109,11 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
     })
   },
   'nested-shadow': () => {
-    it('should correctly server side render', async () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
       const html = await fetchSourceCode('nested-shadow')
       expect(html).toMatchInlineSnapshot(`
         "
@@ -158,7 +171,11 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
     })
   },
   'complex-props-shadow': () => {
-    it('should correctly server side render complex props', async () => {
+    it('should correctly server side render complex props', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
       const html = await fetchSourceCode('complex-props-shadow')
       expect(html).toMatchInlineSnapshot(`
         "

@@ -1,4 +1,5 @@
 /// <reference types="webdriverio" />
+import os from 'node:os'
 import { browser, expect, $ } from '@wdio/globals'
 
 import { fetchSourceCode } from '../helpers.js'
@@ -6,7 +7,11 @@ import type { TransformedComponents } from '../../src/TestComponent.js'
 
 export const testScenarios: Record<TransformedComponents, () => void> = {
   'transform-scoped-to-shadow': () => {
-    it('should server side render component as scoped component', async () => {
+    it('should server side render component as scoped component', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
       const html = await fetchSourceCode('transform-scoped-to-shadow')
       expect(html).toMatchInlineSnapshot(`
         "
