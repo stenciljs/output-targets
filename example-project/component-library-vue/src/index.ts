@@ -6,11 +6,19 @@ import { defineContainer, defineStencilSSRComponent, type StencilVueComponent } 
 import type { JSX } from 'component-library';
 
 import { defineCustomElement as defineMyButton } from 'component-library/components/my-button.js';
+import { defineCustomElement as defineMyButtonScoped } from 'component-library/components/my-button-scoped.js';
 import { defineCustomElement as defineMyCheckbox } from 'component-library/components/my-checkbox.js';
+import { defineCustomElement as defineMyComplexProps } from 'component-library/components/my-complex-props.js';
+import { defineCustomElement as defineMyComplexPropsScoped } from 'component-library/components/my-complex-props-scoped.js';
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
+import { defineCustomElement as defineMyComponentScoped } from 'component-library/components/my-component-scoped.js';
+import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
+import { defineCustomElement as defineMyInputScoped } from 'component-library/components/my-input-scoped.js';
 import { defineCustomElement as defineMyList } from 'component-library/components/my-list.js';
 import { defineCustomElement as defineMyListItem } from 'component-library/components/my-list-item.js';
+import { defineCustomElement as defineMyListItemScoped } from 'component-library/components/my-list-item-scoped.js';
+import { defineCustomElement as defineMyListScoped } from 'component-library/components/my-list-scoped.js';
 import { defineCustomElement as defineMyPopover } from 'component-library/components/my-popover.js';
 import { defineCustomElement as defineMyRadio } from 'component-library/components/my-radio.js';
 import { defineCustomElement as defineMyRadioGroup } from 'component-library/components/my-radio-group.js';
@@ -40,6 +48,48 @@ export const MyButton: StencilVueComponent<JSX.MyButton> = /*@__PURE__*/ globalT
   'myBlur'
 ]) : defineStencilSSRComponent<JSX.MyButton>({
   tagName: 'my-button',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'color': [String, "color"],
+    'buttonType': [String, "button-type"],
+    'disabled': [Boolean, "disabled"],
+    'expand': [String, "expand"],
+    'fill': [String, "fill"],
+    'download': [String, "download"],
+    'href': [String, "href"],
+    'rel': [String, "rel"],
+    'shape': [String, "shape"],
+    'size': [String, "size"],
+    'strong': [Boolean, "strong"],
+    'target': [String, "target"],
+    'type': [String, "type"],
+    'onMyFocus': [Function],
+    'onMyBlur': [Function]
+  }
+});
+
+
+export const MyButtonScoped: StencilVueComponent<JSX.MyButtonScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyButtonScoped>('my-button-scoped', defineMyButtonScoped, [
+  'color',
+  'buttonType',
+  'disabled',
+  'expand',
+  'fill',
+  'download',
+  'href',
+  'rel',
+  'shape',
+  'size',
+  'strong',
+  'target',
+  'type',
+  'myFocus',
+  'myBlur'
+], [
+  'myFocus',
+  'myBlur'
+]) : defineStencilSSRComponent<JSX.MyButtonScoped>({
+  tagName: 'my-button-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'color': [String, "color"],
@@ -98,29 +148,81 @@ export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["che
 });
 
 
+export const MyComplexProps: StencilVueComponent<JSX.MyComplexProps> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComplexProps>('my-complex-props', defineMyComplexProps, [
+  'foo',
+  'baz',
+  'quux',
+  'grault',
+  'waldo'
+]) : defineStencilSSRComponent<JSX.MyComplexProps>({
+  tagName: 'my-complex-props',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'grault': [Number, "grault"]
+  }
+});
+
+
+export const MyComplexPropsScoped: StencilVueComponent<JSX.MyComplexPropsScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComplexPropsScoped>('my-complex-props-scoped', defineMyComplexPropsScoped, [
+  'foo',
+  'baz',
+  'quux',
+  'grault',
+  'waldo'
+]) : defineStencilSSRComponent<JSX.MyComplexPropsScoped>({
+  tagName: 'my-complex-props-scoped',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'grault': [Number, "grault"]
+  }
+});
+
+
 export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComponent>('my-component', defineMyComponent, [
   'first',
-  'middle',
-  'last',
-  'age',
-  'kidsNames',
-  'favoriteKidName',
-  'myCustomEvent',
-  'myCustomNestedEvent'
-], [
-  'myCustomEvent',
-  'myCustomNestedEvent'
+  'middleName',
+  'last'
 ]) : defineStencilSSRComponent<JSX.MyComponent>({
   tagName: 'my-component',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'first': [String, "first"],
-    'middle': [String, "middle"],
+    'middleName': [String, "middle-name"],
+    'last': [String, "last"]
+  }
+});
+
+
+export const MyComponentScoped: StencilVueComponent<JSX.MyComponentScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComponentScoped>('my-component-scoped', defineMyComponentScoped, [
+  'first',
+  'middleName',
+  'last',
+  'myCustomEvent'
+], [
+  'myCustomEvent'
+]) : defineStencilSSRComponent<JSX.MyComponentScoped>({
+  tagName: 'my-component-scoped',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'first': [String, "first"],
+    'middleName': [String, "middle-name"],
     'last': [String, "last"],
-    'age': [Number, "age"],
-    'favoriteKidName': [String, "favorite-kid-name"],
-    'onMyCustomEvent': [Function],
-    'onMyCustomNestedEvent': [Function]
+    'onMyCustomEvent': [Function]
+  }
+});
+
+
+export const MyCounter: StencilVueComponent<JSX.MyCounter> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyCounter>('my-counter', defineMyCounter, [
+  'startValue',
+  'count'
+], [
+  'count'
+]) : defineStencilSSRComponent<JSX.MyCounter>({
+  tagName: 'my-counter',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'startValue': [Number, "start-value"],
+    'onCount': [Function]
   }
 });
 
@@ -199,6 +301,79 @@ export const MyInput: StencilVueComponent<JSX.MyInput, JSX.MyInput["value"]> = /
 });
 
 
+export const MyInputScoped: StencilVueComponent<JSX.MyInputScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyInputScoped>('my-input-scoped', defineMyInputScoped, [
+  'color',
+  'accept',
+  'autocapitalize',
+  'autocomplete',
+  'autocorrect',
+  'autofocus',
+  'clearInput',
+  'clearOnEdit',
+  'disabled',
+  'enterkeyhint',
+  'inputmode',
+  'max',
+  'maxlength',
+  'min',
+  'minlength',
+  'multiple',
+  'name',
+  'pattern',
+  'placeholder',
+  'readonly',
+  'required',
+  'spellcheck',
+  'step',
+  'size',
+  'type',
+  'value',
+  'myInput',
+  'myChange',
+  'myBlur',
+  'myFocus'
+], [
+  'myInput',
+  'myChange',
+  'myBlur',
+  'myFocus'
+]) : defineStencilSSRComponent<JSX.MyInputScoped>({
+  tagName: 'my-input-scoped',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'color': [String, "color"],
+    'accept': [String, "accept"],
+    'autocapitalize': [String, "autocapitalize"],
+    'autocomplete': [String, "autocomplete"],
+    'autocorrect': [String, "autocorrect"],
+    'autofocus': [Boolean, "autofocus"],
+    'clearInput': [Boolean, "clear-input"],
+    'clearOnEdit': [Boolean, "clear-on-edit"],
+    'disabled': [Boolean, "disabled"],
+    'enterkeyhint': [String, "enterkeyhint"],
+    'inputmode': [String, "inputmode"],
+    'max': [String, "max"],
+    'maxlength': [Number, "maxlength"],
+    'min': [String, "min"],
+    'minlength': [Number, "minlength"],
+    'multiple': [Boolean, "multiple"],
+    'name': [String, "name"],
+    'pattern': [String, "pattern"],
+    'placeholder': [String, "placeholder"],
+    'readonly': [Boolean, "readonly"],
+    'required': [Boolean, "required"],
+    'spellcheck': [Boolean, "spellcheck"],
+    'step': [String, "step"],
+    'size': [Number, "size"],
+    'type': [String, "type"],
+    'onMyInput': [Function],
+    'onMyChange': [Function],
+    'onMyBlur': [Function],
+    'onMyFocus': [Function]
+  }
+});
+
+
 export const MyList: StencilVueComponent<JSX.MyList> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyList>('my-list', defineMyList) : defineStencilSSRComponent<JSX.MyList>({
   tagName: 'my-list',
   hydrateModule: import('component-library/hydrate'),
@@ -210,6 +385,24 @@ export const MyList: StencilVueComponent<JSX.MyList> = /*@__PURE__*/ globalThis.
 
 export const MyListItem: StencilVueComponent<JSX.MyListItem> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListItem>('my-list-item', defineMyListItem) : defineStencilSSRComponent<JSX.MyListItem>({
   tagName: 'my-list-item',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    
+  }
+});
+
+
+export const MyListItemScoped: StencilVueComponent<JSX.MyListItemScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListItemScoped>('my-list-item-scoped', defineMyListItemScoped) : defineStencilSSRComponent<JSX.MyListItemScoped>({
+  tagName: 'my-list-item-scoped',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    
+  }
+});
+
+
+export const MyListScoped: StencilVueComponent<JSX.MyListScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListScoped>('my-list-scoped', defineMyListScoped) : defineStencilSSRComponent<JSX.MyListScoped>({
+  tagName: 'my-list-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
     

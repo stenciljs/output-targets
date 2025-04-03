@@ -12,9 +12,7 @@
     @myCustomEvent="handleCustomEvent"
     :kidsNames="kidsNames"
     first="John"
-    middle="Sir"
-    favoriteKidName="John"
-    :age="20"
+    middleName="Sir"
     last="Doe"
   />
   <p data-testid="mycomponent-click" v-show="isClicked">MyComponent was clicked</p>

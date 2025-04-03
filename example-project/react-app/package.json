@@ -1,0 +1,45 @@
+{
+  "name": "react-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build --outDir dist/client",
+    "build:server": "vite build --ssr src/entry-server.tsx --outDir dist/server",
+    "preview": "cross-env NODE_ENV=production node server",
+    "test": "wdio run ./wdio.conf.ts"
+  },
+  "dependencies": {
+    "component-library": "workspace:*",
+    "component-library-react": "workspace:*",
+    "compression": "^1.8.0",
+    "express": "^5.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.4.0",
+    "react-test-components": "workspace:*",
+    "sirv": "^3.0.1"
+  },
+  "devDependencies": {
+    "@stencil/ssr": "workspace:*",
+    "@types/express": "^5.0.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.13.4",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@wdio/cli": "^9.11.0",
+    "@wdio/globals": "^9.11.0",
+    "@wdio/local-runner": "^9.11.0",
+    "@wdio/mocha-framework": "^9.11.0",
+    "@wdio/spec-reporter": "^9.11.0",
+    "@wdio/types": "^9.10.1",
+    "cross-env": "^7.0.3",
+    "puppeteer-core": "^24.4.0",
+    "typescript": "~5.7.3",
+    "vite": "^6.1.1",
+    "webdriverio": "^9.11.0"
+  }
+}

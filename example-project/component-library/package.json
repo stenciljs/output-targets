@@ -8,14 +8,12 @@
     "type": "git",
     "url": "https://github.com/stenciljs/output-targets.git"
   },
+  "type": "module",
   "main": "dist/index.cjs.js",
-  "module": "dist/index.mjs",
-  "es2015": "dist/esm/index.mjs",
-  "es2017": "dist/esm/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/component-library/component-library.js",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -61,7 +59,7 @@
   },
   "devDependencies": {
     "@stencil/angular-output-target": "workspace:*",
-    "@stencil/core": "^4.22.3",
+    "@stencil/core": "4.28.2-dev.1742453865.0e5a479",
     "@stencil/react-output-target": "workspace:*",
     "@stencil/vue-output-target": "workspace:*",
     "@types/puppeteer": "2.0.1"

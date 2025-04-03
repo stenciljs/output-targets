@@ -2,10 +2,12 @@
   "name": "@stencil/react-output-target",
   "version": "0.8.2",
   "description": "React output target for @stencil/core components.",
-  "main": "./dist/react-output-target.js",
-  "module": "./dist/react-output-target.js",
-  "types": "./dist/react-output-target/index.d.ts",
-  "type": "module",
+  "author": "Ionic Team",
+  "homepage": "https://stenciljs.com/",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stenciljs/output-targets/issues"
+  },
   "files": [
     "dist/",
     "runtime.d.ts"
@@ -13,13 +15,31 @@
   "publishConfig": {
     "access": "public"
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime.js",
+      "require": "./dist/runtime.cjs"
+    },
+    "./ssr": {
+      "types": "./dist/runtime/ssr.d.ts",
+      "import": "./dist/ssr.js",
+      "require": "./dist/ssr.cjs"
+    }
+  },
   "scripts": {
     "prepublishOnly": "pnpm run build",
-    "build": "vite build && pnpm run build:dts",
-    "build:dts": "tsc -p tsconfig.json",
-    "dev": "run-p dev:*",
-    "dev:build": "vite build --watch",
-    "dev:dts": "tsc -p tsconfig.json --watch --preserveWatchOutput",
+    "build": "vite build",
+    "dev": "vite build --watch",
     "version": "pnpm run build",
     "prettier": "prettier \"./src/**/*.{html,ts,tsx,js,jsx}\" --write",
     "release": "np",
@@ -31,18 +51,13 @@
     "type": "git",
     "url": "git+https://github.com/stenciljs/output-targets.git"
   },
-  "author": "Ionic Team",
-  "homepage": "https://stenciljs.com/",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/stenciljs/output-targets/issues"
-  },
   "peerDependencies": {
     "@stencil/core": ">=3 || >= 4.0.0-beta.0 || >= 4.0.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
+    "@stencil/core": "4.28.2-dev.1742453865.0e5a479",
     "@types/node": "^20.14.12",
     "@types/react": "^18 || ^19",
     "@types/react-dom": "^18 || ^19",
@@ -52,11 +67,10 @@
     "vite": "^5.0.0",
     "vite-plugin-dts": "^3.8.1"
   },
-  "gitHead": "a3588e905186a0e86e7f88418fd5b2f9531b55e0",
   "dependencies": {
     "@lit/react": "^1.0.4",
-    "html-react-parser": "^5.1.10",
-    "style-object-to-css-string": "^1.0.0",
+    "html-react-parser": "^5.2.2",
+    "style-object-to-css-string": "^1.1.3",
     "ts-morph": "^22.0.0"
   },
   "peerDependenciesMeta": {
@@ -68,32 +82,6 @@
     },
     "react-dom": {
       "optional": false
-    }
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/react-output-target/index.d.ts",
-      "node": {
-        "default": "./dist/react-output-target.cjs"
-      },
-      "default": "./dist/react-output-target.js"
-    },
-    "./runtime": {
-      "types": "./dist/react/index.d.ts",
-      "browser": {
-        "default": "./dist/react.js"
-      },
-      "node": {
-        "default": "./dist/react.cjs"
-      },
-      "default": "./dist/react.js"
-    },
-    "./ssr": {
-      "types": "./dist/react/ssr.d.ts",
-      "browser": {
-        "default": "./dist/ssr.js"
-      },
-      "default": "./dist/ssr.js"
     }
   }
 }

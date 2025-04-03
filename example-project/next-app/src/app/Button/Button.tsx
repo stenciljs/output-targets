@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { MyButton, MyComponent } from '../components';
+import { MyButton, MyComponent } from 'component-library-react';
 
 function Button() {
   const [inputEvent, setInputEvent] = useState<number>(0);

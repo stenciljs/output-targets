@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { MyComponent, MyButton } from 'component-library-vue'
+import { MyComponent, MyButton, MyComplexProps } from 'component-library-vue'
 </script>
 
 <template>
   <MyComponent
-    kidsNames="John"
+    :first="42"
+  />
+  <MyComplexProps
+    :baz="new Map([['foo', { qux: 12 }]])"
   />
   <my-button fill="ups">Button</my-button>
   <my-button :router-link="{name: 'user', para__ms: {username: 'cindy'}}"></my-button>

@@ -23,9 +23,9 @@ export interface InputChangeEventDetail {
  */
 @Component({
   tag: 'my-input',
-  scoped: true,
+  shadow: true,
 })
-export class Input implements ComponentInterface {
+export class MyInput implements ComponentInterface {
   private nativeInput?: HTMLInputElement;
   private inputId = `my-input-${inputIds++}`;
   private didBlurAfterEdit = false;
