@@ -1,3 +1,10 @@
+## @stencil/ssr@0.1.0, @stencil/react-output-target@1.0.0 (2025-04-03)
+
+#### :rocket: Enhancement
+
+- [`2873b0e`](https://github.com/stenciljs/output-targets/commit/2873b0e03c0476f69301f705cd7f3e682451e6b2) feat(react): support Vite based SSR (#624) ([@christian-bromann](https://github.com/christian-bromann))
+- [`5a1a276`](https://github.com/stenciljs/output-targets/pull/624/commits/5a1a276143a0a943e5be03e99484624469725e56) feat(ssr): support object hydration (#633) ([@christian-bromann](https://github.com/christian-bromann))
+
 ## @stencil/vue-output-target@0.10.7 (2025-03-17)
 
 #### :bug: Bug Fix
