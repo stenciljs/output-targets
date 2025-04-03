@@ -48,6 +48,7 @@
     "react-test-components": "workspace:*",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.1.6",
+    "wdio-vite-service": "^2.0.0",
     "webdriverio": "^9.11.0",
     "vite": "^5.1.0",
     "vite-tsconfig-paths": "^4.2.1"

@@ -1,10 +1,4 @@
 import type { MochaOptions } from 'mocha';
-import cp from 'node:child_process';
-import path from 'node:path';
-import url from 'node:url';
-
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-let server: cp.ChildProcess | undefined;
 
 export const config: WebdriverIO.Config = {
   //
@@ -106,7 +100,7 @@ export const config: WebdriverIO.Config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: [],
+  services: ['vite'],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -160,13 +154,8 @@ export const config: WebdriverIO.Config = {
    * @param {object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  onPrepare: function () {
-    console.log('Starting SSR server...');
-    server = cp.spawn('npx', ['remix', 'vite:dev'], {
-      cwd: __dirname,
-      stdio: 'inherit',
-    });
-  },
+  // onPrepare: function () {
+  // },
   /**
    * Gets executed before a worker process is spawned and can be used to initialize specific service
    * for that worker as well as modify runtime environments in an async fashion.
@@ -289,12 +278,8 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {<Object>} results object containing test results
    */
-  onComplete: function() {
-    if (server) {
-      server.kill();
-      console.log('SSR server stopped');
-    }
-  },
+  // onComplete: function() {
+  // },
   /**
    * Gets executed when a refresh happens.
    * @param {string} oldSessionId session ID of the old session
