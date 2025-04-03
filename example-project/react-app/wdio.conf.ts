@@ -153,7 +153,7 @@ export const config: WebdriverIO.Config = {
    */
   onPrepare: function () {
     console.log('Starting SSR server...');
-    server = cp.spawn('npm', ['run', 'dev'], {
+    server = cp.spawn('node', ['server.js'], {
       cwd: __dirname,
       stdio: 'inherit',
     });

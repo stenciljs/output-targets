@@ -11,12 +11,16 @@ export class MyCounter {
   /**
    * The start value
    */
-  @Prop() startValue: string;
+  @Prop() startValue: number;
 
   /**
    * Emitted when the count changes
    */
   @Event() count: EventEmitter<number>;
+
+  connectedCallback() {
+    this.countValue = this.startValue ?? 0;
+  }
 
   private countMe(newValue: number) {
     this.countValue = newValue;

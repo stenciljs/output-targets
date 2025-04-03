@@ -14,6 +14,7 @@ import { AnchorInterface, ButtonInterface } from '../element-interface';
  */
 @Component({
   tag: 'my-button',
+  styleUrl: 'my-button.css',
   shadow: true,
 })
 export class Button implements ComponentInterface, AnchorInterface, ButtonInterface {
