@@ -1,6 +1,7 @@
 {
   "name": "react-test-components",
   "private": true,
+  "type": "module",
   "dependencies": {
     "component-library-react": "workspace:*",
     "react": "^19.0.0",

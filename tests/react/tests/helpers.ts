@@ -13,7 +13,7 @@ import type { TestComponent } from '../src/TestComponent'
  * @param scenario - The name of the test scenario
  * @returns The formatted source code of the test scenario
  */
-export async function fetchSourceCode (scenario: TestComponent, retried = false) {
+export async function fetchSourceCode (scenario: TestComponent, retries = 3) {
   const url = `${browser.options.baseUrl}/${scenario}`
 
   try {
@@ -39,9 +39,9 @@ export async function fetchSourceCode (scenario: TestComponent, retried = false)
     /**
      * at least retry once to avoid startup flakes
      */
-    if (!retried) {
+    if (retries > 0) {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      return fetchSourceCode(scenario, true)
+      return fetchSourceCode(scenario, retries - 1)
     }
     const error = err instanceof Error ? err : new Error(String(err))
     throw new Error(`Failed to fetch source code for ${scenario}: ${error.message}`)
