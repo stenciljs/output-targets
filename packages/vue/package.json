@@ -46,6 +46,9 @@
     "test": "vitest --run",
     "test.watch": "vitest --run --watch"
   },
+  "dependencies": {
+    "import-meta-resolve": "^4.1.0"
+  },
   "peerDependencies": {
     "vue": "^3.4.38",
     "vue-router": "^4.5.0",

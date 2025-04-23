@@ -1,8 +1,31 @@
-import { defineComponent, useSlots, compile, createSSRApp, type SetupContext } from 'vue';
+import * as Vue from 'vue';
+import type { SetupContext } from 'vue';
 import { type LooseRequired } from '@vue/shared';
+import { resolve } from 'import-meta-resolve';
+
 import { type InputProps } from './types';
 
 const LOG_PREFIX = '[vue-output-target]';
+
+
+/**
+ * When using Stencil SSR in Nuxt projects, we have to make sure that we import Vue from
+ * the users project dependencies and not the one that may be resolve by the output target.
+ * Interestingly, Nuxt stores the path of the file that imports the Vue output target in the
+ * `_importMeta_` global property which we use to determine the Vue dependency to use.
+ *
+ * Note: this may be breaking in the future if Next.js decides to remove this internal property.
+ */
+const nuxtGlobalThis = globalThis as typeof globalThis & { _importMeta_?: { url?: string } };
+let externalVue: string | undefined;
+if (nuxtGlobalThis._importMeta_ && typeof nuxtGlobalThis._importMeta_.url === 'string') {
+  externalVue = await resolve('vue', nuxtGlobalThis._importMeta_.url);
+}
+const VueImport: typeof Vue = externalVue
+  ? await import(externalVue)
+  : await import('vue');
+
+const { defineComponent, useSlots, compile, createSSRApp } = VueImport;
 
 /**
  * these types are defined by a Stencil hydrate app so we have to copy the minimal types here
@@ -105,7 +128,7 @@ export function defineStencilSSRComponent<Props, VModelType = string | number | 
           .replace('</style>', '</component>'),
         {
           comments: true,
-          isCustomElement: (tag) => tag === options.tagName,
+          isCustomElement: (tag: string) => tag === options.tagName,
         }
       );
     },
