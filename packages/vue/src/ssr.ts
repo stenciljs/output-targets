@@ -1,7 +1,7 @@
-import * as Vue from 'vue';
+import url from 'node:url';
+import * as vue from 'vue';
 import type { SetupContext } from 'vue';
 import { type LooseRequired } from '@vue/shared';
-import { resolve } from 'import-meta-resolve';
 
 import { type InputProps } from './types';
 
@@ -11,19 +11,16 @@ const LOG_PREFIX = '[vue-output-target]';
 /**
  * When using Stencil SSR in Nuxt projects, we have to make sure that we import Vue from
  * the users project dependencies and not the one that may be resolve by the output target.
- * Interestingly, Nuxt stores the path of the file that imports the Vue output target in the
- * `_importMeta_` global property which we use to determine the Vue dependency to use.
- *
- * Note: this may be breaking in the future if Next.js decides to remove this internal property.
+ * We only need to do this in Nuxt projects, hence inspecting for `/.nuxt/` in the `process.argv`.
  */
-const nuxtGlobalThis = globalThis as typeof globalThis & { _importMeta_?: { url?: string } };
 let externalVue: string | undefined;
-if (nuxtGlobalThis._importMeta_ && typeof nuxtGlobalThis._importMeta_.url === 'string') {
-  externalVue = await resolve('vue', nuxtGlobalThis._importMeta_.url);
+if (globalThis.process?.argv?.[1]?.includes('/.nuxt/')) {
+  const { resolve } = await import('import-meta-resolve');
+  externalVue = await resolve('vue', url.pathToFileURL(globalThis.process.argv[1]).href);
 }
-const VueImport: typeof Vue = externalVue
+const VueImport: typeof vue = externalVue
   ? await import(externalVue)
-  : await import('vue');
+  : vue;
 
 const { defineComponent, useSlots, compile, createSSRApp } = VueImport;
 

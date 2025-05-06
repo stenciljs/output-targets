@@ -1,7 +1,7 @@
 import typescript from '@rollup/plugin-typescript';
 import pkg from './package.json' with { type: 'json' };
 
-const external = ['path', 'node-sass', 'fs', 'util', 'vue', 'vue/server-renderer'];
+const external = ['path', 'url', 'node-sass', 'fs', 'util', 'vue', 'vue/server-renderer', 'import-meta-resolve'];
 const plugins = [typescript()];
 const core = {
   input: './src/index.ts',
@@ -28,16 +28,10 @@ const runtime = {
   watch: {
     clearScreen: false
   },
-  output: [
-    {
-      format: 'cjs',
-      file: pkg.exports['./runtime'].require,
-    },
-    {
-      format: 'es',
-      file: pkg.exports['./runtime'].import,
-    },
-  ],
+  output: {
+    format: 'es',
+    file: pkg.exports['./runtime'].import,
+  },
 }
 
 export default [core, runtime];
