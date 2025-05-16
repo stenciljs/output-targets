@@ -1,6 +1,7 @@
+import {writeFile} from 'node:fs/promises';
 import decamelize from 'decamelize';
 import { parse, visit, print } from 'recast';
-import { transformSync } from 'esbuild';
+import { transform as esbuildTransform } from 'esbuild';
 import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
 
@@ -10,9 +11,12 @@ import {
   serializeScopedComponent,
   serializeShadowComponent,
   parseSimpleObjectExpression,
+  removeComments,
   type StyleObject,
 } from './utils.js';
 import type { StencilSSROptions, SerializeShadowRootOptions } from './types.js';
+
+const VALID_JSX_IMPORTS = ['jsxDEV', 'jsx', 'jsxs'];
 
 interface HydrateModule {
   serializeProperty: (value: any) => string;
@@ -30,7 +34,7 @@ export async function transform(
   /**
    * Find all static imports of the component library used in the code
    */
-  const staticImports = findStaticImports(code);
+  const staticImports = findStaticImports(removeComments(code));
   const imports = staticImports
     .filter((importSpecifier) => {
       return importSpecifier.specifier === from;
@@ -41,25 +45,29 @@ export async function transform(
     }));
 
   /**
-   * Check if the code uses the jsxDEV runtime to ensure we only do the transformation
-   * after JSX is transformed.
+   * Check if the code uses the jsxDEV, jsx, or jsxs runtime functions to ensure we
+   * only do the transformation after JSX is transformed.
    */
-  const jsxImportReference = staticImports
+  const jsxImportReferences = staticImports
     .filter((importSpecifier) => {
-      return importSpecifier.specifier === 'react/jsx-dev-runtime';
+      return (
+        importSpecifier.specifier === 'react/jsx-dev-runtime' ||
+        importSpecifier.specifier === 'react/jsx-runtime'
+      );
     })
     .map((importSpecifier) => {
       const i = parseStaticImport(importSpecifier);
-      return i.namedImports?.['jsxDEV'];
+      return Object.entries(i.namedImports || {})
+        .filter(([key]) => VALID_JSX_IMPORTS.includes(key))
+        .map(([, importKey]) => importKey)
     })
-    .filter(Boolean)
-    .pop();
+    .flat() as string[];
 
   /**
    * only proceed if the file contains JSX components and uses components from the
    * users component library
    */
-  if (imports.length === 0 || !jsxImportReference) {
+  if (imports.length === 0 || jsxImportReferences.length === 0) {
     return code;
   }
 
@@ -101,7 +109,10 @@ export async function transform(
       /**
        * Only interested in `jsxDEV` calls
        */
-      if (!namedTypes.Identifier.check(node.callee) || node.callee.name !== jsxImportReference) {
+      if (!namedTypes.Identifier.check(node.callee) || !jsxImportReferences.includes(node.callee.name)) {
+        if (namedTypes.Identifier.check(node.callee)) {
+          console.log('NOOO------O', node.callee.name, jsxImportReferences)
+        }
         return this.traverse(path);
       }
 
@@ -125,15 +136,19 @@ export async function transform(
         properties: args[1].properties,
       });
 
-      path.get('arguments', 0).replace(b.identifier(identifier));
+      path.get('arguments', 0).replace(
+        b.callExpression(
+          b.identifier('get' + identifier),
+          [
+            b.objectExpression(args[1].properties
+              .filter((p: any) => p.key.name === 'children') as namedTypes.ObjectProperty[]
+            )
+          ]
+        )
+      );
       path
         .get('arguments', 1)
-        .replace(
-          b.objectExpression([
-            ...args[1].properties,
-            b.property('init', b.identifier('suppressHydrationWarning'), b.booleanLiteral(true)),
-          ])
-        );
+        .replace(b.objectExpression(args[1].properties));
       return this.traverse(path);
     },
   });
@@ -204,15 +219,15 @@ export async function transform(
   /**
    * Transform the wrapped JSX components into a raw JavaScript string.
    */
-  const result = transformSync(componentDeclarations.join('\n'), {
+  const nextImports = `import dynamic from 'next/dynamic';\nconst compImport = import('${from}');\n`
+  const result = await esbuildTransform(nextImports + componentDeclarations.join('\n'), {
     loader: 'jsx',
     jsx: 'automatic', // Use React 17+ JSX transform
-    jsxDev: true, // Include debug info (like in your example)
     format: 'esm',
     target: ['esnext'],
     sourcemap: true,
     sourcefile,
   });
 
-  return result.code + print(ast).code;
+  return result.code + '\n\n' + print(ast).code;
 }

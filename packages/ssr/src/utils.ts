@@ -1,6 +1,8 @@
 import { print } from 'recast';
 import { namedTypes } from 'ast-types';
 
+import { STYLE_ATTR_REGEX } from './constants.js';
+
 export interface StyleObject {
   [key: string]: string | number | boolean | StyleObject | any;
 }
@@ -182,7 +184,7 @@ export function serializeScopedComponent(html: string[], identifier: string) {
    * If the component has no child nodes, we can just return a React element
    * with the dangerouslySetInnerHTML prop set to the HTML of the component.
    */
-  const cmpTag = html[0].slice(0, -1) + ' suppressHydrationWarning={true}';
+  const cmpTag = html[0].slice(0, -1);
   const __html = html.slice(1, -1).join('\n').trim();
   return `\nconst ${identifier} = ({ children, ...props }) => {
     return ${cmpTag} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
@@ -197,21 +199,112 @@ export function serializeScopedComponent(html: string[], identifier: string) {
  * @returns The serialized component
  */
 export function serializeShadowComponent(html: string[], identifier: string, styleObject?: StyleObject) {
+  const cmpTagName = identifier.split('$')[0] as string;
+  /**
+   * this is the initial tag of the stringified component, e.g.
+   * ```
+   * <my-component class="my-class">
+   * ```
+   */
   const cmpTag = html[0];
-  const style = styleObject ? ` style={${JSON.stringify(styleObject)}}` : '';
+
+  /**
+   * get the closing tag of the component, including potential HTML content that could come after the closing tag
+   */
+  const cmpClosingTagIndex = html.findLastIndex((line) => line === getClosingTagFromOpeningTag(cmpTag))
+  const cmpEndTag = cmpClosingTagIndex > -1 ? html.slice(cmpClosingTagIndex).join('\n') : html[html.length - 1];
 
   /**
    * Let's reconstruct the rendered Stencil component into a JSX component
    */
-  const cmpEndTag = html[html.length - 1];
   const templateClosingIndex = html.findLastIndex((line) => line.includes('</template>'));
   const __html = html.slice(2, templateClosingIndex).join('\n');
-  return `\nconst ${identifier} = ({ children }) => {
-  return (
-    ${cmpTag.slice(0, -1) + style}>
-      <template shadowrootmode="open" suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
-      {children}
-    ${cmpEndTag}
-  )
-}\n`;
+  return `\nconst get${identifier} = ({ children }) => dynamic(
+    () => compImport.then(mod => mod.${cmpTagName}),
+    {
+      ssr: false,
+      loading: () => (<>
+        ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)}>
+          <template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+          {children}
+        ${htmlToJsxWithStyleObject(cmpEndTag)}
+      </>)
+    }
+  )\n`;
+}
+
+/**
+ * Get the closing tag from the opening tag
+ * @param cmpTag - The opening tag of the component
+ * @returns The closing tag of the component
+ */
+function getClosingTagFromOpeningTag(cmpTag: string): string {
+  // Match the tag name after the first '<' and before any space or '>'
+  const match = cmpTag.match(/^<([a-zA-Z0-9\-]+)/);
+  if (match) {
+    return `</${match[1]}>`;
+  }
+  throw new Error('Invalid opening tag');
+}
+
+/**
+ * Convert a style attribute to a JSX style object
+ * @param html - The HTML of the component rendered to a string by `renderToString`
+ * @param sourceStyles - The source styles of the component
+ * @returns The JSX style object
+ */
+function htmlToJsxWithStyleObject(html: string, sourceStyles: StyleObject = {}): string {
+  const match = html.match(STYLE_ATTR_REGEX);
+
+  /**
+   * no style attribute, return as-is
+   */
+  if (!match) {
+    return html;
+  }
+
+  const styleString = match[1];
+
+  /**
+   * Parse CSS style string into a JS object
+   */
+  const styleObject = Object.fromEntries(
+    styleString
+      .split(';')
+      .map(rule => rule.trim())
+      .filter(Boolean)
+      .map(rule => {
+        const [prop, value] = rule.split(':').map(part => part.trim());
+        return [prop, value];
+      })
+  );
+
+  /**
+   * Format JS object as inline JSX style
+   */
+  const formattedStyle = JSON.stringify({...sourceStyles, ...styleObject});
+
+  /**
+   * Replace the original style="..." with JSX style={{ ... }}
+   */
+  const jsxTag = html.replace(STYLE_ATTR_REGEX, `style={${formattedStyle}}`);
+
+  return jsxTag;
+}
+
+/**
+ * Remove comments from a string to properly parse the imports within
+ * the given code.
+ *
+ * @see https://github.com/unjs/mlly/issues/279
+ *
+ * @param code - The string to remove comments from
+ * @returns The string with comments removed
+ */
+export function removeComments (code: string) {
+  return code
+    // Remove single-line comments
+    .replace(/\/\/.*$/gm, '')
+    // Remove multi-line (block) comments
+    .replace(/\/\*[\s\S]*?\*\//g, '')
 }

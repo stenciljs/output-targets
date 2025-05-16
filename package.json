@@ -20,6 +20,7 @@
     "dev.angular": "pnpm --filter @stencil/angular-output-target run dev",
     "dev.react": "pnpm --filter @stencil/react-output-target run dev",
     "dev.vue": "pnpm --filter @stencil/vue-output-target run dev",
+    "dev.ssr": "pnpm --filter @stencil/ssr run dev",
     "prettier": "lerna run prettier",
     "prettier.dry-run": "lerna run prettier.dry-run",
     "start.next-14": "pnpm --filter next-app run start",
