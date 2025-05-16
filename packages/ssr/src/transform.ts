@@ -265,6 +265,7 @@ export async function transform(
   const nextImports = strategy === 'nextjs'
     ? `import dynamic from 'next/dynamic';\nconst compImport = import('${from}');\n`
     : '';
+
   const result = await esbuildTransform(nextImports + componentDeclarations.join('\n'), {
     loader: 'jsx',
     jsx: 'automatic', // Use React 17+ JSX transform
@@ -275,12 +276,5 @@ export async function transform(
   });
 
   const transformedCode = (result.code + '\n\n' + print(ast).code)
-    /**
-     * Replace placeholder data-foo with key. This is a workaround to avoid
-     * having it stripped out by `esbuildTransform` as it's not a valid
-     * attribute name, though Next.js requires it.
-     */
-    .replace(/"data-foo"\s*:\s*"([^"]+)"/g, 'key: "$1"');
-
   return transformedCode;
 }

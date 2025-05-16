@@ -220,14 +220,19 @@ export function serializeShadowComponent(html: string[], identifier: string, sty
   const templateClosingIndex = html.findLastIndex((line) => line.includes('</template>'));
   const __html = html.slice(2, templateClosingIndex).join('\n').trim();
 
+  /**
+   * When serializing the component in Next.js we need to use `dynamic` to properly
+   * server side render the component without causing a hydration error (e.g. due to
+   * the transforming the template tag into a shadow root when runtime kicks in).
+   */
   return strategy === 'nextjs'
     ? `\nconst get${identifier} = ({ children }) => dynamic(
       () => compImport.then(mod => mod.${cmpTagName}),
       {
         ssr: false,
         loading: () => (<>
-          ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} data-foo="${identifier}">
-            <template shadowrootmode="open" shadowrootdelegatesfocus="true" data-foo="${identifier}" dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+          ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)}>
+            <template shadowrootmode="open" shadowrootdelegatesfocus="true" dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
             {children}
           ${htmlToJsxWithStyleObject(cmpEndTag)}
         </>)
