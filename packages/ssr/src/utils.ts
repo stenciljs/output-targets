@@ -149,7 +149,7 @@ export function parseSimpleObjectExpression(astNode: any): object {
   return result;
 }
 
-export function parseValue(node: any): any {
+export function parseValue(node: unknown): unknown {
   if (
     namedTypes.Literal.check(node) ||
     namedTypes.StringLiteral.check(node) ||
@@ -198,7 +198,7 @@ export function serializeScopedComponent(html: string[], identifier: string) {
  * @param identifier - The identifier of the component
  * @returns The serialized component
  */
-export function serializeShadowComponent(html: string[], identifier: string, styleObject?: StyleObject) {
+export function serializeShadowComponent(html: string[], identifier: string, styleObject?: StyleObject, strategy?: 'nextjs' | 'react') {
   const cmpTagName = identifier.split('$')[0] as string;
   /**
    * this is the initial tag of the stringified component, e.g.
@@ -218,19 +218,29 @@ export function serializeShadowComponent(html: string[], identifier: string, sty
    * Let's reconstruct the rendered Stencil component into a JSX component
    */
   const templateClosingIndex = html.findLastIndex((line) => line.includes('</template>'));
-  const __html = html.slice(2, templateClosingIndex).join('\n');
-  return `\nconst get${identifier} = ({ children }) => dynamic(
-    () => compImport.then(mod => mod.${cmpTagName}),
-    {
-      ssr: false,
-      loading: () => (<>
+  const __html = html.slice(2, templateClosingIndex).join('\n').trim();
+
+  return strategy === 'nextjs'
+    ? `\nconst get${identifier} = ({ children }) => dynamic(
+      () => compImport.then(mod => mod.${cmpTagName}),
+      {
+        ssr: false,
+        loading: () => (<>
+          ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} data-foo="${identifier}">
+            <template shadowrootmode="open" shadowrootdelegatesfocus="true" data-foo="${identifier}" dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+            {children}
+          ${htmlToJsxWithStyleObject(cmpEndTag)}
+        </>)
+      }
+    )\n`
+    : `\nconst ${identifier} = ({ children }) => {
+      return (<>
         ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)}>
-          <template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+          <template shadowrootmode="open" shadowrootdelegatesfocus="true" suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
           {children}
         ${htmlToJsxWithStyleObject(cmpEndTag)}
       </>)
-    }
-  )\n`;
+    }\n`;
 }
 
 /**

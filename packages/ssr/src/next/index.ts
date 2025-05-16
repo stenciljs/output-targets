@@ -12,6 +12,7 @@ export default (pluginOptions: StencilSSROptions): StencilNextPlugin =>
     const stencilSSRWebpackPlugin = new StencilSSRWebpackPlugin({
       include: /\/pages\/.*\.(?:j|t)sx?$|\/app\/.*\.(?:j|t)sx?$/,
       exclude: [/next\/dist\//, /node_modules/],
+      strategy: 'nextjs',
       ...pluginOptions,
     });
 
@@ -24,7 +25,9 @@ export default (pluginOptions: StencilSSROptions): StencilNextPlugin =>
         config.module.rules = [];
       }
 
-      stencilSSRWebpackPlugin.apply({ options: config as MinimalWebpackConfig['options'] });
+      stencilSSRWebpackPlugin.apply({
+        options: config as MinimalWebpackConfig['options']
+      });
 
       // Apply user provided custom webpack config function if it exists.
       if (typeof nextConfig.webpack === 'function') {

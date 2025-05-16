@@ -1,4 +1,3 @@
-import {writeFile} from 'node:fs/promises';
 import decamelize from 'decamelize';
 import { parse, visit, print } from 'recast';
 import { transform as esbuildTransform } from 'esbuild';
@@ -14,7 +13,7 @@ import {
   removeComments,
   type StyleObject,
 } from './utils.js';
-import type { StencilSSROptions, SerializeShadowRootOptions } from './types.js';
+import type { StencilSSROptions, SerializeShadowRootOptions, TransformOptions } from './types.js';
 
 const VALID_JSX_IMPORTS = ['jsxDEV', 'jsx', 'jsxs'];
 
@@ -29,7 +28,7 @@ interface HydrateModule {
 export async function transform(
   code: string,
   sourcefile: string,
-  { from, module, hydrateModule, serializeShadowRoot }: StencilSSROptions
+  { from, module, hydrateModule, serializeShadowRoot, strategy }: StencilSSROptions & TransformOptions
 ) {
   /**
    * Find all static imports of the component library used in the code
@@ -110,9 +109,6 @@ export async function transform(
        * Only interested in `jsxDEV` calls
        */
       if (!namedTypes.Identifier.check(node.callee) || !jsxImportReferences.includes(node.callee.name)) {
-        if (namedTypes.Identifier.check(node.callee)) {
-          console.log('NOOO------O', node.callee.name, jsxImportReferences)
-        }
         return this.traverse(path);
       }
 
@@ -136,16 +132,61 @@ export async function transform(
         properties: args[1].properties,
       });
 
-      path.get('arguments', 0).replace(
-        b.callExpression(
-          b.identifier('get' + identifier),
-          [
-            b.objectExpression(args[1].properties
-              .filter((p: any) => p.key.name === 'children') as namedTypes.ObjectProperty[]
-            )
-          ]
-        )
-      );
+      /**
+       * Replace the actual component in the jsx call with the wrapped component
+       */
+      if (strategy === 'nextjs') {
+        /**
+         * for Next.js we pass in the children as an argument to the wrapped component
+         * so we can server side render them properly, e.g.
+         *
+         * ```ts
+         * const getMyComponent$1 = ({ children }) => dynamic(
+         *   () => compImport.then((mod) => mod.MyComponent),
+         *   {
+         *     ssr: false,
+         *     loading: () => jsx(Fragment, {
+         *       children: jsxs("my-component", {
+         *         first: 'some first name',
+         *         last: 'some last name',
+         *         children: [
+         *           jsx("template", { shadowrootmode: "open", dangerouslySetInnerHTML: { __html: `...` } }),
+         *           children
+         *         ]
+         *       })
+         *     })
+         *   }
+         * );
+         * ```
+         */
+        path.get('arguments', 0).replace(
+          b.callExpression(
+            b.identifier('get' + identifier),
+            [
+              b.objectExpression(args[1].properties
+                .filter((p: any) => p.key.name === 'children') as namedTypes.ObjectProperty[]
+              )
+            ]
+          )
+        );
+      } else {
+        /**
+         * for React we don't need to pass in the children directly:
+         *
+         * ```ts
+         * const getMyComponent$1 = ({ children }) => jsxs("my-component", {
+         *   first: 'some first name',
+         *   last: 'some last name',
+         *   children: [
+         *     jsx("template", { shadowrootmode: "open", dangerouslySetInnerHTML: { __html: `...` } }),
+         *     children
+         *   ]
+         * })
+         * ```
+         */
+        path.get('arguments', 0).replace(b.identifier(identifier));
+      }
+
       path
         .get('arguments', 1)
         .replace(b.objectExpression(args[1].properties));
@@ -202,24 +243,28 @@ export async function transform(
               : serializeShadowRoot['scoped']?.includes(tagName)
             : false;
 
+      const lines = html.split('\n')
+
       /**
        * serialize scoped component
        */
       if (isScoped || isScopedComponent) {
-        return serializeScopedComponent(html.split('\n'), identifier);
+        return serializeScopedComponent(lines, identifier);
       }
 
       /**
        * serialize shadow component
        */
-      return serializeShadowComponent(html.split('\n'), identifier, styleObject);
+      return serializeShadowComponent(lines, identifier, styleObject, strategy);
     })
   );
 
   /**
    * Transform the wrapped JSX components into a raw JavaScript string.
    */
-  const nextImports = `import dynamic from 'next/dynamic';\nconst compImport = import('${from}');\n`
+  const nextImports = strategy === 'nextjs'
+    ? `import dynamic from 'next/dynamic';\nconst compImport = import('${from}');\n`
+    : '';
   const result = await esbuildTransform(nextImports + componentDeclarations.join('\n'), {
     loader: 'jsx',
     jsx: 'automatic', // Use React 17+ JSX transform
@@ -229,5 +274,13 @@ export async function transform(
     sourcefile,
   });
 
-  return result.code + '\n\n' + print(ast).code;
+  const transformedCode = (result.code + '\n\n' + print(ast).code)
+    /**
+     * Replace placeholder data-foo with key. This is a workaround to avoid
+     * having it stripped out by `esbuildTransform` as it's not a valid
+     * attribute name, though Next.js requires it.
+     */
+    .replace(/"data-foo"\s*:\s*"([^"]+)"/g, 'key: "$1"');
+
+  return transformedCode;
 }
