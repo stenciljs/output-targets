@@ -49,16 +49,13 @@ export async function transform(
    */
   const jsxImportReferences = staticImports
     .filter((importSpecifier) => {
-      return (
-        importSpecifier.specifier === 'react/jsx-dev-runtime' ||
-        importSpecifier.specifier === 'react/jsx-runtime'
-      );
+      return importSpecifier.specifier === 'react/jsx-dev-runtime' || importSpecifier.specifier === 'react/jsx-runtime';
     })
     .map((importSpecifier) => {
       const i = parseStaticImport(importSpecifier);
       return Object.entries(i.namedImports || {})
         .filter(([key]) => VALID_JSX_IMPORTS.includes(key))
-        .map(([, importKey]) => importKey)
+        .map(([, importKey]) => importKey);
     })
     .flat() as string[];
 
@@ -159,16 +156,15 @@ export async function transform(
          * );
          * ```
          */
-        path.get('arguments', 0).replace(
-          b.callExpression(
-            b.identifier('get' + identifier),
-            [
-              b.objectExpression(args[1].properties
-                .filter((p: any) => p.key.name === 'children') as namedTypes.ObjectProperty[]
-              )
-            ]
-          )
-        );
+        path
+          .get('arguments', 0)
+          .replace(
+            b.callExpression(b.identifier('get' + identifier), [
+              b.objectExpression(
+                args[1].properties.filter((p: any) => p.key.name === 'children') as namedTypes.ObjectProperty[]
+              ),
+            ])
+          );
       } else {
         /**
          * for React we don't need to pass in the children directly:
@@ -187,9 +183,7 @@ export async function transform(
         path.get('arguments', 0).replace(b.identifier(identifier));
       }
 
-      path
-        .get('arguments', 1)
-        .replace(b.objectExpression(args[1].properties));
+      path.get('arguments', 1).replace(b.objectExpression(args[1].properties));
       return this.traverse(path);
     },
   });
@@ -243,7 +237,7 @@ export async function transform(
               : serializeShadowRoot['scoped']?.includes(tagName)
             : false;
 
-      const lines = html.split('\n')
+      const lines = html.split('\n');
 
       /**
        * serialize scoped component
@@ -262,9 +256,8 @@ export async function transform(
   /**
    * Transform the wrapped JSX components into a raw JavaScript string.
    */
-  const nextImports = strategy === 'nextjs'
-    ? `import dynamic from 'next/dynamic';\nconst compImport = import('${from}');\n`
-    : '';
+  const nextImports =
+    strategy === 'nextjs' ? `import dynamic from 'next/dynamic';\nconst compImport = import('${from}');\n` : '';
 
   const result = await esbuildTransform(nextImports + componentDeclarations.join('\n'), {
     loader: 'jsx',
@@ -275,6 +268,6 @@ export async function transform(
     sourcefile,
   });
 
-  const transformedCode = (result.code + '\n\n' + print(ast).code)
+  const transformedCode = result.code + '\n\n' + print(ast).code;
   return transformedCode;
 }

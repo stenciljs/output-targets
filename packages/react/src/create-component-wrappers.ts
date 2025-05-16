@@ -57,7 +57,7 @@ export const createComponentWrappers = async ({
    * @param components - the components to create the file for
    * @param filename - the filename of the file to create
    */
-  function createComponentFile (components: ComponentCompilerMeta[], filename = 'components') {
+  function createComponentFile(components: ComponentCompilerMeta[], filename = 'components') {
     /**
      * create a single file with all components
      */

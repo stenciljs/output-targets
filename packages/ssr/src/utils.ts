@@ -198,7 +198,12 @@ export function serializeScopedComponent(html: string[], identifier: string) {
  * @param identifier - The identifier of the component
  * @returns The serialized component
  */
-export function serializeShadowComponent(html: string[], identifier: string, styleObject?: StyleObject, strategy?: 'nextjs' | 'react') {
+export function serializeShadowComponent(
+  html: string[],
+  identifier: string,
+  styleObject?: StyleObject,
+  strategy?: 'nextjs' | 'react'
+) {
   const cmpTagName = identifier.split('$')[0] as string;
   /**
    * this is the initial tag of the stringified component, e.g.
@@ -211,7 +216,7 @@ export function serializeShadowComponent(html: string[], identifier: string, sty
   /**
    * get the closing tag of the component, including potential HTML content that could come after the closing tag
    */
-  const cmpClosingTagIndex = html.findLastIndex((line) => line === getClosingTagFromOpeningTag(cmpTag))
+  const cmpClosingTagIndex = html.findLastIndex((line) => line === getClosingTagFromOpeningTag(cmpTag));
   const cmpEndTag = cmpClosingTagIndex > -1 ? html.slice(cmpClosingTagIndex).join('\n') : html[html.length - 1];
 
   /**
@@ -286,10 +291,10 @@ function htmlToJsxWithStyleObject(html: string, sourceStyles: StyleObject = {}):
   const styleObject = Object.fromEntries(
     styleString
       .split(';')
-      .map(rule => rule.trim())
+      .map((rule) => rule.trim())
       .filter(Boolean)
-      .map(rule => {
-        const [prop, value] = rule.split(':').map(part => part.trim());
+      .map((rule) => {
+        const [prop, value] = rule.split(':').map((part) => part.trim());
         return [prop, value];
       })
   );
@@ -297,7 +302,7 @@ function htmlToJsxWithStyleObject(html: string, sourceStyles: StyleObject = {}):
   /**
    * Format JS object as inline JSX style
    */
-  const formattedStyle = JSON.stringify({...sourceStyles, ...styleObject});
+  const formattedStyle = JSON.stringify({ ...sourceStyles, ...styleObject });
 
   /**
    * Replace the original style="..." with JSX style={{ ... }}
@@ -316,10 +321,12 @@ function htmlToJsxWithStyleObject(html: string, sourceStyles: StyleObject = {}):
  * @param code - The string to remove comments from
  * @returns The string with comments removed
  */
-export function removeComments (code: string) {
-  return code
-    // Remove single-line comments
-    .replace(/\/\/.*$/gm, '')
-    // Remove multi-line (block) comments
-    .replace(/\/\*[\s\S]*?\*\//g, '')
+export function removeComments(code: string) {
+  return (
+    code
+      // Remove single-line comments
+      .replace(/\/\/.*$/gm, '')
+      // Remove multi-line (block) comments
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+  );
 }

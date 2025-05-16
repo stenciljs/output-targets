@@ -10,11 +10,7 @@ export default async function stencilLoader(this: LoaderContext<StencilSSROption
   }
 
   try {
-    return await transform(
-      source,
-      this.resourcePath,
-      options
-    );
+    return await transform(source, this.resourcePath, options);
   } catch (error) {
     console.error(`[Stencil SSR] Error transforming ${this.resourcePath}:`, (error as Error).message);
     return source;

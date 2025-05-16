@@ -26,7 +26,7 @@ export default (pluginOptions: StencilSSROptions): StencilNextPlugin =>
       }
 
       stencilSSRWebpackPlugin.apply({
-        options: config as MinimalWebpackConfig['options']
+        options: config as MinimalWebpackConfig['options'],
       });
 
       // Apply user provided custom webpack config function if it exists.

@@ -3,7 +3,7 @@ import type { Plugin } from 'vite';
 import { transform } from '../transform.js';
 import type { StencilSSROptions } from '../types.js';
 
-type StencilSSRViteOptions = Omit<StencilSSROptions, 'strategy'>
+type StencilSSRViteOptions = Omit<StencilSSROptions, 'strategy'>;
 
 export function stencilSSR(pluginOptions: StencilSSRViteOptions) {
   return {
@@ -19,11 +19,7 @@ export function stencilSSR(pluginOptions: StencilSSRViteOptions) {
       /**
        * transform Stencil component imports into wrapped serialized components
        */
-      const transformedCode = await transform(
-        code,
-        id,
-        pluginOptions
-      );
+      const transformedCode = await transform(code, id, pluginOptions);
 
       /**
        * if no components were imported, return the original code
