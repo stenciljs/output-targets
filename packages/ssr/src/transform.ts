@@ -1,5 +1,6 @@
 import decamelize from 'decamelize';
 import { parse, visit, print } from 'recast';
+import typescriptParser from 'recast/parsers/typescript'
 import { transform as esbuildTransform } from 'esbuild';
 import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
@@ -86,7 +87,9 @@ export async function transform(
    * Identify if the `jsxDEV` call is rendering a component from the user's
    * component library and if so, extract the component's properties.
    */
-  const ast = parse(code);
+  const ast = parse(code, {
+    parser: typescriptParser
+  });
   const scopeStack: Record<string, any>[] = [];
   let index = 0;
   visit(ast, {
@@ -191,7 +194,19 @@ export async function transform(
           .replace(
             b.callExpression(b.identifier('get' + identifier), [
               b.objectExpression(
-                args[1].properties.filter((p: any) => p.key.name === 'children') as namedTypes.ObjectProperty[]
+                args[1].properties.filter((p) => {
+                  /**
+                   * in case we are looking at a object property, we can filter by children
+                   */
+                  if (namedTypes.ObjectProperty.check(p) && namedTypes.Identifier.check(p.key)) {
+                    return p.key.name === 'children'
+                  }
+
+                  /**
+                   * if it is something else, e.g. a spread element, just return true
+                   */
+                  return true
+                }) as namedTypes.ObjectProperty[]
               ),
             ])
           );
