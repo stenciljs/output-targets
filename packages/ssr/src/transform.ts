@@ -13,6 +13,9 @@ import {
   parseSimpleObjectExpression,
   removeComments,
   resolveVariable,
+  isPropertyNode,
+  isIdentifierNode,
+  isObjectExpression,
   type StyleObject,
 } from './utils.js';
 import type { StencilSSROptions, SerializeShadowRootOptions, TransformOptions } from './types.js';
@@ -99,7 +102,7 @@ export async function transform(
       scopeStack.pop();
     },
     visitVariableDeclarator(path) {
-      if (!namedTypes.Identifier.check(path.node.id)) {
+      if (!isIdentifierNode(path.node.id)) {
         return this.traverse(path);
       }
       const name = path.node.id.name;
@@ -126,7 +129,7 @@ export async function transform(
       /**
        * Only interested in `jsxDEV` calls
        */
-      if (!namedTypes.Identifier.check(node.callee) || !jsxImportReferences.includes(node.callee.name)) {
+      if (!isIdentifierNode(node.callee) || !jsxImportReferences.includes(node.callee.name)) {
         return this.traverse(path);
       }
 
@@ -136,9 +139,9 @@ export async function transform(
        * component library
        */
       if (
-        !namedTypes.Identifier.check(args[0]) ||
+        !isIdentifierNode(args[0]) ||
         !components.includes(args[0].name) ||
-        !namedTypes.ObjectExpression.check(args[1])
+        !isObjectExpression(args[1])
       ) {
         return this.traverse(path);
       }
@@ -151,7 +154,7 @@ export async function transform(
           /**
            * If the property is a variable, we need to resolve it
            */
-          if (namedTypes.Property.check(p) && namedTypes.Identifier.check(p.value)) {
+          if (isPropertyNode(p) && isIdentifierNode(p.value)) {
             const resolvedValue = resolveVariable(scopeStack, p.value.name);
             if (resolvedValue) {
               // @ts-expect-error - type issues occur due to different versions of `recast` and `ast-types`
@@ -198,7 +201,7 @@ export async function transform(
                   /**
                    * in case we are looking at a object property, we can filter by children
                    */
-                  if (namedTypes.ObjectProperty.check(p) && namedTypes.Identifier.check(p.key)) {
+                  if (isPropertyNode(p) && isIdentifierNode(p.key)) {
                     return p.key.name === 'children'
                   }
 
@@ -244,7 +247,7 @@ export async function transform(
        */
       const style = properties.find((p) => 'key' in p && 'name' in p.key && p.key.name === 'style');
       let styleObject: StyleObject | undefined = undefined;
-      if (namedTypes.Property.check(style) && namedTypes.ObjectExpression.check(style.value)) {
+      if (isPropertyNode(style) && isObjectExpression(style.value)) {
         styleObject = styleObjectToPlain(style.value);
       }
 
@@ -288,7 +291,7 @@ export async function transform(
        * serialize scoped component
        */
       if (isScoped || isScopedComponent) {
-        return serializeScopedComponent(lines, identifier);
+        return serializeScopedComponent(lines, identifier, strategy);
       }
 
       /**

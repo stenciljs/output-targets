@@ -60,40 +60,107 @@ export function styleObjectToPlain(objectExpression: namedTypes.ObjectExpression
   return result;
 }
 
+// Helper type guards for AST node types supporting both namedTypes and type string
+export function isPropertyNode(
+  node: any
+): node is namedTypes.Property | namedTypes.ObjectProperty {
+  return (
+    namedTypes.Property.check(node) ||
+    namedTypes.ObjectProperty.check(node) ||
+    node?.type === 'Property' ||
+    node?.type === 'ObjectProperty'
+  );
+}
+
+export function isIdentifierNode(node: any): node is namedTypes.Identifier {
+  return (
+    namedTypes.Identifier.check(node) ||
+    node?.type === 'Identifier'
+  );
+}
+
+export function isLiteralNode(
+  node: any
+): node is
+  | namedTypes.Literal
+  | namedTypes.StringLiteral
+  | namedTypes.NumericLiteral
+  | namedTypes.BooleanLiteral {
+  return (
+    namedTypes.Literal.check(node) ||
+    namedTypes.StringLiteral.check(node) ||
+    namedTypes.NumericLiteral.check(node) ||
+    namedTypes.BooleanLiteral.check(node) ||
+    node?.type === 'Literal' ||
+    node?.type === 'StringLiteral' ||
+    node?.type === 'NumericLiteral' ||
+    node?.type === 'BooleanLiteral'
+  );
+}
+
+export function isArrayExpression(node: any): node is namedTypes.ArrayExpression {
+  return (
+    namedTypes.ArrayExpression.check(node) ||
+    node?.type === 'ArrayExpression'
+  );
+}
+
+export function isFunctionNode(node: any): node is namedTypes.FunctionDeclaration | namedTypes.ArrowFunctionExpression {
+  return (
+    namedTypes.FunctionDeclaration.check(node) ||
+    namedTypes.ArrowFunctionExpression.check(node) ||
+    node?.type === 'FunctionDeclaration' ||
+    node?.type === 'ArrowFunctionExpression'
+  );
+}
+
+export function isNewExpression(node: any): node is namedTypes.NewExpression {
+  return (
+    namedTypes.NewExpression.check(node) ||
+    node?.type === 'NewExpression'
+  );
+}
+
+export function isCallExpression(node: any): node is namedTypes.CallExpression {
+  return (
+    namedTypes.CallExpression.check(node) ||
+    node?.type === 'CallExpression'
+  );
+}
+
+export function isObjectExpression(node: any): node is namedTypes.ObjectExpression {
+  return (
+    namedTypes.ObjectExpression.check(node) ||
+    node?.type === 'ObjectExpression'
+  );
+}
+
 /**
  * Parse serializable properties into a plain object.
  */
 export function parseSimpleObjectExpression(astNode: any): object {
-  if (!namedTypes.ObjectExpression.check(astNode)) {
+  if (!isObjectExpression(astNode)) {
     throw new Error('Not an ObjectExpression');
   }
 
   const result: Record<string, any> = {};
 
   for (const prop of astNode.properties) {
-    /**
-     * skip if
-     */
     if (
-      /**
-       * AST node is not a property
-       */
-      !namedTypes.Property.check(prop) ||
-      prop.kind !== 'init' ||
-      /**
-       * property is a function
-       */
-      namedTypes.FunctionDeclaration.check(prop.value) ||
-      namedTypes.ArrowFunctionExpression.check(prop.value)
+      !isPropertyNode(prop) ||
+      (isPropertyNode(prop) && 'kind' in prop && prop.kind !== 'init') ||
+      isFunctionNode(prop.value)
     ) {
       continue;
     }
 
-    let key = namedTypes.Identifier.check(prop.key)
-      ? prop.key.name
-      : namedTypes.Literal.check(prop.key) || namedTypes.StringLiteral.check(prop.key)
-        ? String(prop.key.value)
-        : null;
+    // Key extraction
+    let key: string | null = null;
+    if (isIdentifierNode(prop.key)) {
+      key = prop.key.name;
+    } else if (isLiteralNode(prop.key)) {
+      key = String(prop.key.value);
+    }
 
     if (key === null) {
       console.error(`Invalid key: "${prop.key}", skipping property`);
@@ -101,46 +168,43 @@ export function parseSimpleObjectExpression(astNode: any): object {
     }
 
     let value: any;
-    if (namedTypes.NewExpression.check(prop.value)) {
-      // Handle Map and Set
-      if (namedTypes.Identifier.check(prop.value.callee) && prop.value.callee.name === 'Map') {
-        const mapArgs = prop.value.arguments[0];
-        if (namedTypes.ArrayExpression.check(mapArgs)) {
+    if (isNewExpression(prop.value)) {
+      const callee = prop.value.callee;
+      if (isIdentifierNode(callee) && callee.name === 'Map') {
+        const mapArgs = prop.value.arguments?.[0];
+        if (isArrayExpression(mapArgs)) {
           value = new Map(
             mapArgs.elements
               .map((el: any) => {
-                if (namedTypes.ArrayExpression.check(el) && el.elements.length === 2) {
-                  const [key, val] = el.elements;
-                  return [parseValue(key), parseValue(val)] as [unknown, unknown];
+                if (isArrayExpression(el) && el.elements.length === 2) {
+                  const [k, v] = el.elements;
+                  return [parseValueCompat(k), parseValueCompat(v)] as [unknown, unknown];
                 }
                 return null;
               })
-              .filter((entry): entry is [unknown, unknown] => entry !== null)
+              .filter((entry: any): entry is [unknown, unknown] => entry !== null)
           );
         }
-      } else if (namedTypes.Identifier.check(prop.value.callee) && prop.value.callee.name === 'Set') {
-        const setArgs = prop.value.arguments[0];
-        if (namedTypes.ArrayExpression.check(setArgs)) {
-          value = new Set(setArgs.elements.map((el: any) => parseValue(el)));
+      } else if (isIdentifierNode(callee) && callee.name === 'Set') {
+        const setArgs = prop.value.arguments?.[0];
+        if (isArrayExpression(setArgs)) {
+          value = new Set(setArgs.elements.map((el: any) => parseValueCompat(el)));
         }
       }
     } else if (
-      /**
-       * Handle Symbol
-       */
-      namedTypes.CallExpression.check(prop.value) &&
-      namedTypes.Identifier.check(prop.value.callee) &&
+      isCallExpression(prop.value) &&
+      isIdentifierNode(prop.value.callee) &&
       prop.value.callee.name === 'Symbol'
     ) {
-      const symbolArg = prop.value.arguments[0];
-      if (namedTypes.Literal.check(symbolArg) || namedTypes.StringLiteral.check(symbolArg)) {
+      const symbolArg = prop.value.arguments?.[0];
+      if (isLiteralNode(symbolArg)) {
         const symbolValue = symbolArg.value;
         if (typeof symbolValue === 'string' || typeof symbolValue === 'number') {
           value = Symbol(symbolValue);
         }
       }
     } else {
-      value = parseValue(prop.value);
+      value = parseValueCompat(prop.value);
     }
 
     result[key] = value;
@@ -149,27 +213,27 @@ export function parseSimpleObjectExpression(astNode: any): object {
   return result;
 }
 
-export function parseValue(node: unknown): unknown {
-  if (
-    namedTypes.Literal.check(node) ||
-    namedTypes.StringLiteral.check(node) ||
-    namedTypes.NumericLiteral.check(node) ||
-    namedTypes.BooleanLiteral.check(node)
-  ) {
+// Helper to parse value for both ESTree/Babel and TS AST nodes
+function parseValueCompat(node: any): any {
+  if (isLiteralNode(node)) {
     return node.value;
-  } else if (namedTypes.ArrayExpression.check(node)) {
+  } else if (isArrayExpression(node)) {
     return node.elements
       .filter((el: any) => el !== null)
-      .map((el: any) => parseValue(el))
+      .map((el: any) => parseValueCompat(el))
       .filter((v: any) => v !== null);
-  } else if (namedTypes.ObjectExpression.check(node)) {
+  } else if (isObjectExpression(node)) {
     return parseSimpleObjectExpression(node);
-  } else if (namedTypes.Identifier.check(node) && node.name === 'Infinity') {
-    return Infinity;
-  } else if (namedTypes.Identifier.check(node) && node.name === 'null') {
-    return null;
+  } else if (isIdentifierNode(node)) {
+    if (node.name === 'Infinity') return Infinity;
+    if (node.name === 'null') return null;
+    return node.name;
   }
   return null;
+}
+
+function getWrappedComponentVariableName (identifier: string, strategy?: 'nextjs' | 'react') {
+  return strategy === 'nextjs' ? `get${identifier}` : identifier;
 }
 
 /**
@@ -179,14 +243,15 @@ export function parseValue(node: unknown): unknown {
  * @param identifier - The identifier of the component
  * @returns The serialized component
  */
-export function serializeScopedComponent(html: string[], identifier: string) {
+export function serializeScopedComponent(html: string[], identifier: string, strategy?: 'nextjs' | 'react') {
   /**
    * If the component has no child nodes, we can just return a React element
    * with the dangerouslySetInnerHTML prop set to the HTML of the component.
    */
   const cmpTag = html[0].slice(0, -1);
+  const variableName = getWrappedComponentVariableName(identifier, strategy);
   const __html = html.slice(1, -1).join('\n').trim();
-  return `\nconst ${identifier} = ({ children, ...props }) => {
+  return `\nconst ${variableName} = () => ({ children, ...props }) => {
     return ${cmpTag} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
   }\n`;
 }
@@ -223,6 +288,7 @@ export function serializeShadowComponent(
    * Let's reconstruct the rendered Stencil component into a JSX component
    */
   const templateClosingIndex = html.findLastIndex((line) => line.includes('</template>'));
+  const variableName = getWrappedComponentVariableName(identifier, strategy);
   const __html = html.slice(2, templateClosingIndex).join('\n').trim();
 
   /**
@@ -231,7 +297,7 @@ export function serializeShadowComponent(
    * the transforming the template tag into a shadow root when runtime kicks in).
    */
   return strategy === 'nextjs'
-    ? `\nconst get${identifier} = ({ children }) => dynamic(
+    ? `\nconst ${variableName} = ({ children }) => dynamic(
       () => compImport.then(mod => mod.${cmpTagName}),
       {
         ssr: false,
@@ -243,8 +309,8 @@ export function serializeShadowComponent(
         </>)
       }
     )\n`
-    : `\nconst ${identifier} = ({ children }) => {
-      return (<>
+    : `\nconst ${variableName} = () => {
+      return ({ children }) => (<>
         ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)}>
           <template shadowrootmode="open" shadowrootdelegatesfocus="true" suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
           {children}
