@@ -11,6 +11,7 @@ import {
   serializeShadowComponent,
   parseSimpleObjectExpression,
   removeComments,
+  resolveVariable,
   type StyleObject,
 } from './utils.js';
 import type { StencilSSROptions, SerializeShadowRootOptions, TransformOptions } from './types.js';
@@ -86,8 +87,25 @@ export async function transform(
    * component library and if so, extract the component's properties.
    */
   const ast = parse(code);
+  const scopeStack: Record<string, any>[] = [];
   let index = 0;
   visit(ast, {
+    visitFunctionDeclaration(path) {
+      scopeStack.push({});
+      this.traverse(path);
+      scopeStack.pop();
+    },
+    visitVariableDeclarator(path) {
+      if (!namedTypes.Identifier.check(path.node.id)) {
+        return this.traverse(path);
+      }
+      const name = path.node.id.name;
+      const value = path.node.init;
+      if (scopeStack.length > 0) {
+        scopeStack[scopeStack.length - 1][name] = value;
+      }
+      this.traverse(path);
+    },
     visitImportDeclaration(path) {
       const node = path.node;
       if (node.source.value !== from) {
@@ -126,7 +144,19 @@ export async function transform(
       componentCalls.push({
         identifier,
         tagName: decamelize(args[0].name, { separator: '-' }),
-        properties: args[1].properties,
+        properties: args[1].properties.map((p) => {
+          /**
+           * If the property is a variable, we need to resolve it
+           */
+          if (namedTypes.Property.check(p) && namedTypes.Identifier.check(p.value)) {
+            const resolvedValue = resolveVariable(scopeStack, p.value.name);
+            if (resolvedValue) {
+              // @ts-expect-error - type issues occur due to different versions of `recast` and `ast-types`
+              p.value = resolvedValue;
+            }
+          }
+          return p as namedTypes.Property;
+        }),
       });
 
       /**

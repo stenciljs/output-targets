@@ -330,3 +330,18 @@ export function removeComments(code: string) {
       .replace(/\/\*[\s\S]*?\*\//g, '')
   );
 }
+
+/**
+ * Resolve a variable from the scope stack
+ * @param stack - The scope stack
+ * @param name - The name of the variable to resolve
+ * @returns The resolved variable
+ */
+export function resolveVariable(stack: Record<string, any>[], name: string): namedTypes.Property['value'] | null {
+  for (let i = stack.length - 1; i >= 0; i--) {
+    if (stack[i][name]) {
+      return stack[i][name];
+    }
+  }
+  return null;
+}
