@@ -1,5 +1,6 @@
 import { print } from 'recast';
 import { namedTypes } from 'ast-types';
+import type { ParsedStaticImport } from 'mlly';
 
 import { STYLE_ATTR_REGEX } from './constants.js';
 
@@ -410,4 +411,33 @@ export function resolveVariable(stack: Record<string, any>[], name: string): nam
     }
   }
   return null;
+}
+
+/**
+ * Merge imports together so we avoid duplicate imports.
+ * @param imports - The imports to merge
+ * @returns The merged imports
+ */
+export function mergeImports(imports: ParsedStaticImport[]): ParsedStaticImport[] {
+  const mergedMap = new Map<string, ParsedStaticImport>()
+
+  for (const imp of imports) {
+    const existing = mergedMap.get(imp.specifier)
+
+    if (existing) {
+      existing.namedImports = {
+        ...existing.namedImports,
+        ...imp.namedImports
+      }
+
+      const mergedNames = Object.entries(existing.namedImports)
+        .map(([key, value]) => key === value ? key : `${key} as ${value}`)
+      existing.imports = `{ ${mergedNames.join(', ')} } `
+      existing.code = `import ${existing.imports} from "${existing.specifier}";\n`
+    } else {
+      mergedMap.set(imp.specifier, { ...imp })
+    }
+  }
+
+  return Array.from(mergedMap.values())
 }

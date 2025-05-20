@@ -16,6 +16,7 @@ import {
   isPropertyNode,
   isIdentifierNode,
   isObjectExpression,
+  mergeImports,
   type StyleObject,
 } from './utils.js';
 import type { StencilSSROptions, SerializeShadowRootOptions, TransformOptions } from './types.js';
@@ -316,6 +317,15 @@ export async function transform(
     sourcefile,
   });
 
-  const transformedCode = result.code + '\n\n' + print(ast).code;
-  return transformedCode;
+  /**
+   * Remove all imports from the transformed code and the original code and
+   * merge them together so we avoid duplicate imports.
+   */
+  let transformedCode = result.code + '\n\n' + print(ast).code;
+  const allImports = findStaticImports(transformedCode).map(parseStaticImport);
+  allImports.forEach((imp) => {
+    transformedCode = transformedCode.replace(imp.code, '')
+  })
+  const mergedImports = mergeImports(allImports).map((imp) => imp.code).join('\n');
+  return mergedImports + '\n\n' + transformedCode;
 }
