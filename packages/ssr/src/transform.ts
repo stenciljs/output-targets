@@ -1,6 +1,6 @@
 import decamelize from 'decamelize';
 import { parse, visit, print } from 'recast';
-import typescriptParser from 'recast/parsers/typescript'
+import typescriptParser from 'recast/parsers/typescript';
 import { transform as esbuildTransform } from 'esbuild';
 import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
@@ -92,7 +92,7 @@ export async function transform(
    * component library and if so, extract the component's properties.
    */
   const ast = parse(code, {
-    parser: typescriptParser
+    parser: typescriptParser,
   });
   const scopeStack: Record<string, any>[] = [];
   let index = 0;
@@ -139,11 +139,7 @@ export async function transform(
        * Only interested in `jsxDEV` calls that render components from the user's
        * component library
        */
-      if (
-        !isIdentifierNode(args[0]) ||
-        !components.includes(args[0].name) ||
-        !isObjectExpression(args[1])
-      ) {
+      if (!isIdentifierNode(args[0]) || !components.includes(args[0].name) || !isObjectExpression(args[1])) {
         return this.traverse(path);
       }
 
@@ -193,27 +189,25 @@ export async function transform(
          * );
          * ```
          */
-        path
-          .get('arguments', 0)
-          .replace(
-            b.callExpression(b.identifier('get' + identifier), [
-              b.objectExpression(
-                args[1].properties.filter((p) => {
-                  /**
-                   * in case we are looking at a object property, we can filter by children
-                   */
-                  if (isPropertyNode(p) && isIdentifierNode(p.key)) {
-                    return p.key.name === 'children'
-                  }
+        path.get('arguments', 0).replace(
+          b.callExpression(b.identifier('get' + identifier), [
+            b.objectExpression(
+              args[1].properties.filter((p) => {
+                /**
+                 * in case we are looking at a object property, we can filter by children
+                 */
+                if (isPropertyNode(p) && isIdentifierNode(p.key)) {
+                  return p.key.name === 'children';
+                }
 
-                  /**
-                   * if it is something else, e.g. a spread element, just return true
-                   */
-                  return true
-                }) as namedTypes.ObjectProperty[]
-              ),
-            ])
-          );
+                /**
+                 * if it is something else, e.g. a spread element, just return true
+                 */
+                return true;
+              }) as namedTypes.ObjectProperty[]
+            ),
+          ])
+        );
       } else {
         /**
          * for React we don't need to pass in the children directly:
@@ -324,8 +318,24 @@ export async function transform(
   let transformedCode = result.code + '\n\n' + print(ast).code;
   const allImports = findStaticImports(transformedCode).map(parseStaticImport);
   allImports.forEach((imp) => {
-    transformedCode = transformedCode.replace(imp.code, '')
-  })
-  const mergedImports = mergeImports(allImports).map((imp) => imp.code).join('\n');
-  return mergedImports + '\n\n' + transformedCode;
+    transformedCode = transformedCode.replace(imp.code, '');
+  });
+  console.log(
+    '-------------------------------->\n',
+    sourcefile,
+    '\n-------------------------------->\n',
+    allImports,
+    mergeImports(allImports)
+      .map((imp) => imp.code)
+      .join('\n')
+  );
+  transformedCode =
+    mergeImports(allImports)
+      .map((imp) => imp.code)
+      .join('\n') +
+    '\n\n' +
+    transformedCode;
+
+  // console.log('-------------------------------->\n', sourcefile, '\n-------------------------------->\n', transformedCode);
+  return transformedCode;
 }

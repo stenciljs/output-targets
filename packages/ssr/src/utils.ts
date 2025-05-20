@@ -62,9 +62,7 @@ export function styleObjectToPlain(objectExpression: namedTypes.ObjectExpression
 }
 
 // Helper type guards for AST node types supporting both namedTypes and type string
-export function isPropertyNode(
-  node: any
-): node is namedTypes.Property | namedTypes.ObjectProperty {
+export function isPropertyNode(node: any): node is namedTypes.Property | namedTypes.ObjectProperty {
   return (
     namedTypes.Property.check(node) ||
     namedTypes.ObjectProperty.check(node) ||
@@ -74,19 +72,12 @@ export function isPropertyNode(
 }
 
 export function isIdentifierNode(node: any): node is namedTypes.Identifier {
-  return (
-    namedTypes.Identifier.check(node) ||
-    node?.type === 'Identifier'
-  );
+  return namedTypes.Identifier.check(node) || node?.type === 'Identifier';
 }
 
 export function isLiteralNode(
   node: any
-): node is
-  | namedTypes.Literal
-  | namedTypes.StringLiteral
-  | namedTypes.NumericLiteral
-  | namedTypes.BooleanLiteral {
+): node is namedTypes.Literal | namedTypes.StringLiteral | namedTypes.NumericLiteral | namedTypes.BooleanLiteral {
   return (
     namedTypes.Literal.check(node) ||
     namedTypes.StringLiteral.check(node) ||
@@ -100,10 +91,7 @@ export function isLiteralNode(
 }
 
 export function isArrayExpression(node: any): node is namedTypes.ArrayExpression {
-  return (
-    namedTypes.ArrayExpression.check(node) ||
-    node?.type === 'ArrayExpression'
-  );
+  return namedTypes.ArrayExpression.check(node) || node?.type === 'ArrayExpression';
 }
 
 export function isFunctionNode(node: any): node is namedTypes.FunctionDeclaration | namedTypes.ArrowFunctionExpression {
@@ -116,24 +104,15 @@ export function isFunctionNode(node: any): node is namedTypes.FunctionDeclaratio
 }
 
 export function isNewExpression(node: any): node is namedTypes.NewExpression {
-  return (
-    namedTypes.NewExpression.check(node) ||
-    node?.type === 'NewExpression'
-  );
+  return namedTypes.NewExpression.check(node) || node?.type === 'NewExpression';
 }
 
 export function isCallExpression(node: any): node is namedTypes.CallExpression {
-  return (
-    namedTypes.CallExpression.check(node) ||
-    node?.type === 'CallExpression'
-  );
+  return namedTypes.CallExpression.check(node) || node?.type === 'CallExpression';
 }
 
 export function isObjectExpression(node: any): node is namedTypes.ObjectExpression {
-  return (
-    namedTypes.ObjectExpression.check(node) ||
-    node?.type === 'ObjectExpression'
-  );
+  return namedTypes.ObjectExpression.check(node) || node?.type === 'ObjectExpression';
 }
 
 /**
@@ -233,7 +212,7 @@ function parseValueCompat(node: any): any {
   return null;
 }
 
-function getWrappedComponentVariableName (identifier: string, strategy?: 'nextjs' | 'react') {
+function getWrappedComponentVariableName(identifier: string, strategy?: 'nextjs' | 'react') {
   return strategy === 'nextjs' ? `get${identifier}` : identifier;
 }
 
@@ -419,25 +398,119 @@ export function resolveVariable(stack: Record<string, any>[], name: string): nam
  * @returns The merged imports
  */
 export function mergeImports(imports: ParsedStaticImport[]): ParsedStaticImport[] {
-  const mergedMap = new Map<string, ParsedStaticImport>()
+  const mergedMap = new Map<string, ParsedStaticImport>();
 
   for (const imp of imports) {
-    const existing = mergedMap.get(imp.specifier)
+    const existing = mergedMap.get(imp.specifier);
 
     if (existing) {
-      existing.namedImports = {
-        ...existing.namedImports,
-        ...imp.namedImports
+      // For named imports, we need to track both original and aliased versions
+      if (imp.namedImports) {
+        const existingNamedImports = { ...existing.namedImports };
+        Object.entries(imp.namedImports).forEach(([orig, alias]) => {
+          // If we already have this original name but with a different alias,
+          // we want to keep both the original and all aliases
+          if (orig === alias) {
+            existingNamedImports[orig] = alias;
+          } else {
+            // Keep the original if it's not already there
+            if (!existingNamedImports[orig]) {
+              existingNamedImports[orig] = orig;
+            }
+            // Add the alias
+            existingNamedImports[`${orig}_alias_${alias}`] = alias;
+          }
+        });
+        existing.namedImports = existingNamedImports;
       }
 
-      const mergedNames = Object.entries(existing.namedImports)
-        .map(([key, value]) => key === value ? key : `${key} as ${value}`)
-      existing.imports = `{ ${mergedNames.join(', ')} } `
-      existing.code = `import ${existing.imports} from "${existing.specifier}";\n`
+      // Prefer first found default or namespaced import
+      if (!existing.defaultImport && imp.defaultImport) {
+        existing.defaultImport = imp.defaultImport;
+      }
+      if (!existing.namespacedImport && imp.namespacedImport) {
+        existing.namespacedImport = imp.namespacedImport;
+      }
     } else {
-      mergedMap.set(imp.specifier, { ...imp })
+      // For new imports, process named imports to handle both original and aliased versions
+      const processedNamedImports = { ...imp.namedImports };
+      if (imp.namedImports) {
+        Object.entries(imp.namedImports).forEach(([orig, alias]) => {
+          if (orig !== alias) {
+            processedNamedImports[orig] = orig;
+            processedNamedImports[`${orig}_alias_${alias}`] = alias;
+          }
+        });
+      }
+
+      mergedMap.set(imp.specifier, {
+        ...imp,
+        namedImports: processedNamedImports,
+      });
     }
   }
 
+  // Reconstruct final import statements
   return Array.from(mergedMap.values())
+    .map((imp) => {
+      const parts: string[] = ['import '];
+
+      if (imp.defaultImport) {
+        parts.push(imp.defaultImport);
+      }
+
+      if (imp.namespacedImport) {
+        if (imp.defaultImport) parts.push(', ');
+        parts.push(`* as ${imp.namespacedImport}`);
+      }
+
+      const namedImports = imp.namedImports || {};
+      const importParts = new Map<string, Set<string>>();
+
+      // Group by original name (stripping _alias_ suffix)
+      Object.entries(namedImports).forEach(([key, alias]) => {
+        const orig = key.includes('_alias_') ? key.split('_alias_')[0] : key;
+        if (!importParts.has(orig)) {
+          importParts.set(orig, new Set());
+        }
+        importParts.get(orig)!.add(alias);
+      });
+
+      // Create sorted list of imports
+      const namedList = Array.from(importParts.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([orig, aliases]) => {
+          const parts = [orig];
+          aliases.forEach((alias) => {
+            if (alias !== orig) {
+              parts.push(`${orig} as ${alias}`);
+            }
+          });
+          return parts;
+        })
+        .flat()
+        .join(', ');
+
+      if (namedList) {
+        if (imp.defaultImport || imp.namespacedImport) parts.push(', ');
+        parts.push(`{ ${namedList} }`);
+      }
+
+      parts.push(` from "${imp.specifier}";\n`);
+
+      const code = parts.join('');
+      return {
+        ...imp,
+        code,
+        imports: parts.slice(1, -1).join(''),
+        start: 0,
+        end: code.length,
+      };
+    })
+    .sort((a, b) => {
+      // Sort react/jsx-runtime first, then others alphabetically
+      if (a.specifier === 'react/jsx-runtime') return -1;
+      if (b.specifier === 'react/jsx-runtime') return 1;
+      return a.specifier.localeCompare(b.specifier);
+    });
 }
