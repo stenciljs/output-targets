@@ -1,6 +1,6 @@
 import decamelize from 'decamelize';
 import { parse, visit, print } from 'recast';
-import typescriptParser from 'recast/parsers/typescript';
+import typescriptParser from 'recast/parsers/typescript'
 import { transform as esbuildTransform } from 'esbuild';
 import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
@@ -22,6 +22,7 @@ import {
 import type { StencilSSROptions, SerializeShadowRootOptions, TransformOptions } from './types.js';
 
 const VALID_JSX_IMPORTS = ['jsxDEV', 'jsx', 'jsxs'];
+const NEW_LINE = '\n';
 
 interface HydrateModule {
   serializeProperty: (value: any) => string;
@@ -92,7 +93,7 @@ export async function transform(
    * component library and if so, extract the component's properties.
    */
   const ast = parse(code, {
-    parser: typescriptParser,
+    parser: typescriptParser
   });
   const scopeStack: Record<string, any>[] = [];
   let index = 0;
@@ -139,7 +140,11 @@ export async function transform(
        * Only interested in `jsxDEV` calls that render components from the user's
        * component library
        */
-      if (!isIdentifierNode(args[0]) || !components.includes(args[0].name) || !isObjectExpression(args[1])) {
+      if (
+        !isIdentifierNode(args[0]) ||
+        !components.includes(args[0].name) ||
+        !isObjectExpression(args[1])
+      ) {
         return this.traverse(path);
       }
 
@@ -189,25 +194,27 @@ export async function transform(
          * );
          * ```
          */
-        path.get('arguments', 0).replace(
-          b.callExpression(b.identifier('get' + identifier), [
-            b.objectExpression(
-              args[1].properties.filter((p) => {
-                /**
-                 * in case we are looking at a object property, we can filter by children
-                 */
-                if (isPropertyNode(p) && isIdentifierNode(p.key)) {
-                  return p.key.name === 'children';
-                }
+        path
+          .get('arguments', 0)
+          .replace(
+            b.callExpression(b.identifier('get' + identifier), [
+              b.objectExpression(
+                args[1].properties.filter((p) => {
+                  /**
+                   * in case we are looking at a object property, we can filter by children
+                   */
+                  if (isPropertyNode(p) && isIdentifierNode(p.key)) {
+                    return p.key.name === 'children'
+                  }
 
-                /**
-                 * if it is something else, e.g. a spread element, just return true
-                 */
-                return true;
-              }) as namedTypes.ObjectProperty[]
-            ),
-          ])
-        );
+                  /**
+                   * if it is something else, e.g. a spread element, just return true
+                   */
+                  return true
+                }) as namedTypes.ObjectProperty[]
+              ),
+            ])
+          );
       } else {
         /**
          * for React we don't need to pass in the children directly:
@@ -280,7 +287,7 @@ export async function transform(
               : serializeShadowRoot['scoped']?.includes(tagName)
             : false;
 
-      const lines = html.split('\n');
+      const lines = html.split(NEW_LINE);
 
       /**
        * serialize scoped component
@@ -300,14 +307,21 @@ export async function transform(
    * Transform the wrapped JSX components into a raw JavaScript string.
    */
   const nextImports =
-    strategy === 'nextjs' ? `import dynamic from 'next/dynamic';\nconst compImport = import('${from}');\n` : '';
+    strategy === 'nextjs'
+      ? [
+        `import dynamic from 'next/dynamic';`,
+        `const compImport = import('${from}');`
+      ].join(NEW_LINE)
+      : '';
 
-  const result = await esbuildTransform(nextImports + componentDeclarations.join('\n'), {
+  const isDev = jsxImportReferences.some((ref) => ref.includes('jsxDEV'))
+  const result = await esbuildTransform(nextImports + componentDeclarations.join(NEW_LINE), {
     loader: 'jsx',
     jsx: 'automatic', // Use React 17+ JSX transform
     format: 'esm',
     target: ['esnext'],
     sourcemap: true,
+    jsxDev: isDev,
     sourcefile,
   });
 
@@ -315,27 +329,12 @@ export async function transform(
    * Remove all imports from the transformed code and the original code and
    * merge them together so we avoid duplicate imports.
    */
-  let transformedCode = result.code + '\n\n' + print(ast).code;
+  let transformedCode = result.code + NEW_LINE + NEW_LINE + print(ast).code;
   const allImports = findStaticImports(transformedCode).map(parseStaticImport);
   allImports.forEach((imp) => {
-    transformedCode = transformedCode.replace(imp.code, '');
-  });
-  console.log(
-    '-------------------------------->\n',
-    sourcefile,
-    '\n-------------------------------->\n',
-    allImports,
-    mergeImports(allImports)
-      .map((imp) => imp.code)
-      .join('\n')
-  );
-  transformedCode =
-    mergeImports(allImports)
-      .map((imp) => imp.code)
-      .join('\n') +
-    '\n\n' +
-    transformedCode;
-
-  // console.log('-------------------------------->\n', sourcefile, '\n-------------------------------->\n', transformedCode);
+    transformedCode = transformedCode.replace(imp.code, '')
+  })
+  const mergedImports = mergeImports(allImports).map((imp) => imp.code).join(NEW_LINE)
+  transformedCode = mergedImports + NEW_LINE + NEW_LINE + transformedCode;
   return transformedCode;
 }

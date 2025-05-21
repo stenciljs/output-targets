@@ -1,9 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`transform > should transform the code 1`] = `
-"import { jsxDEV } from "react/jsx-dev-runtime";
-const MyComponent$0 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "1", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.1-->
+"import Input from "../components/Input";
+
+import { jsxDEV } from "react/jsx-dev-runtime";
+
+
+const MyComponent$0 = () => ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "1", dangerouslySetInnerHTML: { __html: \`<!--r.1-->
   <div c-id="1.0.0.0" class="sc-my-component">
     <!--t.1.1.1.0-->
     Hello, World! I'm John undefined Doe
@@ -12,8 +16,8 @@ const MyComponent$0 = ({ children, ...props }) => {
     columnNumber: 12
   });
 };
-const MyComponent$1 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", "s-id": "2", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.2-->
+const MyComponent$1 = () => ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", "s-id": "2", dangerouslySetInnerHTML: { __html: \`<!--r.2-->
   <div c-id="2.0.0.0" class="sc-my-component">
     <!--t.2.1.1.0-->
     Hello, World! I'm undefined undefined undefined
@@ -22,8 +26,8 @@ const MyComponent$1 = ({ children, ...props }) => {
     columnNumber: 12
   });
 };
-const MyList$2 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "3", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.3-->
+const MyList$2 = () => ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "3", dangerouslySetInnerHTML: { __html: \`<!--r.3-->
   <ul c-id="3.0.0.0" class="sc-my-list sc-my-list-s">
     <!--s.3.1.1.0.-->
   </ul>\` } }, void 0, false, {
@@ -31,8 +35,8 @@ const MyList$2 = ({ children, ...props }) => {
     columnNumber: 12
   });
 };
-const MyListItem$3 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "4", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.4-->
+const MyListItem$3 = () => ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "4", dangerouslySetInnerHTML: { __html: \`<!--r.4-->
   <!--o.0.1.-->
   <li c-id="4.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.4.1.1.0.-->
@@ -43,8 +47,8 @@ const MyListItem$3 = ({ children, ...props }) => {
     columnNumber: 12
   });
 };
-const MyListItem$4 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "5", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.5-->
+const MyListItem$4 = () => ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "5", dangerouslySetInnerHTML: { __html: \`<!--r.5-->
   <!--o.0.2.-->
   <li c-id="5.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.5.1.1.0.-->
@@ -55,8 +59,8 @@ const MyListItem$4 = ({ children, ...props }) => {
     columnNumber: 12
   });
 };
-const MyListItem$5 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "6", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.6-->
+const MyListItem$5 = () => ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "6", dangerouslySetInnerHTML: { __html: \`<!--r.6-->
   <!--o.0.3.-->
   <li c-id="6.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.6.1.1.0.-->
@@ -67,8 +71,8 @@ const MyListItem$5 = ({ children, ...props }) => {
     columnNumber: 12
   });
 };
-const MyCounter$6 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "7", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.7-->
+const MyCounter$6 = () => ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "7", dangerouslySetInnerHTML: { __html: \`<!--r.7-->
   <div c-id="7.0.0.0" class="sc-my-counter">
     <button c-id="7.1.1.0" class="sc-my-counter">
       <!--t.7.2.2.0-->
@@ -87,8 +91,8 @@ const MyCounter$6 = ({ children, ...props }) => {
     columnNumber: 12
   });
 };
-import { jsxDEV } from "react/jsx-dev-runtime";
-import Input from "../components/Input";
+
+
 export const meta = () => {
   return [
     { title: "New Remix App" },
@@ -157,44 +161,36 @@ export default function Index() {
       first: "John",
       middle: "William",
       last: "Doe",
-      kidsNames: ["John", "Jane", "Jim"],
-      suppressHydrationWarning: true
+      kidsNames: ["John", "Jane", "Jim"]
     }, void 0, false, {
           lineNumber: 37,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV(MyComponent$1, {
-      suppressHydrationWarning: true
-    }, void 0, false, {
+        /* @__PURE__ */ jsxDEV(MyComponent$1, {}, void 0, false, {
           lineNumber: 38,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV(MyList$2, {
       children: [
             /* @__PURE__ */ jsxDEV(MyListItem$3, {
-        children: "Item 1",
-        suppressHydrationWarning: true
+        children: "Item 1"
       }, void 0, false, {
               lineNumber: 40,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV(MyListItem$4, {
-        children: "Item 2",
-        suppressHydrationWarning: true
+        children: "Item 2"
       }, void 0, false, {
               lineNumber: 41,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV(MyListItem$5, {
-        children: "Item 3",
-        suppressHydrationWarning: true
+        children: "Item 3"
       }, void 0, false, {
               lineNumber: 42,
               columnNumber: 13
             }, this)
-          ],
-
-      suppressHydrationWarning: true
+          ]
     }, void 0, true, {
           lineNumber: 39,
           columnNumber: 11
@@ -203,9 +199,7 @@ export default function Index() {
           lineNumber: 44,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV(MyCounter$6, {
-      suppressHydrationWarning: true
-    }, void 0, false, {
+        /* @__PURE__ */ jsxDEV(MyCounter$6, {}, void 0, false, {
           lineNumber: 45,
           columnNumber: 11
         }, this),
