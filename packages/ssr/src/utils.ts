@@ -9,7 +9,7 @@ export interface StyleObject {
   [key: string]: string | number | boolean | StyleObject | any;
 }
 
-const suppressHydrationWarning = 'suppressHydrationWarning={true}'
+const suppressHydrationWarning = 'suppressHydrationWarning={true}';
 
 /**
  * Convert a style object expression to a plain JavaScript object
@@ -222,7 +222,12 @@ function parseValueCompat(node: any): any {
  * @param identifier - The identifier of the component
  * @returns The serialized component
  */
-export function serializeScopedComponent(html: string[], identifier: string, styles: string[] = [], strategy: TransformOptions['strategy'] = 'react') {
+export function serializeScopedComponent(
+  html: string[],
+  identifier: string,
+  styles: string[] = [],
+  strategy: TransformOptions['strategy'] = 'react'
+) {
   /**
    * If the component has no child nodes, we can just return a React element
    * with the dangerouslySetInnerHTML prop set to the HTML of the component.
@@ -242,7 +247,7 @@ export function serializeScopedComponent(html: string[], identifier: string, sty
 
       ${cmpTag} {...props} ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
     </div>)
-  }\n`
+  }\n`;
 
   if (strategy === 'react') {
     return directlyRenderedComponent;
@@ -391,7 +396,7 @@ export function serializeShadowComponent(
         ${htmlToJsxWithStyleObject(cmpEndTag)}
       </div>
     )
-  }`
+  }`;
 
   return `${directlyRenderedComponent}\n${dynamicRenderedComponent}`;
 }

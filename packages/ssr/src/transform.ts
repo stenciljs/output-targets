@@ -1,6 +1,6 @@
 import decamelize from 'decamelize';
 import { parse, visit, print } from 'recast';
-import typescriptParser from 'recast/parsers/typescript'
+import typescriptParser from 'recast/parsers/typescript';
 import { transform as esbuildTransform } from 'esbuild';
 import { namedTypes, builders as b } from 'ast-types';
 import { findStaticImports, parseStaticImport } from 'mlly';
@@ -31,7 +31,7 @@ interface HydrateModule {
   renderToString: (
     tpl: string,
     options: { prettyHtml?: boolean; fullDocument?: boolean; serializeShadowRoot?: SerializeShadowRootOptions }
-  ) => Promise<{ html: string, styles: { id?: string, content?: string, href?: string }[] }>;
+  ) => Promise<{ html: string; styles: { id?: string; content?: string; href?: string }[] }>;
 }
 
 export async function transform(
@@ -95,7 +95,7 @@ export async function transform(
    * component library and if so, extract the component's properties.
    */
   const ast = parse(code, {
-    parser: typescriptParser
+    parser: typescriptParser,
   });
   const componentIdentifier = new Set<string>();
   const scopeStack: Record<string, any>[] = [];
@@ -142,11 +142,7 @@ export async function transform(
        * Only interested in `jsxDEV` calls that render components from the user's
        * component library
        */
-      if (
-        !isIdentifierNode(args[0]) ||
-        !components.includes(args[0].name) ||
-        !isObjectExpression(args[1])
-      ) {
+      if (!isIdentifierNode(args[0]) || !components.includes(args[0].name) || !isObjectExpression(args[1])) {
         return this.traverse(path);
       }
 
@@ -189,11 +185,10 @@ export async function transform(
        * - dynamic wrapped component: when using Next.js and if the component is not rendered in the Light DOM
        *   of another Stencil component we can use `dynamic` to avoid hydration errors.
        */
-      const isDirectStencilChildNode = (
+      const isDirectStencilChildNode =
         isCallExpression(path.parentPath.node) &&
         isIdentifierNode(path.parentPath.node.callee) &&
-        componentIdentifier.has(path.parentPath.node.callee.name)
-      )
+        componentIdentifier.has(path.parentPath.node.callee.name);
       if (strategy !== 'nextjs' || isDirectStencilChildNode) {
         /**
          * use simple wrapper, e.g. `MyComponent$0`, which is defined as following:
@@ -236,14 +231,9 @@ export async function transform(
          * }
          * ```
          */
-        path.get('arguments', 0).replace(
-          b.callExpression(
-            b.identifier(`get${identifier}`),
-            [
-              b.objectExpression(args[1].properties)
-            ]
-          )
-        );
+        path
+          .get('arguments', 0)
+          .replace(b.callExpression(b.identifier(`get${identifier}`), [b.objectExpression(args[1].properties)]));
       }
 
       path.get('arguments', 1).replace(b.objectExpression(args[1].properties));
@@ -275,9 +265,9 @@ export async function transform(
         .filter(([key]) => !['children', 'suppressHydrationWarning'].includes(key))
         .map(([key, value]) => {
           if (key === 'style') {
-            return `style="${cssPropertiesToString(value)}"`
+            return `style="${cssPropertiesToString(value)}"`;
           }
-          return `${getReactPropertyName(key)}="${importedHydrateModule.serializeProperty(value)}"`
+          return `${getReactPropertyName(key)}="${importedHydrateModule.serializeProperty(value)}"`;
         })
         .join(' ');
 
@@ -311,7 +301,12 @@ export async function transform(
        * serialize scoped component
        */
       if (isScoped || isScopedComponent) {
-        return serializeScopedComponent(lines, identifier, styles.map(({ content }) => content).filter(Boolean) as string[], strategy);
+        return serializeScopedComponent(
+          lines,
+          identifier,
+          styles.map(({ content }) => content).filter(Boolean) as string[],
+          strategy
+        );
       }
 
       /**
@@ -326,13 +321,10 @@ export async function transform(
    */
   const nextImports =
     strategy === 'nextjs'
-      ? [
-        `import dynamic from 'next/dynamic';`,
-        `const componentImport = import('${from}');`
-      ].join(NEW_LINE)
+      ? [`import dynamic from 'next/dynamic';`, `const componentImport = import('${from}');`].join(NEW_LINE)
       : '';
 
-  const isDev = jsxImportReferences.some((ref) => ref.includes('jsxDEV'))
+  const isDev = jsxImportReferences.some((ref) => ref.includes('jsxDEV'));
   const result = await esbuildTransform(nextImports + componentDeclarations.join(NEW_LINE), {
     loader: 'jsx',
     jsx: 'automatic', // Use React 17+ JSX transform
@@ -350,9 +342,11 @@ export async function transform(
   let transformedCode = result.code + NEW_LINE + NEW_LINE + print(ast).code;
   const allImports = findStaticImports(transformedCode).map(parseStaticImport);
   allImports.forEach((imp) => {
-    transformedCode = transformedCode.replace(imp.code, '')
-  })
-  const mergedImports = mergeImports(allImports).map((imp) => imp.code).join(NEW_LINE)
+    transformedCode = transformedCode.replace(imp.code, '');
+  });
+  const mergedImports = mergeImports(allImports)
+    .map((imp) => imp.code)
+    .join(NEW_LINE);
   transformedCode = mergedImports + NEW_LINE + NEW_LINE + transformedCode;
   return transformedCode;
 }

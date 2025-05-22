@@ -10,7 +10,7 @@ import Button from './Button/Button';
 import { ToggleableContent } from './ToggleableContent/ToggleableContent';
 
 function getStuff() {
-  return 'I am random value!'
+  return 'I am random value!';
 }
 
 export default function Home() {
