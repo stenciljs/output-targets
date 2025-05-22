@@ -16,20 +16,26 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
       expect(html).toMatchInlineSnapshot(`
         "
         <div id="single-no-child-scoped">
-          <my-component-scoped
-            class="hydrated sc-my-component-scoped-h"
-            first="John"
-            last="Doe"
-            middle-name="William"
-            s-id="x"
-          >
-            <div
-              c-id="x"
-              class="sc-my-component-scoped"
+          <div style="display:contents">
+            <style>
+              .sc-my-component-scoped-h{display:block;color:green}
+            </style>
+            <my-component-scoped
+              class="hydrated sc-my-component-scoped-h"
+              first="John"
+              last="Doe"
+              middle-name="William"
+              s-id="x"
+              middlename="William"
             >
-              Hello, World! I'm John William Doe
-            </div>
-          </my-component-scoped>
+              <div
+                c-id="x"
+                class="sc-my-component-scoped"
+              >
+                Hello, World! I'm John William Doe
+              </div>
+            </my-component-scoped>
+          </div>
         </div>
         "
       `)
@@ -56,24 +62,29 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
       expect(html).toMatchInlineSnapshot(`
         "
         <div id="single-children-scoped">
-          <my-button-scoped
-            class="button button-outline hydrated my-activatable my-focusable sc-my-button-scoped-h"
-            fill="outline"
-            s-id="x"
-          >
-            <button
-              c-id="x"
-              class="button-native sc-my-button-scoped"
-              type="button"
+          <div style="display:contents">
+            <style>
+              .sc-my-button-scoped-h{display:block;background-color:green;color:white;font-weight:bold;border-radius:5px;cursor:pointer}slot-fb{display:contents}slot-fb[hidden]{display:none}
+            </style>
+            <my-button-scoped
+              class="button button-outline hydrated my-activatable my-focusable sc-my-button-scoped-h"
+              fill="outline"
+              s-id="x"
             >
-              <span
+              <button
                 c-id="x"
-                class="button-inner sc-my-button-scoped sc-my-button-scoped-s"
+                class="button-native sc-my-button-scoped"
+                type="button"
               >
-                Test
-              </span>
-            </button>
-          </my-button-scoped>
+                <span
+                  c-id="x"
+                  class="button-inner sc-my-button-scoped sc-my-button-scoped-s"
+                >
+                  Test
+                </span>
+              </button>
+            </my-button-scoped>
+          </div>
         </div>
         "
       `)
@@ -87,6 +98,9 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
   'nested-scoped': () => {
     /**
      * ToDo(Christian): no support for scopped components with children
+     *
+     * Problem here is that we can't render a scoped content with JSX children, due to the fact that
+     * we can't set `dangerouslySetInnerHTML` with JSX children together.
      */
     it.skip('should correctly server side render', async () => {
       const url = `${browser.options.baseUrl}/nested-scoped`
@@ -105,63 +119,63 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
       expect(html).toMatchInlineSnapshot(`
         "
         <div id="complex-props-scoped">
-          <my-complex-props-scoped
-            baz="serialized:eyJ0eXBlIjoibWFwIiwidmFsdWUiOltbeyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJmb28ifSx7InR5cGUiOiJvYmplY3QiLCJ2YWx1ZSI6W1sicXV4Iix7InR5cGUiOiJzeW1ib2wiLCJ2YWx1ZSI6InF1dXgifV1dfV1dfQ=="
-            class="hydrated sc-my-complex-props-scoped-h"
-            foo="serialized:eyJ0eXBlIjoib2JqZWN0IiwidmFsdWUiOltbImJhciIseyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJiYXoifV0sWyJsb28iLHsidHlwZSI6ImFycmF5IiwidmFsdWUiOlt7InR5cGUiOiJudW1iZXIiLCJ2YWx1ZSI6MX0seyJ0eXBlIjoibnVtYmVyIiwidmFsdWUiOjJ9LHsidHlwZSI6Im51bWJlciIsInZhbHVlIjozfV19XSxbInF1eCIseyJ0eXBlIjoib2JqZWN0IiwidmFsdWUiOltbInF1dXgiLHsidHlwZSI6InN5bWJvbCIsInZhbHVlIjoicXV1eCJ9XV19XV19"
-            grault="serialized:eyJ0eXBlIjoibnVtYmVyIiwidmFsdWUiOiJJbmZpbml0eSJ9"
-            quux="serialized:eyJ0eXBlIjoic2V0IiwidmFsdWUiOlt7InR5cGUiOiJzdHJpbmciLCJ2YWx1ZSI6ImZvbyJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiYmFyIn0seyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJiYXoifV19"
-            s-id="x"
-            waldo="serialized:eyJ0eXBlIjoibnVsbCJ9"
-          >
-            <ul
-              c-id="x"
-              class="sc-my-complex-props-scoped"
+          <div style="display:contents">
+            <style>
+            </style>
+            <my-complex-props-scoped
+              class="hydrated sc-my-complex-props-scoped-h"
+              grault="Infinity"
+              s-id="x"
             >
-              <li
+              <ul
                 c-id="x"
                 class="sc-my-complex-props-scoped"
               >
-                this.foo.bar: baz
-              </li>
-              <li
-                c-id="x"
-                class="sc-my-complex-props-scoped"
-              >
-                this.foo.loo: 1, 2, 3
-              </li>
-              <li
-                c-id="x"
-                class="sc-my-complex-props-scoped"
-              >
-                this.foo.qux: symbol
-              </li>
-              <li
-                c-id="x"
-                class="sc-my-complex-props-scoped"
-              >
-                this.baz.get('foo'): symbol
-              </li>
-              <li
-                c-id="x"
-                class="sc-my-complex-props-scoped"
-              >
-                this.quux.has('foo'): true
-              </li>
-              <li
-                c-id="x"
-                class="sc-my-complex-props-scoped"
-              >
-                this.grault: true
-              </li>
-              <li
-                c-id="x"
-                class="sc-my-complex-props-scoped"
-              >
-                this.waldo: true
-              </li>
-            </ul>
-          </my-complex-props-scoped>
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props-scoped"
+                >
+                  this.foo.bar: baz
+                </li>
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props-scoped"
+                >
+                  this.foo.loo: 1, 2, 3
+                </li>
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props-scoped"
+                >
+                  this.foo.qux: symbol
+                </li>
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props-scoped"
+                >
+                  this.baz.get('foo'): symbol
+                </li>
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props-scoped"
+                >
+                  this.quux.has('foo'): true
+                </li>
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props-scoped"
+                >
+                  this.grault: true
+                </li>
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props-scoped"
+                >
+                  this.waldo: true
+                </li>
+              </ul>
+            </my-complex-props-scoped>
+          </div>
         </div>
         "
       `)

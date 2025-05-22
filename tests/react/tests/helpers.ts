@@ -32,6 +32,13 @@ export async function fetchSourceCode (scenario: TestComponent, retries = 3) {
          */
         .replaceAll(/c-id="[^"]*"/g, 'c-id="x"')
         .replaceAll(/s-id="[^"]*"/g, 's-id="x"')
+        .replaceAll(
+          /**
+           * replace Next.js `BAILOUT_TO_CLIENT_SIDE_RENDERING` template tag with simplified version
+           */
+          /<template[^>]*?data-dgst="([^"]+)"[^>]*?data-msg="([\s\S]*?)"(?:[^>]*)><\/template>/g,
+          '<template data-dgst="$1" data-msg="..." />'
+        )
     ) as string).split('\n')
       .filter((l: string) => !l.includes('suppresshydrationwarning'))
       .join('\n')

@@ -3,10 +3,13 @@ import { namedTypes } from 'ast-types';
 import type { ParsedStaticImport } from 'mlly';
 
 import { STYLE_ATTR_REGEX } from './constants.js';
+import type { TransformOptions } from './types.js';
 
 export interface StyleObject {
   [key: string]: string | number | boolean | StyleObject | any;
 }
+
+const suppressHydrationWarning = 'suppressHydrationWarning={true}'
 
 /**
  * Convert a style object expression to a plain JavaScript object
@@ -212,10 +215,6 @@ function parseValueCompat(node: any): any {
   return null;
 }
 
-function getWrappedComponentVariableName(identifier: string, strategy?: 'nextjs' | 'react') {
-  return strategy === 'nextjs' ? `get${identifier}` : identifier;
-}
-
 /**
  * Serialize a scoped component
  *
@@ -223,21 +222,60 @@ function getWrappedComponentVariableName(identifier: string, strategy?: 'nextjs'
  * @param identifier - The identifier of the component
  * @returns The serialized component
  */
-export function serializeScopedComponent(html: string[], identifier: string, strategy?: 'nextjs' | 'react') {
+export function serializeScopedComponent(html: string[], identifier: string, styles: string[] = [], strategy: TransformOptions['strategy'] = 'react') {
   /**
    * If the component has no child nodes, we can just return a React element
    * with the dangerouslySetInnerHTML prop set to the HTML of the component.
    */
   const cmpTag = html[0].slice(0, -1);
-  const variableName = getWrappedComponentVariableName(identifier, strategy);
   const __html = html.slice(1, -1).join('\n').trim();
-  return `\nconst ${variableName} = () => ({ children, ...props }) => {
-    return ${cmpTag} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
-  }\n`;
+
+  /**
+   * In most cases we directly render the component through a wrapper that injects the styles
+   * tag into an extra container.
+   */
+  const directlyRenderedComponent = `\nconst ${identifier} = ({ children, ...props }) => {
+    return (<div style={{ display: 'contents' }} ${suppressHydrationWarning}>
+      <style>{\`
+        ${styles.join('\n')}
+      \`}</style>
+
+      ${cmpTag} {...props} ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
+    </div>)
+  }\n`
+
+  if (strategy === 'react') {
+    return directlyRenderedComponent;
+  }
+
+  /**
+   * In case of Next.js we need to use dynamic import to ensure we hydrate the component
+   * on the client as React wouldn't always re-render the component at runtime to transform
+   * it into an interactive component.
+   */
+  return `
+  ${directlyRenderedComponent}
+  const get${identifier} = () => ${identifier}\n`;
 }
 
 /**
- * Serialize a shadow component
+ * Serialize a shadow component.
+ *
+ * This process differs based on the framework used and strategy we take. We can differentiate between the following
+ * two strategies:
+ *
+ * - `react`: basic SSR hydration via `dangerouslySetInnerHTML` used in Vite based Vue or React apps or Nuxt.
+ * - `nextjs`: additional primitives required to avoid hydration errors in Next.js.
+ *
+ * This function registers a component wrapper, e.g. `MyComponent$0` and returns a serialized component to help
+ * the framework render a Declarative Shadow DOM on the server and hydrate it on the client once the Stencil
+ * runtime kicks in.
+ *
+ * This process may cause hydration issues as the framework may detect differences between the DSD and the runtime
+ * component, mostly likely due to the fact that the `template` tag disappears as it gets transformed into a Shadow
+ * Root. This function attempts to mitigate this issue by using the `suppressHydrationWarning` primitive as well
+ * as `dynamic` to defer the component import until runtime. Latter is required to ensure that React re-renders the
+ * component at runtime to ensure it becomes interactive.
  *
  * @param html - The HTML of the component retrieved via `renderToString`
  * @param identifier - The identifier of the component
@@ -247,7 +285,7 @@ export function serializeShadowComponent(
   html: string[],
   identifier: string,
   styleObject?: StyleObject,
-  strategy?: 'nextjs' | 'react'
+  strategy: TransformOptions['strategy'] = 'react'
 ) {
   const cmpTagName = identifier.split('$')[0] as string;
   /**
@@ -268,35 +306,94 @@ export function serializeShadowComponent(
    * Let's reconstruct the rendered Stencil component into a JSX component
    */
   const templateClosingIndex = html.findLastIndex((line) => line.includes('</template>'));
-  const variableName = getWrappedComponentVariableName(identifier, strategy);
   const __html = html.slice(2, templateClosingIndex).join('\n').trim();
 
   /**
-   * When serializing the component in Next.js we need to use `dynamic` to properly
-   * server side render the component without causing a hydration error (e.g. due to
-   * the transforming the template tag into a shadow root when runtime kicks in).
+   * The default approach for SSR support with Stencil is to render the serialized version of the component
+   * directly via `dangerouslySetInnerHTML`. We use this approach for all basic JSX scenarios when using Vite
+   * or Nuxt. Some frameworks may still raise hydration errors which we can ignore.
    */
-  return strategy === 'nextjs'
-    ? `\nconst ${variableName} = ({ children }) => dynamic(
-      () => compImport.then(mod => mod.${cmpTagName}),
+  if (strategy === 'react') {
+    return `const ${identifier} = ({ children, ...props }) => {
+      ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} {...props}>
+        <template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+        {children}
+      ${htmlToJsxWithStyleObject(cmpEndTag)}
+    }\n`;
+  }
+
+  /**
+   * When serializing the component in Next.js we need to use `dynamic` to properly
+   * server side render the component without causing a hydration error. Furthermore
+   * this approach also forces React to re-render the component at runtime to ensure
+   * it resolves properties passed to the component. For example, if a user passes a
+   * dynamic variable as property, e.g.:
+   *
+   * ```ts
+   * const myProp = getDynamicProp();
+   * <my-component ${myProp} />
+   * ```
+   *
+   * During the SSR process we don't know to what this variable resolves as we make changes
+   * to the AST and don't have access to the runtime value of that variable. This is why we
+   * are forced to use `dynamic` to ensure React re-renders the component at runtime to
+   * resolve the dynamic property.
+   */
+  const dynamicRenderedComponent = `let ${identifier}Instance;
+  const get${identifier} = ({ children, ...props }) => {
+    if  (${identifier}Instance) {
+      return ${identifier}Instance;
+    }
+    ${identifier}Instance = dynamic(
+      () => componentImport.then(mod => mod.${cmpTagName}),
       {
         ssr: false,
         loading: () => (<>
-          ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)}>
-            <template shadowrootmode="open" shadowrootdelegatesfocus="true" dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+          ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
+            <template shadowrootmode="open" ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
             {children}
           ${htmlToJsxWithStyleObject(cmpEndTag)}
         </>)
       }
-    )\n`
-    : `\nconst ${variableName} = () => {
-      return ({ children }) => (<>
-        ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)}>
-          <template shadowrootmode="open" shadowrootdelegatesfocus="true" suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+    )
+    return ${identifier}Instance;
+  }`;
+
+  /**
+   * An issue with `dynamic` is that it renders a `template` tag with an error message for React
+   * to bail out of the hydration process, e.g.:
+   *
+   * ```html
+   * <template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING" data-msg="Switched to client rendering because the server rendering errored: ..." />
+   * ```
+   *
+   * This is problematic in cases where we render child nodes into components that rely on slots
+   * as these template tags may be interpreted as slot node causing rendering issues. To avoid this
+   * we still provide a fallback to render the component directly via `dangerouslySetInnerHTML`.
+   *
+   * Here we are wrapping the component into a new `div` with `display: contents` to ensure that
+   * we can supress hydration warnings.
+   */
+  const directlyRenderedComponent = `const ${identifier} = ({ children, ...props }) => {
+    if (typeof window !== 'undefined') {
+      return <div style={{ display: 'contents' }} ${suppressHydrationWarning}>
+        <${cmpTagName} ${suppressHydrationWarning} {...props}>
+          {children}
+        </${cmpTagName}>
+      </div>
+    }
+
+    return (
+      <div style={{ display: 'contents' }} ${suppressHydrationWarning}>
+        ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
+          <template shadowrootmode="open" ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
           {children}
         ${htmlToJsxWithStyleObject(cmpEndTag)}
-      </>)
-    }\n`;
+      </div>
+    )
+  }`
+
+  return `${directlyRenderedComponent}\n${dynamicRenderedComponent}`;
 }
 
 /**
@@ -348,7 +445,7 @@ function htmlToJsxWithStyleObject(html: string, sourceStyles: StyleObject = {}):
   /**
    * Format JS object as inline JSX style
    */
-  const formattedStyle = JSON.stringify({ ...sourceStyles, ...styleObject });
+  const formattedStyle = JSON.stringify(sourceStyles || styleObject);
 
   /**
    * Replace the original style="..." with JSX style={{ ... }}
@@ -513,4 +610,25 @@ export function mergeImports(imports: ParsedStaticImport[]): ParsedStaticImport[
       if (b.specifier === 'react/jsx-runtime') return 1;
       return a.specifier.localeCompare(b.specifier);
     });
+}
+
+/**
+ * Convert a camelCase string to a kebab-case string
+ * @param str - The string to convert
+ * @returns The kebab-case string
+ */
+function camelToKebabCase(str: string): string {
+  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+/**
+ * Convert a style object to a CSS string
+ * @param style - The style object
+ * @returns The CSS string
+ */
+export function cssPropertiesToString(style: Record<string, string | number | boolean>): string {
+  return Object.entries(style)
+    .filter(([, value]) => value !== undefined)
+    .map(([key, value]) => `${camelToKebabCase(key)}: ${value};`)
+    .join(' ');
 }

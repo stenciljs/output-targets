@@ -16,18 +16,27 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       expect(html).toMatchInlineSnapshot(`
         "
         <div id="single-no-child-shadow">
+          <template
+            data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+            data-msg="..."
+          >
+          </template>
           <my-component
-            class="hydrated"
+            class="hydrated sc-my-component-h"
             first="John"
             last="Doe"
             middle-name="William"
             s-id="x"
+            middlename="William"
           >
             <template shadowrootmode="open">
               <style>
                 :host{display:block;color:green}
               </style>
-              <div c-id="x">
+              <div
+                c-id="x"
+                class="sc-my-component"
+              >
                 Hello, World! I'm John William Doe
               </div>
             </template>
@@ -58,8 +67,13 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       expect(html).toMatchInlineSnapshot(`
         "
         <div id="single-children-shadow">
+          <template
+            data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+            data-msg="..."
+          >
+          </template>
           <my-button
-            class="button button-outline hydrated my-activatable my-focusable"
+            class="button button-outline hydrated my-activatable my-focusable sc-my-button-h"
             fill="outline"
             s-id="x"
           >
@@ -69,27 +83,33 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
               </style>
               <button
                 c-id="x"
-                class="button-native"
+                class="button-native sc-my-button"
                 type="button"
               >
                 <span
                   c-id="x"
-                  class="button-inner"
+                  class="button-inner sc-my-button"
                 >
                   <slot
                     c-id="x"
+                    class="sc-my-button"
                     name="icon-only"
                   >
                   </slot>
                   <slot
                     c-id="x"
+                    class="sc-my-button"
                     name="start"
                   >
                   </slot>
-                  <slot c-id="x">
+                  <slot
+                    c-id="x"
+                    class="sc-my-button"
+                  >
                   </slot>
                   <slot
                     c-id="x"
+                    class="sc-my-button"
                     name="end"
                   >
                   </slot>
@@ -118,47 +138,91 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       expect(html).toMatchInlineSnapshot(`
         "
         <div id="nested-shadow">
+          <template
+            data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+            data-msg="..."
+          >
+          </template>
           <my-list
-            class="hydrated"
+            class="hydrated sc-my-list-h"
             s-id="x"
           >
             <template shadowrootmode="open">
-              <ul c-id="x">
-                <slot c-id="x">
+              <ul
+                c-id="x"
+                class="sc-my-list"
+              >
+                <slot
+                  c-id="x"
+                  class="sc-my-list"
+                >
                 </slot>
               </ul>
             </template>
+            <template
+              data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+              data-msg="..."
+            >
+            </template>
             <my-list-item
-              class="hydrated"
+              class="hydrated sc-my-list-item-h"
               s-id="x"
             >
               <template shadowrootmode="open">
-                <li c-id="x">
-                  <slot c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-list-item"
+                >
+                  <slot
+                    c-id="x"
+                    class="sc-my-list-item"
+                  >
                   </slot>
                 </li>
               </template>
               Foo Shadow
             </my-list-item>
+            <template
+              data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+              data-msg="..."
+            >
+            </template>
             <my-list-item
-              class="hydrated"
+              class="hydrated sc-my-list-item-h"
               s-id="x"
             >
               <template shadowrootmode="open">
-                <li c-id="x">
-                  <slot c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-list-item"
+                >
+                  <slot
+                    c-id="x"
+                    class="sc-my-list-item"
+                  >
                   </slot>
                 </li>
               </template>
               Bar Shadow
             </my-list-item>
+            <template
+              data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+              data-msg="..."
+            >
+            </template>
             <my-list-item
-              class="hydrated"
+              class="hydrated sc-my-list-item-h"
               s-id="x"
             >
               <template shadowrootmode="open">
-                <li c-id="x">
-                  <slot c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-list-item"
+                >
+                  <slot
+                    c-id="x"
+                    class="sc-my-list-item"
+                  >
                   </slot>
                 </li>
               </template>
@@ -180,36 +244,61 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       expect(html).toMatchInlineSnapshot(`
         "
         <div id="complex-props-shadow">
+          <template
+            data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+            data-msg="..."
+          >
+          </template>
           <my-complex-props
-            baz="serialized:eyJ0eXBlIjoibWFwIiwidmFsdWUiOltbeyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJmb28ifSx7InR5cGUiOiJvYmplY3QiLCJ2YWx1ZSI6W1sicXV4Iix7InR5cGUiOiJzeW1ib2wiLCJ2YWx1ZSI6InF1dXgifV1dfV1dfQ=="
-            class="hydrated"
-            foo="serialized:eyJ0eXBlIjoib2JqZWN0IiwidmFsdWUiOltbImJhciIseyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJiYXoifV0sWyJsb28iLHsidHlwZSI6ImFycmF5IiwidmFsdWUiOlt7InR5cGUiOiJudW1iZXIiLCJ2YWx1ZSI6MX0seyJ0eXBlIjoibnVtYmVyIiwidmFsdWUiOjJ9LHsidHlwZSI6Im51bWJlciIsInZhbHVlIjozfV19XSxbInF1eCIseyJ0eXBlIjoib2JqZWN0IiwidmFsdWUiOltbInF1dXgiLHsidHlwZSI6InN5bWJvbCIsInZhbHVlIjoicXV1eCJ9XV19XV19"
-            grault="serialized:eyJ0eXBlIjoibnVtYmVyIiwidmFsdWUiOiJJbmZpbml0eSJ9"
-            quux="serialized:eyJ0eXBlIjoic2V0IiwidmFsdWUiOlt7InR5cGUiOiJzdHJpbmciLCJ2YWx1ZSI6ImZvbyJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiYmFyIn0seyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJiYXoifV19"
+            class="hydrated sc-my-complex-props-h"
+            grault="Infinity"
             s-id="x"
-            waldo="serialized:eyJ0eXBlIjoibnVsbCJ9"
           >
             <template shadowrootmode="open">
-              <ul c-id="x">
-                <li c-id="x">
+              <ul
+                c-id="x"
+                class="sc-my-complex-props"
+              >
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props"
+                >
                   this.foo.bar: baz
                 </li>
-                <li c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props"
+                >
                   this.foo.loo: 1, 2, 3
                 </li>
-                <li c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props"
+                >
                   this.foo.qux: symbol
                 </li>
-                <li c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props"
+                >
                   this.baz.get('foo'): symbol
                 </li>
-                <li c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props"
+                >
                   this.quux.has('foo'): true
                 </li>
-                <li c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props"
+                >
                   this.grault: true
                 </li>
-                <li c-id="x">
+                <li
+                  c-id="x"
+                  class="sc-my-complex-props"
+                >
                   this.waldo: true
                 </li>
               </ul>

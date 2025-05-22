@@ -16,7 +16,9 @@ import {
   isPropertyNode,
   isIdentifierNode,
   isObjectExpression,
+  isCallExpression,
   mergeImports,
+  cssPropertiesToString,
   type StyleObject,
 } from './utils.js';
 import type { StencilSSROptions, SerializeShadowRootOptions, TransformOptions } from './types.js';
@@ -29,7 +31,7 @@ interface HydrateModule {
   renderToString: (
     tpl: string,
     options: { prettyHtml?: boolean; fullDocument?: boolean; serializeShadowRoot?: SerializeShadowRootOptions }
-  ) => Promise<{ html: string }>;
+  ) => Promise<{ html: string, styles: { id?: string, content?: string, href?: string }[] }>;
 }
 
 export async function transform(
@@ -95,6 +97,7 @@ export async function transform(
   const ast = parse(code, {
     parser: typescriptParser
   });
+  const componentIdentifier = new Set<string>();
   const scopeStack: Record<string, any>[] = [];
   let index = 0;
   visit(ast, {
@@ -123,7 +126,6 @@ export async function transform(
       /**
        * remove the import declaration
        */
-      path.replace();
       return this.traverse(path);
     },
     visitCallExpression(path) {
@@ -149,6 +151,7 @@ export async function transform(
       }
 
       const identifier = `${args[0].name}$${index++}`;
+      componentIdentifier.add(identifier);
       componentCalls.push({
         identifier,
         tagName: decamelize(args[0].name, { separator: '-' }),
@@ -168,69 +171,79 @@ export async function transform(
       });
 
       /**
-       * Replace the actual component in the jsx call with the wrapped component
+       * Pushes suppressHydrationWarning={true} to the arguments as scoped components
+       * cause hydration errors due to the fact that Stencil removes attributes like `s-id`
+       * or the hydrate flags on the elements.
        */
-      if (strategy === 'nextjs') {
-        /**
-         * for Next.js we pass in the children as an argument to the wrapped component
-         * so we can server side render them properly, e.g.
-         *
-         * ```ts
-         * const getMyComponent$1 = ({ children }) => dynamic(
-         *   () => compImport.then((mod) => mod.MyComponent),
-         *   {
-         *     ssr: false,
-         *     loading: () => jsx(Fragment, {
-         *       children: jsxs("my-component", {
-         *         first: 'some first name',
-         *         last: 'some last name',
-         *         children: [
-         *           jsx("template", { shadowrootmode: "open", dangerouslySetInnerHTML: { __html: `...` } }),
-         *           children
-         *         ]
-         *       })
-         *     })
-         *   }
-         * );
-         * ```
-         */
-        path
-          .get('arguments', 0)
-          .replace(
-            b.callExpression(b.identifier('get' + identifier), [
-              b.objectExpression(
-                args[1].properties.filter((p) => {
-                  /**
-                   * in case we are looking at a object property, we can filter by children
-                   */
-                  if (isPropertyNode(p) && isIdentifierNode(p.key)) {
-                    return p.key.name === 'children'
-                  }
+      const isFragment = isIdentifierNode(args[0]) && args[0].name.includes('Fragment');
+      if (namedTypes.ObjectExpression.check(args[1]) && !isFragment) {
+        args[1].properties.push(b.objectProperty(b.identifier('suppressHydrationWarning'), b.booleanLiteral(true)));
+      }
 
-                  /**
-                   * if it is something else, e.g. a spread element, just return true
-                   */
-                  return true
-                }) as namedTypes.ObjectProperty[]
-              ),
-            ])
-          );
-      } else {
+      /**
+       * Replace the original component identifier with the wrapped component identifier. We define
+       * two different wrappers for the following cases:
+       *
+       * - simple wrapped component: in most cases we use this approach which wraps the component and renders
+       *   it directly via `dangerouslySetInnerHTML`.
+       * - dynamic wrapped component: when using Next.js and if the component is not rendered in the Light DOM
+       *   of another Stencil component we can use `dynamic` to avoid hydration errors.
+       */
+      const isDirectStencilChildNode = (
+        isCallExpression(path.parentPath.node) &&
+        isIdentifierNode(path.parentPath.node.callee) &&
+        componentIdentifier.has(path.parentPath.node.callee.name)
+      )
+      if (strategy !== 'nextjs' || isDirectStencilChildNode) {
         /**
-         * for React we don't need to pass in the children directly:
+         * use simple wrapper, e.g. `MyComponent$0`, which is defined as following:
          *
          * ```ts
-         * const getMyComponent$1 = ({ children }) => jsxs("my-component", {
-         *   first: 'some first name',
-         *   last: 'some last name',
-         *   children: [
-         *     jsx("template", { shadowrootmode: "open", dangerouslySetInnerHTML: { __html: `...` } }),
-         *     children
-         *   ]
-         * })
+         * const MyComponent$0 = ({ children, ...props }) => {
+         *   return (<my-component class="hydrated my-8 sc-my-component-h" ... {...props}>
+         *     <template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: `...` }}></template>
+         *     {children}
+         *   </my-component>)
+         * }
          * ```
          */
         path.get('arguments', 0).replace(b.identifier(identifier));
+      } else {
+        /**
+         * use advanced wrapper for Next.js, e.g. `getMyComponent$0`, which is defined as following:
+         *
+         * ```ts
+         * let MyComponent$0Instance;
+         * const getMyComponent$0 = ({ children, ...props }) => {
+         *   if  (MyComponent$0Instance) {
+         *     return MyComponent$0Instance;
+         *   }
+         *   MyComponent$0Instance = dynamic(
+         *     () => componentImport.then(mod => mod.${cmpTagName}),
+         *     {
+         *       ssr: false,
+         *       loading: () => {
+         *         return (<>
+         *           ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} suppressHydrationWarning={true} {...props}>
+         *             <template shadowrootmode="open" suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+         *             {children}
+         *           ${htmlToJsxWithStyleObject(cmpEndTag)}
+         *         </>)
+         *       }
+         *     }
+         *   )
+         *   return MyComponent$0Instance;
+         * }
+         * ```
+         */
+        path.get('arguments', 0).replace(
+          b.callExpression(
+            b.identifier(`get${identifier}`),
+            [
+              b.objectExpression(args[1].properties)
+            ]
+          )
+        );
       }
 
       path.get('arguments', 1).replace(b.objectExpression(args[1].properties));
@@ -259,8 +272,13 @@ export async function transform(
          * we don't want to serialize the children and style properties as we
          * will handle them separately
          */
-        .filter(([key]) => !['children', 'style'].includes(key))
-        .map(([key, value]) => `${getReactPropertyName(key)}="${importedHydrateModule.serializeProperty(value)}"`)
+        .filter(([key]) => !['children', 'suppressHydrationWarning'].includes(key))
+        .map(([key, value]) => {
+          if (key === 'style') {
+            return `style="${cssPropertiesToString(value)}"`
+          }
+          return `${getReactPropertyName(key)}="${importedHydrateModule.serializeProperty(value)}"`
+        })
         .join(' ');
 
       /**
@@ -271,7 +289,7 @@ export async function transform(
       const children = (propObject as Record<string, any>).children;
       const toRender =
         typeof children === 'string' ? `<${tagName} ${props}>${children}</${tagName}>` : `<${tagName} ${props} />`;
-      const { html } = await importedHydrateModule.renderToString(toRender, {
+      const { html, styles } = await importedHydrateModule.renderToString(toRender, {
         prettyHtml: true,
         fullDocument: false,
         serializeShadowRoot,
@@ -293,7 +311,7 @@ export async function transform(
        * serialize scoped component
        */
       if (isScoped || isScopedComponent) {
-        return serializeScopedComponent(lines, identifier, strategy);
+        return serializeScopedComponent(lines, identifier, styles.map(({ content }) => content).filter(Boolean) as string[], strategy);
       }
 
       /**
@@ -310,7 +328,7 @@ export async function transform(
     strategy === 'nextjs'
       ? [
         `import dynamic from 'next/dynamic';`,
-        `const compImport = import('${from}');`
+        `const componentImport = import('${from}');`
       ].join(NEW_LINE)
       : '';
 

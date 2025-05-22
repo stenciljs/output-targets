@@ -25,6 +25,7 @@
     "prettier.dry-run": "lerna run prettier.dry-run",
     "start.next-14": "pnpm --filter next-app run start",
     "start.next-15": "pnpm --filter next-15-react-19-app run start",
+    "start.next-15-runtime-ssr": "pnpm --filter next-15-runtime-ssr run start",
     "start.nuxt": "pnpm --filter nuxt-app run start",
     "start.vue": "pnpm --filter vue-app run dev",
     "test": "lerna run test",

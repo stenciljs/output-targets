@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { ParsedStaticImport } from 'mlly';
 
-import { mergeImports } from '../src/utils';
+import { mergeImports, cssPropertiesToString } from '../src/utils';
 
 export const importDeclarations: ParsedStaticImport[] = [
     {
@@ -48,7 +48,7 @@ export const importDeclarations: ParsedStaticImport[] = [
         namespacedImport: undefined,
         namedImports: { useState: 'useState' }
     }
-] 
+]
 
 describe('mergeImports', () => {
     it('should merge imports', () => {
@@ -59,6 +59,14 @@ describe('mergeImports', () => {
 
           import { useState } from "react";
           "
+        `);
+    });
+});
+
+describe('cssPropertiesToString', () => {
+    it('should convert a style object to a CSS string', () => {
+        expect(cssPropertiesToString({ backgroundColor: 'red', color: 'blue' })).toMatchInlineSnapshot(`
+          "background-color: red; color: blue;"
         `);
     });
 });
