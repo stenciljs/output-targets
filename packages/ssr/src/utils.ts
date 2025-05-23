@@ -420,7 +420,7 @@ function getClosingTagFromOpeningTag(cmpTag: string): string {
  * @param sourceStyles - The source styles of the component
  * @returns The JSX style object
  */
-function htmlToJsxWithStyleObject(html: string, sourceStyles: StyleObject = {}): string {
+function htmlToJsxWithStyleObject(html: string, sourceStyles?: StyleObject): string {
   const match = html.match(STYLE_ATTR_REGEX);
 
   /**
