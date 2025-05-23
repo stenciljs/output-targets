@@ -9,6 +9,10 @@ import Input from './Input/Input';
 import Button from './Button/Button';
 import { ToggleableContent } from './ToggleableContent/ToggleableContent';
 
+function getStuff() {
+  return 'I am random value!';
+}
+
 export default function Home() {
   return (
     <>
@@ -18,6 +22,7 @@ export default function Home() {
       <hr />
       <MyComponent
         first="Stencil"
+        middleName={getStuff()}
         last="'Don't call me a framework' JS"
         className="my-8"
       />

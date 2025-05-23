@@ -33,3 +33,12 @@ export interface StencilSSROptions {
    */
   serializeShadowRoot?: SerializeShadowRootOptions;
 }
+
+export interface TransformOptions {
+  /**
+   * The strategy to use for the transformation.
+   * - `nextjs`: Transform components using Next.js primitives, e.g. via `next/dynamic`
+   * - `react`: Basic React transformation
+   */
+  strategy?: 'nextjs' | 'react';
+}

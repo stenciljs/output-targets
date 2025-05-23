@@ -209,3 +209,5 @@ export const possibleStandardNames = {
   yChannelSelector: 'ychannelselector',
   zoomAndPan: 'zoomandpan',
 };
+
+export const STYLE_ATTR_REGEX = /style="([^"]*)"/;

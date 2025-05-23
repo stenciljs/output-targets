@@ -3,11 +3,11 @@ import url from 'node:url';
 
 import type { RuleSetRule } from 'webpack';
 
-import type { StencilSSROptions } from '../types.js';
+import type { StencilSSROptions, TransformOptions } from '../types.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-export interface StencilSSRWebpackPluginOptions extends StencilSSROptions {
+export interface StencilSSRWebpackPluginOptions extends StencilSSROptions, TransformOptions {
   /**
    * A regex matching the files that may include Stencil components
    */
@@ -16,10 +16,6 @@ export interface StencilSSRWebpackPluginOptions extends StencilSSROptions {
    * A regex matching the files that should be ignored by the plugin
    */
   exclude?: RegExp[];
-  /**
-   * The package reference that contains the Stencil runtime, e.g. `component-library/loader`
-   */
-  runtime?: string;
 }
 
 export interface MinimalWebpackConfig {

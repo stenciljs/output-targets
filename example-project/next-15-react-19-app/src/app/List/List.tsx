@@ -13,9 +13,9 @@ export const List = () => {
       {/* @ts-ignore: Because component-library-react is linked and contains a node_modules folder, with a different @types/react version, TypeScript will throw an error. */}
       <LazyComponent />
       <MyList>
-        <MyListItem>Item 1</MyListItem>
-        <MyListItem>Item 2</MyListItem>
-        <MyListItem>Item 3</MyListItem>
+        <MyListItem key={1}>Item 1</MyListItem>
+        <MyListItem key={2}>Item 2</MyListItem>
+        <MyListItem key={3}>Item 3</MyListItem>
       </MyList>
     </ThemeContext.Provider>
   );

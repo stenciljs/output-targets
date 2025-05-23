@@ -3,7 +3,9 @@ import type { Plugin } from 'vite';
 import { transform } from '../transform.js';
 import type { StencilSSROptions } from '../types.js';
 
-export function stencilSSR(pluginOptions: StencilSSROptions) {
+type StencilSSRViteOptions = Omit<StencilSSROptions, 'strategy'>;
+
+export function stencilSSR(pluginOptions: StencilSSRViteOptions) {
   return {
     name: 'stencil:vite:ssr',
     transform: async function (this: any, code: string, id: string, options?: { ssr?: boolean }) {

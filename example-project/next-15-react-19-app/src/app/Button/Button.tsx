@@ -9,8 +9,9 @@ function Button() {
   return (
     <>
       <MyButton href="#" onClick={() => setInputEvent(inputEvent + 1)}>
-        Click me <b>now</b>!
+        Click me <b key={1}>now</b>!
         <MyComponent
+          key={2}
           first="Stencil"
           last="'Don't call me a framework' JS"
           style={{ backgroundColor: 'red' }}

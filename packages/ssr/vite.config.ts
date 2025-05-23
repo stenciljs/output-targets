@@ -16,7 +16,7 @@ export default defineConfig({
       // make sure to externalize deps that shouldn't be bundled
       // into your library
       external: [
-        'node:path', 'node:url', 'node:fs', 'webpack', 'next', 'vite',
+        'node:path', 'node:url', 'node:fs', 'node:fs/promises', 'webpack', 'next', 'vite',
         '@stencil/core', '@lit/react', 'typescript', 'react', 'react-dom/server', 'ts-morph',
         'html-react-parser', 'mlly', 'esbuild', 'recast', 'ast-types',
       ]

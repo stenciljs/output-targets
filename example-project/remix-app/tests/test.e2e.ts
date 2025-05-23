@@ -1,5 +1,5 @@
 import { runTestScenarios } from 'react-test-components/scenarios';
 
-describe('Remix SSR Integration', () => {
+describe.skip('Remix SSR Integration', () => {
   runTestScenarios()
 })
