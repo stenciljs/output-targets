@@ -10,7 +10,8 @@ export default defineConfig({
   resolve: {
     alias: {
       // Alias the hydrate module to prevent importing Node.js dependencies in the browser
-      'component-library/hydrate': '/dev/null'
+      // This module is only needed for SSR, so we provide an empty module for client builds
+      'component-library/hydrate': new URL('./empty-hydrate-module.js', import.meta.url).pathname
     }
   },
   optimizeDeps: {
