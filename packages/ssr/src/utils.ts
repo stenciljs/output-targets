@@ -1,5 +1,5 @@
 import { print } from 'recast';
-import { namedTypes } from 'ast-types';
+import { namedTypes, NodePath } from 'ast-types';
 import type { ParsedStaticImport } from 'mlly';
 
 import { STYLE_ATTR_REGEX } from './constants.js';
@@ -116,6 +116,10 @@ export function isCallExpression(node: any): node is namedTypes.CallExpression {
 
 export function isObjectExpression(node: any): node is namedTypes.ObjectExpression {
   return namedTypes.ObjectExpression.check(node) || node?.type === 'ObjectExpression';
+}
+
+export function isObjectProperty(node: any): node is namedTypes.ObjectProperty {
+  return namedTypes.ObjectProperty.check(node) || node?.type === 'ObjectProperty';
 }
 
 /**
@@ -320,8 +324,8 @@ export function serializeShadowComponent(
    */
   if (strategy === 'react') {
     return `const ${identifier} = ({ children, ...props }) => {
-      ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} {...props}>
-        <template shadowrootmode="open" dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+      ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
+        <template shadowrootmode="open" ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
         {children}
       ${htmlToJsxWithStyleObject(cmpEndTag)}
     }\n`;
@@ -353,12 +357,7 @@ export function serializeShadowComponent(
       () => componentImport.then(mod => mod.${cmpTagName}),
       {
         ssr: false,
-        loading: () => (<>
-          ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
-            <template shadowrootmode="open" ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
-            {children}
-          ${htmlToJsxWithStyleObject(cmpEndTag)}
-        </>)
+        loading: () => <${identifier} {...props}>{children}</${identifier}>
       }
     )
     return ${identifier}Instance;
@@ -636,4 +635,34 @@ export function cssPropertiesToString(style: Record<string, string | number | bo
     .filter(([, value]) => value !== undefined)
     .map(([key, value]) => `${camelToKebabCase(key)}: ${value};`)
     .join(' ');
+}
+
+type AnyNodeType = (typeof namedTypes)[keyof typeof namedTypes]
+
+/**
+ * Extract the actual node type from an ast-types type checker
+ */
+type NodeFromChecker<T> = T extends { check(node: any): node is infer U } ? U : never;
+
+/**
+ * Find a parent node of a specific type that matches a predicate
+ * Note: This function works with NodePath objects from ast-types visitors
+ * @param currentPath - The current NodePath object
+ * @param nodeType - The type checker (e.g., namedTypes.CallExpression)
+ * @param predicate - Function to test the node
+ * @returns The matching parent node or undefined
+ */
+export function findParentNode<Checker extends AnyNodeType>(
+  currentPath: NodePath,
+  nodeType: Checker,
+  predicate: (node: NodeFromChecker<Checker>) => boolean
+): NodeFromChecker<Checker> | undefined {
+  let path = currentPath.parentPath;
+  while (path) {
+    if (nodeType.check(path.node) && predicate(path.node as NodeFromChecker<Checker>)) {
+      return path.node as NodeFromChecker<Checker>;
+    }
+    path = path.parentPath;
+  }
+  return;
 }

@@ -16,8 +16,8 @@ import {
   isPropertyNode,
   isIdentifierNode,
   isObjectExpression,
-  isCallExpression,
   mergeImports,
+  findParentNode,
   cssPropertiesToString,
   type StyleObject,
 } from './utils.js';
@@ -97,7 +97,13 @@ export async function transform(
   const ast = parse(code, {
     parser: typescriptParser,
   });
+
+  /**
+   * store Stencil component identifiers we already visited to
+   * understand if we a parent node is a Stencil component.
+   */
   const componentIdentifier = new Set<string>();
+
   const scopeStack: Record<string, any>[] = [];
   let index = 0;
   visit(ast, {
@@ -147,7 +153,7 @@ export async function transform(
       }
 
       const identifier = `${args[0].name}$${index++}`;
-      componentIdentifier.add(identifier);
+      componentIdentifier.add(args[0].name);
       componentCalls.push({
         identifier,
         tagName: decamelize(args[0].name, { separator: '-' }),
@@ -186,9 +192,65 @@ export async function transform(
        *   of another Stencil component we can use `dynamic` to avoid hydration errors.
        */
       const isDirectStencilChildNode =
-        isCallExpression(path.parentPath.node) &&
-        isIdentifierNode(path.parentPath.node.callee) &&
-        componentIdentifier.has(path.parentPath.node.callee.name);
+        /**
+         * Find a direct parent node that is a Stencil component, e.g.
+         */
+        (
+          Boolean(findParentNode(path.parentPath, namedTypes.CallExpression, (exp) => {
+            return (
+              /**
+               * Check if the parent node is already a wrapped Stencil component, e.g. find `getSelector$4`
+               * in the following example:
+               *
+               * ```ts
+               * _jsxDEV(getSelector$4({
+               *   value: [...],
+               *   filter: true,
+               *   id: "filter-select-box",
+               *   accessibleTitle: "Select Box + Filter",
+               *   className: "single-select-filter",
+               *   children: [
+               *     _jsxDEV(MenuItem$5, { ... }, void 0, false, { ... }, this),
+               *     _jsxDEV(MenuItem$6, { ... }, void 0, false, { ... }, this),
+               *     _jsxDEV(MenuItem$7, { ... }, void 0, false, { ... }, this)
+               *   ],
+               * }), {
+               *     value: [...],
+               *     filter: true,
+               *     id: "filter-select-box",
+               *     accessibleTitle: "Select Box + Filter",
+               *     className: "single-select-filter",
+               *     children: [
+               *         _jsxDEV(BricksMenuItem$5, { ... }, void 0, false, { ... }, this),
+               *         _jsxDEV(BricksMenuItem$6, { ... }, void 0, false, { ... }, this),
+               *         _jsxDEV(BricksMenuItem$7, { ... }, void 0, false, { ... }, this)
+               *     ],
+               * })
+               * ```
+               **/
+              isIdentifierNode(exp.callee) && componentIdentifier.has(exp.callee.name) ||
+              /**
+               * However sometimes the node we are looking for is not wrapped by Recast, e.g.
+               *
+               * ```ts
+               * _jsxDEV(Selector$4({
+               *   value: [...],
+               *   filter: true,
+               *   id: "filter-select-box",
+               *   accessibleTitle: "Select Box + Filter",
+               *   className: "single-select-filter",
+               *   children: [
+               *     _jsxDEV(MenuItem$5, { ... }, void 0, false, { ... }, this),
+               *     _jsxDEV(MenuItem$6, { ... }, void 0, false, { ... }, this),
+               *     _jsxDEV(MenuItem$7, { ... }, void 0, false, { ... }, this)
+               *   ],
+               * })
+               * ```
+               */
+              isIdentifierNode(exp.arguments[0]) && componentIdentifier.has(exp.arguments[0].name)
+            )
+          }))
+        );
       if (strategy !== 'nextjs' || isDirectStencilChildNode) {
         /**
          * use simple wrapper, e.g. `MyComponent$0`, which is defined as following:
@@ -231,9 +293,11 @@ export async function transform(
          * }
          * ```
          */
+        const getIdentifier = `get${identifier}`
+        componentIdentifier.add(getIdentifier)
         path
           .get('arguments', 0)
-          .replace(b.callExpression(b.identifier(`get${identifier}`), [b.objectExpression(args[1].properties)]));
+          .replace(b.callExpression(b.identifier(getIdentifier), [b.objectExpression(args[1].properties)]));
       }
 
       path.get('arguments', 1).replace(b.objectExpression(args[1].properties));
