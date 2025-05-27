@@ -637,7 +637,7 @@ export function cssPropertiesToString(style: Record<string, string | number | bo
     .join(' ');
 }
 
-type AnyNodeType = (typeof namedTypes)[keyof typeof namedTypes]
+type AnyNodeType = (typeof namedTypes)[keyof typeof namedTypes];
 
 /**
  * Extract the actual node type from an ast-types type checker

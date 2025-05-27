@@ -195,8 +195,8 @@ export async function transform(
         /**
          * Find a direct parent node that is a Stencil component, e.g.
          */
-        (
-          Boolean(findParentNode(path.parentPath, namedTypes.CallExpression, (exp) => {
+        Boolean(
+          findParentNode(path.parentPath, namedTypes.CallExpression, (exp) => {
             return (
               /**
                * Check if the parent node is already a wrapped Stencil component, e.g. find `getSelector$4`
@@ -228,7 +228,7 @@ export async function transform(
                * })
                * ```
                **/
-              isIdentifierNode(exp.callee) && componentIdentifier.has(exp.callee.name) ||
+              (isIdentifierNode(exp.callee) && componentIdentifier.has(exp.callee.name)) ||
               /**
                * However sometimes the node we are looking for is not wrapped by Recast, e.g.
                *
@@ -247,9 +247,9 @@ export async function transform(
                * })
                * ```
                */
-              isIdentifierNode(exp.arguments[0]) && componentIdentifier.has(exp.arguments[0].name)
-            )
-          }))
+              (isIdentifierNode(exp.arguments[0]) && componentIdentifier.has(exp.arguments[0].name))
+            );
+          })
         );
       if (strategy !== 'nextjs' || isDirectStencilChildNode) {
         /**
@@ -293,8 +293,8 @@ export async function transform(
          * }
          * ```
          */
-        const getIdentifier = `get${identifier}`
-        componentIdentifier.add(getIdentifier)
+        const getIdentifier = `get${identifier}`;
+        componentIdentifier.add(getIdentifier);
         path
           .get('arguments', 0)
           .replace(b.callExpression(b.identifier(getIdentifier), [b.objectExpression(args[1].properties)]));
