@@ -13,37 +13,7 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       }
 
       const html = await fetchSourceCode('single-no-child-shadow')
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <div id="single-no-child-shadow">
-          <template
-            data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
-            data-msg="..."
-          >
-          </template>
-          <my-component
-            class="hydrated sc-my-component-h"
-            first="John"
-            last="Doe"
-            middle-name="William"
-            s-id="x"
-            middlename="William"
-          >
-            <template shadowrootmode="open">
-              <style>
-                :host{display:block;color:green}
-              </style>
-              <div
-                c-id="x"
-                class="sc-my-component"
-              >
-                Hello, World! I'm John William Doe
-              </div>
-            </template>
-          </my-component>
-        </div>
-        "
-      `)
+      expect(html).toMatchSnapshot()
     })
 
     it('should have correctly hydrated component', async () => {
@@ -64,63 +34,7 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       }
 
       const html = await fetchSourceCode('single-children-shadow')
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <div id="single-children-shadow">
-          <template
-            data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
-            data-msg="..."
-          >
-          </template>
-          <my-button
-            class="button button-outline hydrated my-activatable my-focusable sc-my-button-h"
-            fill="outline"
-            s-id="x"
-          >
-            <template shadowrootmode="open">
-              <style>
-                :host{display:block;background-color:green;color:white;font-weight:bold;border-radius:5px;cursor:pointer}
-              </style>
-              <button
-                c-id="x"
-                class="button-native sc-my-button"
-                type="button"
-              >
-                <span
-                  c-id="x"
-                  class="button-inner sc-my-button"
-                >
-                  <slot
-                    c-id="x"
-                    class="sc-my-button"
-                    name="icon-only"
-                  >
-                  </slot>
-                  <slot
-                    c-id="x"
-                    class="sc-my-button"
-                    name="start"
-                  >
-                  </slot>
-                  <slot
-                    c-id="x"
-                    class="sc-my-button"
-                  >
-                  </slot>
-                  <slot
-                    c-id="x"
-                    class="sc-my-button"
-                    name="end"
-                  >
-                  </slot>
-                </span>
-              </button>
-            </template>
-            Test
-          </my-button>
-        </div>
-        "
-      `)
+      expect(html).toMatchSnapshot()
     })
 
     it('has attached styles correctly', async () => {
@@ -135,103 +49,7 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       }
 
       const html = await fetchSourceCode('nested-shadow')
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <div id="nested-shadow">
-          <template
-            data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
-            data-msg="..."
-          >
-          </template>
-          <my-list
-            class="hydrated sc-my-list-h"
-            s-id="x"
-          >
-            <template shadowrootmode="open">
-              <ul
-                c-id="x"
-                class="sc-my-list"
-              >
-                <slot
-                  c-id="x"
-                  class="sc-my-list"
-                >
-                </slot>
-              </ul>
-            </template>
-            <template
-              data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
-              data-msg="..."
-            >
-            </template>
-            <my-list-item
-              class="hydrated sc-my-list-item-h"
-              s-id="x"
-            >
-              <template shadowrootmode="open">
-                <li
-                  c-id="x"
-                  class="sc-my-list-item"
-                >
-                  <slot
-                    c-id="x"
-                    class="sc-my-list-item"
-                  >
-                  </slot>
-                </li>
-              </template>
-              Foo Shadow
-            </my-list-item>
-            <template
-              data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
-              data-msg="..."
-            >
-            </template>
-            <my-list-item
-              class="hydrated sc-my-list-item-h"
-              s-id="x"
-            >
-              <template shadowrootmode="open">
-                <li
-                  c-id="x"
-                  class="sc-my-list-item"
-                >
-                  <slot
-                    c-id="x"
-                    class="sc-my-list-item"
-                  >
-                  </slot>
-                </li>
-              </template>
-              Bar Shadow
-            </my-list-item>
-            <template
-              data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
-              data-msg="..."
-            >
-            </template>
-            <my-list-item
-              class="hydrated sc-my-list-item-h"
-              s-id="x"
-            >
-              <template shadowrootmode="open">
-                <li
-                  c-id="x"
-                  class="sc-my-list-item"
-                >
-                  <slot
-                    c-id="x"
-                    class="sc-my-list-item"
-                  >
-                  </slot>
-                </li>
-              </template>
-              Loo Shadow
-            </my-list-item>
-          </my-list>
-        </div>
-        "
-      `)
+      expect(html).toMatchSnapshot()
     })
   },
   'complex-props-shadow': () => {
@@ -241,72 +59,7 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       }
 
       const html = await fetchSourceCode('complex-props-shadow')
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <div id="complex-props-shadow">
-          <template
-            data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
-            data-msg="..."
-          >
-          </template>
-          <my-complex-props
-            class="hydrated sc-my-complex-props-h"
-            grault="Infinity"
-            s-id="x"
-          >
-            <template shadowrootmode="open">
-              <ul
-                c-id="x"
-                class="sc-my-complex-props"
-              >
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props"
-                >
-                  this.foo.bar: baz
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props"
-                >
-                  this.foo.loo: 1, 2, 3
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props"
-                >
-                  this.foo.qux: symbol
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props"
-                >
-                  this.baz.get('foo'): symbol
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props"
-                >
-                  this.quux.has('foo'): true
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props"
-                >
-                  this.grault: true
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props"
-                >
-                  this.waldo: true
-                </li>
-              </ul>
-            </template>
-          </my-complex-props>
-        </div>
-        "
-      `)
+      expect(html).toMatchSnapshot()
     })
 
     it('should correctly adopt complex props in runtime', async () => {

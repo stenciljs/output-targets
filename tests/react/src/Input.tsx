@@ -12,9 +12,7 @@ export function InputShadow() {
       <MyInput
         onMyInput={(ev) => setInputEvent(`${ev.target.value}`)}
         onMyChange={(ev) => setChangeEvent(`${ev.detail.value}`)}
-      >
-        {' '}
-      </MyInput>
+      />
       <div className="inputResult">
         <p>Shadow Input Event: {inputEvent}</p>
         <p>Shadow Change Event: {changeEvent}</p>

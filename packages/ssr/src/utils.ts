@@ -324,7 +324,7 @@ export function serializeShadowComponent(
    */
   if (strategy === 'react') {
     return `const ${identifier} = ({ children, ...props }) => {
-      ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
+      return ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
         <template shadowrootmode="open" ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
         {children}
       ${htmlToJsxWithStyleObject(cmpEndTag)}

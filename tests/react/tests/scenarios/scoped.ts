@@ -13,32 +13,7 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
       }
 
       const html = await fetchSourceCode('single-no-child-scoped')
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <div id="single-no-child-scoped">
-          <div style="display:contents">
-            <style>
-              .sc-my-component-scoped-h{display:block;color:green}
-            </style>
-            <my-component-scoped
-              class="hydrated sc-my-component-scoped-h"
-              first="John"
-              last="Doe"
-              middle-name="William"
-              s-id="x"
-              middlename="William"
-            >
-              <div
-                c-id="x"
-                class="sc-my-component-scoped"
-              >
-                Hello, World! I'm John William Doe
-              </div>
-            </my-component-scoped>
-          </div>
-        </div>
-        "
-      `)
+      expect(html).toMatchSnapshot()
     })
 
     it('should have correctly hydrated component', async () => {
@@ -59,35 +34,7 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
       }
 
       const html = await fetchSourceCode('single-children-scoped')
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <div id="single-children-scoped">
-          <div style="display:contents">
-            <style>
-              .sc-my-button-scoped-h{display:block;background-color:green;color:white;font-weight:bold;border-radius:5px;cursor:pointer}slot-fb{display:contents}slot-fb[hidden]{display:none}
-            </style>
-            <my-button-scoped
-              class="button button-outline hydrated my-activatable my-focusable sc-my-button-scoped-h"
-              fill="outline"
-              s-id="x"
-            >
-              <button
-                c-id="x"
-                class="button-native sc-my-button-scoped"
-                type="button"
-              >
-                <span
-                  c-id="x"
-                  class="button-inner sc-my-button-scoped sc-my-button-scoped-s"
-                >
-                  Test
-                </span>
-              </button>
-            </my-button-scoped>
-          </div>
-        </div>
-        "
-      `)
+      expect(html).toMatchSnapshot()
     })
 
     it('has attached styles correctly', async () => {
@@ -116,69 +63,7 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
       }
 
       const html = await fetchSourceCode('complex-props-scoped')
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <div id="complex-props-scoped">
-          <div style="display:contents">
-            <style>
-            </style>
-            <my-complex-props-scoped
-              class="hydrated sc-my-complex-props-scoped-h"
-              grault="Infinity"
-              s-id="x"
-            >
-              <ul
-                c-id="x"
-                class="sc-my-complex-props-scoped"
-              >
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props-scoped"
-                >
-                  this.foo.bar: baz
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props-scoped"
-                >
-                  this.foo.loo: 1, 2, 3
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props-scoped"
-                >
-                  this.foo.qux: symbol
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props-scoped"
-                >
-                  this.baz.get('foo'): symbol
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props-scoped"
-                >
-                  this.quux.has('foo'): true
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props-scoped"
-                >
-                  this.grault: true
-                </li>
-                <li
-                  c-id="x"
-                  class="sc-my-complex-props-scoped"
-                >
-                  this.waldo: true
-                </li>
-              </ul>
-            </my-complex-props-scoped>
-          </div>
-        </div>
-        "
-      `)
+      expect(html).toMatchSnapshot()
     })
 
     it('should correctly adopt complex props in runtime', async () => {

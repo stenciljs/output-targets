@@ -1,5 +1,7 @@
 import { runTestScenarios } from 'react-test-components/scenarios';
 
-describe.skip('Remix SSR Integration', () => {
-  runTestScenarios()
+describe('Remix SSR Integration', () => {
+  runTestScenarios({
+    exclude: ['complex-props-scoped']
+  })
 })
