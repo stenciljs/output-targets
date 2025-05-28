@@ -44,19 +44,19 @@ export class MyComplexProps {
     return (
       <ul>
         <li>
-          {`this.foo.bar`}: {this.foo.bar}
+          {`this.foo.bar`}: {this.foo?.bar}
         </li>
         <li>
-          {`this.foo.loo`}: {this.foo.loo.join(', ')}
+          {`this.foo.loo`}: {this.foo?.loo.join(', ')}
         </li>
         <li>
-          {`this.foo.qux`}: {typeof this.foo.qux.quux}
+          {`this.foo.qux`}: {typeof this.foo?.qux.quux}
         </li>
         <li>
-          {`this.baz.get('foo')`}: {typeof this.baz.get('foo')?.qux}
+          {`this.baz.get('foo')`}: {typeof this.baz?.get('foo')?.qux}
         </li>
         <li>
-          {`this.quux.has('foo')`}: {this.quux.has('foo') ? 'true' : 'false'}
+          {`this.quux.has('foo')`}: {this.quux?.has('foo') ? 'true' : 'false'}
         </li>
         <li>
           {`this.grault`}: {this.grault === Infinity ? 'true' : 'false'}

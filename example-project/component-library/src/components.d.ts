@@ -29,6 +29,7 @@ export namespace Components {
     interface MyButton {
         /**
           * The type of button.
+          * @default 'button'
          */
         "buttonType": string;
         /**
@@ -37,6 +38,7 @@ export namespace Components {
         "color"?: Color;
         /**
           * If `true`, the user cannot interact with the button.
+          * @default false
          */
         "disabled": boolean;
         /**
@@ -73,6 +75,7 @@ export namespace Components {
         "size"?: 'small' | 'default' | 'large';
         /**
           * If `true`, activates a button with a heavier font weight.
+          * @default false
          */
         "strong": boolean;
         /**
@@ -81,12 +84,14 @@ export namespace Components {
         "target": string | undefined;
         /**
           * The type of the button.
+          * @default 'button'
          */
         "type": 'submit' | 'reset' | 'button';
     }
     interface MyButtonScoped {
         /**
           * The type of button.
+          * @default 'button'
          */
         "buttonType": string;
         /**
@@ -95,6 +100,7 @@ export namespace Components {
         "color"?: Color;
         /**
           * If `true`, the user cannot interact with the button.
+          * @default false
          */
         "disabled": boolean;
         /**
@@ -131,6 +137,7 @@ export namespace Components {
         "size"?: 'small' | 'default' | 'large';
         /**
           * If `true`, activates a button with a heavier font weight.
+          * @default false
          */
         "strong": boolean;
         /**
@@ -139,6 +146,7 @@ export namespace Components {
         "target": string | undefined;
         /**
           * The type of the button.
+          * @default 'button'
          */
         "type": 'submit' | 'reset' | 'button';
     }
@@ -149,6 +157,7 @@ export namespace Components {
         "alignment"?: 'start' | 'center';
         /**
           * If `true`, the checkbox is selected.
+          * @default false
          */
         "checked": boolean;
         /**
@@ -157,10 +166,12 @@ export namespace Components {
         "color"?: string;
         /**
           * If `true`, the user cannot interact with the checkbox.
+          * @default false
          */
         "disabled": boolean;
         /**
           * If `true`, the checkbox will visually appear as indeterminate.
+          * @default false
          */
         "indeterminate": boolean;
         /**
@@ -169,6 +180,7 @@ export namespace Components {
         "justify"?: 'start' | 'end' | 'space-between';
         /**
           * Where to place the label relative to the checkbox. `"start"`: The label will appear to the left of the checkbox in LTR and to the right in RTL. `"end"`: The label will appear to the right of the checkbox in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the checkbox regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
+          * @default 'start'
          */
         "labelPlacement": 'start' | 'end' | 'fixed' | 'stacked';
         /**
@@ -177,11 +189,13 @@ export namespace Components {
         "mode"?: "ios" | "md";
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name": string;
         "setFocus": () => Promise<void>;
         /**
           * The value of the checkbox does not mean if it's checked or not, use the `checked` property for that.  The value of a checkbox is analogous to the value of an `<input type="checkbox">`, it's only used when the checkbox participates in a native `<form>`.
+          * @default 'on'
          */
         "value": any | null;
     }
@@ -270,22 +284,27 @@ export namespace Components {
         "accept"?: string;
         /**
           * Indicates whether and how the text value should be automatically capitalized as it is entered/edited by the user.
+          * @default 'off'
          */
         "autocapitalize": string;
         /**
           * Indicates whether the value of the control can be automatically completed by the browser.
+          * @default 'off'
          */
         "autocomplete": AutocompleteTypes;
         /**
           * Whether auto correction should be enabled when the user is entering/editing the text value.
+          * @default 'off'
          */
         "autocorrect": 'on' | 'off';
         /**
           * This Boolean attribute lets you specify that a form control should have input focus when the page loads.
+          * @default false
          */
         "autofocus": boolean;
         /**
           * If `true`, a clear icon will appear in the input when there is a value. Clicking it clears the input.
+          * @default false
          */
         "clearInput": boolean;
         /**
@@ -298,6 +317,7 @@ export namespace Components {
         "color"?: Color;
         /**
           * If `true`, the user cannot interact with the input.
+          * @default false
          */
         "disabled": boolean;
         /**
@@ -338,6 +358,7 @@ export namespace Components {
         "multiple"?: boolean;
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name": string;
         /**
@@ -350,10 +371,12 @@ export namespace Components {
         "placeholder"?: string | null;
         /**
           * If `true`, the user cannot modify the value.
+          * @default false
          */
         "readonly": boolean;
         /**
           * If `true`, the user must fill in a value before submitting a form.
+          * @default false
          */
         "required": boolean;
         /**
@@ -366,6 +389,7 @@ export namespace Components {
         "size"?: number;
         /**
           * If `true`, the element will have its spelling and grammar checked.
+          * @default false
          */
         "spellcheck": boolean;
         /**
@@ -374,10 +398,12 @@ export namespace Components {
         "step"?: string;
         /**
           * The type of control to display. The default type is text.
+          * @default 'text'
          */
         "type": TextFieldTypes;
         /**
           * The value of the input.
+          * @default ''
          */
         "value"?: string | number | null;
     }
@@ -388,22 +414,27 @@ export namespace Components {
         "accept"?: string;
         /**
           * Indicates whether and how the text value should be automatically capitalized as it is entered/edited by the user.
+          * @default 'off'
          */
         "autocapitalize": string;
         /**
           * Indicates whether the value of the control can be automatically completed by the browser.
+          * @default 'off'
          */
         "autocomplete": AutocompleteTypes;
         /**
           * Whether auto correction should be enabled when the user is entering/editing the text value.
+          * @default 'off'
          */
         "autocorrect": 'on' | 'off';
         /**
           * This Boolean attribute lets you specify that a form control should have input focus when the page loads.
+          * @default false
          */
         "autofocus": boolean;
         /**
           * If `true`, a clear icon will appear in the input when there is a value. Clicking it clears the input.
+          * @default false
          */
         "clearInput": boolean;
         /**
@@ -416,6 +447,7 @@ export namespace Components {
         "color"?: Color;
         /**
           * If `true`, the user cannot interact with the input.
+          * @default false
          */
         "disabled": boolean;
         /**
@@ -456,6 +488,7 @@ export namespace Components {
         "multiple"?: boolean;
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name": string;
         /**
@@ -468,10 +501,12 @@ export namespace Components {
         "placeholder"?: string | null;
         /**
           * If `true`, the user cannot modify the value.
+          * @default false
          */
         "readonly": boolean;
         /**
           * If `true`, the user must fill in a value before submitting a form.
+          * @default false
          */
         "required": boolean;
         /**
@@ -484,6 +519,7 @@ export namespace Components {
         "size"?: number;
         /**
           * If `true`, the element will have its spelling and grammar checked.
+          * @default false
          */
         "spellcheck": boolean;
         /**
@@ -492,10 +528,12 @@ export namespace Components {
         "step"?: string;
         /**
           * The type of control to display. The default type is text.
+          * @default 'text'
          */
         "type": TextFieldTypes;
         /**
           * The value of the input.
+          * @default ''
          */
         "value"?: string | number | null;
     }
@@ -510,10 +548,12 @@ export namespace Components {
     interface MyPopover {
         /**
           * If `true`, the popover will animate.
+          * @default true
          */
         "animated": boolean;
         /**
           * If `true`, the popover will be dismissed when the backdrop is clicked.
+          * @default true
          */
         "backdropDismiss": boolean;
         /**
@@ -540,6 +580,7 @@ export namespace Components {
         "event": any;
         /**
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
+          * @default true
          */
         "keyboardClose": boolean;
         /**
@@ -560,10 +601,12 @@ export namespace Components {
         "present": () => Promise<void>;
         /**
           * If `true`, a backdrop will be displayed behind the popover.
+          * @default true
          */
         "showBackdrop": boolean;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
+          * @default false
          */
         "translucent": boolean;
     }
@@ -578,6 +621,7 @@ export namespace Components {
         "color"?: string;
         /**
           * If `true`, the user cannot interact with the radio.
+          * @default false
          */
         "disabled": boolean;
         /**
@@ -586,6 +630,7 @@ export namespace Components {
         "justify"?: 'start' | 'end' | 'space-between';
         /**
           * Where to place the label relative to the radio. `"start"`: The label will appear to the left of the radio in LTR and to the right in RTL. `"end"`: The label will appear to the right of the radio in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the radio regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
+          * @default 'start'
          */
         "labelPlacement": 'start' | 'end' | 'fixed' | 'stacked';
         /**
@@ -594,6 +639,7 @@ export namespace Components {
         "mode"?: "ios" | "md";
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name": string;
         "setButtonTabindex": (value: number) => Promise<void>;
@@ -606,6 +652,7 @@ export namespace Components {
     interface MyRadioGroup {
         /**
           * If `true`, the radios can be deselected.
+          * @default false
          */
         "allowEmptySelection": boolean;
         /**
@@ -614,6 +661,7 @@ export namespace Components {
         "compareWith"?: string | Function | null;
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name": string;
         "setFocus": () => Promise<void>;
@@ -629,22 +677,27 @@ export namespace Components {
         "color"?: Color1;
         /**
           * How long, in milliseconds, to wait to trigger the `myChange` event after each change in the range value.
+          * @default 0
          */
         "debounce": number;
         /**
           * If `true`, the user cannot interact with the range.
+          * @default false
          */
         "disabled": boolean;
         /**
           * Show two knobs.
+          * @default false
          */
         "dualKnobs": boolean;
         /**
           * Maximum integer value of the range.
+          * @default 100
          */
         "max": number;
         /**
           * Minimum integer value of the range.
+          * @default 0
          */
         "min": number;
         /**
@@ -653,26 +706,32 @@ export namespace Components {
         "mode"?: "ios" | "md";
         /**
           * The name of the control, which is submitted with the form data.
+          * @default ''
          */
         "name": string;
         /**
           * If `true`, a pin with integer value is shown when the knob is pressed.
+          * @default false
          */
         "pin": boolean;
         /**
           * If `true`, the knob snaps to tick marks evenly spaced based on the step property value.
+          * @default false
          */
         "snaps": boolean;
         /**
           * Specifies the value granularity.
+          * @default 1
          */
         "step": number;
         /**
           * If `true`, tick marks are displayed based on the step value. Only applies when `snaps` is `true`.
+          * @default true
          */
         "ticks": boolean;
         /**
           * the value of the range.
+          * @default 0
          */
         "value": RangeValue;
     }
@@ -1013,6 +1072,7 @@ declare namespace LocalJSX {
     interface MyButton {
         /**
           * The type of button.
+          * @default 'button'
          */
         "buttonType"?: string;
         /**
@@ -1021,6 +1081,7 @@ declare namespace LocalJSX {
         "color"?: Color;
         /**
           * If `true`, the user cannot interact with the button.
+          * @default false
          */
         "disabled"?: boolean;
         /**
@@ -1065,6 +1126,7 @@ declare namespace LocalJSX {
         "size"?: 'small' | 'default' | 'large';
         /**
           * If `true`, activates a button with a heavier font weight.
+          * @default false
          */
         "strong"?: boolean;
         /**
@@ -1073,12 +1135,14 @@ declare namespace LocalJSX {
         "target"?: string | undefined;
         /**
           * The type of the button.
+          * @default 'button'
          */
         "type"?: 'submit' | 'reset' | 'button';
     }
     interface MyButtonScoped {
         /**
           * The type of button.
+          * @default 'button'
          */
         "buttonType"?: string;
         /**
@@ -1087,6 +1151,7 @@ declare namespace LocalJSX {
         "color"?: Color;
         /**
           * If `true`, the user cannot interact with the button.
+          * @default false
          */
         "disabled"?: boolean;
         /**
@@ -1131,6 +1196,7 @@ declare namespace LocalJSX {
         "size"?: 'small' | 'default' | 'large';
         /**
           * If `true`, activates a button with a heavier font weight.
+          * @default false
          */
         "strong"?: boolean;
         /**
@@ -1139,6 +1205,7 @@ declare namespace LocalJSX {
         "target"?: string | undefined;
         /**
           * The type of the button.
+          * @default 'button'
          */
         "type"?: 'submit' | 'reset' | 'button';
     }
@@ -1149,6 +1216,7 @@ declare namespace LocalJSX {
         "alignment"?: 'start' | 'center';
         /**
           * If `true`, the checkbox is selected.
+          * @default false
          */
         "checked"?: boolean;
         /**
@@ -1157,10 +1225,12 @@ declare namespace LocalJSX {
         "color"?: string;
         /**
           * If `true`, the user cannot interact with the checkbox.
+          * @default false
          */
         "disabled"?: boolean;
         /**
           * If `true`, the checkbox will visually appear as indeterminate.
+          * @default false
          */
         "indeterminate"?: boolean;
         /**
@@ -1169,6 +1239,7 @@ declare namespace LocalJSX {
         "justify"?: 'start' | 'end' | 'space-between';
         /**
           * Where to place the label relative to the checkbox. `"start"`: The label will appear to the left of the checkbox in LTR and to the right in RTL. `"end"`: The label will appear to the right of the checkbox in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the checkbox regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
+          * @default 'start'
          */
         "labelPlacement"?: 'start' | 'end' | 'fixed' | 'stacked';
         /**
@@ -1177,6 +1248,7 @@ declare namespace LocalJSX {
         "mode"?: "ios" | "md";
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name"?: string;
         /**
@@ -1193,6 +1265,7 @@ declare namespace LocalJSX {
         "onIonFocus"?: (event: MyCheckboxCustomEvent<void>) => void;
         /**
           * The value of the checkbox does not mean if it's checked or not, use the `checked` property for that.  The value of a checkbox is analogous to the value of an `<input type="checkbox">`, it's only used when the checkbox participates in a native `<form>`.
+          * @default 'on'
          */
         "value"?: any | null;
     }
@@ -1289,22 +1362,27 @@ declare namespace LocalJSX {
         "accept"?: string;
         /**
           * Indicates whether and how the text value should be automatically capitalized as it is entered/edited by the user.
+          * @default 'off'
          */
         "autocapitalize"?: string;
         /**
           * Indicates whether the value of the control can be automatically completed by the browser.
+          * @default 'off'
          */
         "autocomplete"?: AutocompleteTypes;
         /**
           * Whether auto correction should be enabled when the user is entering/editing the text value.
+          * @default 'off'
          */
         "autocorrect"?: 'on' | 'off';
         /**
           * This Boolean attribute lets you specify that a form control should have input focus when the page loads.
+          * @default false
          */
         "autofocus"?: boolean;
         /**
           * If `true`, a clear icon will appear in the input when there is a value. Clicking it clears the input.
+          * @default false
          */
         "clearInput"?: boolean;
         /**
@@ -1317,6 +1395,7 @@ declare namespace LocalJSX {
         "color"?: Color;
         /**
           * If `true`, the user cannot interact with the input.
+          * @default false
          */
         "disabled"?: boolean;
         /**
@@ -1353,6 +1432,7 @@ declare namespace LocalJSX {
         "multiple"?: boolean;
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name"?: string;
         /**
@@ -1381,10 +1461,12 @@ declare namespace LocalJSX {
         "placeholder"?: string | null;
         /**
           * If `true`, the user cannot modify the value.
+          * @default false
          */
         "readonly"?: boolean;
         /**
           * If `true`, the user must fill in a value before submitting a form.
+          * @default false
          */
         "required"?: boolean;
         /**
@@ -1393,6 +1475,7 @@ declare namespace LocalJSX {
         "size"?: number;
         /**
           * If `true`, the element will have its spelling and grammar checked.
+          * @default false
          */
         "spellcheck"?: boolean;
         /**
@@ -1401,10 +1484,12 @@ declare namespace LocalJSX {
         "step"?: string;
         /**
           * The type of control to display. The default type is text.
+          * @default 'text'
          */
         "type"?: TextFieldTypes;
         /**
           * The value of the input.
+          * @default ''
          */
         "value"?: string | number | null;
     }
@@ -1415,22 +1500,27 @@ declare namespace LocalJSX {
         "accept"?: string;
         /**
           * Indicates whether and how the text value should be automatically capitalized as it is entered/edited by the user.
+          * @default 'off'
          */
         "autocapitalize"?: string;
         /**
           * Indicates whether the value of the control can be automatically completed by the browser.
+          * @default 'off'
          */
         "autocomplete"?: AutocompleteTypes;
         /**
           * Whether auto correction should be enabled when the user is entering/editing the text value.
+          * @default 'off'
          */
         "autocorrect"?: 'on' | 'off';
         /**
           * This Boolean attribute lets you specify that a form control should have input focus when the page loads.
+          * @default false
          */
         "autofocus"?: boolean;
         /**
           * If `true`, a clear icon will appear in the input when there is a value. Clicking it clears the input.
+          * @default false
          */
         "clearInput"?: boolean;
         /**
@@ -1443,6 +1533,7 @@ declare namespace LocalJSX {
         "color"?: Color;
         /**
           * If `true`, the user cannot interact with the input.
+          * @default false
          */
         "disabled"?: boolean;
         /**
@@ -1479,6 +1570,7 @@ declare namespace LocalJSX {
         "multiple"?: boolean;
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name"?: string;
         /**
@@ -1507,10 +1599,12 @@ declare namespace LocalJSX {
         "placeholder"?: string | null;
         /**
           * If `true`, the user cannot modify the value.
+          * @default false
          */
         "readonly"?: boolean;
         /**
           * If `true`, the user must fill in a value before submitting a form.
+          * @default false
          */
         "required"?: boolean;
         /**
@@ -1519,6 +1613,7 @@ declare namespace LocalJSX {
         "size"?: number;
         /**
           * If `true`, the element will have its spelling and grammar checked.
+          * @default false
          */
         "spellcheck"?: boolean;
         /**
@@ -1527,10 +1622,12 @@ declare namespace LocalJSX {
         "step"?: string;
         /**
           * The type of control to display. The default type is text.
+          * @default 'text'
          */
         "type"?: TextFieldTypes;
         /**
           * The value of the input.
+          * @default ''
          */
         "value"?: string | number | null;
     }
@@ -1545,10 +1642,12 @@ declare namespace LocalJSX {
     interface MyPopover {
         /**
           * If `true`, the popover will animate.
+          * @default true
          */
         "animated"?: boolean;
         /**
           * If `true`, the popover will be dismissed when the backdrop is clicked.
+          * @default true
          */
         "backdropDismiss"?: boolean;
         /**
@@ -1569,6 +1668,7 @@ declare namespace LocalJSX {
         "event"?: any;
         /**
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
+          * @default true
          */
         "keyboardClose"?: boolean;
         /**
@@ -1593,10 +1693,12 @@ declare namespace LocalJSX {
         "onMyPopoverWillPresent"?: (event: MyPopoverCustomEvent<void>) => void;
         /**
           * If `true`, a backdrop will be displayed behind the popover.
+          * @default true
          */
         "showBackdrop"?: boolean;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
+          * @default false
          */
         "translucent"?: boolean;
     }
@@ -1611,6 +1713,7 @@ declare namespace LocalJSX {
         "color"?: string;
         /**
           * If `true`, the user cannot interact with the radio.
+          * @default false
          */
         "disabled"?: boolean;
         /**
@@ -1619,6 +1722,7 @@ declare namespace LocalJSX {
         "justify"?: 'start' | 'end' | 'space-between';
         /**
           * Where to place the label relative to the radio. `"start"`: The label will appear to the left of the radio in LTR and to the right in RTL. `"end"`: The label will appear to the right of the radio in LTR and to the left in RTL. `"fixed"`: The label has the same behavior as `"start"` except it also has a fixed width. Long text will be truncated with ellipses ("..."). `"stacked"`: The label will appear above the radio regardless of the direction. The alignment of the label can be controlled with the `alignment` property.
+          * @default 'start'
          */
         "labelPlacement"?: 'start' | 'end' | 'fixed' | 'stacked';
         /**
@@ -1627,6 +1731,7 @@ declare namespace LocalJSX {
         "mode"?: "ios" | "md";
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name"?: string;
         /**
@@ -1645,6 +1750,7 @@ declare namespace LocalJSX {
     interface MyRadioGroup {
         /**
           * If `true`, the radios can be deselected.
+          * @default false
          */
         "allowEmptySelection"?: boolean;
         /**
@@ -1653,6 +1759,7 @@ declare namespace LocalJSX {
         "compareWith"?: string | Function | null;
         /**
           * The name of the control, which is submitted with the form data.
+          * @default this.inputId
          */
         "name"?: string;
         /**
@@ -1675,22 +1782,27 @@ declare namespace LocalJSX {
         "color"?: Color1;
         /**
           * How long, in milliseconds, to wait to trigger the `myChange` event after each change in the range value.
+          * @default 0
          */
         "debounce"?: number;
         /**
           * If `true`, the user cannot interact with the range.
+          * @default false
          */
         "disabled"?: boolean;
         /**
           * Show two knobs.
+          * @default false
          */
         "dualKnobs"?: boolean;
         /**
           * Maximum integer value of the range.
+          * @default 100
          */
         "max"?: number;
         /**
           * Minimum integer value of the range.
+          * @default 0
          */
         "min"?: number;
         /**
@@ -1699,6 +1811,7 @@ declare namespace LocalJSX {
         "mode"?: "ios" | "md";
         /**
           * The name of the control, which is submitted with the form data.
+          * @default ''
          */
         "name"?: string;
         /**
@@ -1719,22 +1832,27 @@ declare namespace LocalJSX {
         "onMyStyle"?: (event: MyRangeCustomEvent<StyleEventDetail>) => void;
         /**
           * If `true`, a pin with integer value is shown when the knob is pressed.
+          * @default false
          */
         "pin"?: boolean;
         /**
           * If `true`, the knob snaps to tick marks evenly spaced based on the step property value.
+          * @default false
          */
         "snaps"?: boolean;
         /**
           * Specifies the value granularity.
+          * @default 1
          */
         "step"?: number;
         /**
           * If `true`, tick marks are displayed based on the step value. Only applies when `snaps` is `true`.
+          * @default true
          */
         "ticks"?: boolean;
         /**
           * the value of the range.
+          * @default 0
          */
         "value"?: RangeValue;
     }

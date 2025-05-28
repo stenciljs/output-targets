@@ -1,0 +1,424 @@
+// Snapshot v1
+
+exports[`complex-props-scoped > should correctly server side render complex props 1`] = `
+"
+<div id="complex-props-scoped">
+  <div style="display:contents">
+    <style>
+    </style>
+    <my-complex-props-scoped
+      baz="[object Map]"
+      class="hydrated sc-my-complex-props-scoped-h"
+      foo="[object Object]"
+      grault="Infinity"
+      quux="[object Set]"
+      s-id="x"
+    >
+      <ul
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.foo.bar: baz
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.foo.loo: 1, 2, 3
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.foo.qux: symbol
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.baz.get('foo'): symbol
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.quux.has('foo'): true
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.grault: true
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.waldo: true
+        </li>
+      </ul>
+    </my-complex-props-scoped>
+  </div>
+</div>
+"
+`;
+
+exports[`complex-props-shadow > should correctly server side render complex props 1`] = `
+"
+<div id="complex-props-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
+  <div style="display:contents">
+    <my-complex-props
+      baz="[object Map]"
+      class="hydrated sc-my-complex-props-h"
+      foo="[object Object]"
+      grault="Infinity"
+      quux="[object Set]"
+      s-id="x"
+    >
+      <template shadowrootmode="open">
+        <ul
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.foo.bar: baz
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.foo.loo: 1, 2, 3
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.foo.qux: symbol
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.baz.get('foo'): symbol
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.quux.has('foo'): true
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.grault: true
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.waldo: true
+          </li>
+        </ul>
+      </template>
+    </my-complex-props>
+  </div>
+</div>
+"
+`;
+
+exports[`nested-shadow > should correctly server side render 1`] = `
+"
+<div id="nested-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
+  <div style="display:contents">
+    <my-list
+      class="hydrated sc-my-list-h"
+      s-id="x"
+    >
+      <template shadowrootmode="open">
+        <ul
+          c-id="x"
+          class="sc-my-list"
+        >
+          <slot
+            c-id="x"
+            class="sc-my-list"
+          >
+          </slot>
+        </ul>
+      </template>
+      <div style="display:contents">
+        <my-list-item
+          class="hydrated sc-my-list-item-h"
+          s-id="x"
+        >
+          <template shadowrootmode="open">
+            <li
+              c-id="x"
+              class="sc-my-list-item"
+            >
+              <slot
+                c-id="x"
+                class="sc-my-list-item"
+              >
+              </slot>
+            </li>
+          </template>
+          Foo Shadow
+        </my-list-item>
+      </div>
+      <div style="display:contents">
+        <my-list-item
+          class="hydrated sc-my-list-item-h"
+          s-id="x"
+        >
+          <template shadowrootmode="open">
+            <li
+              c-id="x"
+              class="sc-my-list-item"
+            >
+              <slot
+                c-id="x"
+                class="sc-my-list-item"
+              >
+              </slot>
+            </li>
+          </template>
+          Bar Shadow
+        </my-list-item>
+      </div>
+      <div style="display:contents">
+        <my-list-item
+          class="hydrated sc-my-list-item-h"
+          s-id="x"
+        >
+          <template shadowrootmode="open">
+            <li
+              c-id="x"
+              class="sc-my-list-item"
+            >
+              <slot
+                c-id="x"
+                class="sc-my-list-item"
+              >
+              </slot>
+            </li>
+          </template>
+          Loo Shadow
+        </my-list-item>
+      </div>
+    </my-list>
+  </div>
+</div>
+"
+`;
+
+exports[`single-children-scoped > should correctly server side render 1`] = `
+"
+<div id="single-children-scoped">
+  <div style="display:contents">
+    <style>
+      .sc-my-button-scoped-h{display:block;background-color:green;color:white;font-weight:bold;border-radius:5px;cursor:pointer}slot-fb{display:contents}slot-fb[hidden]{display:none}
+    </style>
+    <my-button-scoped
+      class="button button-outline hydrated my-activatable my-focusable sc-my-button-scoped-h"
+      fill="outline"
+      s-id="x"
+    >
+      <button
+        c-id="x"
+        class="button-native sc-my-button-scoped"
+        type="button"
+      >
+        <span
+          c-id="x"
+          class="button-inner sc-my-button-scoped sc-my-button-scoped-s"
+        >
+          Test
+        </span>
+      </button>
+    </my-button-scoped>
+  </div>
+</div>
+"
+`;
+
+exports[`single-children-shadow > should correctly server side render 1`] = `
+"
+<div id="single-children-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
+  <div style="display:contents">
+    <my-button
+      class="button button-outline hydrated my-activatable my-focusable sc-my-button-h"
+      fill="outline"
+      s-id="x"
+    >
+      <template shadowrootmode="open">
+        <style>
+          :host{display:block;background-color:green;color:white;font-weight:bold;border-radius:5px;cursor:pointer}
+        </style>
+        <button
+          c-id="x"
+          class="button-native sc-my-button"
+          type="button"
+        >
+          <span
+            c-id="x"
+            class="button-inner sc-my-button"
+          >
+            <slot
+              c-id="x"
+              class="sc-my-button"
+              name="icon-only"
+            >
+            </slot>
+            <slot
+              c-id="x"
+              class="sc-my-button"
+              name="start"
+            >
+            </slot>
+            <slot
+              c-id="x"
+              class="sc-my-button"
+            >
+            </slot>
+            <slot
+              c-id="x"
+              class="sc-my-button"
+              name="end"
+            >
+            </slot>
+          </span>
+        </button>
+      </template>
+      Test
+    </my-button>
+  </div>
+</div>
+"
+`;
+
+exports[`single-no-child-scoped > should correctly server side render 1`] = `
+"
+<div id="single-no-child-scoped">
+  <div style="display:contents">
+    <style>
+      .sc-my-component-scoped-h{display:block;color:green}
+    </style>
+    <my-component-scoped
+      class="hydrated sc-my-component-scoped-h"
+      first="John"
+      last="Doe"
+      middle-name="William"
+      s-id="x"
+      middlename="William"
+    >
+      <div
+        c-id="x"
+        class="sc-my-component-scoped"
+      >
+        Hello, World! I'm John William Doe
+      </div>
+    </my-component-scoped>
+  </div>
+</div>
+"
+`;
+
+exports[`single-no-child-shadow > should correctly server side render 1`] = `
+"
+<div id="single-no-child-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
+  <div style="display:contents">
+    <my-component
+      class="hydrated sc-my-component-h"
+      first="John"
+      last="Doe"
+      middle-name="William"
+      s-id="x"
+      middlename="William"
+    >
+      <template shadowrootmode="open">
+        <style>
+          :host{display:block;color:green}
+        </style>
+        <div
+          c-id="x"
+          class="sc-my-component"
+        >
+          Hello, World! I'm John William Doe
+        </div>
+      </template>
+    </my-component>
+  </div>
+</div>
+"
+`;
+
+exports[`transform-scoped-to-shadow > should server side render component as scoped component 1`] = `
+"
+<div id="transform-scoped-to-shadow">
+  <div style="display:contents">
+    <style>
+      /*!@:host button*/.sc-my-counter-h button.sc-my-counter{padding:5px 10px;font-size:20px;margin:0 10px}/*!@:host span*/.sc-my-counter-h span.sc-my-counter{font-size:20px;margin:0 10px}
+    </style>
+    <my-counter
+      class="hydrated sc-my-counter-h"
+      s-id="x"
+      start-value="42"
+      startvalue="42"
+    >
+      <div
+        c-id="x"
+        class="sc-my-counter"
+      >
+        <button
+          c-id="x"
+          class="sc-my-counter"
+        >
+          -
+        </button>
+        <span
+          c-id="x"
+          class="sc-my-counter"
+        >
+          42
+        </span>
+        <button
+          c-id="x"
+          class="sc-my-counter"
+        >
+          +
+        </button>
+      </div>
+    </my-counter>
+  </div>
+</div>
+"
+`;

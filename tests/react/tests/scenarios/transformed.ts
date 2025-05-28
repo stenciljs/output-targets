@@ -13,41 +13,7 @@ export const testScenarios: Record<TransformedComponents, () => void> = {
       }
 
       const html = await fetchSourceCode('transform-scoped-to-shadow')
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <div id="transform-scoped-to-shadow">
-          <my-counter
-            class="hydrated sc-my-counter-h"
-            s-id="x"
-            start-value="42"
-          >
-            <div
-              c-id="x"
-              class="sc-my-counter"
-            >
-              <button
-                c-id="x"
-                class="sc-my-counter"
-              >
-                -
-              </button>
-              <span
-                c-id="x"
-                class="sc-my-counter"
-              >
-                42
-              </span>
-              <button
-                c-id="x"
-                class="sc-my-counter"
-              >
-                +
-              </button>
-            </div>
-          </my-counter>
-        </div>
-        "
-      `)
+      expect(html).toMatchSnapshot()
     })
 
     it('should transform scoped component to shadow component in runtime', async () => {

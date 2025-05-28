@@ -7,8 +7,8 @@ import { PureReactComponent } from '../PureReactComponent/PureReactComponent';
 export const ToggleableContent = () => {
   return (
     <MyToggle>
-      <PureReactComponent />
-      <List />
+      <PureReactComponent key={1} />
+      <List key={2} />
     </MyToggle>
   );
 };
