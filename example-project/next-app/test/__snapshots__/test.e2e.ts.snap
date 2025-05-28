@@ -1,5 +1,144 @@
 // Snapshot v1
 
+exports[`complex-props-scoped > should correctly server side render complex props 1`] = `
+"
+<div id="complex-props-scoped">
+  <div style="display:contents">
+    <style>
+    </style>
+    <my-complex-props-scoped
+      baz="[object Map]"
+      class="hydrated sc-my-complex-props-scoped-h"
+      foo="[object Object]"
+      grault="Infinity"
+      quux="[object Set]"
+      s-id="x"
+    >
+      <ul
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.foo.bar: baz
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.foo.loo: 1, 2, 3
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.foo.qux: symbol
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.baz.get('foo'): symbol
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.quux.has('foo'): true
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.grault: true
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props-scoped"
+        >
+          this.waldo: true
+        </li>
+      </ul>
+    </my-complex-props-scoped>
+  </div>
+</div>
+"
+`;
+
+exports[`complex-props-shadow > should correctly server side render complex props 1`] = `
+"
+<div id="complex-props-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
+  <div style="display:contents">
+    <my-complex-props
+      baz="[object Map]"
+      class="hydrated sc-my-complex-props-h"
+      foo="[object Object]"
+      grault="Infinity"
+      quux="[object Set]"
+      s-id="x"
+    >
+      <template shadowrootmode="open">
+        <ul
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.foo.bar: baz
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.foo.loo: 1, 2, 3
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.foo.qux: symbol
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.baz.get('foo'): symbol
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.quux.has('foo'): true
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.grault: true
+          </li>
+          <li
+            c-id="x"
+            class="sc-my-complex-props"
+          >
+            this.waldo: true
+          </li>
+        </ul>
+      </template>
+    </my-complex-props>
+  </div>
+</div>
+"
+`;
+
 exports[`nested-shadow > should correctly server side render 1`] = `
 "
 <div id="nested-shadow">
