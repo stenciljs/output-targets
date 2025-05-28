@@ -47,8 +47,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/angular
       '@stencil/core':
-        specifier: 4.31.0-dev.1747849789.eb79fd5
-        version: 4.31.0-dev.1747849789.eb79fd5
+        specifier: 4.32.0
+        version: 4.32.0
       '@stencil/react-output-target':
         specifier: workspace:*
         version: link:../../packages/react
@@ -693,8 +693,8 @@ importers:
         specifier: 8.2.14
         version: 8.2.14(@angular/common@16.2.12(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.13.3))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.13.3))(@angular/platform-browser@16.2.12(@angular/common@16.2.12(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.13.3))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.13.3)))(rxjs@7.8.2)
       '@stencil/core':
-        specifier: 4.29.0
-        version: 4.29.0
+        specifier: 4.32.0
+        version: 4.32.0
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.76
@@ -736,8 +736,8 @@ importers:
         version: 22.0.0
     devDependencies:
       '@stencil/core':
-        specifier: 4.29.0
-        version: 4.29.0
+        specifier: 4.32.0
+        version: 4.32.0
       '@types/node':
         specifier: ^20.14.12
         version: 20.17.19
@@ -819,8 +819,8 @@ importers:
         specifier: ^12.1.0
         version: 12.1.2(rollup@4.34.8)(tslib@2.8.1)(typescript@5.7.2)
       '@stencil/core':
-        specifier: ^4.27.2
-        version: 4.28.1
+        specifier: ^4.32.0
+        version: 4.32.0
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.76
@@ -4208,18 +4208,8 @@ packages:
   '@sinonjs/fake-timers@10.3.0':
     resolution: {integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==}
 
-  '@stencil/core@4.28.1':
-    resolution: {integrity: sha512-RXZjsK/YcKBvfUt8iosV/ilAulw1G0ExOM+GSaNN1x178MLbPDewMm4Y3tUF1yed9DvHLJzehiFJUKoIL6PymA==}
-    engines: {node: '>=16.0.0', npm: '>=7.10.0'}
-    hasBin: true
-
-  '@stencil/core@4.29.0':
-    resolution: {integrity: sha512-A9jxUKotmEQye1bdAlixoEziVsINJBMKhx406C+VCaH+yzQmQekC9Wa8K82I8D0mdMaq+OrG68v1bqiDI0WAxA==}
-    engines: {node: '>=16.0.0', npm: '>=7.10.0'}
-    hasBin: true
-
-  '@stencil/core@4.31.0-dev.1747849789.eb79fd5':
-    resolution: {integrity: sha512-AfvP4pou5q69dHrqTC+2Al6MeBUTDH5P/GPSo/jx4M0NXIiMt5TAoUC12u5yerghpmErdQys/pRM749OMFI5eA==}
+  '@stencil/core@4.32.0':
+    resolution: {integrity: sha512-2sT6UqEzZCmSu4WcvVwWIBzQHOPudg6PNIl+DOymj1n5b/W/x6/lRCfmaI/hh5CW4eaHWIgvXgrLaZ5y7dXKUA==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
@@ -17121,29 +17111,7 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@stencil/core@4.28.1':
-    optionalDependencies:
-      '@rollup/rollup-darwin-arm64': 4.34.9
-      '@rollup/rollup-darwin-x64': 4.34.9
-      '@rollup/rollup-linux-arm64-gnu': 4.34.9
-      '@rollup/rollup-linux-arm64-musl': 4.34.9
-      '@rollup/rollup-linux-x64-gnu': 4.34.9
-      '@rollup/rollup-linux-x64-musl': 4.34.9
-      '@rollup/rollup-win32-arm64-msvc': 4.34.9
-      '@rollup/rollup-win32-x64-msvc': 4.34.9
-
-  '@stencil/core@4.29.0':
-    optionalDependencies:
-      '@rollup/rollup-darwin-arm64': 4.34.9
-      '@rollup/rollup-darwin-x64': 4.34.9
-      '@rollup/rollup-linux-arm64-gnu': 4.34.9
-      '@rollup/rollup-linux-arm64-musl': 4.34.9
-      '@rollup/rollup-linux-x64-gnu': 4.34.9
-      '@rollup/rollup-linux-x64-musl': 4.34.9
-      '@rollup/rollup-win32-arm64-msvc': 4.34.9
-      '@rollup/rollup-win32-x64-msvc': 4.34.9
-
-  '@stencil/core@4.31.0-dev.1747849789.eb79fd5':
+  '@stencil/core@4.32.0':
     optionalDependencies:
       '@rollup/rollup-darwin-arm64': 4.34.9
       '@rollup/rollup-darwin-x64': 4.34.9
