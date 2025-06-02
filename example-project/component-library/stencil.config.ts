@@ -1,8 +1,7 @@
-import { Config } from '@stencil/core';
 import { angularOutputTarget, ValueAccessorConfig } from '@stencil/angular-output-target';
+import { Config } from '@stencil/core';
 import { reactOutputTarget } from '@stencil/react-output-target';
-import { vueOutputTarget, ComponentModelConfig } from '@stencil/vue-output-target';
-
+import { ComponentModelConfig, vueOutputTarget } from '@stencil/vue-output-target';
 
 const angularValueAccessorBindings: ValueAccessorConfig[] = [
   {
@@ -67,7 +66,13 @@ export const config: Config = {
     reactOutputTarget({
       outDir: '../component-library-react/src',
       hydrateModule: 'component-library/hydrate',
-      serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' }
+      serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' },
+    }),
+    reactOutputTarget({
+      esModules: true,
+      outDir: '../component-library-react-esm/src',
+      hydrateModule: 'component-library/hydrate',
+      serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' },
     }),
     vueOutputTarget({
       includeImportCustomElements: true,
@@ -81,7 +86,7 @@ export const config: Config = {
     {
       type: 'dist-custom-elements',
       externalRuntime: false,
-      dir: 'components'
+      dir: 'components',
     },
     {
       type: 'dist',

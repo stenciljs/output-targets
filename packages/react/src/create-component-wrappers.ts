@@ -1,6 +1,7 @@
-import path from 'node:path';
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
+import path from 'node:path';
 import { Project, SourceFile } from 'ts-morph';
+import { createEsModulesComponentsFile } from './create-es-modules-components-file.js';
 import { createStencilReactComponents } from './create-stencil-react-components.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
 
@@ -98,6 +99,7 @@ export const createComponentWrappers = async ({
     for (const component of filteredComponents) {
       createComponentFile([component], component.tagName);
     }
+    await createEsModulesComponentsFile({ components: filteredComponents, project, outDir });
   } else {
     createComponentFile(filteredComponents);
   }
