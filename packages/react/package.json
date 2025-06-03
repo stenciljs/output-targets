@@ -1,6 +1,6 @@
 {
   "name": "@stencil/react-output-target",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "React output target for @stencil/core components.",
   "author": "Ionic Team",
   "homepage": "https://stenciljs.com/",
