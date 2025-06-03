@@ -37,5 +37,5 @@ export const createEsModulesComponentsFile = async ({
   sourceFile.formatText();
   await sourceFile.save();
 
-  return sourceFile.getFullText();
+  return sourceFile;
 };
