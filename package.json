@@ -13,7 +13,6 @@
     "build.example.angular": "pnpm --filter component-library-angular run build",
     "build.example.core": "pnpm --filter component-library run build",
     "build.example.react": "pnpm --filter component-library-react run build",
-    "build.example.react-esm": "pnpm --filter component-library-react-esm run build",
     "build.example.vue": "pnpm --filter component-library-vue run build",
     "build.example.vue.app": "pnpm --filter vue-app run build",
     "build.example.nuxt": "pnpm --filter nuxt-app run build",

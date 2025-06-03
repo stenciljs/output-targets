@@ -1,5 +1,5 @@
-import type { ComponentCompilerMeta } from '@stencil/core/internal';
 import path from 'node:path';
+import type { ComponentCompilerMeta } from '@stencil/core/internal';
 import { Project, SourceFile } from 'ts-morph';
 import { createEsModulesComponentsFile } from './create-es-modules-components-file.js';
 import { createStencilReactComponents } from './create-stencil-react-components.js';
