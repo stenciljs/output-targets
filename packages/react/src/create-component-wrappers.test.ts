@@ -49,7 +49,7 @@ export type MyComponentEvents = NonNullable<unknown>;
 export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
-    // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
+    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComponentEvents,
     defineCustomElement: defineMyComponent
@@ -103,7 +103,7 @@ export type MyComponentEvents = NonNullable<unknown>;
 export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
-    // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
+    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComponentEvents,
     defineCustomElement: defineMyComponent
@@ -216,7 +216,7 @@ export type MyComponentEvents = { onMyEvent: EventName<MyComponentCustomEvent<IM
 export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
-    // @ts-ignore - React type of Stencil Output Target may differ from the React version used in the Nuxt.js project, this can be ignored.
+    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: { onMyEvent: 'myEvent' } as MyComponentEvents,
     defineCustomElement: defineMyComponent
