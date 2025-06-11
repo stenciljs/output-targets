@@ -7,7 +7,6 @@ import {
   onMounted,
   PropType,
   ref,
-  Ref,
   withDirectives,
 } from 'vue';
 
@@ -42,13 +41,13 @@ const getComponentClasses = (classes: unknown) => {
 };
 
 const getElementClasses = (
-  ref: Ref<HTMLElement | undefined>,
+  el: HTMLElement | undefined,
   componentClasses: Set<string>,
   defaultClasses: string[] = []
 ) => {
-  return [...Array.from(ref.value?.classList || []), ...defaultClasses].filter(
-    (c: string, i, self) => !componentClasses.has(c) && self.indexOf(c) === i
-  );
+  const combinedClasses = new Set([...Array.from(el?.classList || []), ...Array.from(componentClasses), ...defaultClasses]);
+
+  return Array.from(combinedClasses);
 };
 
 /**
@@ -151,6 +150,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
       const currentInstance = getCurrentInstance();
       const hasRouter = currentInstance?.appContext?.provides[NAV_MANAGER];
       const navManager: NavManager | undefined = hasRouter ? inject(NAV_MANAGER) : undefined;
+      const elBeforeHydrate = <HTMLElement>currentInstance?.vnode.el
+
       const handleRouterLink = (ev: Event) => {
         const { routerLink } = props;
         if (routerLink === EMPTY_PROP) return;
@@ -200,7 +201,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
 
         const propsToAdd: Record<string, unknown> = {
           ref: containerRef,
-          class: getElementClasses(containerRef, classes),
+          class: getElementClasses(elBeforeHydrate, classes),
           onClick: handleClick,
         };
 
