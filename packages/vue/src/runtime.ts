@@ -45,7 +45,11 @@ const getElementClasses = (
   componentClasses: Set<string>,
   defaultClasses: string[] = []
 ) => {
-  const combinedClasses = new Set([...Array.from(el?.classList || []), ...Array.from(componentClasses), ...defaultClasses]);
+  const combinedClasses = new Set([
+    ...Array.from(el?.classList || []),
+    ...Array.from(componentClasses),
+    ...defaultClasses,
+  ]);
 
   return Array.from(combinedClasses);
 };
@@ -150,7 +154,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
       const currentInstance = getCurrentInstance();
       const hasRouter = currentInstance?.appContext?.provides[NAV_MANAGER];
       const navManager: NavManager | undefined = hasRouter ? inject(NAV_MANAGER) : undefined;
-      const elBeforeHydrate = <HTMLElement>currentInstance?.vnode.el
+      const elBeforeHydrate = <HTMLElement>currentInstance?.vnode.el;
 
       const handleRouterLink = (ev: Event) => {
         const { routerLink } = props;
