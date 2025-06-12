@@ -3,14 +3,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ComponentLibraryModule } from '../src/index';
+import { MyRadio, MyRadioGroup, SelectValueAccessor } from '../src/public-api';
+
 
 @Component({
-  template: `<my-radio-group name="" [(ngModel)]="selectedName">
-    <label><my-radio slot="start" value="biff"></my-radio></label>
-    <label><my-radio slot="start" value="griff"></my-radio></label>
-    <label><my-radio slot="start" value="buford"></my-radio></label>
+  template: ` <my-radio-group name="" [(ngModel)]="selectedName">
+    <label>
+      <my-radio slot="start" value="biff"></my-radio>
+    </label>
+    <label>
+      <my-radio slot="start" value="griff"></my-radio>
+    </label>
+    <label>
+      <my-radio slot="start" value="buford"></my-radio>
+    </label>
   </my-radio-group>`,
+  imports: [MyRadioGroup, MyRadio, SelectValueAccessor, FormsModule],
 })
 class TestRadioValueAccessorComponent {
   selectedName: 'biff' | 'griff' | 'buford' = 'biff';
@@ -22,8 +30,7 @@ describe('MyRadioGroup', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, ComponentLibraryModule],
-      declarations: [TestRadioValueAccessorComponent],
+      imports: [FormsModule, TestRadioValueAccessorComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestRadioValueAccessorComponent);

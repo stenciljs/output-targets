@@ -3,10 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ComponentLibraryModule } from '../src/index';
+import { MyRange, SelectValueAccessor } from '../src/public-api';
+
 
 @Component({
-  template: `<my-range min="0" max="100" type="text" [(ngModel)]="testText"></my-range>`,
+  template: ` <my-range min="0" max="100" type="text" [(ngModel)]="testText"></my-range>`,
+  imports: [MyRange, SelectValueAccessor, FormsModule],
 })
 class TestSelectValueAccessorComponent {
   testText: string = '';
@@ -18,8 +20,7 @@ describe('MyRange', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, ComponentLibraryModule],
-      declarations: [TestSelectValueAccessorComponent],
+      imports: [FormsModule, TestSelectValueAccessorComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestSelectValueAccessorComponent);

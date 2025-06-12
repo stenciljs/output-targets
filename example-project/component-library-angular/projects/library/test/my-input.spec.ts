@@ -2,10 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, Component } from '@angular/core';
 import { FormsModule, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ComponentLibraryModule } from '../src/index';
+import { MyInput, TextValueAccessor } from '../src/public-api';
 
 @Component({
-  template: `<my-input type="text" [(ngModel)]="testText" (myInput)="onInput($event.target.value)"></my-input>`,
+  template: ` <my-input type="text" [(ngModel)]="testText" (myInput)="onInput($event.target.value)"></my-input>`,
+  imports: [MyInput, TextValueAccessor, FormsModule],
 })
 class TestTextValueAccessorComponent {
   testText: string = '';
@@ -19,8 +20,7 @@ describe('MyInput - Text Value', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, ComponentLibraryModule],
-      declarations: [TestTextValueAccessorComponent],
+      imports: [FormsModule, TestTextValueAccessorComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestTextValueAccessorComponent);
@@ -47,7 +47,8 @@ describe('MyInput - Text Value', () => {
 });
 
 @Component({
-  template: `<my-input type="number" [(ngModel)]="testNumber"></my-input>`,
+  template: ` <my-input type="number" [(ngModel)]="testNumber"></my-input>`,
+  imports: [FormsModule, MyInput],
 })
 class TestNumberValueAccessorComponent {
   testNumber: number = 0;
@@ -59,8 +60,7 @@ describe('MyInput - Number Value', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, ComponentLibraryModule],
-      declarations: [TestNumberValueAccessorComponent],
+      imports: [FormsModule, TestNumberValueAccessorComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestNumberValueAccessorComponent);
@@ -77,11 +77,13 @@ describe('MyInput - Number Value', () => {
 });
 
 @Component({
-  template: `<form [formGroup]="form">
+  template: ` <form [formGroup]="form">
     <my-input type="text" formControlName="test"></my-input>
   </form>`,
+  imports: [MyInput, ReactiveFormsModule, TextValueAccessor],
 })
 class TestDisabledValueAccessorComponent {
+  
   form = this.formBuilder.group({
     // disabled state will be managed for us by angular
     // and now we can later call `this.form.controls.test.enable()`
@@ -97,8 +99,7 @@ describe('MyInput - Disabled state', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, FormsModule, ComponentLibraryModule],
-      declarations: [TestDisabledValueAccessorComponent],
+      imports: [ReactiveFormsModule, FormsModule, TestDisabledValueAccessorComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestDisabledValueAccessorComponent);

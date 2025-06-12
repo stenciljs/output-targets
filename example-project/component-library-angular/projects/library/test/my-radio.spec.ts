@@ -3,10 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ComponentLibraryModule } from '../src/index';
+import { MyRadio, RadioValueAccessor } from '../src/public-api';
+
 
 @Component({
-  template: `<my-radio [(ngModel)]="isChecked"></my-radio>`,
+  template: ` <my-radio [(ngModel)]="isChecked"></my-radio>`,
+  imports: [MyRadio, RadioValueAccessor, FormsModule],
 })
 class TestRadioValueAccessorComponent {
   isChecked: boolean = false;
@@ -18,8 +20,7 @@ describe('MyRadio', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, ComponentLibraryModule],
-      declarations: [TestRadioValueAccessorComponent],
+      imports: [FormsModule, TestRadioValueAccessorComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestRadioValueAccessorComponent);
