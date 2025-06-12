@@ -5,7 +5,7 @@ import { ValueAccessor } from './value-accessor';
 
 @Directive({
   /* tslint:disable-next-line:directive-selector */
-  selector: 'my-input[type=text]',
+  selector: 'my-input[type=text],my-input[type=email],my-input[type=password]',
   host: {
     '(myChange)': 'handleChangeEvent($event.target?.["value"])'
   },

@@ -1,0 +1,18 @@
+<form [formGroup]="formGroup">
+  <div>
+    <label>Firstname</label>
+    <my-input formControlName="firstname" type="text"></my-input>
+  </div>
+
+  <div>
+    <label>Lastname</label>
+    <my-input formControlName="lastname" type="text"></my-input>
+  </div>
+
+  <div>
+    <label>Formcontrol Disabled</label>
+    <my-input formControlName="disabled" type="text"></my-input>
+  </div>
+</form>
+
+{{ formGroup.getRawValue() | json }}

@@ -6,7 +6,7 @@ import { vueOutputTarget, ComponentModelConfig } from '@stencil/vue-output-targe
 
 const angularValueAccessorBindings: ValueAccessorConfig[] = [
   {
-    elementSelectors: ['my-input[type=text]'],
+    elementSelectors: ['my-input[type=text],my-input[type=email],my-input[type=password]'],
     event: 'myChange',
     targetAttr: 'value',
     type: 'text',
