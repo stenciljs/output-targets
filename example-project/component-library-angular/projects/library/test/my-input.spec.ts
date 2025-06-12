@@ -1,8 +1,8 @@
+import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement, Component } from '@angular/core';
-import { FormsModule, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { MyInput, TextValueAccessor } from '../src/public-api';
+import { MyInput, NumericValueAccessor, TextValueAccessor } from '../src/public-api';
 
 @Component({
   template: ` <my-input type="text" [(ngModel)]="testText" (myInput)="onInput($event.target.value)"></my-input>`,
@@ -48,7 +48,7 @@ describe('MyInput - Text Value', () => {
 
 @Component({
   template: ` <my-input type="number" [(ngModel)]="testNumber"></my-input>`,
-  imports: [FormsModule, MyInput],
+  imports: [FormsModule, MyInput, NumericValueAccessor],
 })
 class TestNumberValueAccessorComponent {
   testNumber: number = 0;
@@ -83,14 +83,13 @@ describe('MyInput - Number Value', () => {
   imports: [MyInput, ReactiveFormsModule, TextValueAccessor],
 })
 class TestDisabledValueAccessorComponent {
-  
+  private readonly formBuilder = TestBed.inject(FormBuilder);
+
   form = this.formBuilder.group({
     // disabled state will be managed for us by angular
     // and now we can later call `this.form.controls.test.enable()`
     test: this.formBuilder.control({ value: 'test', disabled: true }),
   });
-
-  constructor(private formBuilder: FormBuilder) {}
 }
 
 describe('MyInput - Disabled state', () => {
@@ -108,6 +107,7 @@ describe('MyInput - Disabled state', () => {
   });
 
   it('should support setting disabled state via the ValueAccessor', () => {
+    console.log(myInputEl.nativeElement);
     expect(myInputEl.nativeElement.disabled).toBe(true);
   });
 });
