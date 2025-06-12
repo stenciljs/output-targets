@@ -138,7 +138,7 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
-  example-project/component-library-angular/projects/library/dist/library:
+  example-project/component-library-angular/projects/library/dist:
     dependencies:
       '@angular/common':
         specifier: ^20.0.0
@@ -148,7 +148,7 @@ importers:
         version: 20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)
       component-library:
         specifier: workspace:*
-        version: link:../../../../../component-library
+        version: link:../../../../component-library
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -421,7 +421,7 @@ importers:
         version: 20.0.3(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.3(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       component-library-angular:
         specifier: workspace:^
-        version: link:../component-library-angular/projects/library/dist/library
+        version: link:../component-library-angular/projects/library/dist
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
