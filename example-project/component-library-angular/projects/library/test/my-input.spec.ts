@@ -11,7 +11,7 @@ import { MyInput, NumericValueAccessor, TextValueAccessor } from '../src/public-
 class TestTextValueAccessorComponent {
   testText: string = '';
 
-  onInput() {}
+  onInput(value: any) {}
 }
 
 describe('MyInput - Text Value', () => {
