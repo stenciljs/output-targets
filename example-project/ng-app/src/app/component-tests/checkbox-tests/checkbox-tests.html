@@ -1,0 +1,13 @@
+<h4>Checkbox</h4>
+<div style="display:flex;flex-direction:column;gap:1rem;">
+  <div>
+    <my-checkbox [(ngModel)]="startCheckedNgModel" (ionChange)="myChangeTriggered = true">Start</my-checkbox>
+    <div>(myChange) triggered: {{myChangeTriggered}}</div>
+    <div>startchecked ngModel: {{startCheckedNgModel}}</div>
+  </div>
+  <div>
+    <my-checkbox labelPlacement="end" [(ngModel)]="endChecked">End</my-checkbox>
+    <div>endChecked ngModel: {{endChecked}}</div>
+  </div>
+
+</div>
