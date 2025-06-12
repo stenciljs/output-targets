@@ -9,7 +9,6 @@ import { MyCheckbox, BooleanValueAccessor } from 'component-library-angular';
   styles: ``,
 })
 export class CheckboxTests {
-  startCheckedNgModel: boolean = false;
+  startChecked: boolean = false;
   endChecked: boolean = false;
-  myChangeTriggered: boolean = false;
 }
