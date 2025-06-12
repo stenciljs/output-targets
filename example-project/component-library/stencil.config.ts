@@ -19,7 +19,7 @@ const angularValueAccessorBindings: ValueAccessorConfig[] = [
   },
   {
     elementSelectors: ['my-checkbox'],
-    event: 'myChange',
+    event: 'ionChange',
     targetAttr: 'checked',
     type: 'boolean',
   },
@@ -61,8 +61,9 @@ export const config: Config = {
   outputTargets: [
     angularOutputTarget({
       componentCorePackage: 'component-library',
-      directivesProxyFile: '../component-library-angular/src/directives/proxies.ts',
+      directivesProxyFile: '../component-library-angular/projects/library/src/directives/proxies.ts',
       valueAccessorConfigs: angularValueAccessorBindings,
+      outputType: "standalone"
     }),
     reactOutputTarget({
       outDir: '../component-library-react/src',

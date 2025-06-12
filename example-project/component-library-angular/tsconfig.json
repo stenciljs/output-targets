@@ -1,36 +1,40 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
-  "angularCompilerOptions": {
-    "strictMetadataEmit": true,
-    "flatModuleOutFile": "core.js",
-    "flatModuleId": "@ionic/angular",
-    "skipTemplateCodegen": true,
-    "fullTemplateTypeCheck": false
-  },
+  "compileOnSave": false,
   "compilerOptions": {
-    "alwaysStrict": true,
     "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false,
-    "declaration": true,
-    "declarationDir": "dist",
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["dom", "es2017"],
-    "module": "es2015",
-    "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "paths": {
+      "library": [
+        "./dist/library"
+      ]
+    },
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": true,
-    "outDir": "build/es2015",
-    "pretty": true,
-    "removeComments": false,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
     "importHelpers": true,
-    "rootDir": "src",
-    "strictPropertyInitialization": false,
-    "target": "es2015",
-    "skipLibCheck": true
+    "target": "ES2022",
+    "module": "preserve"
   },
-  "exclude": ["node_modules"],
-  "files": ["src/index.ts"]
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "typeCheckHostBindings": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/library/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/library/tsconfig.spec.json"
+    }
+  ]
 }

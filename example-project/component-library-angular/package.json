@@ -1,78 +1,36 @@
 {
-  "name": "component-library-angular",
-  "version": "0.0.4",
-  "private": true,
-  "description": "Angular specific wrapper for component-library",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stenciljs/output-targets.git"
-  },
+  "name": "angular-workspace",
+  "version": "0.0.0",
   "scripts": {
-    "build": "pnpm run build.ng",
-    "build.fesm": "rollup --config ./scripts/rollup.config.mjs",
-    "build.ng": "pnpm run build.es2015 && pnpm run build.es5",
-    "build.es2015": "ngc -p tsconfig.json && rollup --config ./scripts/rollup.config.mjs",
-    "build.es5": "ngc -p tsconfig.legacy.json && rollup --config ./scripts/rollup.config.legacy.mjs",
-    "clean": "rimraf dist build src/directives",
-    "lint": "echo \"lint not configured\" && exit 0",
-    "prerelease": "pnpm run validate && np prerelease --yolo --any-branch --tag next",
-    "prettier": "pnpm run prettier.base --write",
-    "prettier.base": "prettier \"./({scripts,src,__tests__,!src/directives}/**/*.{ts,tsx,js,jsx})|*.{ts,tsx,js,jsx}\" --ignore-path=\"./.prettierignore\"",
-    "prettier.dry-run": "pnpm run prettier.base --list-different",
-    "test": "jest",
-    "tsc": "tsc -p .",
-    "validate": "pnpm i && pnpm run lint && pnpm run test && pnpm run build"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   },
-  "module": "dist/fesm2015.js",
-  "main": "dist/fesm5.js",
-  "types": "dist/core.d.ts",
-  "files": [
-    "dist/"
-  ],
+  "private": true,
   "dependencies": {
-    "component-library": "workspace:*",
-    "tslib": "^2.0.0"
-  },
-  "peerDependencies": {
-    "@angular-devkit/core": "^16.0.0",
-    "@angular-devkit/schematics": "^16.0.0",
-    "@angular/common": "^16.0.0",
-    "@angular/compiler": "^16.0.0",
-    "@angular/compiler-cli": "^16.0.0",
-    "@angular/core": "^16.0.0",
-    "@angular/forms": "^16.0.0",
-    "@angular/platform-browser": "^16.0.0",
-    "@angular/platform-browser-dynamic": "^16.0.0",
-    "@angular/router": "^16.0.0",
-    "rxjs": ">=7.0.0",
-    "zone.js": "^0.8.26"
+    "@angular/common": "^20.0.0",
+    "@angular/compiler": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/forms": "^20.0.0",
+    "@angular/platform-browser": "^20.0.0",
+    "@angular/router": "^20.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular-devkit/core": "^16.0.0",
-    "@angular-devkit/schematics": "^16.0.0",
-    "@angular/common": "^16.0.0",
-    "@angular/compiler": "^16.0.0",
-    "@angular/compiler-cli": "^16.0.0",
-    "@angular/core": "^16.0.0",
-    "@angular/forms": "^16.0.0",
-    "@angular/platform-browser": "^16.0.0",
-    "@angular/platform-browser-dynamic": "^16.0.0",
-    "@angular/router": "^16.0.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@types/jest": "^29.5.12",
-    "jest": "^29.0.0",
-    "jest-environment-jsdom": "^29.0.0",
-    "jest-preset-angular": "^13.0.0",
-    "rollup": "^4.14.3",
-    "rxjs": "^7.8.1",
-    "typescript": "~5.1.0",
-    "zone.js": "^0.13.0"
-  },
-  "jest": {
-    "preset": "jest-preset-angular",
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupJest.ts"
-    ]
+    "@angular/build": "^20.0.2",
+    "@angular/cli": "^20.0.2",
+    "@angular/compiler-cli": "^20.0.0",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.7.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^20.0.0",
+    "typescript": "~5.8.2"
   }
 }
