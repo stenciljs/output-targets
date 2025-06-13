@@ -6,7 +6,14 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "jest"
+    "test": "jest",
+    "clean": "rimraf projects/library/dist projects/library/src/directives",
+    "lint": "echo \"lint not configured\" && exit 0",
+    "prerelease": "pnpm run validate && np prerelease --yolo --any-branch --tag next",
+    "prettier": "pnpm run prettier.base --write",
+    "prettier.base": "prettier \"./({scripts,src,__tests__,!src/directives}/**/*.{ts,tsx,js,jsx})|*.{ts,tsx,js,jsx}\" --ignore-path=\"./.prettierignore\"",
+    "prettier.dry-run": "pnpm run prettier.base --list-different",
+    "validate": "pnpm i && pnpm run lint && pnpm run test && pnpm run build"
   },
   "private": true,
   "dependencies": {

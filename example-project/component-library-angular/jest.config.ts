@@ -21,6 +21,6 @@ export default {
     ],
   },
   moduleNameMapper: {
-    '^component-library(.*)$': '<rootDir>/node_modules/component-library$1'
-  }
+    '^component-library(.*)$': '<rootDir>/node_modules/component-library$1',
+  },
 } satisfies Config;
