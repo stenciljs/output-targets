@@ -7,7 +7,7 @@ import { MyRange, SelectValueAccessor } from '../src/public-api';
 
 
 @Component({
-  template: ` <my-range min="0" max="100" type="text" [(ngModel)]="testText"></my-range>`,
+  template: `<my-range min="0" max="100" type="text" [(ngModel)]="testText"></my-range>`,
   imports: [MyRange, SelectValueAccessor, FormsModule],
 })
 class TestSelectValueAccessorComponent {
