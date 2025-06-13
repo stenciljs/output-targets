@@ -10,7 +10,7 @@ import { MyComplexProps } from 'component-library-angular';
 export class ComplexPropsTests {
   foo = {
     bar: "Bar",
-    loo: [1,2,3,4,5,6,7,8,9,10],
+    loo: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     qux: { quux: Symbol('quux') }
   };
   baz = new Map([
