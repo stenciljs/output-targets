@@ -5,11 +5,16 @@ import { By } from '@angular/platform-browser';
 import { BooleanValueAccessor, MyCheckbox } from '../src/public-api';
 
 @Component({
-  template: ` <my-checkbox type="text" [(ngModel)]="itemIsChecked"></my-checkbox>`,
+  template: ` <my-checkbox type="text" (ionChange)="changeTriggered()" [(ngModel)]="itemIsChecked"></my-checkbox>`,
   imports: [MyCheckbox, FormsModule, BooleanValueAccessor],
 })
 class TestBooleanValueAccessorComponent {
   itemIsChecked: boolean = false;
+  changeTriggeredTimes: number = 0;
+
+  changeTriggered(): void {
+    this.changeTriggeredTimes++;
+  }
 }
 
 describe('MyCheckbox', () => {
@@ -31,5 +36,13 @@ describe('MyCheckbox', () => {
     myCheckboxEl.nativeElement.checked = true;
     myCheckboxEl.nativeElement.dispatchEvent(new CustomEvent('ionChange', { detail: { value: true } }));
     expect(myAngularComponent.itemIsChecked).toEqual(true);
+  });
+
+  it('should trigger output only once', () => {
+    const { componentInstance: myAngularComponent } = fixture;
+    myCheckboxEl.nativeElement.checked = true;
+    myCheckboxEl.nativeElement.dispatchEvent(new CustomEvent('ionChange', { detail: { value: true } }));
+
+    expect(myAngularComponent.changeTriggeredTimes).toEqual(1);
   });
 });
