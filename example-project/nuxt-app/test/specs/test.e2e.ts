@@ -7,7 +7,7 @@ describe('Stencil NuxtJS Integration', () => {
     await input.setValue('test');
     await expect($('.inputResult').getText()).toMatchInlineSnapshot(`
       "Input Event: test
-      Change Event: test"
+Change Event: test"
     `)
   });
 
