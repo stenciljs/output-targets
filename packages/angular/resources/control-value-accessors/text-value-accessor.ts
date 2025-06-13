@@ -7,7 +7,7 @@ import { ValueAccessor } from './value-accessor';
   /* tslint:disable-next-line:directive-selector */
   selector: '<VALUE_ACCESSOR_SELECTORS>',
   host: {
-    '(<VALUE_ACCESSOR_EVENT>)': 'handleChangeEvent($event.target.<VALUE_ACCESSOR_TARGETATTR>)'
+    '(<VALUE_ACCESSOR_EVENT>)': 'handleChangeEvent($event.target?.["<VALUE_ACCESSOR_TARGETATTR>"])'
   },
   providers: [
     {

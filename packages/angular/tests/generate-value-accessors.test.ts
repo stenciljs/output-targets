@@ -26,8 +26,8 @@ describe('createValueAccessor', () => {
         /* tslint:disable-next-line:directive-selector */
         selector: 'my-input[type=text], my-input[type=email]',
         host: {
-          '(myChange)': 'handleChangeEvent($event.target.value)',
-          '(myEmailChange)': 'handleChangeEvent($event.target.value)'
+          '(myChange)': 'handleChangeEvent($event.target?.["value"])',
+          '(myEmailChange)': 'handleChangeEvent($event.target?.["value"])'
         },
         providers: [
           {
@@ -66,8 +66,8 @@ describe('createValueAccessor', () => {
         /* tslint:disable-next-line:directive-selector */
         selector: 'my-input[type=text], my-input[type=email]',
         host: {
-          '(myChange)': 'handleChangeEvent($event.target.value)',
-          '(myEmailChange)': 'handleChangeEvent($event.target.value)'
+          '(myChange)': 'handleChangeEvent($event.target?.["value"])',
+          '(myEmailChange)': 'handleChangeEvent($event.target?.["value"])'
         },
         providers: [
           {

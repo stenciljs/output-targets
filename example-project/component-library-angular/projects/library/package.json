@@ -1,0 +1,17 @@
+{
+  "name": "component-library-angular",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^20.0.0",
+    "@angular/core": "^20.0.0"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "dependencies": {
+    "component-library": "workspace:*",
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

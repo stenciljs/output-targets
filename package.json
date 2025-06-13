@@ -6,7 +6,7 @@
     "url": "git+https://github.com/stenciljs/output-targets.git"
   },
   "scripts": {
-    "build": "lerna run clean && lerna run build",
+    "build": "lerna run clean && lerna run build --ignore=\"ng-app\" && lerna run build --scope=\"ng-app\"",
     "build.angular": "pnpm --filter @stencil/angular-output-target run build",
     "build.react": "pnpm --filter @stencil/react-output-target run build",
     "build.vue": "pnpm --filter @stencil/vue-output-target run build",
