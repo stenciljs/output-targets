@@ -15,7 +15,7 @@ import { ValueAccessor } from './value-accessor';
       useExisting: RadioValueAccessor,
       multi: true
     }
-  ],standalone: true
+  ]
 })
 export class RadioValueAccessor extends ValueAccessor {
   constructor(el: ElementRef) {
