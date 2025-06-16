@@ -1,0 +1,11 @@
+<h4>Checkbox</h4>
+<div style="display:flex;flex-direction:column;gap:1rem;">
+  <div>
+    <my-checkbox [(ngModel)]="startChecked">Start</my-checkbox>
+    <div>startchecked ngModel: {{startChecked}}</div>
+  </div>
+  <div>
+    <my-checkbox labelPlacement="end" [(ngModel)]="endChecked">End</my-checkbox>
+    <div>endChecked ngModel: {{endChecked}}</div>
+  </div>
+</div>

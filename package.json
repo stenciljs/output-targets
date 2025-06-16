@@ -6,7 +6,7 @@
     "url": "git+https://github.com/stenciljs/output-targets.git"
   },
   "scripts": {
-    "build": "lerna run clean && lerna run build",
+    "build": "lerna run clean && lerna run build --ignore=\"ng-app\" && lerna run build --scope=\"ng-app\"",
     "build.angular": "pnpm --filter @stencil/angular-output-target run build",
     "build.react": "pnpm --filter @stencil/react-output-target run build",
     "build.vue": "pnpm --filter @stencil/vue-output-target run build",
@@ -60,11 +60,6 @@
   "engines": {
     "node": ">=20.10.0",
     "pnpm": ">=9.4.0"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "vue-tsc@2.1.10": "patches/vue-tsc@2.1.10.patch"
-    }
   },
   "packageManager": "pnpm@9.15.6+sha512.139cab068fdf0b751268179ac5f909b5be72afb4a75c513d1905d151befc8977b593d3cf8671ed83d4d6637c5c94b98ffbce108125de4a5a27a31233601a99de"
 }
