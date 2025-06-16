@@ -35,7 +35,8 @@ describe('createValueAccessor', () => {
             useExisting: TextValueAccessor,
             multi: true
           }
-        ]
+        ],
+      standalone: false
       })
       export class TextValueAccessor extends ValueAccessor {
         constructor(el: ElementRef) {
@@ -75,7 +76,7 @@ describe('createValueAccessor', () => {
             useExisting: TextValueAccessor,
             multi: true
           }
-        ],standalone: true
+        ]
       })
       export class TextValueAccessor extends ValueAccessor {
         constructor(el: ElementRef) {
