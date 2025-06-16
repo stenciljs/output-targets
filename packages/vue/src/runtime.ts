@@ -130,7 +130,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
        */
       const vModelDirective = {
         created: (el: HTMLElement) => {
-          const eventsNames = (Array.isArray(modelUpdateEvent) ? modelUpdateEvent : [modelUpdateEvent]);
+          const eventsNames = Array.isArray(modelUpdateEvent) ? modelUpdateEvent : [modelUpdateEvent];
           eventsNames.forEach((eventName: string) => {
             el.addEventListener(eventName, (e: Event) => {
               /**
