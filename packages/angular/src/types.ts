@@ -2,7 +2,7 @@
  * The type of output that can be generated with the Angular output target.
  * - `component` - Generate many component wrappers tied to a single Angular module (lazy/hydrated approach).
  * - `scam` - Generate a Single Component Angular Module for each component.
- * - `standalone` - Generate a component with the `standalone` flag set to `true`.
+ * - `standalone` - Generates standalone components.
  */
 export type OutputType = 'component' | 'scam' | 'standalone';
 
@@ -25,7 +25,7 @@ export interface OutputTargetAngular {
    * The type of output that should be generated.
    * - `component` - Generate many component wrappers tied to a single Angular module (lazy/hydrated approach).
    * - `scam` - Generate a Single Component Angular Module for each component.
-   * - `standalone` - Generate a component with the `standalone` flag set to `true`.
+   * - `standalone` - (default) Generates standalone components.
    */
   outputType?: OutputType;
   /**

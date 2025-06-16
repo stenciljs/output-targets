@@ -62,8 +62,7 @@ export const config: Config = {
     angularOutputTarget({
       componentCorePackage: 'component-library',
       directivesProxyFile: '../component-library-angular/projects/library/src/directives/proxies.ts',
-      valueAccessorConfigs: angularValueAccessorBindings,
-      outputType: "standalone"
+      valueAccessorConfigs: angularValueAccessorBindings
     }),
     reactOutputTarget({
       outDir: '../component-library-react/src',
