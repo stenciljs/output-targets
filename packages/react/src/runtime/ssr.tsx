@@ -1,7 +1,8 @@
-import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react';
+import type { EventName, Options, ReactWebComponent, WebComponentProps } from '@lit/react';
 import React, { Component, JSXElementConstructor, ReactNode } from 'react';
 import { stringifyCSSProperties } from 'react-style-stringify';
 
+import { createComponent as createComponentWrapper } from './create-component.js';
 import { possibleStandardNames } from './constants.js';
 
 const LOG_PREFIX = '[react-output-target]';
@@ -47,10 +48,16 @@ export interface RenderToStringOptions {
   serializeShadowRoot?: SerializeShadowRootOptions;
 }
 type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
+
+type HydrateModule = {
+  renderToString: RenderToString;
+  serializeProperty: (value: any) => string;
+};
 interface CreateComponentForServerSideRenderingOptions {
   tagName: string;
   properties: Record<string, string>;
   renderToString: RenderToString;
+  serializeProperty: (value: any) => string;
   serializeShadowRoot?: SerializeShadowRootOptions;
 }
 
@@ -139,7 +146,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      */
     let stringProps = '';
     for (const [key, value] of Object.entries(props)) {
-      let propValue = isPrimitive(value) ? `"${value}"` : undefined;
+      let propValue = isPrimitive(value) ? `"${value}"` : options.serializeProperty(value);
 
       /**
        * parse the style object into a string
@@ -399,12 +406,25 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
   properties,
   tagName,
   serializeShadowRoot,
+  ...options
 }: {
-  hydrateModule: Promise<{ renderToString: RenderToString }>;
+  hydrateModule: Promise<HydrateModule>;
   properties: Record<string, string>;
   tagName: string;
   serializeShadowRoot?: SerializeShadowRootOptions;
-}): ReactWebComponent<I, E> => {
+} & Options<I, E> & { defineCustomElement: () => void }): ReactWebComponent<I, E> => {
+  /**
+   * If we are running in the browser, we can use the `createComponentWrapper` function
+   * to create a React component that can be used in the browser. This allows to import
+   * a Stencil component from one source and have a browser and server version of the component.
+   */
+  if (typeof window !== 'undefined' && createComponentWrapper) {
+    return createComponentWrapper<I, E>({
+      tagName,
+      ...options,
+    }) as unknown as ReactWebComponent<I, E>;
+  }
+
   /**
    * IIFE to lazy load the `createComponentForServerSideRendering` function while allowing
    * to return the correct type for the `ReactWebComponent`.
@@ -413,10 +433,12 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
    * bundling them in the runtime and serving them in the browser.
    */
   return (async (props: WebComponentProps<I>) => {
+    const resolvedHydrateModule = await hydrateModule;
     return createComponentForServerSideRendering<I, E>({
       tagName,
       properties,
-      renderToString: (await hydrateModule).renderToString,
+      renderToString: resolvedHydrateModule.renderToString,
+      serializeProperty: resolvedHydrateModule.serializeProperty,
       serializeShadowRoot,
     })(props as any);
   }) as unknown as ReactWebComponent<I, E>;
