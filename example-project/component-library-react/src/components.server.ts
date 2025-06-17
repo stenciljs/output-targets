@@ -6,7 +6,7 @@
 /* eslint-disable */
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
+import { createComponent, type HydrateModule, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
 import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
@@ -54,7 +54,7 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
         target: 'target',
         type: 'type'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyButtonElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -88,7 +88,7 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
         target: 'target',
         type: 'type'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyButtonScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -119,7 +119,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
         justify: 'justify',
         alignment: 'alignment'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyCheckboxElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -143,7 +143,7 @@ export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComp
         grault: 'grault',
         waldo: 'waldo'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyComplexPropsElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -163,7 +163,7 @@ export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedEle
         grault: 'grault',
         waldo: 'waldo'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyComplexPropsScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -181,7 +181,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
         middleName: 'middle-name',
         last: 'last'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -199,7 +199,7 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
         middleName: 'middle-name',
         last: 'last'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyComponentScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -213,7 +213,7 @@ export type MyCounterEvents = { onCount: EventName<CustomEvent<number>> };
 export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents> = /*@__PURE__*/ createComponent<MyCounterElement, MyCounterEvents>({
     tagName: 'my-counter',
     properties: { startValue: 'start-value' },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyCounterElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -259,7 +259,7 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@
         type: 'type',
         value: 'value'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyInputElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -310,7 +310,7 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
         type: 'type',
         value: 'value'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyInputScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -329,7 +329,7 @@ export type MyListEvents = NonNullable<unknown>;
 export const MyList: StencilReactComponent<MyListElement, MyListEvents> = /*@__PURE__*/ createComponent<MyListElement, MyListEvents>({
     tagName: 'my-list',
     properties: {},
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyListElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -343,7 +343,7 @@ export type MyListItemEvents = NonNullable<unknown>;
 export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEvents> = /*@__PURE__*/ createComponent<MyListItemElement, MyListItemEvents>({
     tagName: 'my-list-item',
     properties: {},
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyListItemElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -357,7 +357,7 @@ export type MyListItemScopedEvents = NonNullable<unknown>;
 export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, MyListItemScopedEvents> = /*@__PURE__*/ createComponent<MyListItemScopedElement, MyListItemScopedEvents>({
     tagName: 'my-list-item-scoped',
     properties: {},
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyListItemScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -371,7 +371,7 @@ export type MyListScopedEvents = NonNullable<unknown>;
 export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScopedEvents> = /*@__PURE__*/ createComponent<MyListScopedElement, MyListScopedEvents>({
     tagName: 'my-list-scoped',
     properties: {},
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyListScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -400,7 +400,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
         translucent: 'translucent',
         animated: 'animated'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyPopoverElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -430,7 +430,7 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
         justify: 'justify',
         alignment: 'alignment'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyRadioElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -452,7 +452,7 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
         name: 'name',
         value: 'value'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyRadioGroupElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -483,7 +483,7 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = /*@
         disabled: 'disabled',
         value: 'value'
     },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyRangeElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -501,7 +501,7 @@ export type MyToggleEvents = NonNullable<unknown>;
 export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = /*@__PURE__*/ createComponent<MyToggleElement, MyToggleEvents>({
     tagName: 'my-toggle',
     properties: {},
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyToggleElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -515,7 +515,7 @@ export type MyToggleContentEvents = NonNullable<unknown>;
 export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyToggleContentEvents> = /*@__PURE__*/ createComponent<MyToggleContentElement, MyToggleContentEvents>({
     tagName: 'my-toggle-content',
     properties: { visible: 'visible' },
-    hydrateModule: import('component-library/hydrate'),
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyToggleContentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.

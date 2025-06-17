@@ -277,7 +277,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
       .toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
     tagName: 'my-component',
     properties: { hasMaxLength: 'max-length' },
-    hydrateModule: import('my-package/hydrate'),
+    hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.

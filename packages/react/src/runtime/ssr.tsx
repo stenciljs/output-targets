@@ -49,7 +49,7 @@ export interface RenderToStringOptions {
 }
 type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
 
-type HydrateModule = {
+export type HydrateModule = {
   renderToString: RenderToString;
   serializeProperty: (value: any) => string;
 };
@@ -146,7 +146,11 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      */
     let stringProps = '';
     for (const [key, value] of Object.entries(props)) {
-      let propValue = isPrimitive(value) ? `"${value}"` : options.serializeProperty(value);
+      let propValue = isPrimitive(value)
+        ? `"${value}"`
+        : typeof value !== 'function'
+          ? options.serializeProperty(value)
+          : undefined;
 
       /**
        * parse the style object into a string

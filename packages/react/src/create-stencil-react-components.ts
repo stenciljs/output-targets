@@ -36,7 +36,7 @@ export const createStencilReactComponents = ({
 
   const disableEslint = `/* eslint-disable */\n`;
   const createComponentImport = hydrateModule
-    ? `import { createComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';`
+    ? `import { createComponent, type SerializeShadowRootOptions, type HydrateModule } from '@stencil/react-output-target/ssr';`
     : `import { createComponent } from '@stencil/react-output-target/runtime';`;
   const sourceFile = project.createSourceFile(
     'component.ts',
@@ -174,7 +174,7 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
       .filter((prop) => Boolean(prop.attribute))
       .map((e) => `${e.name}: '${e.attribute}'`)
       .join(',\n')}},
-    hydrateModule: import('${hydrateModule}'),
+    hydrateModule: import('${hydrateModule}') as Promise<HydrateModule>,
     serializeShadowRoot,
     elementClass: ${componentElement},
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
