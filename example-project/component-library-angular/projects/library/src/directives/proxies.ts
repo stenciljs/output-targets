@@ -36,7 +36,6 @@ import { defineCustomElement as defineMyToggleContent } from 'component-library/
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type'],
-  standalone: true
 })
 export class MyButton {
   protected el: HTMLMyButtonElement;
@@ -70,7 +69,6 @@ export declare interface MyButton extends Components.MyButton {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type'],
-  standalone: true
 })
 export class MyButtonScoped {
   protected el: HTMLMyButtonScopedElement;
@@ -104,7 +102,6 @@ export declare interface MyButtonScoped extends Components.MyButtonScoped {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['alignment', 'checked', 'color', 'disabled', 'indeterminate', 'justify', 'labelPlacement', 'mode', 'name', 'value'],
-  standalone: true
 })
 export class MyCheckbox {
   protected el: HTMLMyCheckboxElement;
@@ -146,7 +143,6 @@ This event will not emit when programmatically setting the `checked` property.
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['baz', 'foo', 'grault', 'quux', 'waldo'],
-  standalone: true
 })
 export class MyComplexProps {
   protected el: HTMLMyComplexPropsElement;
@@ -170,7 +166,6 @@ export declare interface MyComplexProps extends Components.MyComplexProps {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['baz', 'foo', 'grault', 'quux', 'waldo'],
-  standalone: true
 })
 export class MyComplexPropsScoped {
   protected el: HTMLMyComplexPropsScopedElement;
@@ -194,7 +189,6 @@ export declare interface MyComplexPropsScoped extends Components.MyComplexPropsS
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['first', 'last', 'middleName'],
-  standalone: true
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
@@ -218,7 +212,6 @@ export declare interface MyComponent extends Components.MyComponent {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['first', 'last', 'middleName'],
-  standalone: true
 })
 export class MyComponentScoped {
   protected el: HTMLMyComponentScopedElement;
@@ -250,7 +243,6 @@ export declare interface MyComponentScoped extends Components.MyComponentScoped 
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['startValue'],
-  standalone: true
 })
 export class MyCounter {
   protected el: HTMLMyCounterElement;
@@ -281,7 +273,6 @@ export declare interface MyCounter extends Components.MyCounter {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', 'autofocus', 'clearInput', 'clearOnEdit', 'color', 'disabled', 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'spellcheck', 'step', 'type', 'value'],
-  standalone: true
 })
 export class MyInput {
   protected el: HTMLMyInputElement;
@@ -326,7 +317,6 @@ export declare interface MyInput extends Components.MyInput {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', 'autofocus', 'clearInput', 'clearOnEdit', 'color', 'disabled', 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'spellcheck', 'step', 'type', 'value'],
-  standalone: true
 })
 export class MyInputScoped {
   protected el: HTMLMyInputScopedElement;
@@ -369,7 +359,6 @@ export declare interface MyInputScoped extends Components.MyInputScoped {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
-  standalone: true
 })
 export class MyList {
   protected el: HTMLMyListElement;
@@ -392,7 +381,6 @@ export declare interface MyList extends Components.MyList {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
-  standalone: true
 })
 export class MyListItem {
   protected el: HTMLMyListItemElement;
@@ -415,7 +403,6 @@ export declare interface MyListItem extends Components.MyListItem {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
-  standalone: true
 })
 export class MyListItemScoped {
   protected el: HTMLMyListItemScopedElement;
@@ -438,7 +425,6 @@ export declare interface MyListItemScoped extends Components.MyListItemScoped {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
-  standalone: true
 })
 export class MyListScoped {
   protected el: HTMLMyListScopedElement;
@@ -463,7 +449,6 @@ export declare interface MyListScoped extends Components.MyListScoped {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['animated', 'backdropDismiss', 'component', 'componentProps', 'cssClass', 'event', 'keyboardClose', 'mode', 'showBackdrop', 'translucent'],
-  standalone: true
 })
 export class MyPopover {
   protected el: HTMLMyPopoverElement;
@@ -507,7 +492,6 @@ export declare interface MyPopover extends Components.MyPopover {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['alignment', 'color', 'disabled', 'justify', 'labelPlacement', 'mode', 'name', 'value'],
-  standalone: true
 })
 export class MyRadio {
   protected el: HTMLMyRadioElement;
@@ -541,7 +525,6 @@ export declare interface MyRadio extends Components.MyRadio {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['allowEmptySelection', 'compareWith', 'name', 'value'],
-  standalone: true
 })
 export class MyRadioGroup {
   protected el: HTMLMyRadioGroupElement;
@@ -575,7 +558,6 @@ This event will not emit when programmatically setting the `value` property.
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['color', 'debounce', 'disabled', 'dualKnobs', 'max', 'min', 'mode', 'name', 'pin', 'snaps', 'step', 'ticks', 'value'],
-  standalone: true
 })
 export class MyRange {
   protected el: HTMLMyRangeElement;
@@ -614,7 +596,6 @@ export declare interface MyRange extends Components.MyRange {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
-  standalone: true
 })
 export class MyToggle {
   protected el: HTMLMyToggleElement;
@@ -638,7 +619,6 @@ export declare interface MyToggle extends Components.MyToggle {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['visible'],
-  standalone: true
 })
 export class MyToggleContent {
   protected el: HTMLMyToggleContentElement;

@@ -14,6 +14,13 @@ For a detailed guide on how to add the angular output target to a project, visit
 npm install @stencil/angular-output-target
 ```
 
+## Angular Version Table
+
+| **@stencil/angular-output-target** | **Angular** |
+|------------------------------------|-------------|
+| 0.10.2                             | <= 19.0.0   |
+| TODO replace with Release Version  | \>= 19.0.0  |
+
 ## Usage
 
 In your `stencil.config.ts` add the following configuration to the `outputTargets` section:

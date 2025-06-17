@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MyComponent, MyCounter, MyList, MyRadio, MyRadioGroup, MyRange, MyToggle } from 'component-library-angular';
+import { MyComponent, MyCounter, MyToggle } from 'component-library-angular';
 import { ButtonTests } from './button-tests/button-tests';
 import { CheckboxTests } from './checkbox-tests/checkbox-tests';
 import { ComplexPropsTests } from './complex-props-tests/complex-props-tests';
@@ -12,10 +12,6 @@ import { RangeTests } from './range-tests/range-tests';
   imports: [
     MyComponent,
     MyCounter,
-    MyList,
-    MyRadio,
-    MyRadioGroup,
-    MyRange,
     MyToggle,
     CheckboxTests,
     InputFormTests,

@@ -32,7 +32,7 @@ describe('normalizeOutputTarget', () => {
   it('should return defaults for outputType', () => {
     const results = normalizeOutputTarget(config, { directivesProxyFile: '' } as OutputTargetAngular);
 
-    expect(results.outputType).toEqual('component');
+    expect(results.outputType).toEqual('standalone');
   });
 
   it('should return defaults for customElementsDir', () => {

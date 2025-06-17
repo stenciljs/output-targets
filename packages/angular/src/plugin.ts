@@ -28,8 +28,8 @@ export function normalizeOutputTarget(config: Config, outputTarget: OutputTarget
     ...outputTarget,
     excludeComponents: outputTarget.excludeComponents || [],
     valueAccessorConfigs: outputTarget.valueAccessorConfigs || [],
-    customElementsDir: outputTarget.customElementsDir || 'components',
-    outputType: outputTarget.outputType || OutputTypes.Component,
+    customElementsDir: outputTarget.customElementsDir ?? 'components',
+    outputType: outputTarget.outputType ?? OutputTypes.Standalone,
   };
 
   if (config.rootDir == null) {
