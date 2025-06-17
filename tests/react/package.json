@@ -22,6 +22,7 @@
   },
   "exports": {
     ".": "./src/TestComponent.tsx",
+    "./next": "./src/next/TestComponent.tsx",
     "./scenarios": "./tests/scenarios.ts",
     "./service": "./tests/service.ts"
   }

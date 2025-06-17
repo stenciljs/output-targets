@@ -9,7 +9,7 @@
       "node": "./dist/components.server.js",
       "import": "./dist/index.js"
     },
-    "./server": {
+    "./next": {
       "types": "./dist/components.server.d.ts",
       "import": "./dist/components.server.js"
     }

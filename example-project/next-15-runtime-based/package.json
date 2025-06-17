@@ -1,0 +1,46 @@
+{
+  "name": "next-15-runtime-based",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "start": "next dev -p 3002",
+    "lint": "next lint",
+    "prettier": "prettier --write --print-width 80 \"*.mjs\" \"*.json\" \"src/**/*.tsx\" \"*.ts\"",
+    "test": "wdio run ./wdio.conf.ts"
+  },
+  "overrides": {
+    "react": "$react",
+    "react-dom": "$react-dom"
+  },
+  "dependencies": {
+    "html-react-parser": "^5.2.2",
+    "next": "15.2.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@wdio/cli": "^9.12.1",
+    "@wdio/globals": "^9.12.1",
+    "@wdio/local-runner": "^9.12.1",
+    "@wdio/mocha-framework": "^9.12.1",
+    "@wdio/spec-reporter": "^9.11.0",
+    "@wdio/types": "^9.10.1",
+    "autoprefixer": "^10.4.21",
+    "component-library-react": "workspace:*",
+    "eslint": "^8",
+    "eslint-config-next": "^15",
+    "postcss": "^8",
+    "react-test-components": "workspace:*",
+    "tailwindcss": "^3.4.13",
+    "tsx": "^4.19.3",
+    "typescript": "^5",
+    "webdriverio": "^9.12.1",
+    "wdio-next-service": "^0.1.1"
+  }
+}
