@@ -77,7 +77,10 @@ export function createValueAccessor(srcFileContents: string, valueAccessor: Valu
   return srcFileContents
     .replace(VALUE_ACCESSOR_SELECTORS, valueAccessor.elementSelectors.join(', '))
     .replace(VALUE_ACCESSOR_EVENTTARGETS, hostContents.join(`,${EOL}`))
-    .replace(VALUE_ACCESSOR_STANDALONE, outputType && outputType !== OutputTypes.Standalone ? ',\nstandalone: false' : '');
+    .replace(
+      VALUE_ACCESSOR_STANDALONE,
+      outputType && outputType !== OutputTypes.Standalone ? ',\nstandalone: false' : ''
+    );
 }
 
 function copyResources(config: Config, resourcesFilesToCopy: string[], directory: string) {
