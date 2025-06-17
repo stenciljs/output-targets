@@ -1,6 +1,6 @@
 import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react';
 import React, { Component, JSXElementConstructor, ReactNode } from 'react';
-import styleToCss from 'style-object-to-css-string';
+import { stringifyCSSProperties } from 'react-style-stringify';
 
 import { possibleStandardNames } from './constants.js';
 
@@ -144,8 +144,8 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       /**
        * parse the style object into a string
        */
-      if (key === 'style' && typeof value === 'object') {
-        propValue = `"${styleToCss.default(value).replaceAll('\n', ' ')}"`;
+      if (key === 'style' && typeof value === 'object' && value) {
+        propValue = `"${stringifyCSSProperties(value)}"`;
       }
 
       if (!propValue) {
@@ -216,7 +216,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
     if (isShadowComponent) {
       const templateEndTag = '  </template>';
       templateContent = serializedComponentByLine
-        .slice(2, serializedComponentByLine.indexOf(templateEndTag))
+        .slice(2, serializedComponentByLine.lastIndexOf(templateEndTag))
         .join('\n')
         .trim();
     }
@@ -274,14 +274,14 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
              * set the template content based on our serialized Stencil component.
              */
             return (
-              <CustomTag {...props} suppressHydrationWarning>
+              <CustomTag {...props} suppressHydrationWarning={true}>
                 <template
                   // @ts-expect-error
                   shadowrootmode="open"
                   suppressHydrationWarning={true}
                   dangerouslySetInnerHTML={{ __html: hydrationComment + templateContent }}
                 ></template>
-                {/* {children} */}
+                {children}
               </CustomTag>
             );
           }
@@ -330,7 +330,12 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
         return resolveComponentTypes(child);
       }
 
-      const { type, props } = child;
+      // Only ReactElements have type and props properties
+      if (!React.isValidElement(child)) {
+        return child;
+      }
+
+      const { type, props } = child as React.ReactElement<object & { children: ReactNode }>;
 
       return {
         ...child,
@@ -338,7 +343,7 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
           ...props,
           children: await resolveComponentTypes(props.children),
         },
-        type: await resolveType(type, props),
+        type: await resolveType(type, props as any),
       } as ReactNode;
     })
   );
@@ -372,7 +377,13 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
   }
 
   // Recursively resolve the component type until we have a primitive element type
-  if (!isEmpty(resolvedType) && !isPrimitive(resolvedType) && 'type' in resolvedType) {
+  if (
+    !isEmpty(resolvedType) &&
+    !isPrimitive(resolvedType) &&
+    typeof resolvedType === 'object' &&
+    resolvedType !== null &&
+    'type' in resolvedType
+  ) {
     resolvedType = await resolveType(resolvedType.type, props);
   }
 
