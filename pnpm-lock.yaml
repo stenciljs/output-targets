@@ -142,21 +142,6 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
-  example-project/component-library-angular/projects/library/dist:
-    dependencies:
-      '@angular/common':
-        specifier: ^20.0.0
-        version: 20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
-      '@angular/core':
-        specifier: ^20.0.0
-        version: 20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)
-      component-library:
-        specifier: workspace:*
-        version: link:../../../../component-library
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-
   example-project/component-library-react:
     dependencies:
       '@stencil/react-output-target':
