@@ -71,7 +71,7 @@
     "@lit/react": "^1.0.7",
     "html-react-parser": "^5.2.2",
     "react-style-stringify": "^1.2.0",
-    "ts-morph": "^22.0.0"
+    "ts-morph": "^26.0.0"
   },
   "peerDependenciesMeta": {
     "@stencil/core": {
