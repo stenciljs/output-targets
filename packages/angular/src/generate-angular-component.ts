@@ -34,10 +34,32 @@ function createPropertyDeclaration(
 }
 
 /**
+ * Creates a formatted inputs text with required declaration.
+ *
+ * @param prop A ComponentCompilerEvent or ComponentCompilerProperty to turn into a property declaration.
+ * @param inputs The inputs of the Stencil component (e.g. ['myInput']).
+ * @param requiredInputs The inputs subset of the Stencil component that are required by component (e.g. ['myInput']).
+ * @returns The inputs list declaration as a string.
+ */
+function formatInputs(
+  inputs: string[],
+  requiredInputs: string[]
+): string {
+  return inputs.map((item) => {
+    if (requiredInputs.includes(item) {
+      return `{ name: '${item}', required: true }`;
+    } else {
+      return `'${item}'`;
+    }
+  }).join(', ');
+}
+
+/**
  * Creates an Angular component declaration from formatted Stencil compiler metadata.
  *
  * @param tagName The tag name of the component.
  * @param inputs The inputs of the Stencil component (e.g. ['myInput']).
+ * @param requiredInputs The inputs subset of the Stencil component that are required by component (e.g. ['myInput']).
  * @param outputs The outputs/events of the Stencil component. (e.g. ['myOutput']).
  * @param methods The methods of the Stencil component. (e.g. ['myMethod']).
  * @param includeImportCustomElements Whether to define the component as a custom element.
@@ -48,6 +70,7 @@ function createPropertyDeclaration(
 export const createAngularComponentDefinition = (
   tagName: string,
   inputs: readonly string[],
+  requiredInputs: readonly string[],
   outputs: readonly string[],
   methods: readonly string[],
   includeImportCustomElements = false,
@@ -60,8 +83,11 @@ export const createAngularComponentDefinition = (
   const hasOutputs = outputs.length > 0;
   const hasMethods = methods.length > 0;
 
-  // Formats the input strings into comma separated, single quoted values.
-  const formattedInputs = formatToQuotedList(inputs);
+  const optionalInputs = inputs.filter(
+  
+  // Formats the input strings into comma separated, single quoted values if optional.
+  // Formats the required input strings into comma separated {name, required} objects.
+  const formattedInputs = formatInputs(inputs, requiredInputs);
   // Formats the output strings into comma separated, single quoted values.
   const formattedOutputs = formatToQuotedList(outputs);
   // Formats the method strings into comma separated, single quoted values.
