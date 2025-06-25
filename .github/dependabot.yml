@@ -6,9 +6,8 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      dev-dependencies:
+      minor-and-patch:
         patterns:
-          - "@*"
           - "*"
         update-types:
           - "minor"
@@ -23,24 +22,59 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      github-actions-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   # Explicitly monitor for pnpm updates in package.json packageManager field
   - package-ecosystem: "npm"
     directory: "/packages/angular"
     schedule:
       interval: "weekly"
+    groups:
+      angular-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "npm"
     directory: "/packages/react"
     schedule:
       interval: "weekly"
+    groups:
+      react-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "npm"
     directory: "/packages/vue"
     schedule:
       interval: "weekly"
+    groups:
+      vue-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "npm"
     directory: "/packages/ssr"
     schedule:
       interval: "weekly"
+    groups:
+      ssr-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
