@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@stencil/core": "4.35.1",
-    "@types/node": "^20.14.12",
+    "@types/node": "^24.0.4",
     "@types/react": "^18 || ^19",
     "@types/react-dom": "^18 || ^19",
     "npm-run-all2": "^6.2.4",
