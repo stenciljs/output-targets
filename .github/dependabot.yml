@@ -1,0 +1,46 @@
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      dev-dependencies:
+        patterns:
+          - "@*"
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    # This will also update the packageManager field
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+
+  # Update package managers (including pnpm)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Explicitly monitor for pnpm updates in package.json packageManager field
+  - package-ecosystem: "npm"
+    directory: "/packages/angular"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/react"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/vue"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/ssr"
+    schedule:
+      interval: "weekly"
