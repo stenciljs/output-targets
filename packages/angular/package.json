@@ -48,7 +48,7 @@
     "url": "https://github.com/stenciljs/output-targets/issues"
   },
   "devDependencies": {
-    "@angular/core": "8.2.14",
+    "@angular/core": "20.0.5",
     "@angular/forms": "8.2.14",
     "@stencil/core": "4.35.1",
     "@types/node": "^18.0.0",
