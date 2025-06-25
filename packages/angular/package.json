@@ -52,7 +52,7 @@
     "@angular/forms": "8.2.14",
     "@stencil/core": "4.35.1",
     "@types/node": "^18.0.0",
-    "npm-run-all2": "^6.2.4",
+    "npm-run-all2": "^8.0.4",
     "rimraf": "^5.0.0",
     "rollup": "^2.23.1",
     "typescript": "~5.7.0",
