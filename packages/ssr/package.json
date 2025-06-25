@@ -56,7 +56,7 @@
     "coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@types/node": "^20.14.12",
+    "@types/node": "^24.0.4",
     "component-library": "workspace:*",
     "component-library-react": "workspace:*",
     "typescript": "^5.4.4",
