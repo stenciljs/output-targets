@@ -144,8 +144,10 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
   const proxyFileOutput = [];
 
   const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
-  const filterRequiredProps = (prop: { name: string; required: boolean }) => prop.required;
   const mapPropName = (prop: { name: string }) => prop.name;
+
+  // Ensure that virtual properties has required as false.
+  const mapInputProp = (prop: { name: string, required?: boolean }) => ({ name: prop.name, required: prop.required ?? false });
 
   const { componentCorePackage, customElementsDir } = outputTarget;
 
@@ -158,11 +160,10 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
       internalProps.push(...cmpMeta.properties.filter(filterInternalProps));
     }
 
-    const requiredInputs = internalProps.filter(filterRequiredProps).map(mapPropName);
-    const inputs = internalProps.map(mapPropName);
+    const inputs = internalProps.map(mapInputProp);
 
     if (cmpMeta.virtualProperties) {
-      inputs.push(...cmpMeta.virtualProperties.map(mapPropName));
+      inputs.push(...cmpMeta.virtualProperties.map(mapInputProp));
     }
 
     inputs.sort();
@@ -190,7 +191,6 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
     const componentDefinition = createAngularComponentDefinition(
       cmpMeta.tagName,
       inputs,
-      requiredInputs,
       outputs,
       methods,
       isCustomElementsBuild,
