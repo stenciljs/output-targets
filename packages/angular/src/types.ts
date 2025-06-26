@@ -48,3 +48,9 @@ export interface ValueAccessorConfig {
 export interface PackageJSON {
   types: string;
 }
+
+export interface ComponentInputProperty {
+  name: string;
+  required: boolean;
+}
+
