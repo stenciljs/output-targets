@@ -42,11 +42,11 @@ function createPropertyDeclaration(
  * @returns The inputs list declaration as a string.
  */
 function formatInputs(
-  inputs: string[],
-  requiredInputs: string[]
+  inputs: readonly string[],
+  requiredInputs: readonly string[]
 ): string {
   return inputs.map((item) => {
-    if (requiredInputs.includes(item) {
+    if (requiredInputs.includes(item)) {
       return `{ name: '${item}', required: true }`;
     } else {
       return `'${item}'`;
@@ -82,8 +82,6 @@ export const createAngularComponentDefinition = (
   const hasInputs = inputs.length > 0;
   const hasOutputs = outputs.length > 0;
   const hasMethods = methods.length > 0;
-
-  const optionalInputs = inputs.filter(
   
   // Formats the input strings into comma separated, single quoted values if optional.
   // Formats the required input strings into comma separated {name, required} objects.
