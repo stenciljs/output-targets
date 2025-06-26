@@ -40,16 +40,16 @@ function createPropertyDeclaration(
  * @param inputs The inputs of the Stencil component (e.g. [{name: 'myInput', required: true]).
  * @returns The inputs list declaration as a string.
  */
-function formatInputs(
-  inputs: readonly ComponentInputProperty[],
-): string {
-  return inputs.map((item) => {
-    if (item.required) {
-      return `{ name: '${item}', required: true }`;
-    } else {
-      return `'${item}'`;
-    }
-  }).join(', ');
+function formatInputs(inputs: readonly ComponentInputProperty[]): string {
+  return inputs
+    .map((item) => {
+      if (item.required) {
+        return `{ name: '${item.name}', required: true }`;
+      } else {
+        return `'${item.name}'`;
+      }
+    })
+    .join(', ');
 }
 
 /**
@@ -78,7 +78,7 @@ export const createAngularComponentDefinition = (
   const hasInputs = inputs.length > 0;
   const hasOutputs = outputs.length > 0;
   const hasMethods = methods.length > 0;
-  
+
   // Formats the input strings into comma separated, single quoted values if optional.
   // Formats the required input strings into comma separated {name, required} objects.
   const formattedInputs = formatInputs(inputs);
