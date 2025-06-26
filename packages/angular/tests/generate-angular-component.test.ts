@@ -27,7 +27,7 @@ export class MyComponent {
     });
 
     it('generates a component with inputs', () => {
-      const component = createAngularComponentDefinition('my-component', ['my-input', 'my-other-input'], [], [], false);
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: false}], [], [], false);
       expect(component).toMatch(`@ProxyCmp({
   inputs: ['my-input', 'my-other-input']
 })
@@ -37,6 +37,28 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['my-input', 'my-other-input'],
+  standalone: false
+})
+export class MyComponent {
+  protected el: HTMLMyComponentElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}`);
+    });
+
+    it('generates a component with inputs (required)', () => {
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: true}], [], [], false);
+      expect(component).toMatch(`@ProxyCmp({
+  inputs: ['my-input', 'my-other-input']
+})
+@Component({
+  selector: 'my-component',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['my-input', { name: 'my-other-input', required: true }],
   standalone: false
 })
 export class MyComponent {
@@ -126,7 +148,7 @@ export class MyComponent {
     });
 
     it('generates a component with inputs', () => {
-      const component = createAngularComponentDefinition('my-component', ['my-input', 'my-other-input'], [], [], true);
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: false}], [], [], true);
 
       expect(component).toEqual(`@ProxyCmp({
   defineCustomElementFn: defineMyComponent,
@@ -138,6 +160,30 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['my-input', 'my-other-input'],
+  standalone: false
+})
+export class MyComponent {
+  protected el: HTMLMyComponentElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}`);
+    });
+
+    it('generates a component with inputs (required)', () => {
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: true}, {name: 'my-other-input', required: false}], [], [], true);
+
+      expect(component).toEqual(`@ProxyCmp({
+  defineCustomElementFn: defineMyComponent,
+  inputs: ['my-input', 'my-other-input']
+})
+@Component({
+  selector: 'my-component',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: [{ name: 'my-input', required: true }, 'my-other-input'],
   standalone: false
 })
 export class MyComponent {
@@ -227,7 +273,7 @@ export class MyComponent {
 
   describe('inline members', () => {
     it('generates component with inlined member with jsDoc', () => {
-      const component = createAngularComponentDefinition('my-component', ['myMember'], [], [], false, false, [
+      const component = createAngularComponentDefinition('my-component', [{name: 'myMember', required: false}], [], [], false, false, [
         {
           docs: {
             tags: [{ name: 'deprecated', text: 'use v2 of this API' }],
