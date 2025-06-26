@@ -1,10 +1,15 @@
 version: 2
 updates:
-  # Enable version updates for npm dependencies
+  # Enable version updates for pnpm dependencies
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+    versioning-strategy: increase
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
     groups:
       minor-and-patch:
         patterns:
@@ -12,7 +17,7 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    # This will also update the packageManager field
+    # This will also update the packageManager field and pnpm-lock.yaml
     allow:
       - dependency-type: "direct"
       - dependency-type: "indirect"
@@ -30,11 +35,15 @@ updates:
           - "minor"
           - "patch"
 
-  # Explicitly monitor for pnpm updates in package.json packageManager field
+  # Monitor pnpm packages in subdirectories
   - package-ecosystem: "npm"
     directory: "/packages/angular"
     schedule:
       interval: "weekly"
+    versioning-strategy: increase
+    commit-message:
+      prefix: "deps(angular)"
+      prefix-development: "deps-dev(angular)"
     groups:
       angular-minor-and-patch:
         patterns:
@@ -47,6 +56,10 @@ updates:
     directory: "/packages/react"
     schedule:
       interval: "weekly"
+    versioning-strategy: increase
+    commit-message:
+      prefix: "deps(react)"
+      prefix-development: "deps-dev(react)"
     groups:
       react-minor-and-patch:
         patterns:
@@ -59,6 +72,10 @@ updates:
     directory: "/packages/vue"
     schedule:
       interval: "weekly"
+    versioning-strategy: increase
+    commit-message:
+      prefix: "deps(vue)"
+      prefix-development: "deps-dev(vue)"
     groups:
       vue-minor-and-patch:
         patterns:
@@ -71,6 +88,10 @@ updates:
     directory: "/packages/ssr"
     schedule:
       interval: "weekly"
+    versioning-strategy: increase
+    commit-message:
+      prefix: "deps(ssr)"
+      prefix-development: "deps-dev(ssr)"
     groups:
       ssr-minor-and-patch:
         patterns:
