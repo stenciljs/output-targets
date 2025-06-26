@@ -1,6 +1,6 @@
 import path from 'path';
 import type { CompilerCtx, ComponentCompilerMeta, ComponentCompilerProperty, Config } from '@stencil/core/internal';
-import type { OutputTargetAngular, PackageJSON } from './types';
+import type { ComponentInputProperty, OutputTargetAngular, PackageJSON } from './types';
 import {
   relativeImport,
   normalizePath,
@@ -147,7 +147,10 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
   const mapPropName = (prop: { name: string }) => prop.name;
 
   // Ensure that virtual properties has required as false.
-  const mapInputProp = (prop: { name: string, required?: boolean }) => ({ name: prop.name, required: prop.required ?? false });
+  const mapInputProp = (prop: { name: string; required?: boolean }) => ({
+    name: prop.name,
+    required: prop.required ?? false,
+  });
 
   const { componentCorePackage, customElementsDir } = outputTarget;
 
@@ -166,7 +169,7 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
       inputs.push(...cmpMeta.virtualProperties.map(mapInputProp));
     }
 
-    inputs.sort();
+    const orderedInputs = sortBy(inputs, (cip: ComponentInputProperty) => cip.name);
 
     const outputs: string[] = [];
 
@@ -190,7 +193,7 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
      */
     const componentDefinition = createAngularComponentDefinition(
       cmpMeta.tagName,
-      inputs,
+      orderedInputs,
       outputs,
       methods,
       isCustomElementsBuild,
