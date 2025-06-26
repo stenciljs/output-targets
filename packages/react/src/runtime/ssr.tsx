@@ -21,6 +21,20 @@ export type SerializeShadowRootOptions =
   | boolean;
 
 /**
+ * Type that emulates Next.js dynamic import functionality without importing Next.js types
+ */
+export type DynamicImport<T = any> = () => Promise<T>;
+export type DynamicOptions = {
+  loading?: () => ReactNode;
+  ssr?: boolean;
+  suspense?: boolean;
+};
+export type DynamicFunction = <T = any>(
+  dynamicImport: DynamicImport<T>,
+  options?: DynamicOptions
+) => React.ComponentType<any>;
+
+/**
  * these types are defined by a Stencil hydrate app so we have to copy the minimal types here
  */
 export interface RenderToStringOptions {
@@ -59,6 +73,8 @@ interface CreateComponentForServerSideRenderingOptions {
   renderToString: RenderToString;
   serializeProperty: (value: any) => string;
   serializeShadowRoot?: SerializeShadowRootOptions;
+  dynamic: DynamicFunction;
+  clientModule: Promise<Record<string, ReactWebComponent<any, any>>>;
 }
 
 type StencilProps<I extends HTMLElement> = WebComponentProps<I>;
@@ -301,7 +317,27 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
         },
       });
 
-    return <StencilElement />;
+    const DynamicComponent = options.dynamic(async () => {
+      /**
+       * Load client component
+       */
+      const cmp = await options.clientModule
+      const cmpProp = options.tagName
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('')
+      return () => {
+        const Cmp = cmp[cmpProp]
+        return <Cmp {...props}>{children}</Cmp>
+      }
+    }, {
+      /**
+       * Render Declarative Shadow DOM component
+       */
+      loading: () => <StencilElement />,
+      ssr: false,
+    })
+    return <DynamicComponent />;
   }) as unknown as ReactWebComponent<I, E>;
 };
 
@@ -416,7 +452,8 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
   properties: Record<string, string>;
   tagName: string;
   serializeShadowRoot?: SerializeShadowRootOptions;
-} & Options<I, E> & { defineCustomElement: () => void }): ReactWebComponent<I, E> => {
+  clientModule: Promise<Record<string, ReactWebComponent<any, any>>>;
+} & Options<I, E> & { defineCustomElement: () => void, dynamic: DynamicFunction }): ReactWebComponent<I, E> => {
   /**
    * If we are running in the browser, we can use the `createComponentWrapper` function
    * to create a React component that can be used in the browser. This allows to import
@@ -444,6 +481,7 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
       renderToString: resolvedHydrateModule.renderToString,
       serializeProperty: resolvedHydrateModule.serializeProperty,
       serializeShadowRoot,
+      ...options,
     })(props as any);
   }) as unknown as ReactWebComponent<I, E>;
 };
