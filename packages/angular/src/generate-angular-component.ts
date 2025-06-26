@@ -1,6 +1,6 @@
 import type { CompilerJsDoc, ComponentCompilerEvent, ComponentCompilerProperty } from '@stencil/core/internal';
 
-import { createComponentEventTypeImports, dashToPascalCase, formatToQuotedList } from './utils';
+import { createComponentEventTypeImports, dashToPascalCase, formatToQuotedList, mapPropName } from './utils';
 import type { ComponentInputProperty, OutputType } from './types';
 
 /**
@@ -79,6 +79,8 @@ export const createAngularComponentDefinition = (
   const hasOutputs = outputs.length > 0;
   const hasMethods = methods.length > 0;
 
+  // Formats the input strings into comma separated, single quoted values.
+  const proxyCmpFormattedInputs = formatToQuotedList(inputs.map(mapPropName));
   // Formats the input strings into comma separated, single quoted values if optional.
   // Formats the required input strings into comma separated {name, required} objects.
   const formattedInputs = formatInputs(inputs);
@@ -96,7 +98,7 @@ export const createAngularComponentDefinition = (
   }
 
   if (hasInputs) {
-    proxyCmpOptions.push(`\n  inputs: [${formattedInputs}]`);
+    proxyCmpOptions.push(`\n  inputs: [${proxyCmpFormattedInputs}]`);
   }
 
   if (hasMethods) {
