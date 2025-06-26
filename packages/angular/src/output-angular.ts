@@ -10,6 +10,7 @@ import {
   createImportStatement,
   isOutputTypeCustomElementsBuild,
   OutputTypes,
+  mapPropName,
 } from './utils';
 import { createAngularComponentDefinition, createComponentTypeDefinition } from './generate-angular-component';
 import { generateAngularDirectivesFile } from './generate-angular-directives-file';
@@ -144,7 +145,6 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
   const proxyFileOutput = [];
 
   const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
-  const mapPropName = (prop: { name: string }) => prop.name;
 
   // Ensure that virtual properties has required as false.
   const mapInputProp = (prop: { name: string; required?: boolean }) => ({
