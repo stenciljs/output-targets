@@ -37,8 +37,8 @@ export const createStencilReactComponents = ({
   const disableEslint = `/* eslint-disable */\n`;
   const createComponentImport = hydrateModule
     ? [
-      `import { createComponent, type SerializeShadowRootOptions, type HydrateModule, type ReactWebComponent, type DynamicFunction } from '@stencil/react-output-target/ssr';`
-    ].join('\n')
+        `import { createComponent, type SerializeShadowRootOptions, type HydrateModule, type ReactWebComponent, type DynamicFunction } from '@stencil/react-output-target/ssr';`,
+      ].join('\n')
     : `import { createComponent } from '@stencil/react-output-target/runtime';`;
   const sourceFile = project.createSourceFile(
     'component.ts',

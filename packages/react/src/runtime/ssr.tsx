@@ -70,7 +70,10 @@ interface HydrateStyle {
   id: string;
   content: string;
 }
-type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null, styles: HydrateStyle[] }>;
+type RenderToString = (
+  html: string,
+  options: RenderToStringOptions
+) => Promise<{ html: string | null; styles: HydrateStyle[] }>;
 
 export type HydrateModule = {
   renderToString: RenderToString;
@@ -302,58 +305,69 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
                  */
                 .replace(/(?<=>)\s+(?=<)/g, '');
 
-              return <>
-                {styles.map((style) => (
-                  <style key={style.id} id={style.id} dangerouslySetInnerHTML={{ __html: style.content }} />
-                ))}
-                <CustomTag {...customProps} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html }} />
-              </>;
+              return (
+                <>
+                  {styles.map((style) => (
+                    <style key={style.id} id={style.id} dangerouslySetInnerHTML={{ __html: style.content }} />
+                  ))}
+                  <CustomTag {...customProps} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html }} />
+                </>
+              );
             }
 
             /**
              * return original component with given props and `suppressHydrationWarning` flag and
              * set the template content based on our serialized Stencil component.
              */
-            return <>
-              {styles.map((style) => (
-                <style key={style.id} id={style.id} dangerouslySetInnerHTML={{ __html: style.content }} />
-              ))}
-              <CustomTag {...props} suppressHydrationWarning={true}>
-                <template
-                  // @ts-expect-error
-                  shadowrootmode="open"
-                  suppressHydrationWarning={true}
-                  dangerouslySetInnerHTML={{ __html: hydrationComment + templateContent }}
-                ></template>
-                {children}
-              </CustomTag>
-            </>;
+            return (
+              <>
+                {styles.map((style) => (
+                  <style key={style.id} id={style.id} dangerouslySetInnerHTML={{ __html: style.content }} />
+                ))}
+                <CustomTag {...props} suppressHydrationWarning={true}>
+                  <template
+                    // @ts-expect-error
+                    shadowrootmode="open"
+                    suppressHydrationWarning={true}
+                    dangerouslySetInnerHTML={{ __html: hydrationComment + templateContent }}
+                  ></template>
+                  {children}
+                </CustomTag>
+              </>
+            );
           }
 
           return;
         },
       });
 
-    const DynamicComponent = dynamic(async () => {
-      /**
-       * Load client component
-       */
-      const cmp = await options.clientModule
-      const cmpProp = options.tagName
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join('')
-      return () => {
-        const Cmp = cmp[cmpProp]
-        return <Cmp suppressHydrationWarning={true} {...props}>{children}</Cmp>
+    const DynamicComponent = dynamic(
+      async () => {
+        /**
+         * Load client component
+         */
+        const cmp = await options.clientModule;
+        const cmpProp = options.tagName
+          .split('-')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join('');
+        return () => {
+          const Cmp = cmp[cmpProp];
+          return (
+            <Cmp suppressHydrationWarning={true} {...props}>
+              {children}
+            </Cmp>
+          );
+        };
+      },
+      {
+        /**
+         * Render Declarative Shadow DOM component
+         */
+        loading: () => <StencilElement />,
+        ssr: false,
       }
-    }, {
-      /**
-       * Render Declarative Shadow DOM component
-       */
-      loading: () => <StencilElement />,
-      ssr: false,
-    })
+    );
     return <DynamicComponent suppressHydrationWarning={true} />;
   }) as unknown as ReactWebComponent<I, E>;
 };
@@ -456,9 +470,10 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
        * Handle React Lazy Component
        */
       const payload = type._payload;
-      const lazyResult = payload._status === -1 // Uninitialized = -1 so we need to resolve the promise
-        ? await payload._result()
-        : payload._result;
+      const lazyResult =
+        payload._status === -1 // Uninitialized = -1 so we need to resolve the promise
+          ? await payload._result()
+          : payload._result;
 
       const lazyComponent = lazyResult.default || lazyResult;
       resolvedType = await resolveType(lazyComponent, props);
