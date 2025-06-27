@@ -53,4 +53,3 @@ export interface ComponentInputProperty {
   name: string;
   required: boolean;
 }
-
