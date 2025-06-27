@@ -1,7 +1,7 @@
 import type { CompilerJsDoc, ComponentCompilerEvent, ComponentCompilerProperty } from '@stencil/core/internal';
 
-import { createComponentEventTypeImports, dashToPascalCase, formatToQuotedList } from './utils';
-import type { OutputType } from './types';
+import { createComponentEventTypeImports, dashToPascalCase, formatToQuotedList, mapPropName } from './utils';
+import type { ComponentInputProperty, OutputType } from './types';
 
 /**
  * Creates a property declaration.
@@ -34,10 +34,29 @@ function createPropertyDeclaration(
 }
 
 /**
+ * Creates a formatted inputs text with required declaration.
+ *
+ * @param prop A ComponentCompilerEvent or ComponentCompilerProperty to turn into a property declaration.
+ * @param inputs The inputs of the Stencil component (e.g. [{name: 'myInput', required: true]).
+ * @returns The inputs list declaration as a string.
+ */
+function formatInputs(inputs: readonly ComponentInputProperty[]): string {
+  return inputs
+    .map((item) => {
+      if (item.required) {
+        return `{ name: '${item.name}', required: true }`;
+      } else {
+        return `'${item.name}'`;
+      }
+    })
+    .join(', ');
+}
+
+/**
  * Creates an Angular component declaration from formatted Stencil compiler metadata.
  *
  * @param tagName The tag name of the component.
- * @param inputs The inputs of the Stencil component (e.g. ['myInput']).
+ * @param inputs The inputs of the Stencil component (e.g. [{name: 'myInput', required: true]).
  * @param outputs The outputs/events of the Stencil component. (e.g. ['myOutput']).
  * @param methods The methods of the Stencil component. (e.g. ['myMethod']).
  * @param includeImportCustomElements Whether to define the component as a custom element.
@@ -47,7 +66,7 @@ function createPropertyDeclaration(
  */
 export const createAngularComponentDefinition = (
   tagName: string,
-  inputs: readonly string[],
+  inputs: readonly ComponentInputProperty[],
   outputs: readonly string[],
   methods: readonly string[],
   includeImportCustomElements = false,
@@ -61,7 +80,10 @@ export const createAngularComponentDefinition = (
   const hasMethods = methods.length > 0;
 
   // Formats the input strings into comma separated, single quoted values.
-  const formattedInputs = formatToQuotedList(inputs);
+  const proxyCmpFormattedInputs = formatToQuotedList(inputs.map(mapPropName));
+  // Formats the input strings into comma separated, single quoted values if optional.
+  // Formats the required input strings into comma separated {name, required} objects.
+  const formattedInputs = formatInputs(inputs);
   // Formats the output strings into comma separated, single quoted values.
   const formattedOutputs = formatToQuotedList(outputs);
   // Formats the method strings into comma separated, single quoted values.
@@ -76,7 +98,7 @@ export const createAngularComponentDefinition = (
   }
 
   if (hasInputs) {
-    proxyCmpOptions.push(`\n  inputs: [${formattedInputs}]`);
+    proxyCmpOptions.push(`\n  inputs: [${proxyCmpFormattedInputs}]`);
   }
 
   if (hasMethods) {

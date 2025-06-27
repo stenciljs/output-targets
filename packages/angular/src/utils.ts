@@ -10,6 +10,8 @@ export const OutputTypes: { [key: string]: OutputType } = {
 
 export const toLowerCase = (str: string) => str.toLowerCase();
 
+export const mapPropName = (prop: { name: string }) => prop.name;
+
 export const dashToPascalCase = (str: string) =>
   toLowerCase(str)
     .split('-')
