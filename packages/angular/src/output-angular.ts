@@ -1,6 +1,6 @@
 import path from 'path';
 import type { CompilerCtx, ComponentCompilerMeta, ComponentCompilerProperty, Config } from '@stencil/core/internal';
-import type { OutputTargetAngular, PackageJSON } from './types';
+import type { ComponentInputProperty, OutputTargetAngular, PackageJSON } from './types';
 import {
   relativeImport,
   normalizePath,
@@ -10,6 +10,7 @@ import {
   createImportStatement,
   isOutputTypeCustomElementsBuild,
   OutputTypes,
+  mapPropName,
 } from './utils';
 import { createAngularComponentDefinition, createComponentTypeDefinition } from './generate-angular-component';
 import { generateAngularDirectivesFile } from './generate-angular-directives-file';
@@ -144,7 +145,12 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
   const proxyFileOutput = [];
 
   const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
-  const mapPropName = (prop: { name: string }) => prop.name;
+
+  // Ensure that virtual properties has required as false.
+  const mapInputProp = (prop: { name: string; required?: boolean }) => ({
+    name: prop.name,
+    required: prop.required ?? false,
+  });
 
   const { componentCorePackage, customElementsDir } = outputTarget;
 
@@ -157,13 +163,13 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
       internalProps.push(...cmpMeta.properties.filter(filterInternalProps));
     }
 
-    const inputs = internalProps.map(mapPropName);
+    const inputs = internalProps.map(mapInputProp);
 
     if (cmpMeta.virtualProperties) {
-      inputs.push(...cmpMeta.virtualProperties.map(mapPropName));
+      inputs.push(...cmpMeta.virtualProperties.map(mapInputProp));
     }
 
-    inputs.sort();
+    const orderedInputs = sortBy(inputs, (cip: ComponentInputProperty) => cip.name);
 
     const outputs: string[] = [];
 
@@ -187,7 +193,7 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
      */
     const componentDefinition = createAngularComponentDefinition(
       cmpMeta.tagName,
-      inputs,
+      orderedInputs,
       outputs,
       methods,
       isCustomElementsBuild,

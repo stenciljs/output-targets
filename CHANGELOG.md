@@ -1,3 +1,15 @@
+## @stencil/react-output-target@1.1.1 (2025-04-03)
+
+#### :bug: Bug Fix
+
+- [`9f20ee0`](https://github.com/stenciljs/output-targets/commit/9f20ee0) fix(react): forward ref to underlying web component (#655) ([@RakeshPawar](https://github.com/RakeshPawar))
+
+## @stencil/angular-output-target@1.1.0 (2025-04-03)
+
+#### :rocket: Enhancement
+
+- [`11f028d`](https://github.com/stenciljs/output-targets/commit/11f028d) Feature/required inputs (#673) ([@mklemarczyk](https://github.com/mklemarczyk))
+
 ## @stencil/ssr@0.1.0, @stencil/react-output-target@1.0.0 (2025-04-03)
 
 #### :rocket: Enhancement
