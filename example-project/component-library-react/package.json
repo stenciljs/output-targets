@@ -6,7 +6,6 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "node": "./dist/components.server.js",
       "import": "./dist/index.js"
     },
     "./next": {
@@ -26,6 +25,14 @@
     "@stencil/react-output-target": "workspace:*",
     "component-library": "workspace:*",
     "react-dom": "^18.3.1"
+  },
+  "peerDependencies": {
+    "next": "^15.1.6"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^22.13.9",

@@ -36,7 +36,9 @@ export const createStencilReactComponents = ({
 
   const disableEslint = `/* eslint-disable */\n`;
   const createComponentImport = hydrateModule
-    ? `import { createComponent, type SerializeShadowRootOptions, type HydrateModule } from '@stencil/react-output-target/ssr';`
+    ? [
+      `import { createComponent, type SerializeShadowRootOptions, type HydrateModule, type ReactWebComponent, type DynamicFunction } from '@stencil/react-output-target/ssr';`
+    ].join('\n')
     : `import { createComponent } from '@stencil/react-output-target/runtime';`;
   const sourceFile = project.createSourceFile(
     'component.ts',
@@ -175,12 +177,13 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
       .map((e) => `${e.name}: '${e.attribute}'`)
       .join(',\n')}},
     hydrateModule: import('${hydrateModule}') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: ${componentElement},
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {${events.map((e) => `${e.name}: '${e.originalName}'`).join(',\n')}} as ${componentEventNamesType},
-    defineCustomElement: define${reactTagName}
+    defineCustomElement: define${reactTagName},
   })`;
 
     sourceFile.addVariableStatement({

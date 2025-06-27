@@ -3,6 +3,11 @@
 exports[`complex-props-scoped > should correctly server side render complex props 1`] = `
 "
 <div id="complex-props-scoped">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
   <my-complex-props-scoped
     baz="serialized:eyJ0eXBlIjoibWFwIiwidmFsdWUiOltbeyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJmb28ifSx7InR5cGUiOiJvYmplY3QiLCJ2YWx1ZSI6W1sicXV4Iix7InR5cGUiOiJzeW1ib2wiLCJ2YWx1ZSI6InF1dXgifV1dfV1dfQ=="
     class="hydrated sc-my-complex-props-scoped-h"
@@ -67,6 +72,11 @@ exports[`complex-props-scoped > should correctly server side render complex prop
 exports[`complex-props-shadow > should correctly server side render complex props 1`] = `
 "
 <div id="complex-props-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
   <my-complex-props
     baz="serialized:eyJ0eXBlIjoibWFwIiwidmFsdWUiOltbeyJ0eXBlIjoic3RyaW5nIiwidmFsdWUiOiJmb28ifSx7InR5cGUiOiJvYmplY3QiLCJ2YWx1ZSI6W1sicXV4Iix7InR5cGUiOiJzeW1ib2wiLCJ2YWx1ZSI6InF1dXgifV1dfV1dfQ=="
     class="hydrated sc-my-complex-props-h"
@@ -133,6 +143,11 @@ exports[`complex-props-shadow > should correctly server side render complex prop
 exports[`nested-shadow > should correctly server side render 1`] = `
 "
 <div id="nested-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
   <my-list
     class="hydrated sc-my-list-h"
     s-id="x"
@@ -148,6 +163,11 @@ exports[`nested-shadow > should correctly server side render 1`] = `
         >
         </slot>
       </ul>
+    </template>
+    <template
+      data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+      data-msg="..."
+    >
     </template>
     <my-list-item
       class="hydrated sc-my-list-item-h"
@@ -167,6 +187,11 @@ exports[`nested-shadow > should correctly server side render 1`] = `
       </template>
       Foo Shadow
     </my-list-item>
+    <template
+      data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+      data-msg="..."
+    >
+    </template>
     <my-list-item
       class="hydrated sc-my-list-item-h"
       s-id="x"
@@ -185,6 +210,11 @@ exports[`nested-shadow > should correctly server side render 1`] = `
       </template>
       Bar Shadow
     </my-list-item>
+    <template
+      data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+      data-msg="..."
+    >
+    </template>
     <my-list-item
       class="hydrated sc-my-list-item-h"
       s-id="x"
@@ -211,6 +241,14 @@ exports[`nested-shadow > should correctly server side render 1`] = `
 exports[`single-children-scoped > should correctly server side render 1`] = `
 "
 <div id="single-children-scoped">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
+  <style id="sc-my-button-scoped">
+    .sc-my-button-scoped-h{display:block;background-color:green;color:white;font-weight:bold;border-radius:5px;cursor:pointer}slot-fb{display:contents}slot-fb[hidden]{display:none}
+  </style>
   <my-button-scoped
     class="button button-outline hydrated my-activatable my-focusable sc-my-button-scoped-h"
     fill="outline"
@@ -236,6 +274,11 @@ exports[`single-children-scoped > should correctly server side render 1`] = `
 exports[`single-children-shadow > should correctly server side render 1`] = `
 "
 <div id="single-children-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
   <my-button
     class="button button-outline hydrated my-activatable my-focusable sc-my-button-h"
     fill="outline"
@@ -289,6 +332,14 @@ exports[`single-children-shadow > should correctly server side render 1`] = `
 exports[`single-no-child-scoped > should correctly server side render 1`] = `
 "
 <div id="single-no-child-scoped">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
+  <style id="sc-my-component-scoped">
+    .sc-my-component-scoped-h{display:block;color:green}
+  </style>
   <my-component-scoped
     class="hydrated sc-my-component-scoped-h"
     first="John"
@@ -310,6 +361,11 @@ exports[`single-no-child-scoped > should correctly server side render 1`] = `
 exports[`single-no-child-shadow > should correctly server side render 1`] = `
 "
 <div id="single-no-child-shadow">
+  <template
+    data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"
+    data-msg="..."
+  >
+  </template>
   <my-component
     class="hydrated sc-my-component-h"
     first="John"
@@ -329,42 +385,6 @@ exports[`single-no-child-shadow > should correctly server side render 1`] = `
       </div>
     </template>
   </my-component>
-</div>
-"
-`;
-
-exports[`transform-scoped-to-shadow > should server side render component as scoped component 1`] = `
-"
-<div id="transform-scoped-to-shadow">
-  <my-counter
-    class="hydrated sc-my-counter-h"
-    s-id="x"
-    start-value="42"
-  >
-    <div
-      c-id="x"
-      class="sc-my-counter"
-    >
-      <button
-        c-id="x"
-        class="sc-my-counter"
-      >
-        -
-      </button>
-      <span
-        c-id="x"
-        class="sc-my-counter"
-      >
-        42
-      </span>
-      <button
-        c-id="x"
-        class="sc-my-counter"
-      >
-        +
-      </button>
-    </div>
-  </my-counter>
 </div>
 "
 `;

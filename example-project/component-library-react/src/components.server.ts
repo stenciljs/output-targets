@@ -6,7 +6,7 @@
 /* eslint-disable */
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent, type HydrateModule, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
+import { createComponent, type HydrateModule, type ReactWebComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
 import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
@@ -55,6 +55,7 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
         type: 'type'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyButtonElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -63,7 +64,7 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
         onMyFocus: 'myFocus',
         onMyBlur: 'myBlur'
     } as MyButtonEvents,
-    defineCustomElement: defineMyButton
+    defineCustomElement: defineMyButton,
 });
 
 export type MyButtonScopedEvents = {
@@ -89,6 +90,7 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
         type: 'type'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyButtonScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -97,7 +99,7 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
         onMyFocus: 'myFocus',
         onMyBlur: 'myBlur'
     } as MyButtonScopedEvents,
-    defineCustomElement: defineMyButtonScoped
+    defineCustomElement: defineMyButtonScoped,
 });
 
 export type MyCheckboxEvents = {
@@ -120,6 +122,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
         alignment: 'alignment'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyCheckboxElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -129,7 +132,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
         onIonFocus: 'ionFocus',
         onIonBlur: 'ionBlur'
     } as MyCheckboxEvents,
-    defineCustomElement: defineMyCheckbox
+    defineCustomElement: defineMyCheckbox,
 });
 
 export type MyComplexPropsEvents = NonNullable<unknown>;
@@ -144,12 +147,13 @@ export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComp
         waldo: 'waldo'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyComplexPropsElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComplexPropsEvents,
-    defineCustomElement: defineMyComplexProps
+    defineCustomElement: defineMyComplexProps,
 });
 
 export type MyComplexPropsScopedEvents = NonNullable<unknown>;
@@ -164,12 +168,13 @@ export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedEle
         waldo: 'waldo'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyComplexPropsScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComplexPropsScopedEvents,
-    defineCustomElement: defineMyComplexPropsScoped
+    defineCustomElement: defineMyComplexPropsScoped,
 });
 
 export type MyComponentEvents = NonNullable<unknown>;
@@ -182,12 +187,13 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
         last: 'last'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComponentEvents,
-    defineCustomElement: defineMyComponent
+    defineCustomElement: defineMyComponent,
 });
 
 export type MyComponentScopedEvents = { onMyCustomEvent: EventName<MyComponentScopedCustomEvent<IMyComponent.someVar>> };
@@ -200,12 +206,13 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
         last: 'last'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyComponentScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: { onMyCustomEvent: 'myCustomEvent' } as MyComponentScopedEvents,
-    defineCustomElement: defineMyComponentScoped
+    defineCustomElement: defineMyComponentScoped,
 });
 
 export type MyCounterEvents = { onCount: EventName<CustomEvent<number>> };
@@ -214,12 +221,13 @@ export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents>
     tagName: 'my-counter',
     properties: { startValue: 'start-value' },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyCounterElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: { onCount: 'count' } as MyCounterEvents,
-    defineCustomElement: defineMyCounter
+    defineCustomElement: defineMyCounter,
 });
 
 export type MyInputEvents = {
@@ -260,6 +268,7 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyInputElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -270,7 +279,7 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@
         onMyBlur: 'myBlur',
         onMyFocus: 'myFocus'
     } as MyInputEvents,
-    defineCustomElement: defineMyInput
+    defineCustomElement: defineMyInput,
 });
 
 export type MyInputScopedEvents = {
@@ -311,6 +320,7 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyInputScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -321,7 +331,7 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
         onMyBlur: 'myBlur',
         onMyFocus: 'myFocus'
     } as MyInputScopedEvents,
-    defineCustomElement: defineMyInputScoped
+    defineCustomElement: defineMyInputScoped,
 });
 
 export type MyListEvents = NonNullable<unknown>;
@@ -330,12 +340,13 @@ export const MyList: StencilReactComponent<MyListElement, MyListEvents> = /*@__P
     tagName: 'my-list',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyListElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyListEvents,
-    defineCustomElement: defineMyList
+    defineCustomElement: defineMyList,
 });
 
 export type MyListItemEvents = NonNullable<unknown>;
@@ -344,12 +355,13 @@ export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEven
     tagName: 'my-list-item',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyListItemElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyListItemEvents,
-    defineCustomElement: defineMyListItem
+    defineCustomElement: defineMyListItem,
 });
 
 export type MyListItemScopedEvents = NonNullable<unknown>;
@@ -358,12 +370,13 @@ export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, My
     tagName: 'my-list-item-scoped',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyListItemScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyListItemScopedEvents,
-    defineCustomElement: defineMyListItemScoped
+    defineCustomElement: defineMyListItemScoped,
 });
 
 export type MyListScopedEvents = NonNullable<unknown>;
@@ -372,12 +385,13 @@ export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScop
     tagName: 'my-list-scoped',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyListScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyListScopedEvents,
-    defineCustomElement: defineMyListScoped
+    defineCustomElement: defineMyListScoped,
 });
 
 export type MyPopoverEvents = {
@@ -401,6 +415,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
         animated: 'animated'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyPopoverElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -411,7 +426,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
         onMyPopoverWillDismiss: 'myPopoverWillDismiss',
         onMyPopoverDidDismiss: 'myPopoverDidDismiss'
     } as MyPopoverEvents,
-    defineCustomElement: defineMyPopover
+    defineCustomElement: defineMyPopover,
 });
 
 export type MyRadioEvents = {
@@ -431,6 +446,7 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
         alignment: 'alignment'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyRadioElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -439,7 +455,7 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
         onIonFocus: 'ionFocus',
         onIonBlur: 'ionBlur'
     } as MyRadioEvents,
-    defineCustomElement: defineMyRadio
+    defineCustomElement: defineMyRadio,
 });
 
 export type MyRadioGroupEvents = { onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>> };
@@ -453,12 +469,13 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyRadioGroupElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: { onMyChange: 'myChange' } as MyRadioGroupEvents,
-    defineCustomElement: defineMyRadioGroup
+    defineCustomElement: defineMyRadioGroup,
 });
 
 export type MyRangeEvents = {
@@ -484,6 +501,7 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = /*@
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyRangeElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -493,7 +511,7 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = /*@
         onMyFocus: 'myFocus',
         onMyBlur: 'myBlur'
     } as MyRangeEvents,
-    defineCustomElement: defineMyRange
+    defineCustomElement: defineMyRange,
 });
 
 export type MyToggleEvents = NonNullable<unknown>;
@@ -502,12 +520,13 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = 
     tagName: 'my-toggle',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyToggleElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyToggleEvents,
-    defineCustomElement: defineMyToggle
+    defineCustomElement: defineMyToggle,
 });
 
 export type MyToggleContentEvents = NonNullable<unknown>;
@@ -516,10 +535,11 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyTo
     tagName: 'my-toggle-content',
     properties: { visible: 'visible' },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
     serializeShadowRoot,
     elementClass: MyToggleContentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyToggleContentEvents,
-    defineCustomElement: defineMyToggleContent
+    defineCustomElement: defineMyToggleContent,
 });
