@@ -1,10 +1,17 @@
 version: 2
 updates:
-  # Enable version updates for npm dependencies
+  # Enable version updates for pnpm dependencies
+  # Note: we can't create an entry per project as Dependabot doesn't support it
+  #       and would raise PRs updating `package.json` without `pnpm-lock.yaml` updates.
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+    versioning-strategy: increase
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
     groups:
       minor-and-patch:
         patterns:
@@ -12,7 +19,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    # This will also update the packageManager field
     allow:
       - dependency-type: "direct"
       - dependency-type: "indirect"
@@ -24,55 +30,6 @@ updates:
       interval: "weekly"
     groups:
       github-actions-minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-
-  # Explicitly monitor for pnpm updates in package.json packageManager field
-  - package-ecosystem: "npm"
-    directory: "/packages/angular"
-    schedule:
-      interval: "weekly"
-    groups:
-      angular-minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/react"
-    schedule:
-      interval: "weekly"
-    groups:
-      react-minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/vue"
-    schedule:
-      interval: "weekly"
-    groups:
-      vue-minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/ssr"
-    schedule:
-      interval: "weekly"
-    groups:
-      ssr-minor-and-patch:
         patterns:
           - "*"
         update-types:
