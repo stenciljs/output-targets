@@ -177,11 +177,6 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
       .map((e) => `${e.name}: '${e.attribute}'`)
       .join(',\n')}},
     hydrateModule: import('${hydrateModule}') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: ${componentElement},
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.

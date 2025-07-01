@@ -85,8 +85,6 @@ interface CreateComponentForServerSideRenderingOptions {
   renderToString: RenderToString;
   serializeProperty: (value: any) => string;
   serializeShadowRoot?: SerializeShadowRootOptions;
-  // dynamic: DynamicFunction;
-  clientModule: Promise<Record<string, ReactWebComponent<any, any>>>;
 }
 
 type StencilProps<I extends HTMLElement> = WebComponentProps<I>;
@@ -343,22 +341,9 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
 
     const DynamicComponent = dynamic(
       async () => {
-        /**
-         * Load client component
-         */
-        const cmp = await options.clientModule;
-        const cmpProp = options.tagName
-          .split('-')
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join('');
-        return () => {
-          const Cmp = cmp[cmpProp];
-          return (
-            <Cmp suppressHydrationWarning={true} {...props}>
-              {children}
-            </Cmp>
-          );
-        };
+        const clientRuntime = await import('./create-component.js');
+        const Cmp = clientRuntime.createComponent(options as any);
+        return Cmp;
       },
       {
         /**
@@ -530,7 +515,6 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
   properties: Record<string, string>;
   tagName: string;
   serializeShadowRoot?: SerializeShadowRootOptions;
-  clientModule: Promise<Record<string, ReactWebComponent<any, any>>>;
 } & Options<I, E> & { defineCustomElement: () => void }): ReactWebComponent<I, E> => {
   /**
    * If we are running in the browser, we can use the `createComponentWrapper` function

@@ -46,6 +46,7 @@
     "test.e2e.vue": "pnpm --filter vue-app test",
     "test.e2e.next": "pnpm --filter next-app test",
     "test.e2e.next-15": "pnpm --filter next-15-react-19-app test",
+    "test.e2e.runtime": "pnpm --filter next-15-runtime-based test",
     "test.e2e.nuxt": "pnpm --filter nuxt-app test"
   },
   "devDependencies": {
