@@ -278,7 +278,11 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     tagName: 'my-component',
     properties: { hasMaxLength: 'max-length' },
     hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.

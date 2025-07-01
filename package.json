@@ -17,6 +17,7 @@
     "build.example.vue.app": "pnpm --filter vue-app run build",
     "build.example.nuxt": "pnpm --filter nuxt-app run build",
     "build.example.next-15": "pnpm --filter next-15-react-19-app run build",
+    "build.example.runtime": "pnpm --filter next-15-runtime-based run build",
     "changelog": "lerna-changelog",
     "clean": "lerna run clean",
     "dev": "run-p dev.*",
