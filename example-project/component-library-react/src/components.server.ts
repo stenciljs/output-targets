@@ -55,7 +55,11 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
         type: 'type'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyButtonElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -90,7 +94,11 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
         type: 'type'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyButtonScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -122,7 +130,11 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
         alignment: 'alignment'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyCheckboxElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -147,7 +159,11 @@ export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComp
         waldo: 'waldo'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyComplexPropsElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -168,7 +184,11 @@ export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedEle
         waldo: 'waldo'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyComplexPropsScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -187,7 +207,11 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
         last: 'last'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -206,7 +230,11 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
         last: 'last'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyComponentScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -221,7 +249,11 @@ export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents>
     tagName: 'my-counter',
     properties: { startValue: 'start-value' },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyCounterElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -268,7 +300,11 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyInputElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -320,7 +356,11 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyInputScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -340,7 +380,11 @@ export const MyList: StencilReactComponent<MyListElement, MyListEvents> = /*@__P
     tagName: 'my-list',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyListElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -355,7 +399,11 @@ export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEven
     tagName: 'my-list-item',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyListItemElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -370,7 +418,11 @@ export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, My
     tagName: 'my-list-item-scoped',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyListItemScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -385,7 +437,11 @@ export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScop
     tagName: 'my-list-scoped',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyListScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -415,7 +471,11 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
         animated: 'animated'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyPopoverElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -446,7 +506,11 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
         alignment: 'alignment'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyRadioElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -469,7 +533,11 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyRadioGroupElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -501,7 +569,11 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = /*@
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyRangeElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -520,7 +592,11 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = 
     tagName: 'my-toggle',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyToggleElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -535,7 +611,11 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyTo
     tagName: 'my-toggle-content',
     properties: { visible: 'visible' },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>,
+    /**
+     * We need to use a dynamic import to ensure we don't load the client module
+     * during the SSR build.
+     */
+    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
     serializeShadowRoot,
     elementClass: MyToggleContentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
