@@ -278,12 +278,8 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     tagName: 'my-component',
     properties: { hasMaxLength: 'max-length' },
     hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
+    clientModule: clientComponents.MyComponent as ReactWebComponent<MyComponentElement, MyComponentEvents>,
     serializeShadowRoot,
-    elementClass: MyComponentElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyComponentEvents,
-    defineCustomElement: defineMyComponent,
 });
 `);
   });

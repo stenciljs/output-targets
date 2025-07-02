@@ -8,27 +8,27 @@
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent, type HydrateModule, type ReactWebComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
 import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
-import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from "component-library/components/my-button-scoped.js";
-import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
-import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
-import { MyComplexPropsScoped as MyComplexPropsScopedElement, defineCustomElement as defineMyComplexPropsScoped } from "component-library/components/my-complex-props-scoped.js";
-import { MyComplexProps as MyComplexPropsElement, defineCustomElement as defineMyComplexProps } from "component-library/components/my-complex-props.js";
-import { MyComponentScoped as MyComponentScopedElement, defineCustomElement as defineMyComponentScoped } from "component-library/components/my-component-scoped.js";
-import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "component-library/components/my-component.js";
-import { MyCounter as MyCounterElement, defineCustomElement as defineMyCounter } from "component-library/components/my-counter.js";
-import { MyInputScoped as MyInputScopedElement, defineCustomElement as defineMyInputScoped } from "component-library/components/my-input-scoped.js";
-import { MyInput as MyInputElement, defineCustomElement as defineMyInput } from "component-library/components/my-input.js";
-import { MyListItemScoped as MyListItemScopedElement, defineCustomElement as defineMyListItemScoped } from "component-library/components/my-list-item-scoped.js";
-import { MyListItem as MyListItemElement, defineCustomElement as defineMyListItem } from "component-library/components/my-list-item.js";
-import { MyListScoped as MyListScopedElement, defineCustomElement as defineMyListScoped } from "component-library/components/my-list-scoped.js";
-import { MyList as MyListElement, defineCustomElement as defineMyList } from "component-library/components/my-list.js";
-import { MyPopover as MyPopoverElement, defineCustomElement as defineMyPopover } from "component-library/components/my-popover.js";
-import { MyRadioGroup as MyRadioGroupElement, defineCustomElement as defineMyRadioGroup } from "component-library/components/my-radio-group.js";
-import { MyRadio as MyRadioElement, defineCustomElement as defineMyRadio } from "component-library/components/my-radio.js";
-import { MyRange as MyRangeElement, defineCustomElement as defineMyRange } from "component-library/components/my-range.js";
-import { MyToggleContent as MyToggleContentElement, defineCustomElement as defineMyToggleContent } from "component-library/components/my-toggle-content.js";
-import { MyToggle as MyToggleElement, defineCustomElement as defineMyToggle } from "component-library/components/my-toggle.js";
-import React from 'react';
+import { MyButtonScoped as MyButtonScopedElement } from "component-library/components/my-button-scoped.js";
+import { MyButton as MyButtonElement } from "component-library/components/my-button.js";
+import { MyCheckbox as MyCheckboxElement } from "component-library/components/my-checkbox.js";
+import { MyComplexPropsScoped as MyComplexPropsScopedElement } from "component-library/components/my-complex-props-scoped.js";
+import { MyComplexProps as MyComplexPropsElement } from "component-library/components/my-complex-props.js";
+import { MyComponentScoped as MyComponentScopedElement } from "component-library/components/my-component-scoped.js";
+import { MyComponent as MyComponentElement } from "component-library/components/my-component.js";
+import { MyCounter as MyCounterElement } from "component-library/components/my-counter.js";
+import { MyInputScoped as MyInputScopedElement } from "component-library/components/my-input-scoped.js";
+import { MyInput as MyInputElement } from "component-library/components/my-input.js";
+import { MyListItemScoped as MyListItemScopedElement } from "component-library/components/my-list-item-scoped.js";
+import { MyListItem as MyListItemElement } from "component-library/components/my-list-item.js";
+import { MyListScoped as MyListScopedElement } from "component-library/components/my-list-scoped.js";
+import { MyList as MyListElement } from "component-library/components/my-list.js";
+import { MyPopover as MyPopoverElement } from "component-library/components/my-popover.js";
+import { MyRadioGroup as MyRadioGroupElement } from "component-library/components/my-radio-group.js";
+import { MyRadio as MyRadioElement } from "component-library/components/my-radio.js";
+import { MyRange as MyRangeElement } from "component-library/components/my-range.js";
+import { MyToggleContent as MyToggleContentElement } from "component-library/components/my-toggle-content.js";
+import { MyToggle as MyToggleElement } from "component-library/components/my-toggle.js";
+import * as clientComponents from './components.js';
 
 export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter"], "default": "declarative-shadow-dom" };
 
@@ -55,20 +55,8 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
         type: 'type'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyButton as ReactWebComponent<MyButtonElement, MyButtonEvents>,
     serializeShadowRoot,
-    elementClass: MyButtonElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {
-        onMyFocus: 'myFocus',
-        onMyBlur: 'myBlur'
-    } as MyButtonEvents,
-    defineCustomElement: defineMyButton,
 });
 
 export type MyButtonScopedEvents = {
@@ -94,20 +82,8 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
         type: 'type'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyButtonScoped as ReactWebComponent<MyButtonScopedElement, MyButtonScopedEvents>,
     serializeShadowRoot,
-    elementClass: MyButtonScopedElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {
-        onMyFocus: 'myFocus',
-        onMyBlur: 'myBlur'
-    } as MyButtonScopedEvents,
-    defineCustomElement: defineMyButtonScoped,
 });
 
 export type MyCheckboxEvents = {
@@ -130,21 +106,8 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
         alignment: 'alignment'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyCheckbox as ReactWebComponent<MyCheckboxElement, MyCheckboxEvents>,
     serializeShadowRoot,
-    elementClass: MyCheckboxElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {
-        onIonChange: 'ionChange',
-        onIonFocus: 'ionFocus',
-        onIonBlur: 'ionBlur'
-    } as MyCheckboxEvents,
-    defineCustomElement: defineMyCheckbox,
 });
 
 export type MyComplexPropsEvents = NonNullable<unknown>;
@@ -159,17 +122,8 @@ export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComp
         waldo: 'waldo'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyComplexProps as ReactWebComponent<MyComplexPropsElement, MyComplexPropsEvents>,
     serializeShadowRoot,
-    elementClass: MyComplexPropsElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyComplexPropsEvents,
-    defineCustomElement: defineMyComplexProps,
 });
 
 export type MyComplexPropsScopedEvents = NonNullable<unknown>;
@@ -184,17 +138,8 @@ export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedEle
         waldo: 'waldo'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyComplexPropsScoped as ReactWebComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents>,
     serializeShadowRoot,
-    elementClass: MyComplexPropsScopedElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyComplexPropsScopedEvents,
-    defineCustomElement: defineMyComplexPropsScoped,
 });
 
 export type MyComponentEvents = NonNullable<unknown>;
@@ -207,17 +152,8 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
         last: 'last'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyComponent as ReactWebComponent<MyComponentElement, MyComponentEvents>,
     serializeShadowRoot,
-    elementClass: MyComponentElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyComponentEvents,
-    defineCustomElement: defineMyComponent,
 });
 
 export type MyComponentScopedEvents = { onMyCustomEvent: EventName<MyComponentScopedCustomEvent<IMyComponent.someVar>> };
@@ -230,17 +166,8 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
         last: 'last'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyComponentScoped as ReactWebComponent<MyComponentScopedElement, MyComponentScopedEvents>,
     serializeShadowRoot,
-    elementClass: MyComponentScopedElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: { onMyCustomEvent: 'myCustomEvent' } as MyComponentScopedEvents,
-    defineCustomElement: defineMyComponentScoped,
 });
 
 export type MyCounterEvents = { onCount: EventName<CustomEvent<number>> };
@@ -249,17 +176,8 @@ export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents>
     tagName: 'my-counter',
     properties: { startValue: 'start-value' },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyCounter as ReactWebComponent<MyCounterElement, MyCounterEvents>,
     serializeShadowRoot,
-    elementClass: MyCounterElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: { onCount: 'count' } as MyCounterEvents,
-    defineCustomElement: defineMyCounter,
 });
 
 export type MyInputEvents = {
@@ -300,22 +218,8 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyInput as ReactWebComponent<MyInputElement, MyInputEvents>,
     serializeShadowRoot,
-    elementClass: MyInputElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {
-        onMyInput: 'myInput',
-        onMyChange: 'myChange',
-        onMyBlur: 'myBlur',
-        onMyFocus: 'myFocus'
-    } as MyInputEvents,
-    defineCustomElement: defineMyInput,
 });
 
 export type MyInputScopedEvents = {
@@ -356,22 +260,8 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyInputScoped as ReactWebComponent<MyInputScopedElement, MyInputScopedEvents>,
     serializeShadowRoot,
-    elementClass: MyInputScopedElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {
-        onMyInput: 'myInput',
-        onMyChange: 'myChange',
-        onMyBlur: 'myBlur',
-        onMyFocus: 'myFocus'
-    } as MyInputScopedEvents,
-    defineCustomElement: defineMyInputScoped,
 });
 
 export type MyListEvents = NonNullable<unknown>;
@@ -380,17 +270,8 @@ export const MyList: StencilReactComponent<MyListElement, MyListEvents> = /*@__P
     tagName: 'my-list',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyList as ReactWebComponent<MyListElement, MyListEvents>,
     serializeShadowRoot,
-    elementClass: MyListElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyListEvents,
-    defineCustomElement: defineMyList,
 });
 
 export type MyListItemEvents = NonNullable<unknown>;
@@ -399,17 +280,8 @@ export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEven
     tagName: 'my-list-item',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyListItem as ReactWebComponent<MyListItemElement, MyListItemEvents>,
     serializeShadowRoot,
-    elementClass: MyListItemElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyListItemEvents,
-    defineCustomElement: defineMyListItem,
 });
 
 export type MyListItemScopedEvents = NonNullable<unknown>;
@@ -418,17 +290,8 @@ export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, My
     tagName: 'my-list-item-scoped',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyListItemScoped as ReactWebComponent<MyListItemScopedElement, MyListItemScopedEvents>,
     serializeShadowRoot,
-    elementClass: MyListItemScopedElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyListItemScopedEvents,
-    defineCustomElement: defineMyListItemScoped,
 });
 
 export type MyListScopedEvents = NonNullable<unknown>;
@@ -437,17 +300,8 @@ export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScop
     tagName: 'my-list-scoped',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyListScoped as ReactWebComponent<MyListScopedElement, MyListScopedEvents>,
     serializeShadowRoot,
-    elementClass: MyListScopedElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyListScopedEvents,
-    defineCustomElement: defineMyListScoped,
 });
 
 export type MyPopoverEvents = {
@@ -471,22 +325,8 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
         animated: 'animated'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyPopover as ReactWebComponent<MyPopoverElement, MyPopoverEvents>,
     serializeShadowRoot,
-    elementClass: MyPopoverElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {
-        onMyPopoverDidPresent: 'myPopoverDidPresent',
-        onMyPopoverWillPresent: 'myPopoverWillPresent',
-        onMyPopoverWillDismiss: 'myPopoverWillDismiss',
-        onMyPopoverDidDismiss: 'myPopoverDidDismiss'
-    } as MyPopoverEvents,
-    defineCustomElement: defineMyPopover,
 });
 
 export type MyRadioEvents = {
@@ -506,20 +346,8 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
         alignment: 'alignment'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyRadio as ReactWebComponent<MyRadioElement, MyRadioEvents>,
     serializeShadowRoot,
-    elementClass: MyRadioElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {
-        onIonFocus: 'ionFocus',
-        onIonBlur: 'ionBlur'
-    } as MyRadioEvents,
-    defineCustomElement: defineMyRadio,
 });
 
 export type MyRadioGroupEvents = { onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>> };
@@ -533,17 +361,8 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyRadioGroup as ReactWebComponent<MyRadioGroupElement, MyRadioGroupEvents>,
     serializeShadowRoot,
-    elementClass: MyRadioGroupElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: { onMyChange: 'myChange' } as MyRadioGroupEvents,
-    defineCustomElement: defineMyRadioGroup,
 });
 
 export type MyRangeEvents = {
@@ -569,21 +388,8 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = /*@
         value: 'value'
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyRange as ReactWebComponent<MyRangeElement, MyRangeEvents>,
     serializeShadowRoot,
-    elementClass: MyRangeElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {
-        onMyChange: 'myChange',
-        onMyFocus: 'myFocus',
-        onMyBlur: 'myBlur'
-    } as MyRangeEvents,
-    defineCustomElement: defineMyRange,
 });
 
 export type MyToggleEvents = NonNullable<unknown>;
@@ -592,17 +398,8 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = 
     tagName: 'my-toggle',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyToggle as ReactWebComponent<MyToggleElement, MyToggleEvents>,
     serializeShadowRoot,
-    elementClass: MyToggleElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyToggleEvents,
-    defineCustomElement: defineMyToggle,
 });
 
 export type MyToggleContentEvents = NonNullable<unknown>;
@@ -611,15 +408,6 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyTo
     tagName: 'my-toggle-content',
     properties: { visible: 'visible' },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    /**
-     * We need to use a dynamic import to ensure we don't load the client module
-     * during the SSR build.
-     */
-    clientModule: (() => import('./components.js') as unknown as Promise<Record<string, ReactWebComponent<any, any>>>)(),
+    clientModule: clientComponents.MyToggleContent as ReactWebComponent<MyToggleContentElement, MyToggleContentEvents>,
     serializeShadowRoot,
-    elementClass: MyToggleContentElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyToggleContentEvents,
-    defineCustomElement: defineMyToggleContent,
 });

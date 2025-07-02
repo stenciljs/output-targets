@@ -1,10 +1,9 @@
-import type { EventName, Options, ReactWebComponent, WebComponentProps } from '@lit/react';
+import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react';
 import React, { Component, JSXElementConstructor, ReactNode } from 'react';
 import { stringifyCSSProperties } from 'react-style-stringify';
 // @ts-expect-error
 import dynamic from 'next/dynamic';
 
-import { createComponent as createComponentWrapper } from './create-component.js';
 import { possibleStandardNames } from './constants.js';
 
 const LOG_PREFIX = '[react-output-target]';
@@ -79,7 +78,8 @@ export type HydrateModule = {
   renderToString: RenderToString;
   serializeProperty: (value: any) => string;
 };
-interface CreateComponentForServerSideRenderingOptions {
+interface CreateComponentForServerSideRenderingOptions<I extends HTMLElement = HTMLElement, E extends EventNames = {}> {
+  clientModule: ReactWebComponent<I, E>;
   tagName: string;
   properties: Record<string, string>;
   renderToString: RenderToString;
@@ -157,7 +157,7 @@ const isLazyExoticComponent = (value: unknown): value is LazyComponent<any, any>
  * the client side would increase the bundle size.
  */
 const createComponentForServerSideRendering = <I extends HTMLElement, E extends EventNames = {}>(
-  options: CreateComponentForServerSideRenderingOptions
+  options: CreateComponentForServerSideRenderingOptions<I, E>
 ) => {
   return (async ({ children, ...props }: StencilProps<I> = {}) => {
     /**
@@ -339,21 +339,18 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
         },
       });
 
-    const DynamicComponent = dynamic(
-      async () => {
-        const clientRuntime = await import('./create-component.js');
-        const Cmp = clientRuntime.createComponent(options as any);
-        return Cmp;
-      },
-      {
-        /**
-         * Render Declarative Shadow DOM component
-         */
-        loading: () => <StencilElement />,
-        ssr: false,
-      }
+    const DynamicComponent = dynamic(async () => options.clientModule, {
+      /**
+       * Render Declarative Shadow DOM component
+       */
+      loading: () => <StencilElement />,
+      ssr: false,
+    });
+    return (
+      <DynamicComponent suppressHydrationWarning={true} {...props}>
+        {children}
+      </DynamicComponent>
     );
-    return <DynamicComponent suppressHydrationWarning={true} />;
   }) as unknown as ReactWebComponent<I, E>;
 };
 
@@ -500,32 +497,27 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
   }
 };
 
+type CreateComponentForSSROptions<I extends HTMLElement, E extends EventNames = {}> = Omit<
+  CreateComponentForServerSideRenderingOptions<I, E>,
+  'renderToString' | 'serializeProperty'
+> & {
+  hydrateModule: Promise<HydrateModule>;
+};
+
 /**
  * Defines a custom element and creates a React component for server side rendering.
  * @public
  */
-export const createComponent = <I extends HTMLElement, E extends EventNames = {}>({
-  hydrateModule,
-  properties,
-  tagName,
-  serializeShadowRoot,
-  ...options
-}: {
-  hydrateModule: Promise<HydrateModule>;
-  properties: Record<string, string>;
-  tagName: string;
-  serializeShadowRoot?: SerializeShadowRootOptions;
-} & Options<I, E> & { defineCustomElement: () => void }): ReactWebComponent<I, E> => {
+export const createComponent = <I extends HTMLElement, E extends EventNames = {}>(
+  options: CreateComponentForSSROptions<I, E>
+): ReactWebComponent<I, E> => {
   /**
    * If we are running in the browser, we can use the `createComponentWrapper` function
    * to create a React component that can be used in the browser. This allows to import
    * a Stencil component from one source and have a browser and server version of the component.
    */
-  if (typeof window !== 'undefined' && createComponentWrapper) {
-    return createComponentWrapper<I, E>({
-      tagName,
-      ...options,
-    }) as unknown as ReactWebComponent<I, E>;
+  if (typeof window !== 'undefined') {
+    return options.clientModule;
   }
 
   /**
@@ -536,13 +528,10 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
    * bundling them in the runtime and serving them in the browser.
    */
   return (async (props: WebComponentProps<I>) => {
-    const resolvedHydrateModule = await hydrateModule;
+    const resolvedHydrateModule = await options.hydrateModule;
     return createComponentForServerSideRendering<I, E>({
-      tagName,
-      properties,
       renderToString: resolvedHydrateModule.renderToString,
       serializeProperty: resolvedHydrateModule.serializeProperty,
-      serializeShadowRoot,
       ...options,
     })(props as any);
   }) as unknown as ReactWebComponent<I, E>;
