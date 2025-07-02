@@ -8,6 +8,7 @@
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent, type HydrateModule, type ReactWebComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
 import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import * as clientComponents from 'component-library-react';
 import { MyButtonScoped as MyButtonScopedElement } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement } from "component-library/components/my-checkbox.js";
@@ -28,7 +29,6 @@ import { MyRadio as MyRadioElement } from "component-library/components/my-radio
 import { MyRange as MyRangeElement } from "component-library/components/my-range.js";
 import { MyToggleContent as MyToggleContentElement } from "component-library/components/my-toggle-content.js";
 import { MyToggle as MyToggleElement } from "component-library/components/my-toggle.js";
-import * as clientComponents from './components.js';
 
 export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter"], "default": "declarative-shadow-dom" };
 

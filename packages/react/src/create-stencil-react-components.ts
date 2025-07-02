@@ -14,12 +14,14 @@ export const createStencilReactComponents = ({
   stencilPackageName,
   customElementsDir,
   hydrateModule,
+  clientModule,
   serializeShadowRoot,
 }: {
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
   customElementsDir: string;
   hydrateModule?: string;
+  clientModule?: string;
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
 }) => {
   const project = new Project({ useInMemoryFileSystem: true });
@@ -37,7 +39,7 @@ export const createStencilReactComponents = ({
   const disableEslint = `/* eslint-disable */\n`;
   const createComponentImport = hydrateModule
     ? [
-        `import * as clientComponents from './components.js';`,
+        `import * as clientComponents from '${clientModule}';`,
         `import { createComponent, type SerializeShadowRootOptions, type HydrateModule, type ReactWebComponent, type DynamicFunction } from '@stencil/react-output-target/ssr';`,
       ].join('\n')
     : `import { createComponent } from '@stencil/react-output-target/runtime';`;

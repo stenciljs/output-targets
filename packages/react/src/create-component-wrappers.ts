@@ -14,6 +14,7 @@ export const createComponentWrappers = async ({
   excludeComponents,
   project,
   hydrateModule,
+  clientModule,
   excludeServerSideRenderingFor,
   serializeShadowRoot,
 }: {
@@ -25,6 +26,7 @@ export const createComponentWrappers = async ({
   excludeComponents?: string[];
   project: Project;
   hydrateModule?: string;
+  clientModule?: string;
   excludeServerSideRenderingFor?: string[];
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
 }) => {
@@ -86,6 +88,7 @@ export const createComponentWrappers = async ({
         stencilPackageName,
         customElementsDir,
         hydrateModule,
+        clientModule,
         serializeShadowRoot,
       });
       fileContents[outputPath] = stencilReactComponent;
