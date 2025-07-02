@@ -32,6 +32,11 @@ export interface ReactOutputTargetOptions {
    */
   hydrateModule?: string;
   /**
+   * The name of the package that exports all React wrapped Stencil components for client side rendering.
+   * This options is required when `hydrateModule` is set for server side rendering to work.
+   */
+  clientModule?: string;
+  /**
    * Specify the components that should be excluded from server side rendering.
    */
   excludeServerSideRenderingFor?: string[];
@@ -85,6 +90,7 @@ export const reactOutputTarget = ({
   excludeComponents,
   customElementsDir: customElementsDirOverride,
   hydrateModule,
+  clientModule,
   excludeServerSideRenderingFor,
   serializeShadowRoot,
 }: ReactOutputTargetOptions): ReactOutputTarget => {
@@ -141,6 +147,12 @@ export const reactOutputTarget = ({
             `The '${PLUGIN_NAME}' requires '${HYDRATE_OUTPUT_TARGET}' output target when the 'hydrateModule' option is set. Add { type: '${HYDRATE_OUTPUT_TARGET}' }, to the outputTargets config.`
           );
         }
+
+        if (clientModule == null) {
+          throw new Error(
+            `The '${PLUGIN_NAME}' requires the 'clientModule' option when the 'hydrateModule' option is set. Please provide the clientModule manually to the ${PLUGIN_NAME} output target.`
+          );
+        }
       }
 
       if (!outDir) {
@@ -179,6 +191,7 @@ export const reactOutputTarget = ({
         esModules: esModules === true,
         project,
         hydrateModule,
+        clientModule,
         excludeServerSideRenderingFor,
         serializeShadowRoot,
       });

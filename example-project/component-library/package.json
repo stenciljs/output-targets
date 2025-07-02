@@ -1,6 +1,5 @@
 {
   "name": "component-library",
-  "version": "0.0.4",
   "private": true,
   "description": "Stencil Component Library for testing purposes",
   "license": "MIT",

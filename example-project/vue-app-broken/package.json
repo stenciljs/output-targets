@@ -1,7 +1,6 @@
 {
   "name": "vue-app-broken",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "build.app": "vue-tsc --noEmit -p ./tsconfig.json",
