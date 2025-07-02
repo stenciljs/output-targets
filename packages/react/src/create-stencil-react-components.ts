@@ -39,6 +39,7 @@ export const createStencilReactComponents = ({
   const disableEslint = `/* eslint-disable */\n`;
   const createComponentImport = hydrateModule
     ? [
+        `// @ts-ignore - ignore potential type issues as the project is importing itself`,
         `import * as clientComponents from '${clientModule}';`,
         `import { createComponent, type SerializeShadowRootOptions, type HydrateModule, type ReactWebComponent, type DynamicFunction } from '@stencil/react-output-target/ssr';`,
       ].join('\n')
