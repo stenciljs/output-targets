@@ -142,21 +142,6 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
-  example-project/component-library-angular/projects/library/dist:
-    dependencies:
-      '@angular/common':
-        specifier: ^20.0.0
-        version: 20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
-      '@angular/core':
-        specifier: ^20.0.0
-        version: 20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)
-      component-library:
-        specifier: workspace:*
-        version: link:../../../../component-library
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-
   example-project/component-library-react:
     dependencies:
       '@stencil/react-output-target':
@@ -230,8 +215,6 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.15.31)(jsdom@20.0.3)(less@4.3.0)(sass@1.89.2)(terser@5.42.0)
-
-  example-project/component-library/hydrate: {}
 
   example-project/next-15-react-19-app:
     dependencies:
