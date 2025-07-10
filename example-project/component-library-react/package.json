@@ -1,12 +1,10 @@
 {
   "name": "component-library-react",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "node": "./dist/components.server.js",
       "import": "./dist/index.js"
     },
     "./next": {

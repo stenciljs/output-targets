@@ -12,7 +12,6 @@ export default defineComponent({
     const changeEvent = ref('');
 
     const handleChange = (ev) => {
-      console.log('handleChange', ev.target.value);
       changeEvent.value = ev.detail.value;
     };
 

@@ -1,6 +1,6 @@
 {
   "name": "component-library-angular",
-  "version": "0.0.1",
+  "private": true,
   "peerDependencies": {
     "@angular/common": "^20.0.0",
     "@angular/core": "^20.0.0"

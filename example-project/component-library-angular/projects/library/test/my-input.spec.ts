@@ -107,7 +107,6 @@ describe('MyInput - Disabled state', () => {
   });
 
   it('should support setting disabled state via the ValueAccessor', () => {
-    console.log(myInputEl.nativeElement);
     expect(myInputEl.nativeElement.disabled).toBe(true);
   });
 });

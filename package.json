@@ -17,6 +17,7 @@
     "build.example.vue.app": "pnpm --filter vue-app run build",
     "build.example.nuxt": "pnpm --filter nuxt-app run build",
     "build.example.next-15": "pnpm --filter next-15-react-19-app run build",
+    "build.example.runtime": "pnpm --filter next-15-runtime-based run build",
     "changelog": "lerna-changelog",
     "clean": "lerna run clean",
     "dev": "run-p dev.*",
@@ -28,6 +29,7 @@
     "prettier.dry-run": "lerna run prettier.dry-run",
     "start.next-14": "pnpm --filter next-app run start",
     "start.next-15": "pnpm --filter next-15-react-19-app run start",
+    "start.next-runtime": "pnpm --filter next-15-runtime-based run start",
     "start.nuxt": "pnpm --filter nuxt-app run start",
     "start.vue": "pnpm --filter vue-app run dev",
     "test": "lerna run test",
@@ -44,6 +46,7 @@
     "test.e2e.vue": "pnpm --filter vue-app test",
     "test.e2e.next": "pnpm --filter next-app test",
     "test.e2e.next-15": "pnpm --filter next-15-react-19-app test",
+    "test.e2e.runtime": "pnpm --filter next-15-runtime-based test",
     "test.e2e.nuxt": "pnpm --filter nuxt-app test"
   },
   "devDependencies": {

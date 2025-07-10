@@ -14,12 +14,14 @@ export const createStencilReactComponents = ({
   stencilPackageName,
   customElementsDir,
   hydrateModule,
+  clientModule,
   serializeShadowRoot,
 }: {
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
   customElementsDir: string;
   hydrateModule?: string;
+  clientModule?: string;
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
 }) => {
   const project = new Project({ useInMemoryFileSystem: true });
@@ -36,7 +38,12 @@ export const createStencilReactComponents = ({
 
   const disableEslint = `/* eslint-disable */\n`;
   const createComponentImport = hydrateModule
-    ? `import { createComponent, type SerializeShadowRootOptions, type HydrateModule } from '@stencil/react-output-target/ssr';`
+    ? [
+        `// @ts-ignore - ignore potential type issues as the project is importing itself`,
+        `import * as clientComponents from '${clientModule}';`,
+        '',
+        `import { createComponent, type SerializeShadowRootOptions, type HydrateModule, type ReactWebComponent, type DynamicFunction } from '@stencil/react-output-target/ssr';`,
+      ].join('\n')
     : `import { createComponent } from '@stencil/react-output-target/runtime';`;
   const sourceFile = project.createSourceFile(
     'component.ts',
@@ -175,12 +182,8 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
       .map((e) => `${e.name}: '${e.attribute}'`)
       .join(',\n')}},
     hydrateModule: import('${hydrateModule}') as Promise<HydrateModule>,
+    clientModule: clientComponents.${reactTagName} as ReactWebComponent<${componentElement}, ${componentEventNamesType}>,
     serializeShadowRoot,
-    elementClass: ${componentElement},
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {${events.map((e) => `${e.name}: '${e.originalName}'`).join(',\n')}} as ${componentEventNamesType},
-    defineCustomElement: define${reactTagName}
   })`;
 
     sourceFile.addVariableStatement({
