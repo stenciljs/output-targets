@@ -49,7 +49,6 @@ export default defineComponent({
     MyRadioGroup
   },
   setup() {
-    console.log('BasicComposition')
     const input = ref('')
     const isClicked = ref(false)
 
