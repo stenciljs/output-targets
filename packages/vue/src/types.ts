@@ -1,5 +1,5 @@
-import type { DefineSetupFnComponent, VNodeProps, AllowedComponentProps, ComponentCustomProps } from 'vue';
-import type { RouteLocationAsRelativeGeneric, RouteLocationAsPathGeneric } from 'vue-router';
+import type {AllowedComponentProps, ComponentCustomProps, DefineSetupFnComponent, VNodeProps} from 'vue';
+import type {RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric} from 'vue-router';
 
 /**
  * Options for the Vue Output Target
@@ -70,6 +70,7 @@ export interface ComponentModelConfig {
   elements: string | string[];
   event: string;
   targetAttr: string;
+  eventAttr: ?string;
 }
 
 export interface PackageJSON {
@@ -80,7 +81,8 @@ export interface PackageJSON {
  * This is needed as Vue references this type but can't find it for unknown reason.
  */
 declare global {
-  interface ToggleEvent {}
+  interface ToggleEvent {
+  }
 }
 
 export type StencilVueComponent<Props, VModelType = string | number | boolean> = DefineSetupFnComponent<
@@ -89,6 +91,7 @@ export type StencilVueComponent<Props, VModelType = string | number | boolean> =
   {},
   Props & InputProps<VModelType> & VNodeProps & AllowedComponentProps & ComponentCustomProps
 >;
+
 export interface InputProps<T> {
   modelValue?: T;
   /**
