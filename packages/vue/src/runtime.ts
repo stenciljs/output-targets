@@ -143,21 +143,12 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
                * when ionChange bubbles up from Component B.
                */
               if ((e.target as HTMLElement).tagName === el.tagName && modelProp) {
-                const undot = (object: object, key: string): any => {
-                  let value = object as any;
-                  for (const key of path.split('.')) {
-                    if (value === undefined || !(key in value)) {
-                      return undefined;
-                    }
-
-                    value = value[key];
-                  }
-
-                  return value;
+                const resolvePath = (object: any, path: string): any => {
+                  return path.split('.').reduce((value, key) => (value !== undefined ? value[key] : undefined), object);
                 };
 
                 const path = (modelUpdateEventAttribute ?? `target.${modelProp}`) as string;
-                const modelPropValue = undot(e, path);
+                const modelPropValue = resolvePath(e, path);
 
                 emit(UPDATE_VALUE_EVENT, modelPropValue);
               }
