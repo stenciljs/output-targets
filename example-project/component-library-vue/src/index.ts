@@ -129,7 +129,7 @@ export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["che
   'ionFocus',
   'ionBlur'
 ],
-'checked', 'myChange') : defineStencilSSRComponent<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>({
+'checked', 'myChange', undefined) : defineStencilSSRComponent<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>({
   tagName: 'my-checkbox',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -264,7 +264,7 @@ export const MyInput: StencilVueComponent<JSX.MyInput, JSX.MyInput["value"]> = /
   'myBlur',
   'myFocus'
 ],
-'value', 'myChange') : defineStencilSSRComponent<JSX.MyInput, JSX.MyInput["value"]>({
+'value', 'myChange', undefined) : defineStencilSSRComponent<JSX.MyInput, JSX.MyInput["value"]>({
   tagName: 'my-input',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -488,7 +488,7 @@ export const MyRadioGroup: StencilVueComponent<JSX.MyRadioGroup, JSX.MyRadioGrou
   'myChange',
   'myValueChange'
 ],
-'value', 'myChange') : defineStencilSSRComponent<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>({
+'value', 'myChange', undefined) : defineStencilSSRComponent<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>({
   tagName: 'my-radio-group',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -524,7 +524,7 @@ export const MyRange: StencilVueComponent<JSX.MyRange, JSX.MyRange["value"]> = /
   'myFocus',
   'myBlur'
 ],
-'value', 'myChange') : defineStencilSSRComponent<JSX.MyRange, JSX.MyRange["value"]>({
+'value', 'myChange', undefined) : defineStencilSSRComponent<JSX.MyRange, JSX.MyRange["value"]>({
   tagName: 'my-range',
   hydrateModule: import('component-library/hydrate'),
   props: {

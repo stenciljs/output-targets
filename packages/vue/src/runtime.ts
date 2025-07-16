@@ -77,7 +77,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
   emitProps: string[] = [],
   modelProp?: string,
   modelUpdateEvent?: string,
-  modelUpdateEventAttribute?: string,
+  modelUpdateEventAttribute?: string
 ) => {
   /**
    * Create a Vue component wrapper around a Web Component.
@@ -143,9 +143,10 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
                * when ionChange bubbles up from Component B.
                */
               if ((e.target as HTMLElement).tagName === el.tagName && modelProp) {
-                modelPropValue = modelUpdateEventAttribute
-                  ? e[modelUpdateEventAttribute]
-                  : (e?.target as any)[modelProp];
+                modelPropValue =
+                  modelUpdateEventAttribute !== undefined
+                    ? (e as any)[modelUpdateEventAttribute]
+                    : (e?.target as any)[modelProp];
                 emit(UPDATE_VALUE_EVENT, modelPropValue);
               }
             });
