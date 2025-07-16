@@ -47,7 +47,6 @@ export const config: Config = {
 | `includeImportCustomElements` | If `true`, the output target will import the custom element instance and register it with the Custom Elements Registry when the component is imported inside of a user's app. This can only be used with the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements) and will not work with lazy loaded components. |
 | `customElementsDir`           | This is the directory where the custom elements are imported from when using the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements). Defaults to the `components` directory. Only applies when `includeImportCustomElements` is `true`.                                                                        |
 | `hydrateModule`               | To enable server side rendering, provide the path to the hydrate module, e.g. `my-component/hydrate`. By default, this value is undefined and server side rendering is disabled.                                                                                                                                                 |
-| `useEventDetail`              | This option is used to change the source of new value used for `v-model` bindings to event.detail. The same can be achieved by specifying `eventAttr` as 'detail' in each entry of `componentModels`.                                                                                                                            |
 
 ## Interfaces
 
@@ -79,7 +78,7 @@ export interface ComponentModelConfig {
   /**
    * The event attribute that should be used
    * to trigger the `v-model` update with.
-   * Takes precedence over useEventDetail set on the output target.
+   * Uses dot notation to specify nested properties. (i.e. `detail.value)
    */
   eventAttr?: string;
 }

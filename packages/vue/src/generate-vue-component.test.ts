@@ -97,31 +97,6 @@ export const MyComponent: StencilVueComponent<Components.MyComponent, Components
 `);
   });
 
-  it('should create v-model bindings using event.detail attribute', () => {
-    const generateComponentDefinition = createComponentDefinition('Components', {
-      proxiesFile: './src/components.ts',
-      useEventDetail: true,
-      componentModels: [
-        {
-          elements: ['my-component'],
-          event: 'ionChange',
-          targetAttr: 'value',
-        },
-      ],
-    });
-    const output = generateComponentDefinition(exampleComponentMetadata);
-
-    expect(output).toEqual(`
-export const MyComponent: StencilVueComponent<Components.MyComponent, Components.MyComponent["value"]> = /*@__PURE__*/ defineContainer<Components.MyComponent, Components.MyComponent["value"]>('my-component', undefined, [
-  'value',
-  'ionChange'
-], [
-  'ionChange'
-],
-'value', 'ionChange', 'detail');
-`);
-  });
-
   it('should create v-model bindings using custom attribute', () => {
     const generateComponentDefinition = createComponentDefinition('Components', {
       proxiesFile: './src/components.ts',

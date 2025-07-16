@@ -105,14 +105,7 @@ export const ${tagNameAsPascal}: StencilVueComponent<${componentType}${modelType
         );
       }
 
-      let targetEventAttr: string = 'undefined';
-      if (outputTarget.useEventDetail) {
-        targetEventAttr = `'detail'`;
-      }
-      if (findModel.eventAttr) {
-        targetEventAttr = `'${findModel.eventAttr}'`;
-      }
-
+      const targetEventAttr = findModel.eventAttr !== undefined ? `'${findModel.eventAttr}'` : 'undefined';
       templateString += `,\n`;
       templateString += `'${targetProp}', '${findModel.event}', ${targetEventAttr}`;
     }

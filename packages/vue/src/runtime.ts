@@ -1,7 +1,7 @@
 import {
+  ComponentObjectPropsOptions,
   defineComponent,
   getCurrentInstance,
-  ComponentObjectPropsOptions,
   h,
   inject,
   onMounted,
@@ -9,9 +9,9 @@ import {
   ref,
   withDirectives,
 } from 'vue';
+import { InputProps } from './types';
 
 export { defineStencilSSRComponent } from './ssr';
-import { InputProps } from './types';
 
 const UPDATE_VALUE_EVENT = 'update:modelValue';
 const MODEL_VALUE = 'modelValue';
@@ -143,10 +143,22 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
                * when ionChange bubbles up from Component B.
                */
               if ((e.target as HTMLElement).tagName === el.tagName && modelProp) {
-                modelPropValue =
-                  modelUpdateEventAttribute !== undefined
-                    ? (e as any)[modelUpdateEventAttribute]
-                    : (e?.target as any)[modelProp];
+                const undot = (object: object, key: string): any => {
+                  let value = object as any;
+                  for (const key of path.split('.')) {
+                    if (value === undefined || !(key in value)) {
+                      return undefined;
+                    }
+
+                    value = value[key];
+                  }
+
+                  return value;
+                };
+
+                const path = (modelUpdateEventAttribute ?? `target.${modelProp}`) as string;
+                const modelPropValue = undot(e, path);
+
                 emit(UPDATE_VALUE_EVENT, modelPropValue);
               }
             });
