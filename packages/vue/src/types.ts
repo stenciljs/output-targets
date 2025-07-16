@@ -64,6 +64,11 @@ export interface OutputTargetVue {
    * By default this value is undefined and server side rendering is disabled.
    */
   hydrateModule?: string;
+  /**
+   * This option is used to change the source of new value used for `v-model` bindings to event.detail.
+   * The same can be achieved by specifying `eventAttr` as 'detail' in each entry of `componentModels`.
+   */
+  useEventDetail?: boolean;
 }
 
 export interface ComponentModelConfig {
