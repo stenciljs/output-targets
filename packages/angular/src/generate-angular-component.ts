@@ -75,7 +75,7 @@ export const createAngularComponentDefinition = (
 ) => {
   const tagNameAsPascal = dashToPascalCase(tagName);
 
-  const outputs = events.filter(event => !event.internal).map(event => event.name);
+  const outputs = events.filter((event) => !event.internal).map((event) => event.name);
 
   const hasInputs = inputs.length > 0;
   const hasOutputs = outputs.length > 0;
@@ -117,15 +117,19 @@ export const createAngularComponentDefinition = (
     createPropertyDeclaration(m, `Components.${tagNameAsPascal}['${m.name}']`, true)
   );
 
-  const outputDeclarations = events.filter((event) => !event.internal).map((event) => {
-    const camelCaseOutput = event.name.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
-    const outputType = `EventEmitter<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
-    return `@Output() ${camelCaseOutput} = new ${outputType}();`;
-  });
+  const outputDeclarations = events
+    .filter((event) => !event.internal)
+    .map((event) => {
+      const camelCaseOutput = event.name.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
+      const outputType = `EventEmitter<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
+      return `@Output() ${camelCaseOutput} = new ${outputType}();`;
+    });
 
-  const propertiesDeclarationText = [`protected el: HTML${tagNameAsPascal}Element;`, ...propertyDeclarations, ...outputDeclarations].join(
-    '\n  '
-  );
+  const propertiesDeclarationText = [
+    `protected el: HTML${tagNameAsPascal}Element;`,
+    ...propertyDeclarations,
+    ...outputDeclarations,
+  ].join('\n  ');
 
   /**
    * Notes on the generated output:
@@ -140,9 +144,7 @@ export const createAngularComponentDefinition = (
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: [${formattedInputs}],${
-    hasOutputs ? `\n  outputs: [${formattedOutputs}],` : ''
-  }${standaloneOption}
+  inputs: [${formattedInputs}],${hasOutputs ? `\n  outputs: [${formattedOutputs}],` : ''}${standaloneOption}
 })
 export class ${tagNameAsPascal} {
   ${propertiesDeclarationText}
