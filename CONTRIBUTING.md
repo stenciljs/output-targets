@@ -185,9 +185,9 @@ Follow the following order of steps:
 - create a tag for each package being released, e.g. `git tag -a @stencil/ssr@0.2.0`
 - push commit and tags, e.g. `git push origin main --tags`
 - create GitHub releases for each package that is being released (see [example](https://github.com/stenciljs/output-targets/releases/tag/%40stencil%2Freact-output-target%401.2.0))
-- trigger the release workflow for the package you want to publish
+- trigger the [release workflow](https://github.com/stenciljs/output-targets/actions/workflows/prod-build.yml) for the package you want to publish
 
-When submitting the release workflow, you'll need to specify:
+When submitting the [release workflow](https://github.com/stenciljs/output-targets/actions/workflows/prod-build.yml), you'll need to specify:
 
 1. **Package**: Which package should be published (`vue`, `react`, `angular`, or `ssr`)
 2. **Version**: What version should be published
