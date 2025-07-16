@@ -83,7 +83,7 @@ export function generateProxies(
   const angularCoreImports = ['ChangeDetectionStrategy', 'ChangeDetectorRef', 'Component', 'ElementRef'];
 
   if (includeOutputImports) {
-    angularCoreImports.push('EventEmitter');
+    angularCoreImports.push('EventEmitter', 'Output');
   }
 
   angularCoreImports.push('NgZone');
@@ -92,10 +92,6 @@ export function generateProxies(
    * The collection of named imports from the angular-component-lib/utils.
    */
   const componentLibImports = ['ProxyCmp'];
-
-  if (includeOutputImports) {
-    componentLibImports.push('proxyOutputs');
-  }
 
   if (includeSingleComponentAngularModules) {
     angularCoreImports.push('NgModule');
@@ -171,12 +167,6 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
 
     const orderedInputs = sortBy(inputs, (cip: ComponentInputProperty) => cip.name);
 
-    const outputs: string[] = [];
-
-    if (cmpMeta.events) {
-      outputs.push(...cmpMeta.events.filter(filterInternalProps).map(mapPropName));
-    }
-
     const methods: string[] = [];
 
     if (cmpMeta.methods) {
@@ -194,11 +184,11 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
     const componentDefinition = createAngularComponentDefinition(
       cmpMeta.tagName,
       orderedInputs,
-      outputs,
       methods,
       isCustomElementsBuild,
       isStandaloneBuild,
-      inlineComponentProps
+      inlineComponentProps,
+      cmpMeta.events || []
     );
     const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
     const componentTypeDefinition = createComponentTypeDefinition(
