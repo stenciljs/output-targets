@@ -1,7 +1,7 @@
 import {
+  ComponentObjectPropsOptions,
   defineComponent,
   getCurrentInstance,
-  ComponentObjectPropsOptions,
   h,
   inject,
   onMounted,
@@ -9,9 +9,9 @@ import {
   ref,
   withDirectives,
 } from 'vue';
+import { InputProps } from './types';
 
 export { defineStencilSSRComponent } from './ssr';
-import { InputProps } from './types';
 
 const UPDATE_VALUE_EVENT = 'update:modelValue';
 const MODEL_VALUE = 'modelValue';
@@ -68,6 +68,7 @@ const getElementClasses = (
  * to customElements.define. Only set if `includeImportCustomElements: true` in your config.
  * @prop modelProp - The prop that v-model binds to (i.e. value)
  * @prop modelUpdateEvent - The event that is fired from your Web Component when the value changes (i.e. ionChange)
+ * @prop modelUpdateEventAttribute - Property to read value from when the value changes.
  */
 export const defineContainer = <Props, VModelType = string | number | boolean>(
   name: string,
@@ -75,7 +76,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
   componentProps: string[] = [],
   emitProps: string[] = [],
   modelProp?: string,
-  modelUpdateEvent?: string
+  modelUpdateEvent?: string,
+  modelUpdateEventAttribute?: string
 ) => {
   /**
    * Create a Vue component wrapper around a Web Component.
@@ -141,7 +143,13 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
                * when ionChange bubbles up from Component B.
                */
               if ((e.target as HTMLElement).tagName === el.tagName && modelProp) {
-                modelPropValue = (e?.target as any)[modelProp];
+                const resolvePath = (object: any, path: string): any => {
+                  return path.split('.').reduce((value, key) => (value !== undefined ? value[key] : undefined), object);
+                };
+
+                const path = (modelUpdateEventAttribute ?? `target.${modelProp}`) as string;
+                const modelPropValue = resolvePath(e, path);
+
                 emit(UPDATE_VALUE_EVENT, modelPropValue);
               }
             });
