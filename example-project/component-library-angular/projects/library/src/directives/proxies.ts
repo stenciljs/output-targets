@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* auto-generated angular directive proxies */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, NgZone } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, NgZone } from '@angular/core';
 
-import { ProxyCmp, proxyOutputs } from './angular-component-lib/utils';
+import { ProxyCmp } from './angular-component-lib/utils';
 
 import type { Components } from 'component-library/components';
 
@@ -36,13 +36,15 @@ import { defineCustomElement as defineMyToggleContent } from 'component-library/
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type'],
+  outputs: ['myFocus', 'myBlur'],
 })
 export class MyButton {
   protected el: HTMLMyButtonElement;
+  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
+  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myFocus', 'myBlur']);
   }
 }
 
@@ -69,13 +71,15 @@ export declare interface MyButton extends Components.MyButton {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type'],
+  outputs: ['myFocus', 'myBlur'],
 })
 export class MyButtonScoped {
   protected el: HTMLMyButtonScopedElement;
+  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
+  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myFocus', 'myBlur']);
   }
 }
 
@@ -102,13 +106,16 @@ export declare interface MyButtonScoped extends Components.MyButtonScoped {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['alignment', 'checked', 'color', 'disabled', 'indeterminate', 'justify', 'labelPlacement', 'mode', 'name', 'value'],
+  outputs: ['ionChange', 'ionFocus', 'ionBlur'],
 })
 export class MyCheckbox {
   protected el: HTMLMyCheckboxElement;
+  @Output() ionChange = new EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeEventDetail>>();
+  @Output() ionFocus = new EventEmitter<CustomEvent<void>>();
+  @Output() ionBlur = new EventEmitter<CustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['ionChange', 'ionFocus', 'ionBlur']);
   }
 }
 
@@ -212,13 +219,14 @@ export declare interface MyComponent extends Components.MyComponent {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['first', 'last', 'middleName'],
+  outputs: ['myCustomEvent'],
 })
 export class MyComponentScoped {
   protected el: HTMLMyComponentScopedElement;
+  @Output() myCustomEvent = new EventEmitter<CustomEvent<IMyComponentScopedIMyComponent.someVar>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myCustomEvent']);
   }
 }
 
@@ -243,13 +251,14 @@ export declare interface MyComponentScoped extends Components.MyComponentScoped 
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['startValue'],
+  outputs: ['count'],
 })
 export class MyCounter {
   protected el: HTMLMyCounterElement;
+  @Output() count = new EventEmitter<CustomEvent<number>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['count']);
   }
 }
 
@@ -273,13 +282,17 @@ export declare interface MyCounter extends Components.MyCounter {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', 'autofocus', 'clearInput', 'clearOnEdit', 'color', 'disabled', 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'spellcheck', 'step', 'type', 'value'],
+  outputs: ['myInput', 'myChange', 'myBlur', 'myFocus'],
 })
 export class MyInput {
   protected el: HTMLMyInputElement;
+  @Output() myInput = new EventEmitter<CustomEvent<KeyboardEvent>>();
+  @Output() myChange = new EventEmitter<CustomEvent<IMyInputInputChangeEventDetail>>();
+  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
+  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myInput', 'myChange', 'myBlur', 'myFocus']);
   }
 }
 
@@ -317,13 +330,17 @@ export declare interface MyInput extends Components.MyInput {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', 'autofocus', 'clearInput', 'clearOnEdit', 'color', 'disabled', 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'spellcheck', 'step', 'type', 'value'],
+  outputs: ['myInput', 'myChange', 'myBlur', 'myFocus'],
 })
 export class MyInputScoped {
   protected el: HTMLMyInputScopedElement;
+  @Output() myInput = new EventEmitter<CustomEvent<KeyboardEvent>>();
+  @Output() myChange = new EventEmitter<CustomEvent<IMyInputScopedInputChangeEventDetail>>();
+  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
+  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myInput', 'myChange', 'myBlur', 'myFocus']);
   }
 }
 
@@ -449,13 +466,17 @@ export declare interface MyListScoped extends Components.MyListScoped {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['animated', 'backdropDismiss', { name: 'component', required: true }, 'componentProps', 'cssClass', 'event', 'keyboardClose', 'mode', 'showBackdrop', 'translucent'],
+  outputs: ['myPopoverDidPresent', 'myPopoverWillPresent', 'myPopoverWillDismiss', 'myPopoverDidDismiss'],
 })
 export class MyPopover {
   protected el: HTMLMyPopoverElement;
+  @Output() myPopoverDidPresent = new EventEmitter<CustomEvent<void>>();
+  @Output() myPopoverWillPresent = new EventEmitter<CustomEvent<void>>();
+  @Output() myPopoverWillDismiss = new EventEmitter<CustomEvent<IMyPopoverOverlayEventDetail>>();
+  @Output() myPopoverDidDismiss = new EventEmitter<CustomEvent<IMyPopoverOverlayEventDetail>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myPopoverDidPresent', 'myPopoverWillPresent', 'myPopoverWillDismiss', 'myPopoverDidDismiss']);
   }
 }
 
@@ -492,13 +513,15 @@ export declare interface MyPopover extends Components.MyPopover {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['alignment', 'color', 'disabled', 'justify', 'labelPlacement', 'mode', 'name', 'value'],
+  outputs: ['ionFocus', 'ionBlur'],
 })
 export class MyRadio {
   protected el: HTMLMyRadioElement;
+  @Output() ionFocus = new EventEmitter<CustomEvent<void>>();
+  @Output() ionBlur = new EventEmitter<CustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['ionFocus', 'ionBlur']);
   }
 }
 
@@ -525,13 +548,14 @@ export declare interface MyRadio extends Components.MyRadio {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['allowEmptySelection', 'compareWith', 'name', 'value'],
+  outputs: ['myChange'],
 })
 export class MyRadioGroup {
   protected el: HTMLMyRadioGroupElement;
+  @Output() myChange = new EventEmitter<CustomEvent<IMyRadioGroupRadioGroupChangeEventDetail>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myChange']);
   }
 }
 
@@ -558,13 +582,16 @@ This event will not emit when programmatically setting the `value` property.
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['color', 'debounce', 'disabled', 'dualKnobs', 'max', 'min', 'mode', 'name', 'pin', 'snaps', 'step', 'ticks', 'value'],
+  outputs: ['myChange', 'myFocus', 'myBlur'],
 })
 export class MyRange {
   protected el: HTMLMyRangeElement;
+  @Output() myChange = new EventEmitter<CustomEvent<IMyRangeRangeChangeEventDetail>>();
+  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
+  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['myChange', 'myFocus', 'myBlur']);
   }
 }
 

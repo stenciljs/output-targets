@@ -1,11 +1,26 @@
 import { describe, it, expect } from 'vitest';
-import type { ComponentCompilerProperty } from '@stencil/core/internal';
+import type { ComponentCompilerProperty, ComponentCompilerEvent } from '@stencil/core/internal';
 import { createComponentTypeDefinition, createAngularComponentDefinition } from '../src/generate-angular-component';
+
+const createMockEvent = (name: string, type: string = 'any'): ComponentCompilerEvent => ({
+  name,
+  method: name,
+  bubbles: true,
+  cancelable: true,
+  composed: true,
+  docs: { text: '', tags: [] },
+  complexType: {
+    original: type,
+    resolved: type,
+    references: {}
+  },
+  internal: false
+});
 
 describe('createAngularComponentDefinition()', () => {
   describe('www output', () => {
     it('generates a component', () => {
-      const component = createAngularComponentDefinition('my-component', [], [], [], false);
+      const component = createAngularComponentDefinition('my-component', [], [], false, false, [], []);
 
       expect(component).toEqual(`@ProxyCmp({
 })
@@ -27,7 +42,7 @@ export class MyComponent {
     });
 
     it('generates a component with inputs', () => {
-      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: false}], [], [], false);
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: false}], [], false, false, [], []);
       expect(component).toMatch(`@ProxyCmp({
   inputs: ['my-input', 'my-other-input']
 })
@@ -49,7 +64,7 @@ export class MyComponent {
     });
 
     it('generates a component with inputs (required)', () => {
-      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: true}], [], [], false);
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: true}], [], false, false, [], []);
       expect(component).toMatch(`@ProxyCmp({
   inputs: ['my-input', 'my-other-input']
 })
@@ -71,12 +86,19 @@ export class MyComponent {
     });
 
     it('generates a component with outputs', () => {
+      const mockEvents = [
+        createMockEvent('my-output'),
+        createMockEvent('my-other-output')
+      ];
+
       const component = createAngularComponentDefinition(
         'my-component',
         [],
-        ['my-output', 'my-other-output'],
         [],
-        false
+        false,
+        false,
+        [],
+        mockEvents
       );
 
       expect(component).toMatch(`@ProxyCmp({
@@ -87,20 +109,22 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: ['my-output', 'my-other-output'],
   standalone: false
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
+  @Output() myOutput = new EventEmitter<CustomEvent<any>>();
+  @Output() myOtherOutput = new EventEmitter<CustomEvent<any>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['my-output', 'my-other-output']);
   }
 }`);
     });
 
     it('generates a component with methods', () => {
-      const component = createAngularComponentDefinition('my-component', [], [], ['myMethod', 'myOtherMethod'], false);
+      const component = createAngularComponentDefinition('my-component', [], ['myMethod', 'myOtherMethod'], false, false, [], []);
 
       expect(component).toMatch(`@ProxyCmp({
   methods: ['myMethod', 'myOtherMethod']
@@ -125,7 +149,7 @@ export class MyComponent {
 
   describe('custom elements output', () => {
     it('generates a component', () => {
-      const component = createAngularComponentDefinition('my-component', [], [], [], true);
+      const component = createAngularComponentDefinition('my-component', [], [], true, false, [], []);
 
       expect(component).toEqual(`@ProxyCmp({
   defineCustomElementFn: defineMyComponent
@@ -148,7 +172,7 @@ export class MyComponent {
     });
 
     it('generates a component with inputs', () => {
-      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: false}], [], [], true);
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-other-input', required: false}], [], true, false, [], []);
 
       expect(component).toEqual(`@ProxyCmp({
   defineCustomElementFn: defineMyComponent,
@@ -172,7 +196,7 @@ export class MyComponent {
     });
 
     it('generates a component with inputs (required)', () => {
-      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: true}, {name: 'my-other-input', required: false}], [], [], true);
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: true}, {name: 'my-other-input', required: false}], [], true, false, [], []);
 
       expect(component).toEqual(`@ProxyCmp({
   defineCustomElementFn: defineMyComponent,
@@ -196,12 +220,19 @@ export class MyComponent {
     });
 
     it('generates a component with outputs', () => {
+      const mockEvents = [
+        createMockEvent('my-output'),
+        createMockEvent('my-other-output')
+      ];
+
       const component = createAngularComponentDefinition(
         'my-component',
         [],
-        ['my-output', 'my-other-output'],
         [],
-        true
+        true,
+        false,
+        [],
+        mockEvents
       );
       expect(component).toMatch(`@ProxyCmp({
   defineCustomElementFn: defineMyComponent
@@ -212,20 +243,22 @@ export class MyComponent {
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [],
+  outputs: ['my-output', 'my-other-output'],
   standalone: false
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
+  @Output() myOutput = new EventEmitter<CustomEvent<any>>();
+  @Output() myOtherOutput = new EventEmitter<CustomEvent<any>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
-    proxyOutputs(this, this.el, ['my-output', 'my-other-output']);
   }
 }`);
     });
 
     it('generates a component with methods', () => {
-      const component = createAngularComponentDefinition('my-component', [], [], ['myMethod', 'myOtherMethod'], true);
+      const component = createAngularComponentDefinition('my-component', [], ['myMethod', 'myOtherMethod'], true, false, [], []);
 
       expect(component).toMatch(`@ProxyCmp({
   defineCustomElementFn: defineMyComponent,
@@ -249,7 +282,7 @@ export class MyComponent {
     });
 
     it('generates a standalone component', () => {
-      const component = createAngularComponentDefinition('my-component', [], [], [], true, true);
+      const component = createAngularComponentDefinition('my-component', [], [], true, true, [], []);
 
       expect(component).toEqual(`@ProxyCmp({
   defineCustomElementFn: defineMyComponent
@@ -270,10 +303,9 @@ export class MyComponent {
 }`);
     });
   });
-
   describe('inline members', () => {
     it('generates component with inlined member with jsDoc', () => {
-      const component = createAngularComponentDefinition('my-component', [{name: 'myMember', required: false}], [], [], false, false, [
+      const component = createAngularComponentDefinition('my-component', [{name: 'myMember', required: false}], [], false, false, [
         {
           docs: {
             tags: [{ name: 'deprecated', text: 'use v2 of this API' }],
@@ -282,7 +314,6 @@ export class MyComponent {
           name: 'myMember',
         } as ComponentCompilerProperty,
       ]);
-
       expect(component).toEqual(`@ProxyCmp({
   inputs: ['myMember']
 })

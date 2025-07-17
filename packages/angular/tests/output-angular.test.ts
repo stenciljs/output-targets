@@ -62,10 +62,10 @@ describe('generateProxies', () => {
     const finalText = generateProxies(components, pkgData, outputTarget, rootDir);
     expect(
       finalText.includes(
-        `import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, NgZone } from '@angular/core';`
+        `import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, NgZone } from '@angular/core';`
       )
     ).toBeTruthy();
-    expect(finalText.includes(`import { ProxyCmp, proxyOutputs } from './angular-component-lib/utils';`)).toBeTruthy();
+    expect(finalText.includes(`import { ProxyCmp } from './angular-component-lib/utils';`)).toBeTruthy();
   });
 
   it('should not include output related imports when there is component with no events or internal ones', () => {
