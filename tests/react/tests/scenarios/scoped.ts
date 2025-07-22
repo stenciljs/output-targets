@@ -19,6 +19,7 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
     it('should have correctly hydrated component', async () => {
       await browser.url('/single-no-child-scoped')
       await expect($('my-component-scoped')).toBePresent()
+      await expect($('my-component-scoped').$('div')).toBePresent()
       await expect($('my-component-scoped').$('div')).toHaveText('Hello, World! I\'m John William Doe')
     })
 

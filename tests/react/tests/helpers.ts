@@ -95,7 +95,12 @@ export function assertClientSideErrors () {
       !error.includes('hydrating') &&
       !error.includes('Expected server HTML to contain a matching') &&
       !error.includes('Did not expect server HTML to contain') &&
-      !error.includes('error node')
+      !error.includes('error node') &&
+      /**
+       * WebdriverIO related socket errors that only appeared in CI on MacOS
+       */
+      !error.includes('failed to connect to websocket') &&
+      !error.includes('WebSocket closed without opened.')
     ))
     if (nonHydrationErrors.length > 0) {
       throw new Error(`Errors were logged during the tests:\n  - ${nonHydrationErrors.join('\n  - ')}`)

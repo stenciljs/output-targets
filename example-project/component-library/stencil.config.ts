@@ -67,6 +67,7 @@ export const config: Config = {
     reactOutputTarget({
       outDir: '../component-library-react/src',
       hydrateModule: 'component-library/hydrate',
+      clientModule: 'component-library-react',
       serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' }
     }),
     vueOutputTarget({

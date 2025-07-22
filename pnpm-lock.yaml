@@ -86,7 +86,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: ^20.0.2
-        version: 20.0.2(vcsrxpmqoebxlfzo7uvapij56i)
+        version: 20.0.2(edf2cf0bfa72d016d05ab4537b0a9808)
       '@angular/cli':
         specifier: ^20.0.2
         version: 20.0.2(@types/node@22.15.31)(chokidar@4.0.3)
@@ -113,7 +113,7 @@ importers:
         version: 29.7.0
       jest-preset-angular:
         specifier: ^14.6.0
-        version: 14.6.0(dtijvbxsrnbgpbzaolcvbeo6e4)
+        version: 14.6.0(e7bd9f095dc3de8b8518dc74098790e4)
       ng-packagr:
         specifier: ^20.0.0
         version: 20.0.0(@angular/compiler-cli@20.0.3(@angular/compiler@20.0.3)(typescript@5.8.3))(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.15.31)(typescript@5.8.3)))(tslib@2.8.1)(typescript@5.8.3)
@@ -511,7 +511,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: ^20.0.2
-        version: 20.0.2(qn6na3wfbjhhpdpndlcepe2sa4)
+        version: 20.0.2(080eb11d1c38540c2d8467faa49d7a46)
       '@angular/cli':
         specifier: ^20.0.2
         version: 20.0.2(@types/node@22.15.31)(chokidar@4.0.3)
@@ -13024,7 +13024,7 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@angular/build@20.0.2(qn6na3wfbjhhpdpndlcepe2sa4)':
+  '@angular/build@20.0.2(080eb11d1c38540c2d8467faa49d7a46)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.2(chokidar@4.0.3)
@@ -13078,7 +13078,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@angular/build@20.0.2(vcsrxpmqoebxlfzo7uvapij56i)':
+  '@angular/build@20.0.2(edf2cf0bfa72d016d05ab4537b0a9808)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2000.2(chokidar@4.0.3)
@@ -21676,7 +21676,7 @@ snapshots:
     optionalDependencies:
       jest-resolve: 29.7.0
 
-  jest-preset-angular@14.6.0(dtijvbxsrnbgpbzaolcvbeo6e4):
+  jest-preset-angular@14.6.0(e7bd9f095dc3de8b8518dc74098790e4):
     dependencies:
       '@angular/compiler-cli': 20.0.3(@angular/compiler@20.0.3)(typescript@5.8.3)
       '@angular/core': 20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)
