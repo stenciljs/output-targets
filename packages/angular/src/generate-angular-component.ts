@@ -57,23 +57,25 @@ function formatInputs(inputs: readonly ComponentInputProperty[]): string {
  *
  * @param tagName The tag name of the component.
  * @param inputs The inputs of the Stencil component (e.g. [{name: 'myInput', required: true]).
- * @param outputs The outputs/events of the Stencil component. (e.g. ['myOutput']).
  * @param methods The methods of the Stencil component. (e.g. ['myMethod']).
  * @param includeImportCustomElements Whether to define the component as a custom element.
  * @param standalone Whether to define the component as a standalone component.
  * @param inlineComponentProps List of properties that should be inlined into the component definition.
+ * @param events The events of the Stencil component for generating outputs.
  * @returns The component declaration as a string.
  */
 export const createAngularComponentDefinition = (
   tagName: string,
   inputs: readonly ComponentInputProperty[],
-  outputs: readonly string[],
   methods: readonly string[],
   includeImportCustomElements = false,
   standalone = false,
-  inlineComponentProps: readonly ComponentCompilerProperty[] = []
+  inlineComponentProps: readonly ComponentCompilerProperty[] = [],
+  events: readonly ComponentCompilerEvent[] = []
 ) => {
   const tagNameAsPascal = dashToPascalCase(tagName);
+
+  const outputs = events.filter((event) => !event.internal).map((event) => event.name);
 
   const hasInputs = inputs.length > 0;
   const hasOutputs = outputs.length > 0;
@@ -115,9 +117,19 @@ export const createAngularComponentDefinition = (
     createPropertyDeclaration(m, `Components.${tagNameAsPascal}['${m.name}']`, true)
   );
 
-  const propertiesDeclarationText = [`protected el: HTML${tagNameAsPascal}Element;`, ...propertyDeclarations].join(
-    '\n  '
-  );
+  const outputDeclarations = events
+    .filter((event) => !event.internal)
+    .map((event) => {
+      const camelCaseOutput = event.name.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
+      const outputType = `EventEmitter<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
+      return `@Output() ${camelCaseOutput} = new ${outputType}();`;
+    });
+
+  const propertiesDeclarationText = [
+    `protected el: HTML${tagNameAsPascal}Element;`,
+    ...propertyDeclarations,
+    ...outputDeclarations,
+  ].join('\n  ');
 
   /**
    * Notes on the generated output:
@@ -132,18 +144,13 @@ export const createAngularComponentDefinition = (
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: [${formattedInputs}],${standaloneOption}
+  inputs: [${formattedInputs}],${hasOutputs ? `\n  outputs: [${formattedOutputs}],` : ''}${standaloneOption}
 })
 export class ${tagNameAsPascal} {
   ${propertiesDeclarationText}
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
-    this.el = r.nativeElement;${
-      hasOutputs
-        ? `
-    proxyOutputs(this, this.el, [${formattedOutputs}]);`
-        : ''
-    }
+    this.el = r.nativeElement;
   }
 }`;
 
