@@ -17,6 +17,7 @@
   />
   <p data-testid="mycomponent-click" v-show="isClicked">MyComponent was clicked</p>
   <Input />
+  <Checkbox />
   <MyCheckbox @ionChange="console.log">Checkbox!!!</MyCheckbox>
   <hr />
   <my-input v-model="input" />
@@ -35,13 +36,17 @@ import { defineComponent, ref } from 'vue'
 import HelloWorld from '../components/HelloWorld.vue'
 // @ts-ignore
 import Input from '../components/Input.vue'
+// @ts-ignore
+import Checkbox from '../components/Checkbox.vue'
 import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup } from 'component-library-vue'
+
 
 export default defineComponent({
   name: 'BasicComposition',
   components: {
     HelloWorld,
     Input,
+    Checkbox,
     MyComponent,
     MyCheckbox,
     MyInput,
@@ -64,10 +69,15 @@ export default defineComponent({
       isClicked,
       handleCustomEvent,
       kidsNames,
-      radioGroupValue
-    }
-  }
-})
+      radioGroupValue,
+    };
+  },
+  data() {
+    return {
+      checked: false,
+    };
+  },
+});
 </script>
 
 <style scoped>

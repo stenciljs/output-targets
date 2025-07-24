@@ -23,6 +23,14 @@ describe('Stencil Vue Integration', () => {
         ]);
       });
 
+      it('should allow to interact with checkbox element with custom v-model path', async () => {
+        await $('my-checkbox').click();
+        await expect(await $$('.inputResultCheckbox p').map((p) => p.getText())).toEqual([
+          'Input v-model: true',
+          'Change Event: true'
+        ]);
+      });
+
       it.skip('should listen to custom events', async () => {
         await $('my-component').$('div').click();
         await expect(await $('[data-testid="mycomponent-click"]').getText()).toEqual('MyComponent was clicked');
