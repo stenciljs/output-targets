@@ -122,14 +122,16 @@ export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["che
   'justify',
   'alignment',
   'ionChange',
+  'ionChangeNested',
   'ionFocus',
   'ionBlur'
 ], [
   'ionChange',
+  'ionChangeNested',
   'ionFocus',
   'ionBlur'
 ],
-'checked', 'myChange', undefined) : defineStencilSSRComponent<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>({
+'checked', 'ionChangeNested', 'detail.nested.checked') : defineStencilSSRComponent<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>({
   tagName: 'my-checkbox',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -142,6 +144,7 @@ export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["che
     'justify': [String, "justify"],
     'alignment': [String, "alignment"],
     'onIonChange': [Function],
+    'onIonChangeNested': [Function],
     'onIonFocus': [Function],
     'onIonBlur': [Function]
   }

@@ -45,8 +45,9 @@ const vueComponentModels: ComponentModelConfig[] = [
   },
   {
     elements: ['my-checkbox'],
-    event: 'myChange',
+    event: 'ionChangeNested',
     targetAttr: 'checked',
+    eventAttr: 'detail.nested.checked'
   },
   {
     elements: ['my-range', 'my-radio-group'],

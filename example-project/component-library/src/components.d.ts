@@ -6,7 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
-import { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
+import { CheckboxChangeEventDetail, CheckboxChangeNestedEventDetail } from "./components/my-checkbox/my-checkbox";
 import { Baz, Foo, Grault, Quux, Waldo } from "./components/my-complex-props/my-complex-props";
 import { Baz as Baz1, Foo as Foo1, Grault as Grault1, Quux as Quux1, Waldo as Waldo1 } from "./components/my-complex-props-scoped/my-complex-props-scoped";
 import { IMyComponent } from "./components/helpers";
@@ -16,7 +16,7 @@ import { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radi
 import { Color as Color1, StyleEventDetail } from "./components/element-interface";
 import { RangeChangeEventDetail, RangeValue } from "./components/my-range/my-range";
 export { AutocompleteTypes, Color, ComponentProps, ComponentRef, OverlayEventDetail, TextFieldTypes } from "./interfaces";
-export { CheckboxChangeEventDetail } from "./components/my-checkbox/my-checkbox";
+export { CheckboxChangeEventDetail, CheckboxChangeNestedEventDetail } from "./components/my-checkbox/my-checkbox";
 export { Baz, Foo, Grault, Quux, Waldo } from "./components/my-complex-props/my-complex-props";
 export { Baz as Baz1, Foo as Foo1, Grault as Grault1, Quux as Quux1, Waldo as Waldo1 } from "./components/my-complex-props-scoped/my-complex-props-scoped";
 export { IMyComponent } from "./components/helpers";
@@ -824,6 +824,7 @@ declare global {
     };
     interface HTMLMyCheckboxElementEventMap {
         "ionChange": CheckboxChangeEventDetail;
+        "ionChangeNested": CheckboxChangeNestedEventDetail;
         "ionFocus": void;
         "ionBlur": void;
     }
@@ -1259,6 +1260,10 @@ declare namespace LocalJSX {
           * Emitted when the checked property has changed as a result of a user action such as a click.  This event will not emit when programmatically setting the `checked` property.
          */
         "onIonChange"?: (event: MyCheckboxCustomEvent<CheckboxChangeEventDetail>) => void;
+        /**
+          * Same as `ionChange`, but with a nested object for the value. For demonstration purposes to be able to test ways to handle more complex events.
+         */
+        "onIonChangeNested"?: (event: MyCheckboxCustomEvent<CheckboxChangeNestedEventDetail>) => void;
         /**
           * Emitted when the checkbox has focus.
          */
