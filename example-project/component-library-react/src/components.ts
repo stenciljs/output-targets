@@ -9,7 +9,7 @@
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent } from '@stencil/react-output-target/runtime';
-import { type CheckboxChangeEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
@@ -68,6 +68,7 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
 
 export type MyCheckboxEvents = {
     onIonChange: EventName<MyCheckboxCustomEvent<CheckboxChangeEventDetail>>,
+    onIonChangeNested: EventName<MyCheckboxCustomEvent<CheckboxChangeNestedEventDetail>>,
     onIonFocus: EventName<CustomEvent<void>>,
     onIonBlur: EventName<CustomEvent<void>>
 };
@@ -79,6 +80,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
     react: React,
     events: {
         onIonChange: 'ionChange',
+        onIonChangeNested: 'ionChangeNested',
         onIonFocus: 'ionFocus',
         onIonBlur: 'ionBlur'
     } as MyCheckboxEvents,

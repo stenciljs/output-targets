@@ -1,5 +1,5 @@
-import type { DefineSetupFnComponent, VNodeProps, AllowedComponentProps, ComponentCustomProps } from 'vue';
-import type { RouteLocationAsRelativeGeneric, RouteLocationAsPathGeneric } from 'vue-router';
+import type { AllowedComponentProps, ComponentCustomProps, DefineSetupFnComponent, VNodeProps } from 'vue';
+import type { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router';
 
 /**
  * Options for the Vue Output Target
@@ -17,7 +17,7 @@ export interface OutputTargetVue {
   proxiesFile: string;
   /**
    * An array of tag names to exclude from generating component wrappers for.
-   * This is helpful when have a custom framework implementation of a specific
+   * This is helpful when you have a custom framework implementation of a specific
    * component or need to extend the base component wrapper behavior.
    */
   excludeComponents?: string[];
@@ -47,7 +47,7 @@ export interface OutputTargetVue {
   includeDefineCustomElements?: boolean;
   /**
    * If `true`, the output target will import the custom element instance and register
-   * it with the Custom Elements Registry when the component is imported inside of a
+   * it with the Custom Elements Registry when the component is imported inside a
    * user's app. This can only be used with the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements)
    * and will not work with lazy loaded components.
    */
@@ -61,7 +61,7 @@ export interface OutputTargetVue {
   customElementsDir?: string;
   /**
    * To enable server side rendering, provide the path to the hydrate module, e.g. `my-component/hydrate`.
-   * By default this value is undefined and server side rendering is disabled.
+   * By default, this value is undefined and server side rendering is disabled.
    */
   hydrateModule?: string;
 }
@@ -70,6 +70,7 @@ export interface ComponentModelConfig {
   elements: string | string[];
   event: string;
   targetAttr: string;
+  eventAttr?: string;
 }
 
 export interface PackageJSON {
@@ -89,6 +90,7 @@ export type StencilVueComponent<Props, VModelType = string | number | boolean> =
   {},
   Props & InputProps<VModelType> & VNodeProps & AllowedComponentProps & ComponentCustomProps
 >;
+
 export interface InputProps<T> {
   modelValue?: T;
   /**

@@ -23,11 +23,12 @@
 
 ## Events
 
-| Event       | Description                                                                                                                                                                 | Type                                          |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| `ionBlur`   | Emitted when the checkbox loses focus.                                                                                                                                      | `CustomEvent<void>`                           |
-| `ionChange` | Emitted when the checked property has changed as a result of a user action such as a click.  This event will not emit when programmatically setting the `checked` property. | `CustomEvent<CheckboxChangeEventDetail<any>>` |
-| `ionFocus`  | Emitted when the checkbox has focus.                                                                                                                                        | `CustomEvent<void>`                           |
+| Event             | Description                                                                                                                                                                 | Type                                                |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `ionBlur`         | Emitted when the checkbox loses focus.                                                                                                                                      | `CustomEvent<void>`                                 |
+| `ionChange`       | Emitted when the checked property has changed as a result of a user action such as a click.  This event will not emit when programmatically setting the `checked` property. | `CustomEvent<CheckboxChangeEventDetail<any>>`       |
+| `ionChangeNested` | Same as `ionChange`, but with a nested object for the value. For demonstration purposes to be able to test ways to handle more complex events.                              | `CustomEvent<CheckboxChangeNestedEventDetail<any>>` |
+| `ionFocus`        | Emitted when the checkbox has focus.                                                                                                                                        | `CustomEvent<void>`                                 |
 
 
 ## Slots

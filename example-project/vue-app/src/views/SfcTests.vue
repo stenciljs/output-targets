@@ -2,8 +2,11 @@
 import HelloWorld from '../components/HelloWorld.vue'
 // @ts-ignore
 import Input from '../components/Input.vue'
+// @ts-ignore
+import Checkbox from '../components/Checkbox.vue';
 import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup } from 'component-library-vue'
 import { ref } from 'vue'
+
 
 const input = ref('');
 const isClicked = ref(false)
@@ -34,6 +37,7 @@ const radioGroupValue = ref('option1')
   />
   <p data-testid="mycomponent-click" v-show="isClicked">MyComponent was clicked</p>
   <Input />
+  <Checkbox />
   <MyCheckbox @ionChange="console.log">Checkbox!!!</MyCheckbox>
   <hr />
   <my-input v-model="input" />

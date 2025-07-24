@@ -1,5 +1,51 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { createComponentDefinition } from './generate-vue-component';
+import { ComponentCompilerMeta } from '@stencil/core/internal';
+
+const exampleComponentMetadata: Pick<ComponentCompilerMeta, 'properties' | 'tagName' | 'methods' | 'events'> = {
+  tagName: 'my-component',
+  properties: [
+    {
+      name: 'value',
+      internal: false,
+      mutable: false,
+      optional: false,
+      required: false,
+      type: 'string',
+      complexType: {
+        original: '',
+        resolved: '',
+        references: {},
+      },
+      getter: true,
+      setter: true,
+      docs: {
+        text: '',
+        tags: [],
+      },
+    },
+  ],
+  methods: [],
+  events: [
+    {
+      internal: false,
+      name: 'ionChange',
+      method: '',
+      bubbles: true,
+      cancelable: true,
+      composed: false,
+      docs: {
+        text: '',
+        tags: [],
+      },
+      complexType: {
+        original: '',
+        resolved: '',
+        references: {},
+      },
+    },
+  ],
+};
 
 describe('createComponentDefinition', () => {
   it('should create a Vue component with the render method using createCommonRender', () => {
@@ -38,50 +84,7 @@ export const MyComponent: StencilVueComponent<Components.MyComponent> = /*@__PUR
         },
       ],
     });
-    const output = generateComponentDefinition({
-      properties: [
-        {
-          name: 'value',
-          internal: false,
-          mutable: false,
-          optional: false,
-          required: false,
-          type: 'string',
-          complexType: {
-            original: '',
-            resolved: '',
-            references: {},
-          },
-          getter: true,
-          setter: true,
-          docs: {
-            text: '',
-            tags: [],
-          },
-        },
-      ],
-      tagName: 'my-component',
-      methods: [],
-      events: [
-        {
-          internal: false,
-          name: 'ionChange',
-          method: '',
-          bubbles: true,
-          cancelable: true,
-          composed: false,
-          docs: {
-            text: '',
-            tags: [],
-          },
-          complexType: {
-            original: '',
-            resolved: '',
-            references: {},
-          },
-        },
-      ],
-    });
+    const output = generateComponentDefinition(exampleComponentMetadata);
 
     expect(output).toEqual(`
 export const MyComponent: StencilVueComponent<Components.MyComponent, Components.MyComponent["value"]> = /*@__PURE__*/ defineContainer<Components.MyComponent, Components.MyComponent["value"]>('my-component', undefined, [
@@ -90,7 +93,32 @@ export const MyComponent: StencilVueComponent<Components.MyComponent, Components
 ], [
   'ionChange'
 ],
-'value', 'ionChange');
+'value', 'ionChange', undefined);
+`);
+  });
+
+  it('should create v-model bindings using custom attribute', () => {
+    const generateComponentDefinition = createComponentDefinition('Components', {
+      proxiesFile: './src/components.ts',
+      componentModels: [
+        {
+          elements: ['my-component'],
+          event: 'ionChange',
+          targetAttr: 'value',
+          eventAttr: 'customAttr',
+        },
+      ],
+    });
+    const output = generateComponentDefinition(exampleComponentMetadata);
+
+    expect(output).toEqual(`
+export const MyComponent: StencilVueComponent<Components.MyComponent, Components.MyComponent["value"]> = /*@__PURE__*/ defineContainer<Components.MyComponent, Components.MyComponent["value"]>('my-component', undefined, [
+  'value',
+  'ionChange'
+], [
+  'ionChange'
+],
+'value', 'ionChange', 'customAttr');
 `);
   });
 
@@ -105,50 +133,7 @@ export const MyComponent: StencilVueComponent<Components.MyComponent, Components
       ],
       proxiesFile: './src/components.ts',
     });
-    const output = generateComponentDefinition({
-      tagName: 'my-component',
-      methods: [],
-      properties: [
-        {
-          name: 'value',
-          internal: false,
-          mutable: false,
-          optional: false,
-          required: false,
-          type: 'string',
-          getter: true,
-          setter: true,
-          complexType: {
-            original: '',
-            resolved: '',
-            references: {},
-          },
-          docs: {
-            text: '',
-            tags: [],
-          },
-        },
-      ],
-      events: [
-        {
-          internal: false,
-          name: 'ionChange',
-          method: '',
-          bubbles: true,
-          cancelable: true,
-          composed: false,
-          docs: {
-            text: '',
-            tags: [],
-          },
-          complexType: {
-            original: '',
-            resolved: '',
-            references: {},
-          },
-        },
-      ],
-    });
+    const output = generateComponentDefinition(exampleComponentMetadata);
 
     expect(output).toEqual(`
 export const MyComponent: StencilVueComponent<Components.MyComponent, Components.MyComponent["value"]> = /*@__PURE__*/ defineContainer<Components.MyComponent, Components.MyComponent["value"]>('my-component', undefined, [
@@ -157,7 +142,7 @@ export const MyComponent: StencilVueComponent<Components.MyComponent, Components
 ], [
   'ionChange'
 ],
-'value', 'ionChange');
+'value', 'ionChange', undefined);
 `);
   });
 

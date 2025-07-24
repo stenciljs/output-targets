@@ -1,10 +1,18 @@
 import type { ComponentInterface, EventEmitter } from '@stencil/core';
-import { Component, Element, Event, Host, Method, Prop, h } from '@stencil/core';
+import { Component, Element, Event, h, Host, Method, Prop } from '@stencil/core';
 import { createColorClasses, hasShadowDom, hostContext } from '../helpers';
 
 export interface CheckboxChangeEventDetail<T = any> {
   value: T;
   checked: boolean;
+}
+
+export interface CheckboxChangeNestedEventDetail<T = any> {
+  nested: {
+    value: T;
+    checked: boolean;
+    intermediate: boolean;
+  };
 }
 
 /**
@@ -101,6 +109,12 @@ export class Checkbox implements ComponentInterface {
   @Event() ionChange!: EventEmitter<CheckboxChangeEventDetail>;
 
   /**
+   * Same as `ionChange`, but with a nested object for the value.
+   * For demonstration purposes to be able to test ways to handle more complex events.
+   */
+  @Event() ionChangeNested: EventEmitter<CheckboxChangeNestedEventDetail>;
+
+  /**
    * Emitted when the checkbox has focus.
    */
   @Event() ionFocus!: EventEmitter<void>;
@@ -133,6 +147,14 @@ export class Checkbox implements ComponentInterface {
     this.ionChange.emit({
       checked: isChecked,
       value: this.value,
+    });
+
+    this.ionChangeNested.emit({
+      nested: {
+        value: isChecked,
+        checked: isChecked,
+        intermediate: this.indeterminate,
+      },
     });
   };
 
