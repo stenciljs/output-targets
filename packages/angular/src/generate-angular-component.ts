@@ -117,12 +117,10 @@ export const createAngularComponentDefinition = (
       const camelCaseOutput = event.name.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
 
       return `
-    ${camelCaseOutput}$ = fromEvent<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>(this.el, "${event.name}")${componentsOutputUsesEventDetail
-        ? `.pipe(map((e) => e.detail))`
-        : ''};
-
-    ${camelCaseOutput}Change = outputFromObservable(this.${camelCaseOutput}$);
-`;
+  ${camelCaseOutput}$ = fromEvent<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>(this.el, "${event.name}")${componentsOutputUsesEventDetail
+      ? `.pipe(map((e) => e.detail))`
+      : ''};
+  ${camelCaseOutput}Change = outputFromObservable(this.${camelCaseOutput}$);`;
     });
 
   const propertiesDeclarationText = [

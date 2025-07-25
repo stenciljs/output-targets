@@ -80,15 +80,15 @@ export function generateProxies(
   /**
    * The collection of named imports from @angular/core.
    */
-  const rxjsImports = ["fromEvent"];
-  const angularCoreRxjsInteropImports = ["outputFromObservable"];
+  const rxjsImports = [];
+  const angularCoreRxjsInteropImports = [];
   const angularCoreImports = ["inject", 'ChangeDetectionStrategy', 'ChangeDetectorRef', 'Component', 'ElementRef'];
 
   if (includeOutputImports) {
-    angularCoreImports.push('EventEmitter', 'Output');
+    rxjsImports.push("fromEvent");
+    angularCoreRxjsInteropImports.push("outputFromObservable");
+    angularCoreImports.push('EventEmitter');
   }
-
-  angularCoreImports.push('NgZone');
 
   /**
    * The collection of named imports from the angular-component-lib/utils.
