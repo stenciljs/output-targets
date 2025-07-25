@@ -1,6 +1,8 @@
 /* tslint:disable */
 /* auto-generated angular directive proxies */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, NgZone } from '@angular/core';
+import { inject, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, NgZone } from '@angular/core';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
+import { fromEvent } from 'rxjs';
 
 import { ProxyCmp } from './angular-component-lib/utils';
 
@@ -39,12 +41,27 @@ import { defineCustomElement as defineMyToggleContent } from 'component-library/
   outputs: ['myFocus', 'myBlur'],
 })
 export class MyButton {
-  protected el: HTMLMyButtonElement;
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyButtonElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyButtonElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    myFocus$ = fromEvent<CustomEvent<void>>(this.el, "myFocus");
+
+    myFocusChange = outputFromObservable(this.myFocus$);
+
+  
+    myBlur$ = fromEvent<CustomEvent<void>>(this.el, "myBlur");
+
+    myBlurChange = outputFromObservable(this.myBlur$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -74,12 +91,27 @@ export declare interface MyButton extends Components.MyButton {
   outputs: ['myFocus', 'myBlur'],
 })
 export class MyButtonScoped {
-  protected el: HTMLMyButtonScopedElement;
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyButtonScopedElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyButtonScopedElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    myFocus$ = fromEvent<CustomEvent<void>>(this.el, "myFocus");
+
+    myFocusChange = outputFromObservable(this.myFocus$);
+
+  
+    myBlur$ = fromEvent<CustomEvent<void>>(this.el, "myBlur");
+
+    myBlurChange = outputFromObservable(this.myBlur$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -109,14 +141,37 @@ export declare interface MyButtonScoped extends Components.MyButtonScoped {
   outputs: ['ionChange', 'ionChangeNested', 'ionFocus', 'ionBlur'],
 })
 export class MyCheckbox {
-  protected el: HTMLMyCheckboxElement;
-  @Output() ionChange = new EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeEventDetail>>();
-  @Output() ionChangeNested = new EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeNestedEventDetail>>();
-  @Output() ionFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() ionBlur = new EventEmitter<CustomEvent<void>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyCheckboxElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyCheckboxElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    ionChange$ = fromEvent<CustomEvent<IMyCheckboxCheckboxChangeEventDetail>>(this.el, "ionChange");
+
+    ionChangeChange = outputFromObservable(this.ionChange$);
+
+  
+    ionChangeNested$ = fromEvent<CustomEvent<IMyCheckboxCheckboxChangeNestedEventDetail>>(this.el, "ionChangeNested");
+
+    ionChangeNestedChange = outputFromObservable(this.ionChangeNested$);
+
+  
+    ionFocus$ = fromEvent<CustomEvent<void>>(this.el, "ionFocus");
+
+    ionFocusChange = outputFromObservable(this.ionFocus$);
+
+  
+    ionBlur$ = fromEvent<CustomEvent<void>>(this.el, "ionBlur");
+
+    ionBlurChange = outputFromObservable(this.ionBlur$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -159,10 +214,17 @@ For demonstration purposes to be able to test ways to handle more complex events
   inputs: ['baz', 'foo', 'grault', 'quux', 'waldo'],
 })
 export class MyComplexProps {
-  protected el: HTMLMyComplexPropsElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyComplexPropsElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyComplexPropsElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -182,10 +244,17 @@ export declare interface MyComplexProps extends Components.MyComplexProps {}
   inputs: ['baz', 'foo', 'grault', 'quux', 'waldo'],
 })
 export class MyComplexPropsScoped {
-  protected el: HTMLMyComplexPropsScopedElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyComplexPropsScopedElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyComplexPropsScopedElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -205,10 +274,17 @@ export declare interface MyComplexPropsScoped extends Components.MyComplexPropsS
   inputs: ['first', 'last', 'middleName'],
 })
 export class MyComponent {
-  protected el: HTMLMyComponentElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyComponentElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyComponentElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -229,11 +305,22 @@ export declare interface MyComponent extends Components.MyComponent {}
   outputs: ['myCustomEvent'],
 })
 export class MyComponentScoped {
-  protected el: HTMLMyComponentScopedElement;
-  @Output() myCustomEvent = new EventEmitter<CustomEvent<IMyComponentScopedIMyComponent.someVar>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyComponentScopedElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyComponentScopedElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    myCustomEvent$ = fromEvent<CustomEvent<IMyComponentScopedIMyComponent.someVar>>(this.el, "myCustomEvent");
+
+    myCustomEventChange = outputFromObservable(this.myCustomEvent$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -261,11 +348,22 @@ export declare interface MyComponentScoped extends Components.MyComponentScoped 
   outputs: ['count'],
 })
 export class MyCounter {
-  protected el: HTMLMyCounterElement;
-  @Output() count = new EventEmitter<CustomEvent<number>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyCounterElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyCounterElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    count$ = fromEvent<CustomEvent<number>>(this.el, "count");
+
+    countChange = outputFromObservable(this.count$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -292,14 +390,37 @@ export declare interface MyCounter extends Components.MyCounter {
   outputs: ['myInput', 'myChange', 'myBlur', 'myFocus'],
 })
 export class MyInput {
-  protected el: HTMLMyInputElement;
-  @Output() myInput = new EventEmitter<CustomEvent<KeyboardEvent>>();
-  @Output() myChange = new EventEmitter<CustomEvent<IMyInputInputChangeEventDetail>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyInputElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyInputElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    myInput$ = fromEvent<CustomEvent<KeyboardEvent>>(this.el, "myInput");
+
+    myInputChange = outputFromObservable(this.myInput$);
+
+  
+    myChange$ = fromEvent<CustomEvent<IMyInputInputChangeEventDetail>>(this.el, "myChange");
+
+    myChangeChange = outputFromObservable(this.myChange$);
+
+  
+    myBlur$ = fromEvent<CustomEvent<void>>(this.el, "myBlur");
+
+    myBlurChange = outputFromObservable(this.myBlur$);
+
+  
+    myFocus$ = fromEvent<CustomEvent<void>>(this.el, "myFocus");
+
+    myFocusChange = outputFromObservable(this.myFocus$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -340,14 +461,37 @@ export declare interface MyInput extends Components.MyInput {
   outputs: ['myInput', 'myChange', 'myBlur', 'myFocus'],
 })
 export class MyInputScoped {
-  protected el: HTMLMyInputScopedElement;
-  @Output() myInput = new EventEmitter<CustomEvent<KeyboardEvent>>();
-  @Output() myChange = new EventEmitter<CustomEvent<IMyInputScopedInputChangeEventDetail>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyInputScopedElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyInputScopedElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    myInput$ = fromEvent<CustomEvent<KeyboardEvent>>(this.el, "myInput");
+
+    myInputChange = outputFromObservable(this.myInput$);
+
+  
+    myChange$ = fromEvent<CustomEvent<IMyInputScopedInputChangeEventDetail>>(this.el, "myChange");
+
+    myChangeChange = outputFromObservable(this.myChange$);
+
+  
+    myBlur$ = fromEvent<CustomEvent<void>>(this.el, "myBlur");
+
+    myBlurChange = outputFromObservable(this.myBlur$);
+
+  
+    myFocus$ = fromEvent<CustomEvent<void>>(this.el, "myFocus");
+
+    myFocusChange = outputFromObservable(this.myFocus$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -385,10 +529,17 @@ export declare interface MyInputScoped extends Components.MyInputScoped {
   inputs: [],
 })
 export class MyList {
-  protected el: HTMLMyListElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyListElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyListElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -407,10 +558,17 @@ export declare interface MyList extends Components.MyList {}
   inputs: [],
 })
 export class MyListItem {
-  protected el: HTMLMyListItemElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyListItemElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyListItemElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -429,10 +587,17 @@ export declare interface MyListItem extends Components.MyListItem {}
   inputs: [],
 })
 export class MyListItemScoped {
-  protected el: HTMLMyListItemScopedElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyListItemScopedElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyListItemScopedElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -451,10 +616,17 @@ export declare interface MyListItemScoped extends Components.MyListItemScoped {}
   inputs: [],
 })
 export class MyListScoped {
-  protected el: HTMLMyListScopedElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyListScopedElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyListScopedElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -476,14 +648,37 @@ export declare interface MyListScoped extends Components.MyListScoped {}
   outputs: ['myPopoverDidPresent', 'myPopoverWillPresent', 'myPopoverWillDismiss', 'myPopoverDidDismiss'],
 })
 export class MyPopover {
-  protected el: HTMLMyPopoverElement;
-  @Output() myPopoverDidPresent = new EventEmitter<CustomEvent<void>>();
-  @Output() myPopoverWillPresent = new EventEmitter<CustomEvent<void>>();
-  @Output() myPopoverWillDismiss = new EventEmitter<CustomEvent<IMyPopoverOverlayEventDetail>>();
-  @Output() myPopoverDidDismiss = new EventEmitter<CustomEvent<IMyPopoverOverlayEventDetail>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyPopoverElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyPopoverElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    myPopoverDidPresent$ = fromEvent<CustomEvent<void>>(this.el, "myPopoverDidPresent");
+
+    myPopoverDidPresentChange = outputFromObservable(this.myPopoverDidPresent$);
+
+  
+    myPopoverWillPresent$ = fromEvent<CustomEvent<void>>(this.el, "myPopoverWillPresent");
+
+    myPopoverWillPresentChange = outputFromObservable(this.myPopoverWillPresent$);
+
+  
+    myPopoverWillDismiss$ = fromEvent<CustomEvent<IMyPopoverOverlayEventDetail>>(this.el, "myPopoverWillDismiss");
+
+    myPopoverWillDismissChange = outputFromObservable(this.myPopoverWillDismiss$);
+
+  
+    myPopoverDidDismiss$ = fromEvent<CustomEvent<IMyPopoverOverlayEventDetail>>(this.el, "myPopoverDidDismiss");
+
+    myPopoverDidDismissChange = outputFromObservable(this.myPopoverDidDismiss$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -523,12 +718,27 @@ export declare interface MyPopover extends Components.MyPopover {
   outputs: ['ionFocus', 'ionBlur'],
 })
 export class MyRadio {
-  protected el: HTMLMyRadioElement;
-  @Output() ionFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() ionBlur = new EventEmitter<CustomEvent<void>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyRadioElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyRadioElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    ionFocus$ = fromEvent<CustomEvent<void>>(this.el, "ionFocus");
+
+    ionFocusChange = outputFromObservable(this.ionFocus$);
+
+  
+    ionBlur$ = fromEvent<CustomEvent<void>>(this.el, "ionBlur");
+
+    ionBlurChange = outputFromObservable(this.ionBlur$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -558,11 +768,22 @@ export declare interface MyRadio extends Components.MyRadio {
   outputs: ['myChange'],
 })
 export class MyRadioGroup {
-  protected el: HTMLMyRadioGroupElement;
-  @Output() myChange = new EventEmitter<CustomEvent<IMyRadioGroupRadioGroupChangeEventDetail>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyRadioGroupElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyRadioGroupElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    myChange$ = fromEvent<CustomEvent<IMyRadioGroupRadioGroupChangeEventDetail>>(this.el, "myChange");
+
+    myChangeChange = outputFromObservable(this.myChange$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -592,13 +813,32 @@ This event will not emit when programmatically setting the `value` property.
   outputs: ['myChange', 'myFocus', 'myBlur'],
 })
 export class MyRange {
-  protected el: HTMLMyRangeElement;
-  @Output() myChange = new EventEmitter<CustomEvent<IMyRangeRangeChangeEventDetail>>();
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyRangeElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyRangeElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+    myChange$ = fromEvent<CustomEvent<IMyRangeRangeChangeEventDetail>>(this.el, "myChange");
+
+    myChangeChange = outputFromObservable(this.myChange$);
+
+  
+    myFocus$ = fromEvent<CustomEvent<void>>(this.el, "myFocus");
+
+    myFocusChange = outputFromObservable(this.myFocus$);
+
+  
+    myBlur$ = fromEvent<CustomEvent<void>>(this.el, "myBlur");
+
+    myBlurChange = outputFromObservable(this.myBlur$);
+
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -632,10 +872,17 @@ export declare interface MyRange extends Components.MyRange {
   inputs: [],
 })
 export class MyToggle {
-  protected el: HTMLMyToggleElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyToggleElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyToggleElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 
@@ -655,10 +902,17 @@ export declare interface MyToggle extends Components.MyToggle {}
   inputs: ['visible'],
 })
 export class MyToggleContent {
-  protected el: HTMLMyToggleContentElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  private readonly elementRef = inject(ElementRef<HTMLMyToggleContentElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly zone = inject(NgZone);
+  
+  protected get el(): HTMLMyToggleContentElement {
+    return this.elementRef.nativeElement;
+  }
+  
+  
+  constructor() {
+    this.cdr.detach();
   }
 }
 

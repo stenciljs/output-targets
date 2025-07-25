@@ -1,21 +1,21 @@
-import path from 'path';
 import type { CompilerCtx, ComponentCompilerMeta, ComponentCompilerProperty, Config } from '@stencil/core/internal';
-import type { ComponentInputProperty, OutputTargetAngular, PackageJSON } from './types';
-import {
-  relativeImport,
-  normalizePath,
-  sortBy,
-  readPackageJson,
-  dashToPascalCase,
-  createImportStatement,
-  isOutputTypeCustomElementsBuild,
-  OutputTypes,
-  mapPropName,
-} from './utils';
+import path from 'path';
 import { createAngularComponentDefinition, createComponentTypeDefinition } from './generate-angular-component';
 import { generateAngularDirectivesFile } from './generate-angular-directives-file';
-import generateValueAccessors from './generate-value-accessors';
 import { generateAngularModuleForComponent } from './generate-angular-modules';
+import generateValueAccessors from './generate-value-accessors';
+import type { ComponentInputProperty, OutputTargetAngular, PackageJSON } from './types';
+import {
+  createImportStatement,
+  dashToPascalCase,
+  isOutputTypeCustomElementsBuild,
+  mapPropName,
+  normalizePath,
+  OutputTypes,
+  readPackageJson,
+  relativeImport,
+  sortBy,
+} from './utils';
 
 export async function angularDirectiveProxyOutput(
   compilerCtx: CompilerCtx,
@@ -70,7 +70,7 @@ export function generateProxies(
 ) {
   const distTypesDir = path.dirname(pkgData.types);
   const dtsFilePath = path.join(rootDir, distTypesDir, GENERATED_DTS);
-  const { outputType } = outputTarget;
+  const { outputType, componentsOutputUsesEventDetail } = outputTarget;
   const componentsTypeFile = relativeImport(outputTarget.directivesProxyFile, dtsFilePath, '.d.ts');
   const includeSingleComponentAngularModules = outputType === OutputTypes.Scam;
   const isCustomElementsBuild = isOutputTypeCustomElementsBuild(outputType!);
@@ -80,7 +80,9 @@ export function generateProxies(
   /**
    * The collection of named imports from @angular/core.
    */
-  const angularCoreImports = ['ChangeDetectionStrategy', 'ChangeDetectorRef', 'Component', 'ElementRef'];
+  const rxjsImports = ["fromEvent"];
+  const angularCoreRxjsInteropImports = ["outputFromObservable"];
+  const angularCoreImports = ["inject", 'ChangeDetectionStrategy', 'ChangeDetectorRef', 'Component', 'ElementRef'];
 
   if (includeOutputImports) {
     angularCoreImports.push('EventEmitter', 'Output');
@@ -100,6 +102,8 @@ export function generateProxies(
   const imports = `/* tslint:disable */
 /* auto-generated angular directive proxies */
 ${createImportStatement(angularCoreImports, '@angular/core')}
+${createImportStatement(angularCoreRxjsInteropImports, '@angular/core/rxjs-interop')}
+${createImportStatement(rxjsImports, 'rxjs')}
 
 ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n`;
   /**
@@ -188,7 +192,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
       isCustomElementsBuild,
       isStandaloneBuild,
       inlineComponentProps,
-      cmpMeta.events || []
+      cmpMeta.events || [],
+      componentsOutputUsesEventDetail
     );
     const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
     const componentTypeDefinition = createComponentTypeDefinition(
