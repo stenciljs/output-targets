@@ -1,3 +1,22 @@
+## @stencil/vue-output-target@0.11.7 (2025-07-16)
+
+#### :rocket: Enhancement
+
+- [`bc385bb`](https://github.com/stenciljs/output-targets/commit/bc385bb0794e3062bd579669f18bb4f3ccf3aef3) feat(vue): implement custom event property as source for v-model (#689) ([@adamczykpiotr](https://github.com/adamczykpiotr))
+
+## @stencil/angular-output-target@1.1.1 (2025-07-16)
+
+#### :bug: Bug Fix
+
+- [`16f1fd1`](https://github.com/stenciljs/output-targets/commit/16f1fd18d63754dc1efdddc2cebdf1b9ba5137d6) fix(angular): include outputs in angular component definition (#688) ([@rikis-ATL](https://github.com/rikis-ATL))
+
+## @stencil/react-output-target@1.2.0 (2025-07-10)
+
+#### :bug: Bug Fix
+
+- [`c49a3b5`](https://github.com/stenciljs/output-targets/commit/c49a3b5d9ec11c680bd55413f2e9fea76e23ac4c) fix(react): improved SSR for Next.js (#683) ([@christian-bromann](https://github.com/christian-bromann))
+
+
 ## @stencil/react-output-target@1.1.1 (2025-04-03)
 
 #### :bug: Bug Fix
