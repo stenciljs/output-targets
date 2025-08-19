@@ -78,6 +78,68 @@ npm install typescript@5 --save-dev
 
 That's it! You can now import and use your Stencil components as React components in your React application or library.
 
+## Advanced Usage
+
+### Tag Name Transformation for Microfrontends
+
+The `tagNameTransform` option enables support for multiple versions of the same components in microfrontend environments. This is particularly useful when different teams need to use different versions of a design system without conflicts.
+
+```ts
+import { Config } from '@stencil/core';
+import { reactOutputTarget } from '@stencil/react-output-target';
+
+export const config: Config = {
+  outputTargets: [
+    reactOutputTarget({
+      outDir: '../my-react-library/src/components',
+      tagNameTransform: (tagName) => `${tagName}-v2`,
+    }),
+    { type: 'dist-custom-elements' },
+  ],
+};
+```
+
+This configuration will transform all component tag names by adding a `-v2` suffix. For example:
+- `my-button` becomes `my-button-v2`
+- `my-tabs` becomes `my-tabs-v2`
+
+The generated React components will register custom elements with the transformed names, allowing multiple versions to coexist:
+
+```jsx
+// Version 1 components (from another package)
+import { MyButton as MyButtonV1 } from '@my-library/react-v1';
+
+// Version 2 components (with tagNameTransform)
+import { MyButton as MyButtonV2 } from '@my-library/react-v2';
+
+function App() {
+  return (
+    <div>
+      <MyButtonV1>Legacy Button</MyButtonV1>  {/* Renders <my-button> */}
+      <MyButtonV2>New Button</MyButtonV2>      {/* Renders <my-button-v2> */}
+    </div>
+  );
+}
+```
+
+**Common transform patterns:**
+
+```ts
+// Version suffix
+tagNameTransform: (tagName) => `${tagName}-v2`
+
+// Prefix with namespace
+tagNameTransform: (tagName) => `my-namespace-${tagName}`
+
+// Environment-specific
+tagNameTransform: (tagName) => `${tagName}-${process.env.NODE_ENV}`
+
+// Team-specific prefixes for microfrontends
+tagNameTransform: (tagName) => `team-alpha-${tagName}`
+```
+
+> **Note:** The `tagNameTransform` only affects the tag names used in the DOM. The React component names and import paths remain unchanged, ensuring a consistent developer experience.
+
 ## Output Target Options
 
 | Property                | Description                                                                                                                                                                                                                                                                    |
@@ -89,3 +151,4 @@ That's it! You can now import and use your Stencil components as React component
 | `customElementsDir`     | The directory where the custom elements are saved. This value is automatically detected from the Stencil configuration file for the `dist-custom-elements` output target. If you are working in an environment that uses absolute paths, consider setting this value manually. |
 | `hydrateModule`         | For server side rendering support, provide the package for importing the [Stencil Hydrate module](https://stenciljs.com/docs/hydrate-app#hydrate-app), e.g. `my-package/hydrate`. This will generate two files: a `component.server.ts` which defines all component wrappers and a `components.ts` that re-exports these components for importing in your application. |
 | `excludeServerSideRenderingFor` | A list of components that won't be considered for Server Side Rendering (SSR) |
+| `tagNameTransform`      | Function to transform tag names before generating React components. Useful for supporting multiple versions of the same components in microfrontend environments. |

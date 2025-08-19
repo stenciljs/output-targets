@@ -16,6 +16,7 @@ export const createStencilReactComponents = ({
   hydrateModule,
   clientModule,
   serializeShadowRoot,
+  tagNameTransform,
 }: {
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
@@ -23,6 +24,7 @@ export const createStencilReactComponents = ({
   hydrateModule?: string;
   clientModule?: string;
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
+  tagNameTransform?: (tagName: string) => string;
 }) => {
   const project = new Project({ useInMemoryFileSystem: true });
 
@@ -74,13 +76,14 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
   }
 
   for (const component of components) {
-    const tagName = component.tagName;
-    const reactTagName = kebabToPascalCase(tagName);
+    const originalTagName = component.tagName;
+    const tagName = tagNameTransform ? tagNameTransform(originalTagName) : originalTagName;
+    const reactTagName = kebabToPascalCase(originalTagName);
     const componentElement = `${reactTagName}Element`;
     const componentCustomEvent = `${reactTagName}CustomEvent`;
 
     sourceFile.addImportDeclaration({
-      moduleSpecifier: `${stencilPackageName}/${customElementsDir}/${tagName}.js`,
+      moduleSpecifier: `${stencilPackageName}/${customElementsDir}/${originalTagName}.js`,
       namedImports: [
         {
           name: reactTagName,

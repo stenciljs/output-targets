@@ -199,4 +199,30 @@ describe('reactOutputTarget', () => {
       )
     ).toThrowError(`The 'outDir' option is required.`);
   });
+
+  it('should accept tagNameTransform option', () => {
+    const { validate } = reactOutputTarget({
+      outDir: 'dist/components',
+      stencilPackageName: 'my-components',
+      tagNameTransform: (tagName) => `${tagName}-v2`,
+    });
+
+    if (!validate) {
+      throw new Error('validate is not defined');
+    }
+
+    expect(() =>
+      validate(
+        {
+          outputTargets: [
+            {
+              type: 'dist-custom-elements',
+              externalRuntime: false,
+            },
+          ],
+        } as any,
+        []
+      )
+    ).not.toThrowError();
+  });
 });

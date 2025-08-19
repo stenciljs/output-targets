@@ -17,6 +17,7 @@ export const createComponentWrappers = async ({
   clientModule,
   excludeServerSideRenderingFor,
   serializeShadowRoot,
+  tagNameTransform,
 }: {
   stencilPackageName: string;
   components: ComponentCompilerMeta[];
@@ -29,6 +30,7 @@ export const createComponentWrappers = async ({
   clientModule?: string;
   excludeServerSideRenderingFor?: string[];
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
+  tagNameTransform?: (tagName: string) => string;
 }) => {
   const sourceFiles: SourceFile[] = [];
 
@@ -73,6 +75,7 @@ export const createComponentWrappers = async ({
       components,
       stencilPackageName,
       customElementsDir,
+      tagNameTransform,
     });
     fileContents[outputPath] = stencilReactComponent;
 
@@ -90,6 +93,7 @@ export const createComponentWrappers = async ({
         hydrateModule,
         clientModule,
         serializeShadowRoot,
+        tagNameTransform,
       });
       fileContents[outputPath] = stencilReactComponent;
     }

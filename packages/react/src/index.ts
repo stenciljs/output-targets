@@ -65,6 +65,20 @@ export interface ReactOutputTargetOptions {
    * @default 'declarative-shadow-dom'
    */
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
+  /**
+   * Function to transform tag names before generating React components.
+   * This enables support for multiple versions of the same components in microfrontend environments.
+   * 
+   * @param tagName - The original tag name from the Stencil component
+   * @returns The transformed tag name to be used in React components
+   * 
+   * @example
+   * ```ts
+   * tagNameTransform: (tagName) => `${tagName}-v2`
+   * // my-button becomes my-button-v2
+   * ```
+   */
+  tagNameTransform?: (tagName: string) => string;
 }
 
 const PLUGIN_NAME = 'react-output-target';
@@ -93,6 +107,7 @@ export const reactOutputTarget = ({
   clientModule,
   excludeServerSideRenderingFor,
   serializeShadowRoot,
+  tagNameTransform,
 }: ReactOutputTargetOptions): ReactOutputTarget => {
   let customElementsDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
   return {
@@ -194,6 +209,7 @@ export const reactOutputTarget = ({
         clientModule,
         excludeServerSideRenderingFor,
         serializeShadowRoot,
+        tagNameTransform,
       });
 
       await Promise.all(
