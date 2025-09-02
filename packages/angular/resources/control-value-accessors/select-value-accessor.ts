@@ -2,7 +2,6 @@ import { Directive, ElementRef, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ValueAccessor } from './value-accessor';
-import { userInfo } from 'os';
 
 @Directive({
   /* tslint:disable-next-line:directive-selector */
