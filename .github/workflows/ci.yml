@@ -39,6 +39,8 @@ jobs:
           cache: 'pnpm'
       - name: Install
         run: pnpm i --frozen-lockfile
+      - name: Build packages (needed by example projects)
+        run: pnpm build.angular && pnpm build.react && pnpm build.vue
       - name: Build component-library
         run: pnpm build.example.core
       - name: Run Angular example tests
