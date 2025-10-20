@@ -1,26 +1,15 @@
-import type { Config } from 'jest';
-
 export default {
-  setupFilesAfterEnv: ['<rootDir>/jest/test-setup.ts'],
-
-  moduleFileExtensions: ['ts', 'html', 'js', 'json', 'mjs'],
-  snapshotSerializers: [
-    'jest-preset-angular/build/serializers/html-comment',
-    'jest-preset-angular/build/serializers/ng-snapshot',
-    'jest-preset-angular/build/serializers/no-ng-attributes',
-  ],
+  preset: 'jest-preset-angular',
   testEnvironment: 'jsdom',
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  // @angular-builders/jest already wires the Angular test environment, avoid double init
+  testMatch: ['**/__tests__/**/*.spec.ts', '**/?(*.)+(spec).ts'],
   transform: {
-    '^.+\\.(ts|js|mjs|html|svg)$': [
-      'jest-preset-angular',
-      {
-        tsconfig: '<rootDir>/tsconfig.spec.json',
-        stringifyContentPathRegex: '\\.(html|svg)$',
-      },
-    ],
+    '^.+\\.(ts|js|html)$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json', stringifyContentPathRegex: '\\.(html)$' }],
   },
+  moduleFileExtensions: ['ts', 'js', 'html'],
   moduleNameMapper: {
-    '^component-library(.*)$': '<rootDir>/node_modules/component-library$1',
+    '^@stencil/core/internal$': '<rootDir>/node_modules/@stencil/core/internal/index.js',
+    '^component-library/components/(.*)$': '<rootDir>/../component-library/components/$1',
+    '^component-library/components$': '<rootDir>/../component-library/components/index.js'
   },
-} satisfies Config;
+};

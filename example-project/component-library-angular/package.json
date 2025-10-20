@@ -6,14 +6,15 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "jest",
+    "test": "ng test",
     "clean": "rimraf projects/library/dist projects/library/src/directives",
     "lint": "echo \"lint not configured\" && exit 0",
     "prerelease": "pnpm run validate && np prerelease --yolo --any-branch --tag next",
     "prettier": "pnpm run prettier.base --write",
     "prettier.base": "prettier \"./({scripts,src,__tests__,!src/directives}/**/*.{ts,tsx,js,jsx})|*.{ts,tsx,js,jsx}\" --ignore-path=\"./.prettierignore\"",
     "prettier.dry-run": "pnpm run prettier.base --list-different",
-    "validate": "pnpm i && pnpm run lint && pnpm run test && pnpm run build"
+    "validate": "pnpm i && pnpm run lint && pnpm run test && pnpm run build",
+    "test\\:watch": "ng test --watch"
   },
   "private": true,
   "dependencies": {
@@ -28,19 +29,20 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@angular-builders/jest": "^20.0.0",
     "@angular/build": "^20.0.2",
     "@angular/cli": "^20.0.2",
     "@angular/compiler-cli": "^20.0.0",
     "@types/jest": "^29.5.14",
+    "component-library": "workspace:*",
     "jest": "^29.7.0",
     "jest-canvas-mock": "2",
     "jest-environment-jsdom": "^29.7.0",
     "jest-environment-node": "29",
     "jest-preset-angular": "^14.6.0",
     "ng-packagr": "^20.0.0",
-    "ts-jest": "29",
+    "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "~5.8.2",
-    "component-library": "workspace:*"
+    "typescript": "~5.8.2"
   }
 }
