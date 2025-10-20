@@ -21,9 +21,9 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-      - name: Install
+      - name: 🕸️ Install
         run: pnpm i --frozen-lockfile
-      - name: Build packages
+      - name: 🏗️ Build packages
         run: pnpm build.angular && pnpm build.react && pnpm build.vue
 
   test-angular-example:
@@ -42,11 +42,11 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-      - name: Install
+      - name: 🕸️ Install
         run: pnpm i --frozen-lockfile
-      - name: Build packages (needed by example projects)
+      - name: 🏗️ Build packages (needed by example projects)
         run: pnpm build.angular && pnpm build.react && pnpm build.vue
-      - name: Build component-library
+      - name: 🏗️ Build component-library
         run: pnpm build.example.core
-      - name: Run Angular example tests
+      - name: 🧪 Run Angular example tests
         run: pnpm --filter component-library-angular test
