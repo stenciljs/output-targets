@@ -216,6 +216,8 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.15.31)(jsdom@20.0.3)(less@4.4.0)(sass@1.90.0)(terser@5.43.1)
 
+  example-project/component-library/hydrate: {}
+
   example-project/next-15-react-19-app:
     dependencies:
       html-react-parser:
