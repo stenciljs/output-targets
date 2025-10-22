@@ -34,6 +34,11 @@ export interface OutputTargetAngular {
    * to type-check and show jsdocs when using the components in html-templates.
    */
   inlineProperties?: boolean;
+
+  /**
+   * If true, the component outputs use the `CustomEvent.detail` to allow for two-way bindings.
+   */
+  componentsOutputUsesEventDetail?: boolean;
 }
 
 export type ValueAccessorTypes = 'text' | 'radio' | 'select' | 'number' | 'boolean';
