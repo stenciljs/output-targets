@@ -21,24 +21,26 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
-    - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+    - name: 📦 Install pnpm
+      uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+    - name: 🟢 Use Node
+      uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
         registry-url: ${{ inputs.registry-url }}
-    - name: Ensure Latest npm
+    - name: 🔄 Ensure Latest npm
       run: npm install -g npm@latest
       shell: bash
     - name: Install Dependencies
       run: pnpm --filter ${{ inputs.scope }} install
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-    - name: Run Build
+    - name: 🏗️ Run Build
       run: pnpm run build
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-    - name: Publish to NPM
+    - name: 📦 Publish to NPM
       run: |
         if [ -n "${{ inputs.preid }}" ]; then
           npm publish --tag ${{ inputs.tag }} --preid ${{ inputs.preid }} --provenance
