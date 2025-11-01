@@ -39,6 +39,11 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
     - name: Publish to NPM
-      run: npm publish --tag ${{ inputs.tag }} --provenance
+      run: |
+        if [ -n "${{ inputs.preid }}" ]; then
+          npm publish --tag ${{ inputs.tag }} --preid ${{ inputs.preid }} --provenance
+        else
+          npm publish --tag ${{ inputs.tag }} --provenance
+        fi
       shell: bash
       working-directory: ${{ inputs.working-directory }}

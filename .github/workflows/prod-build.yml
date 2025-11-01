@@ -17,8 +17,18 @@ on:
         type: choice
         description: Which npm tag should this be published to?
         options:
-          - "latest"
-          - "next"
+          - latest
+          - next
+      preid:
+        type: choice
+        description: Which prerelease identifier should be used? This is only needed when version is "prepatch", "preminor", "premajor", or "prerelease".
+        default: ''
+        options:
+          - ''
+          - alpha
+          - beta
+          - rc
+          - next
 jobs:
   prod-build:
     runs-on: ubuntu-latest
@@ -42,6 +52,7 @@ jobs:
         uses: ./.github/workflows/actions/publish-npm
         with:
           tag: ${{ inputs.tag }} # "latest" or "next"
+          preid: ${{ inputs.preid }} # Only needed when version is "prepatch", "preminor", "premajor", or "prerelease"
           scope: ${{ inputs.package == 'ssr' && '@stencil/ssr' || format('@stencil/{0}-output-target', inputs.package) }}
           # Look at package.json's name
           # Coupled to project structure. Update this when adding a new output target.
