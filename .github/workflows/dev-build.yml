@@ -3,6 +3,10 @@ name: 'Output Targets Build'
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   dev-build:
     runs-on: ubuntu-latest
@@ -16,14 +20,13 @@ jobs:
         with:
           node-version: '20.10.0'
           cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
       - name: Install Dependencies
         run: pnpm install
         shell: bash
-      - name: Prepare NPM Token
-        run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+      - name: Ensure Latest npm
+        run: npm install -g npm@latest
         shell: bash
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       # A 1 is required before the timestamp
       # as lerna will fail when there is a leading 0
       # See https://github.com/lerna/lerna/issues/2840

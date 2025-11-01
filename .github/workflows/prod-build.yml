@@ -17,21 +17,14 @@ on:
         type: choice
         description: Which npm tag should this be published to?
         options:
-          - latest
-          - next
-      preid:
-        type: choice
-        description: Which prerelease identifier should be used? This is only needed when version is "prepatch", "preminor", "premajor", or "prerelease".
-        options:
-          - ''
-          - alpha
-          - beta
-          - rc
-          - next
-
+          - "latest"
+          - "next"
 jobs:
   prod-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     outputs:
       version: ${{ steps.prod-build.outputs.version }}
     steps:
@@ -41,22 +34,16 @@ jobs:
         with:
           node-version: '20.10.0'
           cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
       - name: Install Dependencies
         run: pnpm install
         shell: bash
-      - name: Prepare NPM Token
-        run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
-        shell: bash
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish Package
         uses: ./.github/workflows/actions/publish-npm
         with:
           tag: ${{ inputs.tag }} # "latest" or "next"
-          preid: ${{ inputs.preid }} # Only needed when version is "prepatch", "preminor", "premajor", or "prerelease"
           scope: ${{ inputs.package == 'ssr' && '@stencil/ssr' || format('@stencil/{0}-output-target', inputs.package) }}
           # Look at package.json's name
           # Coupled to project structure. Update this when adding a new output target.
           # Examples: vue-output-target, angular-output-target, react-output-target
           working-directory: './packages/${{ inputs.package }}' # Follow the repo structure
-          token: ${{ secrets.NPM_TOKEN }} # Private, accessible by team leads
