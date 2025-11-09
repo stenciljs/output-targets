@@ -40,7 +40,7 @@ runs:
       run: pnpm run build
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-    - name: 📦 Publish to NPM
+    - name: 🚀 Publish to NPM
       run: npm publish --tag ${{ inputs.tag }} --provenance
       shell: bash
       working-directory: ${{ inputs.working-directory }}
