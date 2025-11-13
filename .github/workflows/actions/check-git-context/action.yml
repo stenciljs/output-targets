@@ -3,7 +3,7 @@ description: 'checks for a dirty git context, failing if the context is dirty'
 runs:
   using: composite
   steps:
-    - name: Git status check
+    - name: 🔍 Git status check
       # here we check that there are no changed / new files.
       # we use `git status`, grep out the build zip used throughout CI,
       # and check if there are more than 0 lines in the output.
