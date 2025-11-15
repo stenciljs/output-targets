@@ -51,6 +51,12 @@ jobs:
       - name: 📦 Install Dependencies
         run: pnpm install
         shell: bash
+      - name: 🔎 Get Version
+        id: prod-build
+        run: |
+          VERSION=$(node -p "require('./packages/${{ inputs.package }}/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        shell: bash
       - name: 📦 Publish Package
         uses: ./.github/workflows/publish-npm.yml
         with:
