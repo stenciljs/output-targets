@@ -29,6 +29,7 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
         registry-url: ${{ inputs.registry-url }}
+        scope: '@stencil'
     - name: 🔄 Ensure Latest npm
       run: npm install -g npm@latest
       shell: bash
@@ -44,3 +45,4 @@ runs:
       run: npm publish --tag ${{ inputs.tag }} --provenance
       shell: bash
       working-directory: ${{ inputs.working-directory }}
+
