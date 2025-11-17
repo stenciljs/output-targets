@@ -59,3 +59,4 @@ jobs:
           # Coupled to project structure. Update this when adding a new output target.
           # Examples: vue-output-target, angular-output-target, react-output-target
           working-directory: './packages/${{ inputs.package }}' # Follow the repo structure
+
