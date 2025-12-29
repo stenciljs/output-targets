@@ -95,22 +95,26 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
 
     const publicEvents = (component.events || []).filter((e) => e.internal === false);
     const events: ReactEvent[] = [];
+    const importedEventDetailTypes = new Set<string>();
+    let importedComponentCustomEvent = false;
 
     for (const event of publicEvents) {
+      /**
+       * Import the referenced types from the component library.
+       * Stencil will automatically re-export type definitions from the components,
+       * if they are used in the component's property or event types.
+       */
       if (Object.keys(event.complexType.references).length > 0) {
-        /**
-         * Import the referenced types from the component library.
-         * Stencil will automatically re-export type definitions from the components,
-         * if they are used in the component's property or event types.
-         */
         for (const referenceKey of Object.keys(event.complexType.references)) {
           const reference = event.complexType.references[referenceKey];
           const isGlobalType = reference.location === 'global';
+
           /**
            * Global type references should not have an explicit import.
            * The type should be available globally.
            */
-          if (!isGlobalType) {
+          if (!isGlobalType && !importedEventDetailTypes.has(referenceKey)) {
+            importedEventDetailTypes.add(referenceKey);
             sourceFile.addImportDeclaration({
               moduleSpecifier: stencilPackageName,
               namedImports: [
@@ -122,15 +126,18 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
             });
           }
         }
+      }
 
-        /**
-         * Import the CustomEvent type for the web component from the Stencil package.
-         *
-         * For example:
-         * ```
-         * import type { ComponentCustomEvent } from 'my-component-library';
-         * ```
-         */
+      /**
+       * Import the CustomEvent type for the web component from the Stencil package.
+       *
+       * For example:
+       * ```
+       * import type { ComponentCustomEvent } from 'my-component-library';
+       * ```
+       */
+      if (!importedComponentCustomEvent) {
+        importedComponentCustomEvent = true;
         sourceFile.addImportDeclaration({
           moduleSpecifier: stencilPackageName,
           namedImports: [
@@ -140,19 +147,14 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
             },
           ],
         });
-
-        events.push({
-          originalName: event.name,
-          name: eventListenerName(event.name),
-          type: `EventName<${componentCustomEvent}<${event.complexType.original}>>`,
-        });
-      } else {
-        events.push({
-          originalName: event.name,
-          name: eventListenerName(event.name),
-          type: `EventName<CustomEvent<${event.complexType.original}>>`,
-        });
       }
+
+      // Always type events using the Stencil per-component CustomEvent type.
+      events.push({
+        originalName: event.name,
+        name: eventListenerName(event.name),
+        type: `EventName<${componentCustomEvent}<${event.complexType.original}>>`,
+      });
     }
 
     const componentEventNamesType = `${reactTagName}Events`;
@@ -171,6 +173,7 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
     events: {${events.map((e) => `${e.name}: '${e.originalName}'`).join(',\n')}} as ${componentEventNamesType},
     defineCustomElement: define${reactTagName}
   })`;
+
     const serverComponentCall = `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}>({
     tagName: '${tagName}',
     properties: {${component.properties
