@@ -11,3 +11,4 @@ build/
 example-project/component-library/hydrate
 example-project/component-library/components
 *.tsbuildinfo
+.claude/
