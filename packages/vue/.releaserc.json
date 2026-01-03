@@ -5,11 +5,13 @@
     [
       "@semantic-release/commit-analyzer",
       {
+        "preset": "conventionalcommits",
         "releaseRules": [
           { "type": "feat", "scope": "vue", "release": "minor" },
           { "type": "fix", "scope": "vue", "release": "patch" },
           { "type": "perf", "scope": "vue", "release": "patch" },
-          { "breaking": true, "scope": "vue", "release": "major" }
+          { "breaking": true, "scope": "vue", "release": "major" },
+          { "scope": "!vue", "release": false }
         ]
       }
     ],
@@ -34,8 +36,7 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogFile": "../../CHANGELOG.md",
-        "changelogTitle": ""
+        "changelogFile": "../../CHANGELOG.md"
       }
     ],
     [

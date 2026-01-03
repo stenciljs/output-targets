@@ -39,11 +39,12 @@ jobs:
         id: analyze
         run: |
           echo "Running semantic-release in dry-run mode to analyze changes..."
-          pnpm run release:prepare > semantic-release-output.txt 2>&1 || true
+          timeout 300 pnpm run release:prepare > semantic-release-output.txt 2>&1 || true
           cat semantic-release-output.txt
 
           # Check if any releases will be created
-          if grep -q -E "(The next release version is|Changes detected)" semantic-release-output.txt; then
+          # Look for either semantic-release output OR our manual commit count
+          if grep -q -E "(The next release version is|Changes detected|Found [0-9]+ commit)" semantic-release-output.txt; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "✅ Changes detected - will create release PR"
           else
