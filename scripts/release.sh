@@ -14,14 +14,14 @@ if [ "$DRY_RUN" = "--dry-run" ]; then
   echo ""
 fi
 
-if [ "$CURRENT_BRANCH" != "main" ] && [ "$DRY_RUN" != "--dry-run" ]; then
-  echo "⚠️  WARNING: You are on branch '$CURRENT_BRANCH', not 'main'"
-  echo "   Releases can only be created from the 'main' branch"
+if [ "$CURRENT_BRANCH" != "main" ] && [[ ! "$CURRENT_BRANCH" =~ ^release/ ]] && [ "$DRY_RUN" != "--dry-run" ]; then
+  echo "⚠️  WARNING: You are on branch '$CURRENT_BRANCH', not 'main' or a release branch"
+  echo "   Releases can only be created from the 'main' branch or a 'release/*' branch"
   echo ""
   exit 1
 fi
 
-if [ "$CURRENT_BRANCH" != "main" ]; then
+if [ "$CURRENT_BRANCH" != "main" ] && [[ ! "$CURRENT_BRANCH" =~ ^release/ ]]; then
   echo "ℹ️  Note: You are on branch '$CURRENT_BRANCH'."
   echo "   Dry run will analyze commits, but actual releases only work from 'main' branch."
   echo ""
