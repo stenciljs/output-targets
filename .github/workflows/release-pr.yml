@@ -152,8 +152,7 @@ jobs:
             --title "chore(release): automated release preparation" \
             --body-file pr_body.md \
             --base "${{ inputs.base_branch }}" \
-            --head "${{ steps.create_branch.outputs.branch_name }}" \
-            --label "release"
+            --head "${{ steps.create_branch.outputs.branch_name }}"
         shell: bash
 
       - name: ℹ️ No Changes Required
