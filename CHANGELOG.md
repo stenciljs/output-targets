@@ -1,3 +1,9 @@
+## @stencil/react-output-target@1.2.1 
+
+#### :bug: Bug Fix
+
+always use per-component CustomEvent types for event props
+
 ## @stencil/vue-output-target@0.11.7 (2025-07-16)
 
 #### :rocket: Enhancement
