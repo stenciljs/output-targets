@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm run release:prepare:*)",
+      "Bash(./scripts/release.sh:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(timeout 30 ./scripts/release.sh:*)",
+      "Bash(timeout 20 npx semantic-release:*)",
+      "Bash(timeout 30 npx semantic-release:*)",
+      "Bash(pnpm install:*)",
+      "Bash(timeout 180 pnpm run release:prepare:*)",
+      "Bash(npx semantic-release:*)"
+    ]
+  }
+}

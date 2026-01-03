@@ -174,25 +174,70 @@ See our [Pull Request Template](.github/PULL_REQUEST_TEMPLATE.md) for more detai
 
 ## Release
 
-Releases are managed through GitHub Actions. There is a manual workflow called "Production Release" in the GitHub Actions workflows directory.
+Releases are now automated using semantic-release based on conventional commits. The process has two main steps:
 
-**Important**: You have to manually bump the version of each package you like to release manually (see [example commit](Paul Visciano)) as well as drafting your own changelog (see [example release](https://github.com/stenciljs/output-targets/releases/tag/%40stencil%2Freact-output-target%401.2.0)).
+### Step 1: Automated Version Bumping & Changelog Generation
 
-Follow the following order of steps:
+1. Ensure all commits since the last release follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+   - `fix(scope): message` - Patch version bump (e.g., 1.0.0 -> 1.0.1)
+   - `feat(scope): message` - Minor version bump (e.g., 1.0.0 -> 1.1.0)
+   - `feat(scope)!: message` or `BREAKING CHANGE:` - Major version bump (e.g., 1.0.0 -> 2.0.0)
 
-- verify the `main` branch passes all tests
-- push a commit that bumps all packages you like to publish (see example of [single package release](https://github.com/stenciljs/output-targets/commit/d62bd2b9e633274a240d11a04f2e366c35ca9085), and [multi package release](https://github.com/stenciljs/output-targets/commit/848cbe1e80391a6ccd6cd43834062bbb15a7a4fb))
-- create a tag for each package being released, e.g. `git tag -a @stencil/ssr@0.2.0`
-- push commit and tags, e.g. `git push origin main --tags`
-- create GitHub releases for each package that is being released (see [example](https://github.com/stenciljs/output-targets/releases/tag/%40stencil%2Freact-output-target%401.2.0))
-- trigger the [release workflow](https://github.com/stenciljs/output-targets/actions/workflows/prod-build.yml) for the package you want to publish
+   Valid scopes: `vue`, `react`, `angular`, `ssr`
 
-When submitting the [release workflow](https://github.com/stenciljs/output-targets/actions/workflows/prod-build.yml), you'll need to specify:
+   Examples:
+   - `fix(vue): correct v-model binding issue`
+   - `feat(react): add support for React 19`
+   - `fix(angular): include outputs in component definition`
 
-1. **Package**: Which package should be published (`vue`, `react`, `angular`, or `ssr`)
-2. **Version**: What version should be published
-3. **NPM Tag**: What npm tag it should be published under (`next` or `latest`)
-4. **Pre-ID**: Any pre-release identifier, like `alpha` or `rc`
+2. Verify the `main` branch passes all tests
+
+3. Trigger the **Production Release PR** workflow:
+   - Go to [Actions -> Production Release PR](https://github.com/stenciljs/output-targets/actions/workflows/release-pr.yml)
+   - Click "Run workflow"
+   - Select the base branch (usually `main`)
+
+4. The workflow will:
+   - Analyze commits since the last release for each package
+   - Automatically bump versions based on conventional commits
+   - Generate/update CHANGELOG.md with release notes
+   - Create a Pull Request with all changes
+
+5. Review the PR:
+   - Verify version bumps are correct
+   - Check the changelog entries
+   - Ensure all changes look good
+
+6. Merge the PR to `main`
+
+### Step 2: Publishing to npm
+
+After the release PR is merged:
+
+1. Trigger the [Production Release workflow](https://github.com/stenciljs/output-targets/actions/workflows/prod-build.yml) for each package you want to publish
+
+2. When submitting the release workflow, specify:
+   - **Package**: Which package to publish (`vue`, `react`, `angular`, or `ssr`)
+   - **Version**: The version from the merged PR
+   - **NPM Tag**: What npm tag it should be published under (`next` or `latest`)
+   - **Pre-ID**: Any pre-release identifier, like `alpha` or `rc` (if needed)
+
+### Local Testing
+
+To test the release process locally without making any changes:
+
+```bash
+# Dry run to see what versions would be bumped
+pnpm run release:prepare
+```
+
+### Important Notes
+
+- Only commits with the correct scope will trigger version bumps for that package
+- Commits without a scope or with an invalid scope will be ignored
+- The CHANGELOG.md is automatically generated from commit messages
+- Tags are created automatically during the semantic-release process
+- Always use conventional commits to ensure proper version bumping
 
 ## Getting Help
 
