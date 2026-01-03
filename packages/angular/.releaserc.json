@@ -5,11 +5,13 @@
     [
       "@semantic-release/commit-analyzer",
       {
+        "preset": "conventionalcommits",
         "releaseRules": [
           { "type": "feat", "scope": "angular", "release": "minor" },
           { "type": "fix", "scope": "angular", "release": "patch" },
           { "type": "perf", "scope": "angular", "release": "patch" },
-          { "breaking": true, "scope": "angular", "release": "major" }
+          { "breaking": true, "scope": "angular", "release": "major" },
+          { "scope": "!angular", "release": false }
         ]
       }
     ],
@@ -34,8 +36,7 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogFile": "../../CHANGELOG.md",
-        "changelogTitle": ""
+        "changelogFile": "../../CHANGELOG.md"
       }
     ],
     [

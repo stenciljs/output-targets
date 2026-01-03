@@ -5,11 +5,13 @@
     [
       "@semantic-release/commit-analyzer",
       {
+        "preset": "conventionalcommits",
         "releaseRules": [
           { "type": "feat", "scope": "ssr", "release": "minor" },
           { "type": "fix", "scope": "ssr", "release": "patch" },
           { "type": "perf", "scope": "ssr", "release": "patch" },
-          { "breaking": true, "scope": "ssr", "release": "major" }
+          { "breaking": true, "scope": "ssr", "release": "major" },
+          { "scope": "!ssr", "release": false }
         ]
       }
     ],
@@ -34,8 +36,7 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogFile": "../../CHANGELOG.md",
-        "changelogTitle": ""
+        "changelogFile": "../../CHANGELOG.md"
       }
     ],
     [
