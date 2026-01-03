@@ -17,7 +17,7 @@ describe('createValueAccessor', () => {
     const srcFile = fs.readFileSync(srcFilePath, { encoding: 'utf-8' });
     const finalText = createValueAccessor(srcFile, valueAccessor, 'component');
     expect(finalText.trim()).toMatchInlineSnapshot(`
-      "import { Directive, ElementRef } from '@angular/core';
+      "import { Directive, ElementRef, forwardRef } from '@angular/core';
       import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
       import { ValueAccessor } from './value-accessor';
@@ -32,7 +32,7 @@ describe('createValueAccessor', () => {
         providers: [
           {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: TextValueAccessor,
+            useExisting: forwardRef(() => TextValueAccessor),
             multi: true
           }
         ],
@@ -58,7 +58,7 @@ describe('createValueAccessor', () => {
     const srcFile = fs.readFileSync(srcFilePath, { encoding: 'utf-8' });
     const finalText = createValueAccessor(srcFile, valueAccessor, 'standalone');
     expect(finalText.trim()).toMatchInlineSnapshot(`
-      "import { Directive, ElementRef } from '@angular/core';
+      "import { Directive, ElementRef, forwardRef } from '@angular/core';
       import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
       import { ValueAccessor } from './value-accessor';
@@ -73,7 +73,7 @@ describe('createValueAccessor', () => {
         providers: [
           {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: TextValueAccessor,
+            useExisting: forwardRef(() => TextValueAccessor),
             multi: true
           }
         ]
