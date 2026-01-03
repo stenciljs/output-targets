@@ -22,35 +22,35 @@ on:
       preid:
         type: choice
         description: Which prerelease identifier should be used? This is only needed when version is "prepatch", "preminor", "premajor", or "prerelease".
+        default: ''
         options:
-          - ''
+          - '' # no prerelease
           - alpha
           - beta
           - rc
           - next
-
 jobs:
   prod-build:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.prod-build.outputs.version }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - name: 📥 Checkout Code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+      - name: 🟢 Use Node
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: '20.10.0'
           cache: 'pnpm'
-      - name: Install Dependencies
+          registry-url: 'https://registry.npmjs.org'
+      - name: 📦 Install Dependencies
         run: pnpm install
         shell: bash
-      - name: Prepare NPM Token
-        run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
-        shell: bash
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Publish Package
-        uses: ./.github/workflows/actions/publish-npm
+      - name: 📦 Publish Package
+        uses: ./.github/workflows/publish-npm.yml
         with:
           tag: ${{ inputs.tag }} # "latest" or "next"
           preid: ${{ inputs.preid }} # Only needed when version is "prepatch", "preminor", "premajor", or "prerelease"
@@ -59,4 +59,4 @@ jobs:
           # Coupled to project structure. Update this when adding a new output target.
           # Examples: vue-output-target, angular-output-target, react-output-target
           working-directory: './packages/${{ inputs.package }}' # Follow the repo structure
-          token: ${{ secrets.NPM_TOKEN }} # Private, accessible by team leads
+
