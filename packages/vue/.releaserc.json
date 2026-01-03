@@ -7,11 +7,30 @@
       {
         "preset": "conventionalcommits",
         "releaseRules": [
-          { "type": "feat", "scope": "vue", "release": "minor" },
-          { "type": "fix", "scope": "vue", "release": "patch" },
-          { "type": "perf", "scope": "vue", "release": "patch" },
-          { "breaking": true, "scope": "vue", "release": "major" },
-          { "scope": "!vue", "release": false }
+          {
+            "type": "feat",
+            "scope": "vue",
+            "release": "minor"
+          },
+          {
+            "type": "fix",
+            "scope": "vue",
+            "release": "patch"
+          },
+          {
+            "type": "perf",
+            "scope": "vue",
+            "release": "patch"
+          },
+          {
+            "breaking": true,
+            "scope": "vue",
+            "release": "major"
+          },
+          {
+            "scope": "!vue",
+            "release": false
+          }
         ]
       }
     ],
@@ -21,15 +40,35 @@
         "preset": "conventionalcommits",
         "presetConfig": {
           "types": [
-            { "type": "feat", "section": ":rocket: Enhancement" },
-            { "type": "fix", "section": ":bug: Bug Fix" },
-            { "type": "perf", "section": ":zap: Performance" },
-            { "type": "docs", "section": ":memo: Documentation", "hidden": false },
-            { "type": "chore", "section": ":house: Internal", "hidden": true }
+            {
+              "type": "feat",
+              "section": ":rocket: Enhancement"
+            },
+            {
+              "type": "fix",
+              "section": ":bug: Bug Fix"
+            },
+            {
+              "type": "perf",
+              "section": ":zap: Performance"
+            },
+            {
+              "type": "docs",
+              "section": ":memo: Documentation",
+              "hidden": false
+            },
+            {
+              "type": "chore",
+              "section": ":house: Internal",
+              "hidden": true
+            }
           ]
         },
         "writerOpts": {
-          "commitsSort": ["scope", "subject"]
+          "commitsSort": [
+            "scope",
+            "subject"
+          ]
         }
       }
     ],
@@ -43,13 +82,6 @@
       "@semantic-release/npm",
       {
         "npmPublish": false
-      }
-    ],
-    [
-      "@semantic-release/git",
-      {
-        "assets": ["package.json", "../../CHANGELOG.md"],
-        "message": "chore(release): ${nextRelease.gitTag} [skip ci]\n\n${nextRelease.notes}"
       }
     ]
   ]
