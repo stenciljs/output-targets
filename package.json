@@ -57,6 +57,7 @@
     "@semantic-release/commit-analyzer": "^11.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/release-notes-generator": "^12.1.0",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
     "lerna": "^8.0.0",
     "lerna-changelog": "^2.0.0",
     "np": "^10.0.2",
