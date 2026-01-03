@@ -31,6 +31,8 @@ echo "📦 Analyzing packages for release..."
 echo ""
 
 HAS_CHANGES=false
+RELEASE_TAGS=()
+RELEASE_NOTES=""
 
 for PKG_DIR in "${PACKAGES[@]}"; do
   if [ -d "$PKG_DIR" ]; then
@@ -73,9 +75,25 @@ for PKG_DIR in "${PACKAGES[@]}"; do
         echo "ℹ️  No changes for $PKG_NAME"
       fi
     else
-      if npx semantic-release --no-ci; then
+      # Run semantic-release without git plugin (it will update package.json and CHANGELOG.md)
+      OUTPUT=$(npx semantic-release --no-ci 2>&1 || true)
+
+      # Check if a release was created
+      if echo "$OUTPUT" | grep -q "Published release"; then
         HAS_CHANGES=true
-        echo "✅ Released $PKG_NAME"
+
+        # Extract version and tag
+        VERSION=$(echo "$OUTPUT" | grep "Published release" | sed 's/.*Published release \([^ ]*\).*/\1/')
+        TAG="${PKG_NAME}@${VERSION}"
+        RELEASE_TAGS+=("$TAG")
+
+        # Extract release notes if available
+        NOTES=$(echo "$OUTPUT" | sed -n '/Release note for version/,/^$/p' | tail -n +2)
+        if [ -n "$NOTES" ]; then
+          RELEASE_NOTES+="## $TAG"$'\n\n'"$NOTES"$'\n\n'
+        fi
+
+        echo "✅ Prepared release for $PKG_NAME@$VERSION"
       else
         echo "ℹ️  No changes for $PKG_NAME"
       fi
@@ -89,6 +107,42 @@ done
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ "$HAS_CHANGES" = true ]; then
   echo "✅ Done! Packages have been analyzed/updated"
+
+  # If not dry-run and we have changes, create a single commit with all changes
+  if [ "$DRY_RUN" != "--dry-run" ] && [ ${#RELEASE_TAGS[@]} -gt 0 ]; then
+    echo ""
+    echo "📝 Creating release commit..."
+
+    # Configure git
+    git config user.name "semantic-release-bot" || true
+    git config user.email "semantic-release-bot@martynus.net" || true
+
+    # Add all changed package.json files and CHANGELOG.md
+    git add CHANGELOG.md
+    for PKG_DIR in "${PACKAGES[@]}"; do
+      if [ -f "$PKG_DIR/package.json" ]; then
+        git add "$PKG_DIR/package.json"
+      fi
+    done
+
+    # Create commit message
+    COMMIT_MSG="chore(release): ${RELEASE_TAGS[*]} [skip ci]"
+    if [ -n "$RELEASE_NOTES" ]; then
+      COMMIT_MSG+=$'\n\n'"$RELEASE_NOTES"
+    fi
+
+    # Create the commit
+    git commit -m "$COMMIT_MSG"
+
+    # Create tags for each release
+    for TAG in "${RELEASE_TAGS[@]}"; do
+      echo "🏷️  Creating tag $TAG"
+      git tag "$TAG"
+    done
+
+    echo ""
+    echo "✅ Created commit and tags for: ${RELEASE_TAGS[*]}"
+  fi
 else
   echo "ℹ️  No releasable changes detected in any package"
 fi
