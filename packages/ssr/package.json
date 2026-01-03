@@ -1,6 +1,6 @@
 {
   "name": "@stencil/ssr",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A package for server-side rendering Stencil components.",
   "author": "Ionic Team",
   "homepage": "https://stenciljs.com/",
