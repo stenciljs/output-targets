@@ -89,3 +89,4 @@ That's it! You can now import and use your Stencil components as React component
 | `customElementsDir`     | The directory where the custom elements are saved. This value is automatically detected from the Stencil configuration file for the `dist-custom-elements` output target. If you are working in an environment that uses absolute paths, consider setting this value manually. |
 | `hydrateModule`         | For server side rendering support, provide the package for importing the [Stencil Hydrate module](https://stenciljs.com/docs/hydrate-app#hydrate-app), e.g. `my-package/hydrate`. This will generate two files: a `component.server.ts` which defines all component wrappers and a `components.ts` that re-exports these components for importing in your application. |
 | `excludeServerSideRenderingFor` | A list of components that won't be considered for Server Side Rendering (SSR) |
+# Test
