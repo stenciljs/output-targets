@@ -2,7 +2,7 @@
 
 #### :bug: Bug Fix
 
-always use per-component CustomEvent types for event props
+- [`8ebba85`](https://github.com/stenciljs/output-targets/commit/8ebba85f603518482457faf74997d0008ded3dc9) fix(react): always use per-component CustomEvent types for event props (#716) ([@theo-staizen](https://github.com/theo-staizen)
 
 ## @stencil/vue-output-target@0.11.7 (2025-07-16)
 
