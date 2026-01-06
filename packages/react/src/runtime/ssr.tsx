@@ -85,6 +85,7 @@ interface CreateComponentForServerSideRenderingOptions<I extends HTMLElement = H
   renderToString: RenderToString;
   serializeProperty: (value: any) => string;
   serializeShadowRoot?: SerializeShadowRootOptions;
+  transformTagFn?: (tagName: string) => string;
 }
 
 type StencilProps<I extends HTMLElement> = WebComponentProps<I>;
@@ -200,7 +201,8 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      * if its light DOM contains other elements.
      */
     let serializedChildren = '';
-    const toSerialize = `<${options.tagName}${stringProps} suppressHydrationWarning="true">`;
+    const transformedTagName = options.transformTagFn ? options.transformTagFn(options.tagName) : options.tagName;
+    const toSerialize = `<${transformedTagName}${stringProps} suppressHydrationWarning="true">`;
     const originalConsoleError = console.error;
     try {
       // Ignore potential console errors during serialization (for example if a hook is used, which
@@ -229,7 +231,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       console.error = originalConsoleError;
     }
 
-    const toSerializeWithChildren = `${toSerialize}${serializedChildren}</${options.tagName}>`;
+    const toSerializeWithChildren = `${toSerialize}${serializedChildren}</${transformedTagName}>`;
 
     /**
      * first render the component with `prettyHtml` flag so it makes it easier to
@@ -276,12 +278,12 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
           /**
            * only render the component we have been serializing before
            */
-          if ('name' in domNode && domNode.name === options.tagName) {
+          if ('name' in domNode && (domNode.name === transformedTagName || domNode.name === options.tagName)) {
             const props = (reactNode as any).props;
             /**
-             * remove the outer tag (e.g. `options.tagName`) so we only have the inner content
+             * remove the outer tag (e.g. `transformedTagName`) so we only have the inner content
              */
-            const CustomTag = `${options.tagName}`;
+            const CustomTag = `${transformedTagName}`;
 
             /**
              * if the component is not a shadow component we can render it with the light DOM only

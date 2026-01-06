@@ -64,6 +64,20 @@ export interface OutputTargetVue {
    * By default, this value is undefined and server side rendering is disabled.
    */
   hydrateModule?: string;
+  /**
+   * Use `transformTag` to enable runtime tag name transformation for your components.
+   * When enabled, the output target will import `transformTag` from your component library
+   * and apply it when rendering components.
+   *
+   * You must export `transformTag` from the root entry of your component library:
+   * ```ts
+   * // src/index.ts
+   * export { transformTag } from '@stencil/core';
+   * ```
+   *
+   * @default false
+   */
+  transformTag?: boolean;
 }
 
 export interface ComponentModelConfig {

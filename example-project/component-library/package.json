@@ -16,9 +16,9 @@
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs.js",
-      "default": "./dist/index.mjs"
+      "default": "./dist/index.js"
     },
     "./hydrate": {
       "types": "./hydrate/index.d.ts",
@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@stencil/angular-output-target": "workspace:*",
-    "@stencil/core": "4.35.1",
+    "@stencil/core": "4.41.0",
     "@stencil/react-output-target": "workspace:*",
     "@stencil/vue-output-target": "workspace:*",
     "@types/puppeteer": "2.0.1"

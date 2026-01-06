@@ -9,7 +9,7 @@ import {
   ref,
   withDirectives,
 } from 'vue';
-import { InputProps } from './types';
+import type { InputProps } from './types';
 
 export { defineStencilSSRComponent } from './ssr';
 
@@ -77,7 +77,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
   emitProps: string[] = [],
   modelProp?: string,
   modelUpdateEvent?: string,
-  modelUpdateEventAttribute?: string
+  modelUpdateEventAttribute?: string,
+  transformTagFn?: (tagName: string) => string
 ) => {
   /**
    * Create a Vue component wrapper around a Web Component.
@@ -263,7 +264,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
          * vModelDirective is only needed on components that support v-model.
          * As a result, we conditionally call withDirectives with v-model components.
          */
-        const node = h(name, propsToAdd, slots.default && slots.default());
+        const tagName = transformTagFn ? transformTagFn(name) : name;
+        const node = h(tagName, propsToAdd, slots.default && slots.default());
         return modelProp === undefined ? node : withDirectives(node, [[vModelDirective]]);
       };
     },

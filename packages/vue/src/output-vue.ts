@@ -81,10 +81,27 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
     registerCustomElements = `${REGISTER_CUSTOM_ELEMENTS}();`;
   }
 
+  // Add transformTag import if enabled
+  // For client-side, import from the component library
+  // For SSR, transformTag must be imported from the hydrate module
+  // See: https://stenciljs.com/docs/tag-transformation#usage-via-dist-hydrate-script-output-on-a-nodejs-server
+  let transformTagImport = '';
+  if (outputTarget.transformTag && outputTarget.componentCorePackage) {
+    if (outputTarget.hydrateModule) {
+      // Import both: client from component library, SSR from hydrate
+      transformTagImport = `import { transformTag } from '${normalizePath(outputTarget.componentCorePackage)}';\n`;
+      transformTagImport += `import { transformTag as transformTagSSR } from '${normalizePath(outputTarget.hydrateModule)}';\n`;
+    } else {
+      // No SSR, just import from component library
+      transformTagImport = `import { transformTag } from '${normalizePath(outputTarget.componentCorePackage)}';\n`;
+    }
+  }
+
   const final: string[] = [
     imports,
     typeImports,
     sourceImports,
+    transformTagImport,
     registerCustomElements,
     components.map(createComponentDefinition(IMPORT_TYPES, outputTarget)).join('\n'),
   ];

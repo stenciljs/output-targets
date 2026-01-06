@@ -63,7 +63,7 @@
     }
   },
   "devDependencies": {
-    "@stencil/core": "^4.35.1",
+    "@stencil/core": "^4.41.0",
     "@types/node": "^18.0.0",
     "@rollup/plugin-typescript": "^12.1.0",
     "@vue/shared": "^3.5.12",

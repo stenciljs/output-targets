@@ -65,6 +65,20 @@ export interface ReactOutputTargetOptions {
    * @default 'declarative-shadow-dom'
    */
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
+  /**
+   * Use `transformTag` to enable runtime tag name transformation for your components.
+   * When enabled, the output target will import `transformTag` from your component library
+   * and apply it when rendering components.
+   *
+   * You must export `transformTag` from the root entry of your component library:
+   * ```ts
+   * // src/index.ts
+   * export { transformTag } from '@stencil/core';
+   * ```
+   *
+   * @default false
+   */
+  transformTag?: boolean;
 }
 
 const PLUGIN_NAME = 'react-output-target';
@@ -93,6 +107,7 @@ export const reactOutputTarget = ({
   clientModule,
   excludeServerSideRenderingFor,
   serializeShadowRoot,
+  transformTag,
 }: ReactOutputTargetOptions): ReactOutputTarget => {
   let customElementsDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
   return {
@@ -194,6 +209,7 @@ export const reactOutputTarget = ({
         clientModule,
         excludeServerSideRenderingFor,
         serializeShadowRoot,
+        transformTag,
       });
 
       await Promise.all(

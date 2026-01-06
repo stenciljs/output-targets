@@ -740,6 +740,12 @@ export namespace Components {
     interface MyToggleContent {
         "visible": boolean;
     }
+    interface MyTransformTest {
+        /**
+          * @default 'Transform Test Component'
+         */
+        "message": string;
+    }
 }
 export interface MyButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1046,6 +1052,12 @@ declare global {
         prototype: HTMLMyToggleContentElement;
         new (): HTMLMyToggleContentElement;
     };
+    interface HTMLMyTransformTestElement extends Components.MyTransformTest, HTMLStencilElement {
+    }
+    var HTMLMyTransformTestElement: {
+        prototype: HTMLMyTransformTestElement;
+        new (): HTMLMyTransformTestElement;
+    };
     interface HTMLElementTagNameMap {
         "my-button": HTMLMyButtonElement;
         "my-button-scoped": HTMLMyButtonScopedElement;
@@ -1067,6 +1079,7 @@ declare global {
         "my-range": HTMLMyRangeElement;
         "my-toggle": HTMLMyToggleElement;
         "my-toggle-content": HTMLMyToggleContentElement;
+        "my-transform-test": HTMLMyTransformTestElement;
     }
 }
 declare namespace LocalJSX {
@@ -1866,6 +1879,12 @@ declare namespace LocalJSX {
     interface MyToggleContent {
         "visible"?: boolean;
     }
+    interface MyTransformTest {
+        /**
+          * @default 'Transform Test Component'
+         */
+        "message"?: string;
+    }
     interface IntrinsicElements {
         "my-button": MyButton;
         "my-button-scoped": MyButtonScoped;
@@ -1887,6 +1906,7 @@ declare namespace LocalJSX {
         "my-range": MyRange;
         "my-toggle": MyToggle;
         "my-toggle-content": MyToggleContent;
+        "my-transform-test": MyTransformTest;
     }
 }
 export { LocalJSX as JSX };
@@ -1913,6 +1933,7 @@ declare module "@stencil/core" {
             "my-range": LocalJSX.MyRange & JSXBase.HTMLAttributes<HTMLMyRangeElement>;
             "my-toggle": LocalJSX.MyToggle & JSXBase.HTMLAttributes<HTMLMyToggleElement>;
             "my-toggle-content": LocalJSX.MyToggleContent & JSXBase.HTMLAttributes<HTMLMyToggleContentElement>;
+            "my-transform-test": LocalJSX.MyTransformTest & JSXBase.HTMLAttributes<HTMLMyTransformTestElement>;
         }
     }
 }

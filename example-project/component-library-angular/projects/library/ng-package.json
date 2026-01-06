@@ -6,5 +6,8 @@
   },
   "allowedNonPeerDependencies": [
     "component-library"
+  ],
+  "assets": [
+    "./scripts/**/*"
   ]
 }

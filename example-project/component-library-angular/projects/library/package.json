@@ -5,8 +5,12 @@
     "@angular/common": "^20.0.0",
     "@angular/core": "^20.0.0"
   },
+  "bin": {
+    "patch-transform-selectors": "./scripts/patch-transform-selectors.mjs"
+  },
   "files": [
     "dist",
+    "scripts",
     "package.json"
   ],
   "dependencies": {

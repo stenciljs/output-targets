@@ -38,6 +38,7 @@ export const createComponentDefinition =
     const modelType = findModel !== undefined ? `, ${componentType}["${findModel.targetAttr}"]` : '';
     const supportSSR = typeof outputTarget.hydrateModule === 'string';
     const ssrTernary = supportSSR ? ' globalThis.window ? ' : ' ';
+    const transformTagArg = outputTarget.transformTag ? ', transformTag' : '';
     const ssrCondition = supportSSR
       ? ` : defineStencilSSRComponent<${componentType}${modelType}>({
   tagName: '${cmpMeta.tagName}',
@@ -46,7 +47,7 @@ export const createComponentDefinition =
     ${Object.entries(propMap)
       .map(([key, [type, attr]]) => (attr ? `'${key}': [${type}, "${attr}"]` : `'${key}': [${type}]`))
       .join(',\n    ')}
-  }
+  }${outputTarget.transformTag ? ',\n  transformTagFn: transformTagSSR' : ''}
 })`
       : '';
 
@@ -68,7 +69,8 @@ export const ${tagNameAsPascal}: StencilVueComponent<${componentType}${modelType
        * as there must be a prop for v-model to update,
        * but this check is there so builds do not crash.
        */
-    } else if (emits.length > 0) {
+    } else if (emits.length > 0 || findModel || outputTarget.transformTag) {
+      // Add empty props array if we have emits, v-model, or transformTag
       templateString += `, []`;
     }
 
@@ -87,7 +89,8 @@ export const ${tagNameAsPascal}: StencilVueComponent<${componentType}${modelType
        * as there must be a prop for v-model to update,
        * but this check is there so builds do not crash.
        */
-    } else if (findModel) {
+    } else if (findModel || outputTarget.transformTag) {
+      // Add empty emits array if we have v-model or transformTag
       templateString += `, []`;
     }
 
@@ -108,6 +111,12 @@ export const ${tagNameAsPascal}: StencilVueComponent<${componentType}${modelType
       const targetEventAttr = findModel.eventAttr !== undefined ? `'${findModel.eventAttr}'` : 'undefined';
       templateString += `,\n`;
       templateString += `'${targetProp}', '${findModel.event}', ${targetEventAttr}`;
+
+      // Add transformTag parameter if enabled
+      templateString += transformTagArg;
+    } else if (outputTarget.transformTag) {
+      // If transformTag is enabled but there's no v-model, we need to pass undefined for the model parameters
+      templateString += `, undefined, undefined, undefined, transformTag`;
     }
 
     templateString += `)${ssrCondition};\n`;

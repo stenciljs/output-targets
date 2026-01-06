@@ -16,6 +16,7 @@ import { createAngularComponentDefinition, createComponentTypeDefinition } from 
 import { generateAngularDirectivesFile } from './generate-angular-directives-file';
 import generateValueAccessors from './generate-value-accessors';
 import { generateAngularModuleForComponent } from './generate-angular-modules';
+import { generateTransformTagScript } from './generate-transformtag-script';
 
 export async function angularDirectiveProxyOutput(
   compilerCtx: CompilerCtx,
@@ -29,12 +30,45 @@ export async function angularDirectiveProxyOutput(
 
   const finalText = generateProxies(filteredComponents, pkgData, outputTarget, config.rootDir as string);
 
-  await Promise.all([
+  const tasks = [
     compilerCtx.fs.writeFile(outputTarget.directivesProxyFile, finalText),
     copyResources(config, outputTarget),
     generateAngularDirectivesFile(compilerCtx, filteredComponents, outputTarget),
     generateValueAccessors(compilerCtx, filteredComponents, outputTarget, config),
-  ]);
+  ];
+
+  // Generate transformer script if transformTag is enabled
+  if (outputTarget.transformTag) {
+    // Read the Angular library's package.json to get its name
+    // directivesProxyFile is like: projects/library/src/directives/proxies.ts
+    // We need to go up to: projects/library/package.json
+    const angularLibraryDir = path.dirname(path.dirname(path.dirname(outputTarget.directivesProxyFile)));
+    const angularPkgJsonPath = path.join(angularLibraryDir, 'package.json');
+    let angularPackageName = '';
+
+    try {
+      const angularPkgJson = JSON.parse(await compilerCtx.fs.readFile(angularPkgJsonPath));
+      if (angularPkgJson.name) {
+        angularPackageName = angularPkgJson.name;
+      }
+    } catch (e) {
+      throw new Error(
+        `Could not read Angular library package.json at ${angularPkgJsonPath}. ` +
+        `The package name is required to generate the transformTag patch script.`
+      );
+    }
+
+    if (!angularPackageName) {
+      throw new Error(
+        `Angular library package.json at ${angularPkgJsonPath} does not have a "name" field. ` +
+        `The package name is required to generate the transformTag patch script.`
+      );
+    }
+
+    tasks.push(generateTransformTagScript(compilerCtx, filteredComponents, outputTarget, angularPackageName));
+  }
+
+  await Promise.all(tasks);
 }
 
 function getFilteredComponents(excludeComponents: string[] = [], cmps: ComponentCompilerMeta[]) {

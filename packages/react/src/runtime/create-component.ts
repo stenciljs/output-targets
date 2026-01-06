@@ -20,10 +20,13 @@ export type StencilReactComponent<I extends HTMLElement, E extends EventNames = 
  */
 export const createComponent = <I extends HTMLElement, E extends EventNames = {}>({
   defineCustomElement,
+  tagName,
+  transformTagFn,
   ...options
-}: Options<I, E> & { defineCustomElement: () => void }): StencilReactComponent<I, E> => {
+}: Options<I, E> & { defineCustomElement: () => void; transformTagFn?: (tagName: string) => string }): StencilReactComponent<I, E> => {
   if (typeof defineCustomElement !== 'undefined') {
     defineCustomElement();
   }
-  return createComponentWrapper<I, E>(options) as unknown as StencilReactComponent<I, E>;
+  const finalTagName = transformTagFn ? transformTagFn(tagName) : tagName;
+  return createComponentWrapper<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<I, E>;
 };
