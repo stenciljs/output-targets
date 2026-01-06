@@ -26,6 +26,7 @@ import { defineCustomElement as defineMyRadioGroup } from 'component-library/com
 import { defineCustomElement as defineMyRange } from 'component-library/components/my-range.js';
 import { defineCustomElement as defineMyToggle } from 'component-library/components/my-toggle.js';
 import { defineCustomElement as defineMyToggleContent } from 'component-library/components/my-toggle-content.js';
+import { defineCustomElement as defineMyTransformTest } from 'component-library/components/my-transform-test.js';
 @ProxyCmp({
   defineCustomElementFn: defineMyButton,
   inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type']
@@ -664,5 +665,28 @@ export class MyToggleContent {
 
 
 export declare interface MyToggleContent extends Components.MyToggleContent {}
+
+
+@ProxyCmp({
+  defineCustomElementFn: defineMyTransformTest,
+  inputs: ['message']
+})
+@Component({
+  selector: 'my-transform-test',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['message'],
+})
+export class MyTransformTest {
+  protected el: HTMLMyTransformTestElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}
+
+
+export declare interface MyTransformTest extends Components.MyTransformTest {}
 
 

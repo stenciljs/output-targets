@@ -60,8 +60,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/angular
       '@stencil/core':
-        specifier: 4.35.1
-        version: 4.35.1
+        specifier: 4.41.0
+        version: 4.41.0
       '@stencil/react-output-target':
         specifier: workspace:*
         version: link:../../packages/react
@@ -160,6 +160,21 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
+  example-project/component-library-angular/projects/library/dist:
+    dependencies:
+      '@angular/common':
+        specifier: ^20.0.0
+        version: 20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
+      '@angular/core':
+        specifier: ^20.0.0
+        version: 20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)
+      component-library:
+        specifier: workspace:*
+        version: link:../../../../component-library
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   example-project/component-library-react:
     dependencies:
       '@stencil/react-output-target':
@@ -230,6 +245,8 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.15.31)(jsdom@20.0.3)(less@4.3.0)(sass@1.89.2)(terser@5.42.0)
+
+  example-project/component-library/hydrate: {}
 
   example-project/next-15-react-19-app:
     dependencies:
@@ -846,8 +863,8 @@ importers:
         specifier: 8.2.14
         version: 8.2.14(@angular/common@20.0.3(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.0.3(@angular/animations@20.0.3(@angular/common@20.0.3(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.0.3(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@stencil/core':
-        specifier: 4.35.1
-        version: 4.35.1
+        specifier: 4.41.0
+        version: 4.41.0
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.111
@@ -889,8 +906,8 @@ importers:
         version: 22.0.0
     devDependencies:
       '@stencil/core':
-        specifier: 4.35.1
-        version: 4.35.1
+        specifier: 4.41.0
+        version: 4.41.0
       '@types/node':
         specifier: ^20.14.12
         version: 20.19.0
@@ -972,8 +989,8 @@ importers:
         specifier: ^12.1.0
         version: 12.1.2(rollup@4.43.0)(tslib@2.8.1)(typescript@5.7.3)
       '@stencil/core':
-        specifier: ^4.35.1
-        version: 4.35.1
+        specifier: ^4.41.0
+        version: 4.41.0
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.111
@@ -4057,8 +4074,8 @@ packages:
   '@speed-highlight/core@1.2.7':
     resolution: {integrity: sha512-0dxmVj4gxg3Jg879kvFS/msl4s9F3T9UXC1InxgOf7t5NvcPD97u/WTA5vL/IxWHMn7qSxBozqrnnE2wvl1m8g==}
 
-  '@stencil/core@4.35.1':
-    resolution: {integrity: sha512-u65m3TbzOtpn679gUV4Yvi8YpInhRJ62js30a7YtXief9Ej/vzrhwDE22U0w4DMWJOYwAsJl133BUaZkWwnmzg==}
+  '@stencil/core@4.41.0':
+    resolution: {integrity: sha512-KDVea3bjv7qJS+Pk8GcrWqRws6kAJAKiUPIxdDqK3KYH2yWPmzCzJO2XKsVyiBWmhdm2Q2KSdlb/EMFArfREiw==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
@@ -9539,6 +9556,7 @@ packages:
   next@14.2.15:
     resolution: {integrity: sha512-h9ctmOokpoDphRvMGnwOJAedT6zKhwqyZML9mDtspgf4Rh3Pn7UTYKqePNoDvhsWBAO5GoPNYshnAUGIazVGmw==}
     engines: {node: '>=18.17.0'}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -9557,6 +9575,7 @@ packages:
   next@15.2.3:
     resolution: {integrity: sha512-x6eDkZxk2rPpu46E1ZVUWIBhYCLszmUY6fvHBFcbzJ9dD+qRX6vcHusaqqDlnY+VngKzKbAiG2iRCkPbmi8f7w==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -9578,6 +9597,7 @@ packages:
   next@15.3.3:
     resolution: {integrity: sha512-JqNj29hHNmCLtNvd090SyRbXJiivQ+58XjCcrC50Crb5g5u2zi7Y2YivbsEfzk6AtVI80akdOQbaMZwWB1Hthw==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -13089,10 +13109,12 @@ packages:
   whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
@@ -16757,7 +16779,7 @@ snapshots:
 
   '@speed-highlight/core@1.2.7': {}
 
-  '@stencil/core@4.35.1':
+  '@stencil/core@4.41.0':
     optionalDependencies:
       '@rollup/rollup-darwin-arm64': 4.34.9
       '@rollup/rollup-darwin-x64': 4.34.9

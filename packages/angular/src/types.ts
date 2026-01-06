@@ -34,6 +34,42 @@ export interface OutputTargetAngular {
    * to type-check and show jsdocs when using the components in html-templates.
    */
   inlineProperties?: boolean;
+  /**
+   * Use `transformTag` to generate a build-time script.
+   * This script patches Angular `@Component` selectors in any installed Angular wrapper library
+   * enabling run-time tag transformation. Run the script as a postinstall script in your app.
+   *
+   * Setup:
+   * 1. Export `transformTag` and `setTagTransformer` from your component library:
+   * ```ts
+   * // src/index.ts
+   * export { transformTag, setTagTransformer } from '@stencil/core';
+   * ```
+   *
+   * 2. Add the patch script as a postinstall hook in your consuming app's package.json:
+   * ```json
+   * {
+   *   "scripts": {
+   *     "postinstall": "patch-transform-selectors \"(tag) => tag.startsWith('my-') ? `v1-${tag}` : tag\""
+   *   }
+   * }
+   * ```
+   *
+   * 3. Configure the transformer at runtime in your Angular app with the SAME transformer:
+   * ```ts
+   * // main.ts
+   * import { setTagTransformer } from 'component-library';
+   * setTagTransformer((tag) => tag.startsWith('my-') ? `v1-${tag}` : tag);
+   * ```
+   *
+   * Angular relies on a static selector string so the patch script is used to 
+   * modify the installed Angular component library for transformed tags. 
+   * For example, if `my-button` transforms to `v1-my-button`, the selector
+   * will be patched from `selector: 'my-button'` to `selector: 'v1-my-button'`. 
+   *
+   * @default false
+   */
+  transformTag?: boolean;
 }
 
 export type ValueAccessorTypes = 'text' | 'radio' | 'select' | 'number' | 'boolean';

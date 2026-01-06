@@ -25,6 +25,10 @@ import { defineCustomElement as defineMyRadioGroup } from 'component-library/com
 import { defineCustomElement as defineMyRange } from 'component-library/components/my-range.js';
 import { defineCustomElement as defineMyToggle } from 'component-library/components/my-toggle.js';
 import { defineCustomElement as defineMyToggleContent } from 'component-library/components/my-toggle-content.js';
+import { defineCustomElement as defineMyTransformTest } from 'component-library/components/my-transform-test.js';
+import { transformTag } from 'component-library';
+import { transformTag as transformTagSSR } from 'component-library/hydrate';
+
 
 
 export const MyButton: StencilVueComponent<JSX.MyButton> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyButton>('my-button', defineMyButton, [
@@ -46,7 +50,7 @@ export const MyButton: StencilVueComponent<JSX.MyButton> = /*@__PURE__*/ globalT
 ], [
   'myFocus',
   'myBlur'
-]) : defineStencilSSRComponent<JSX.MyButton>({
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyButton>({
   tagName: 'my-button',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -65,7 +69,8 @@ export const MyButton: StencilVueComponent<JSX.MyButton> = /*@__PURE__*/ globalT
     'type': [String, "type"],
     'onMyFocus': [Function],
     'onMyBlur': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -88,7 +93,7 @@ export const MyButtonScoped: StencilVueComponent<JSX.MyButtonScoped> = /*@__PURE
 ], [
   'myFocus',
   'myBlur'
-]) : defineStencilSSRComponent<JSX.MyButtonScoped>({
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyButtonScoped>({
   tagName: 'my-button-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -107,7 +112,8 @@ export const MyButtonScoped: StencilVueComponent<JSX.MyButtonScoped> = /*@__PURE
     'type': [String, "type"],
     'onMyFocus': [Function],
     'onMyBlur': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -131,7 +137,7 @@ export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["che
   'ionFocus',
   'ionBlur'
 ],
-'checked', 'ionChangeNested', 'detail.nested.checked') : defineStencilSSRComponent<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>({
+'checked', 'ionChangeNested', 'detail.nested.checked', transformTag) : defineStencilSSRComponent<JSX.MyCheckbox, JSX.MyCheckbox["checked"]>({
   tagName: 'my-checkbox',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -147,7 +153,8 @@ export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["che
     'onIonChangeNested': [Function],
     'onIonFocus': [Function],
     'onIonBlur': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -157,12 +164,13 @@ export const MyComplexProps: StencilVueComponent<JSX.MyComplexProps> = /*@__PURE
   'quux',
   'grault',
   'waldo'
-]) : defineStencilSSRComponent<JSX.MyComplexProps>({
+], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyComplexProps>({
   tagName: 'my-complex-props',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'grault': [Number, "grault"]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -172,12 +180,13 @@ export const MyComplexPropsScoped: StencilVueComponent<JSX.MyComplexPropsScoped>
   'quux',
   'grault',
   'waldo'
-]) : defineStencilSSRComponent<JSX.MyComplexPropsScoped>({
+], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyComplexPropsScoped>({
   tagName: 'my-complex-props-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'grault': [Number, "grault"]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -185,14 +194,15 @@ export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ g
   'first',
   'middleName',
   'last'
-]) : defineStencilSSRComponent<JSX.MyComponent>({
+], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyComponent>({
   tagName: 'my-component',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'first': [String, "first"],
     'middleName': [String, "middle-name"],
     'last': [String, "last"]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -203,7 +213,7 @@ export const MyComponentScoped: StencilVueComponent<JSX.MyComponentScoped> = /*@
   'myCustomEvent'
 ], [
   'myCustomEvent'
-]) : defineStencilSSRComponent<JSX.MyComponentScoped>({
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyComponentScoped>({
   tagName: 'my-component-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -211,7 +221,8 @@ export const MyComponentScoped: StencilVueComponent<JSX.MyComponentScoped> = /*@
     'middleName': [String, "middle-name"],
     'last': [String, "last"],
     'onMyCustomEvent': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -220,13 +231,14 @@ export const MyCounter: StencilVueComponent<JSX.MyCounter> = /*@__PURE__*/ globa
   'count'
 ], [
   'count'
-]) : defineStencilSSRComponent<JSX.MyCounter>({
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyCounter>({
   tagName: 'my-counter',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'startValue': [Number, "start-value"],
     'onCount': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -267,7 +279,7 @@ export const MyInput: StencilVueComponent<JSX.MyInput, JSX.MyInput["value"]> = /
   'myBlur',
   'myFocus'
 ],
-'value', 'myChange', undefined) : defineStencilSSRComponent<JSX.MyInput, JSX.MyInput["value"]>({
+'value', 'myChange', undefined, transformTag) : defineStencilSSRComponent<JSX.MyInput, JSX.MyInput["value"]>({
   tagName: 'my-input',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -300,7 +312,8 @@ export const MyInput: StencilVueComponent<JSX.MyInput, JSX.MyInput["value"]> = /
     'onMyChange': [Function],
     'onMyBlur': [Function],
     'onMyFocus': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -340,7 +353,7 @@ export const MyInputScoped: StencilVueComponent<JSX.MyInputScoped> = /*@__PURE__
   'myChange',
   'myBlur',
   'myFocus'
-]) : defineStencilSSRComponent<JSX.MyInputScoped>({
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyInputScoped>({
   tagName: 'my-input-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -373,43 +386,48 @@ export const MyInputScoped: StencilVueComponent<JSX.MyInputScoped> = /*@__PURE__
     'onMyChange': [Function],
     'onMyBlur': [Function],
     'onMyFocus': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
-export const MyList: StencilVueComponent<JSX.MyList> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyList>('my-list', defineMyList) : defineStencilSSRComponent<JSX.MyList>({
+export const MyList: StencilVueComponent<JSX.MyList> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyList>('my-list', defineMyList, [], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyList>({
   tagName: 'my-list',
   hydrateModule: import('component-library/hydrate'),
   props: {
     
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
-export const MyListItem: StencilVueComponent<JSX.MyListItem> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListItem>('my-list-item', defineMyListItem) : defineStencilSSRComponent<JSX.MyListItem>({
+export const MyListItem: StencilVueComponent<JSX.MyListItem> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListItem>('my-list-item', defineMyListItem, [], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyListItem>({
   tagName: 'my-list-item',
   hydrateModule: import('component-library/hydrate'),
   props: {
     
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
-export const MyListItemScoped: StencilVueComponent<JSX.MyListItemScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListItemScoped>('my-list-item-scoped', defineMyListItemScoped) : defineStencilSSRComponent<JSX.MyListItemScoped>({
+export const MyListItemScoped: StencilVueComponent<JSX.MyListItemScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListItemScoped>('my-list-item-scoped', defineMyListItemScoped, [], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyListItemScoped>({
   tagName: 'my-list-item-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
     
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
-export const MyListScoped: StencilVueComponent<JSX.MyListScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListScoped>('my-list-scoped', defineMyListScoped) : defineStencilSSRComponent<JSX.MyListScoped>({
+export const MyListScoped: StencilVueComponent<JSX.MyListScoped> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyListScoped>('my-list-scoped', defineMyListScoped, [], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyListScoped>({
   tagName: 'my-list-scoped',
   hydrateModule: import('component-library/hydrate'),
   props: {
     
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -432,7 +450,7 @@ export const MyPopover: StencilVueComponent<JSX.MyPopover> = /*@__PURE__*/ globa
   'myPopoverWillPresent',
   'myPopoverWillDismiss',
   'myPopoverDidDismiss'
-]) : defineStencilSSRComponent<JSX.MyPopover>({
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyPopover>({
   tagName: 'my-popover',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -447,7 +465,8 @@ export const MyPopover: StencilVueComponent<JSX.MyPopover> = /*@__PURE__*/ globa
     'onMyPopoverWillPresent': [Function],
     'onMyPopoverWillDismiss': [Function],
     'onMyPopoverDidDismiss': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -464,7 +483,7 @@ export const MyRadio: StencilVueComponent<JSX.MyRadio> = /*@__PURE__*/ globalThi
 ], [
   'ionFocus',
   'ionBlur'
-]) : defineStencilSSRComponent<JSX.MyRadio>({
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyRadio>({
   tagName: 'my-radio',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -476,7 +495,8 @@ export const MyRadio: StencilVueComponent<JSX.MyRadio> = /*@__PURE__*/ globalThi
     'alignment': [String, "alignment"],
     'onIonFocus': [Function],
     'onIonBlur': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -491,7 +511,7 @@ export const MyRadioGroup: StencilVueComponent<JSX.MyRadioGroup, JSX.MyRadioGrou
   'myChange',
   'myValueChange'
 ],
-'value', 'myChange', undefined) : defineStencilSSRComponent<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>({
+'value', 'myChange', undefined, transformTag) : defineStencilSSRComponent<JSX.MyRadioGroup, JSX.MyRadioGroup["value"]>({
   tagName: 'my-radio-group',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -500,7 +520,8 @@ export const MyRadioGroup: StencilVueComponent<JSX.MyRadioGroup, JSX.MyRadioGrou
     'name': [String, "name"],
     'onMyChange': [Function],
     'onMyValueChange': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
@@ -527,7 +548,7 @@ export const MyRange: StencilVueComponent<JSX.MyRange, JSX.MyRange["value"]> = /
   'myFocus',
   'myBlur'
 ],
-'value', 'myChange', undefined) : defineStencilSSRComponent<JSX.MyRange, JSX.MyRange["value"]>({
+'value', 'myChange', undefined, transformTag) : defineStencilSSRComponent<JSX.MyRange, JSX.MyRange["value"]>({
   tagName: 'my-range',
   hydrateModule: import('component-library/hydrate'),
   props: {
@@ -547,26 +568,41 @@ export const MyRange: StencilVueComponent<JSX.MyRange, JSX.MyRange["value"]> = /
     'onMyStyle': [Function],
     'onMyFocus': [Function],
     'onMyBlur': [Function]
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
-export const MyToggle: StencilVueComponent<JSX.MyToggle> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyToggle>('my-toggle', defineMyToggle) : defineStencilSSRComponent<JSX.MyToggle>({
+export const MyToggle: StencilVueComponent<JSX.MyToggle> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyToggle>('my-toggle', defineMyToggle, [], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyToggle>({
   tagName: 'my-toggle',
   hydrateModule: import('component-library/hydrate'),
   props: {
     
-  }
+  },
+  transformTagFn: transformTagSSR
 });
 
 
 export const MyToggleContent: StencilVueComponent<JSX.MyToggleContent> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyToggleContent>('my-toggle-content', defineMyToggleContent, [
   'visible'
-]) : defineStencilSSRComponent<JSX.MyToggleContent>({
+], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyToggleContent>({
   tagName: 'my-toggle-content',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'visible': [Boolean, "visible"]
-  }
+  },
+  transformTagFn: transformTagSSR
+});
+
+
+export const MyTransformTest: StencilVueComponent<JSX.MyTransformTest> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyTransformTest>('my-transform-test', defineMyTransformTest, [
+  'message'
+], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyTransformTest>({
+  tagName: 'my-transform-test',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'message': [String, "message"]
+  },
+  transformTagFn: transformTagSSR
 });
 

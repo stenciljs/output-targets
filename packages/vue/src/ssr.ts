@@ -18,6 +18,7 @@ interface StencilSSRComponentOptions {
   tagName: string;
   hydrateModule: Promise<{ renderToString: RenderToString }>;
   props?: Record<string, [any, string?]>;
+  transformTagFn?: (tagName: string) => string;
 }
 
 /**
@@ -84,7 +85,8 @@ export function defineStencilSSRComponent<Props, VModelType = string | number | 
       /**
        * transform component into Declarative Shadow DOM by lazy loading the hydrate module
        */
-      const toSerialize = `<${options.tagName}${stringProps}>${renderedLightDom}</${options.tagName}>`;
+      const transformedTagName = options.transformTagFn ? options.transformTagFn(options.tagName) : options.tagName;
+      const toSerialize = `<${transformedTagName}${stringProps}>${renderedLightDom}</${transformedTagName}>`;
       const { renderToString } = await options.hydrateModule;
       const { html } = await renderToString(toSerialize, {
         fullDocument: false,
@@ -105,7 +107,7 @@ export function defineStencilSSRComponent<Props, VModelType = string | number | 
           .replace('</style>', '</component>'),
         {
           comments: true,
-          isCustomElement: (tag) => tag === options.tagName,
+          isCustomElement: (tag) => tag === transformedTagName || tag === options.tagName,
         }
       );
     },

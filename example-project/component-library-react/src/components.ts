@@ -9,7 +9,7 @@
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent } from '@stencil/react-output-target/runtime';
-import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import { transformTag, type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from 'component-library';
 import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
@@ -30,6 +30,7 @@ import { MyRadio as MyRadioElement, defineCustomElement as defineMyRadio } from 
 import { MyRange as MyRangeElement, defineCustomElement as defineMyRange } from "component-library/components/my-range.js";
 import { MyToggleContent as MyToggleContentElement, defineCustomElement as defineMyToggleContent } from "component-library/components/my-toggle-content.js";
 import { MyToggle as MyToggleElement, defineCustomElement as defineMyToggle } from "component-library/components/my-toggle.js";
+import { MyTransformTest as MyTransformTestElement, defineCustomElement as defineMyTransformTest } from "component-library/components/my-transform-test.js";
 import React from 'react';
 
 export type MyButtonEvents = {
@@ -46,7 +47,8 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
         onMyFocus: 'myFocus',
         onMyBlur: 'myBlur'
     } as MyButtonEvents,
-    defineCustomElement: defineMyButton
+    defineCustomElement: defineMyButton,
+    transformTagFn: transformTag
 });
 
 export type MyButtonScopedEvents = {
@@ -63,7 +65,8 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
         onMyFocus: 'myFocus',
         onMyBlur: 'myBlur'
     } as MyButtonScopedEvents,
-    defineCustomElement: defineMyButtonScoped
+    defineCustomElement: defineMyButtonScoped,
+    transformTagFn: transformTag
 });
 
 export type MyCheckboxEvents = {
@@ -84,7 +87,8 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
         onIonFocus: 'ionFocus',
         onIonBlur: 'ionBlur'
     } as MyCheckboxEvents,
-    defineCustomElement: defineMyCheckbox
+    defineCustomElement: defineMyCheckbox,
+    transformTagFn: transformTag
 });
 
 export type MyComplexPropsEvents = NonNullable<unknown>;
@@ -95,7 +99,8 @@ export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComp
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComplexPropsEvents,
-    defineCustomElement: defineMyComplexProps
+    defineCustomElement: defineMyComplexProps,
+    transformTagFn: transformTag
 });
 
 export type MyComplexPropsScopedEvents = NonNullable<unknown>;
@@ -106,7 +111,8 @@ export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedEle
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComplexPropsScopedEvents,
-    defineCustomElement: defineMyComplexPropsScoped
+    defineCustomElement: defineMyComplexPropsScoped,
+    transformTagFn: transformTag
 });
 
 export type MyComponentEvents = NonNullable<unknown>;
@@ -117,7 +123,8 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComponentEvents,
-    defineCustomElement: defineMyComponent
+    defineCustomElement: defineMyComponent,
+    transformTagFn: transformTag
 });
 
 export type MyComponentScopedEvents = { onMyCustomEvent: EventName<MyComponentScopedCustomEvent<IMyComponent.someVar>> };
@@ -128,7 +135,8 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: { onMyCustomEvent: 'myCustomEvent' } as MyComponentScopedEvents,
-    defineCustomElement: defineMyComponentScoped
+    defineCustomElement: defineMyComponentScoped,
+    transformTagFn: transformTag
 });
 
 export type MyCounterEvents = { onCount: EventName<MyCounterCustomEvent<number>> };
@@ -139,7 +147,8 @@ export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents>
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: { onCount: 'count' } as MyCounterEvents,
-    defineCustomElement: defineMyCounter
+    defineCustomElement: defineMyCounter,
+    transformTagFn: transformTag
 });
 
 export type MyInputEvents = {
@@ -160,7 +169,8 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@
         onMyBlur: 'myBlur',
         onMyFocus: 'myFocus'
     } as MyInputEvents,
-    defineCustomElement: defineMyInput
+    defineCustomElement: defineMyInput,
+    transformTagFn: transformTag
 });
 
 export type MyInputScopedEvents = {
@@ -181,7 +191,8 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
         onMyBlur: 'myBlur',
         onMyFocus: 'myFocus'
     } as MyInputScopedEvents,
-    defineCustomElement: defineMyInputScoped
+    defineCustomElement: defineMyInputScoped,
+    transformTagFn: transformTag
 });
 
 export type MyListEvents = NonNullable<unknown>;
@@ -192,7 +203,8 @@ export const MyList: StencilReactComponent<MyListElement, MyListEvents> = /*@__P
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyListEvents,
-    defineCustomElement: defineMyList
+    defineCustomElement: defineMyList,
+    transformTagFn: transformTag
 });
 
 export type MyListItemEvents = NonNullable<unknown>;
@@ -203,7 +215,8 @@ export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEven
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyListItemEvents,
-    defineCustomElement: defineMyListItem
+    defineCustomElement: defineMyListItem,
+    transformTagFn: transformTag
 });
 
 export type MyListItemScopedEvents = NonNullable<unknown>;
@@ -214,7 +227,8 @@ export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, My
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyListItemScopedEvents,
-    defineCustomElement: defineMyListItemScoped
+    defineCustomElement: defineMyListItemScoped,
+    transformTagFn: transformTag
 });
 
 export type MyListScopedEvents = NonNullable<unknown>;
@@ -225,7 +239,8 @@ export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScop
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyListScopedEvents,
-    defineCustomElement: defineMyListScoped
+    defineCustomElement: defineMyListScoped,
+    transformTagFn: transformTag
 });
 
 export type MyPopoverEvents = {
@@ -246,7 +261,8 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
         onMyPopoverWillDismiss: 'myPopoverWillDismiss',
         onMyPopoverDidDismiss: 'myPopoverDidDismiss'
     } as MyPopoverEvents,
-    defineCustomElement: defineMyPopover
+    defineCustomElement: defineMyPopover,
+    transformTagFn: transformTag
 });
 
 export type MyRadioEvents = {
@@ -263,7 +279,8 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
         onIonFocus: 'ionFocus',
         onIonBlur: 'ionBlur'
     } as MyRadioEvents,
-    defineCustomElement: defineMyRadio
+    defineCustomElement: defineMyRadio,
+    transformTagFn: transformTag
 });
 
 export type MyRadioGroupEvents = { onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>> };
@@ -274,7 +291,8 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: { onMyChange: 'myChange' } as MyRadioGroupEvents,
-    defineCustomElement: defineMyRadioGroup
+    defineCustomElement: defineMyRadioGroup,
+    transformTagFn: transformTag
 });
 
 export type MyRangeEvents = {
@@ -293,7 +311,8 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = /*@
         onMyFocus: 'myFocus',
         onMyBlur: 'myBlur'
     } as MyRangeEvents,
-    defineCustomElement: defineMyRange
+    defineCustomElement: defineMyRange,
+    transformTagFn: transformTag
 });
 
 export type MyToggleEvents = NonNullable<unknown>;
@@ -304,7 +323,8 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = 
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyToggleEvents,
-    defineCustomElement: defineMyToggle
+    defineCustomElement: defineMyToggle,
+    transformTagFn: transformTag
 });
 
 export type MyToggleContentEvents = NonNullable<unknown>;
@@ -315,5 +335,18 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyTo
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyToggleContentEvents,
-    defineCustomElement: defineMyToggleContent
+    defineCustomElement: defineMyToggleContent,
+    transformTagFn: transformTag
+});
+
+export type MyTransformTestEvents = NonNullable<unknown>;
+
+export const MyTransformTest: StencilReactComponent<MyTransformTestElement, MyTransformTestEvents> = /*@__PURE__*/ createComponent<MyTransformTestElement, MyTransformTestEvents>({
+    tagName: 'my-transform-test',
+    elementClass: MyTransformTestElement,
+    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
+    react: React,
+    events: {} as MyTransformTestEvents,
+    defineCustomElement: defineMyTransformTest,
+    transformTagFn: transformTag
 });

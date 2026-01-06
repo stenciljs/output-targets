@@ -63,13 +63,15 @@ export const config: Config = {
     angularOutputTarget({
       componentCorePackage: 'component-library',
       directivesProxyFile: '../component-library-angular/projects/library/src/directives/proxies.ts',
-      valueAccessorConfigs: angularValueAccessorBindings
+      valueAccessorConfigs: angularValueAccessorBindings,
+      transformTag: true,
     }),
     reactOutputTarget({
       outDir: '../component-library-react/src',
       hydrateModule: 'component-library/hydrate',
       clientModule: 'component-library-react',
-      serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' }
+      serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' },
+      transformTag: true,
     }),
     vueOutputTarget({
       includeImportCustomElements: true,
@@ -79,6 +81,7 @@ export const config: Config = {
       hydrateModule: 'component-library/hydrate',
       proxiesFile: '../component-library-vue/src/index.ts',
       componentModels: vueComponentModels,
+      transformTag: true,
     }),
     {
       type: 'dist-custom-elements',
@@ -101,4 +104,7 @@ export const config: Config = {
       serviceWorker: null, // disable service workers
     },
   ],
+  extras: {
+    additionalTagTransformers: true,
+  }
 };

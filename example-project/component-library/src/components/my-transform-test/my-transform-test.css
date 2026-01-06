@@ -1,0 +1,16 @@
+.transform-test {
+  padding: 1rem;
+  border: 2px dashed #007bff;
+  border-radius: 4px;
+  font-family: sans-serif;
+}
+
+.transform-test h3 {
+  margin: 0 0 0.5rem 0;
+  color: #007bff;
+}
+
+.transform-test p {
+  margin: 0;
+  color: #666;
+}
