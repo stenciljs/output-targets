@@ -1,7 +1,7 @@
 import type { CompilerJsDoc, ComponentCompilerEvent, ComponentCompilerProperty } from '@stencil/core/internal';
 
-import { createComponentEventTypeImports, dashToPascalCase, formatToQuotedList, mapPropName } from './utils';
 import type { ComponentInputProperty, OutputType } from './types';
+import { createComponentEventTypeImports, dashToPascalCase, formatToQuotedList, mapPropName } from './utils';
 
 /**
  * Creates a property declaration.
@@ -71,7 +71,8 @@ export const createAngularComponentDefinition = (
   includeImportCustomElements = false,
   standalone = false,
   inlineComponentProps: readonly ComponentCompilerProperty[] = [],
-  events: readonly ComponentCompilerEvent[] = []
+  events: readonly ComponentCompilerEvent[] = [],
+  componentsOutputUsesEventDetail: boolean = false
 ) => {
   const tagNameAsPascal = dashToPascalCase(tagName);
 
@@ -81,21 +82,15 @@ export const createAngularComponentDefinition = (
   const hasOutputs = outputs.length > 0;
   const hasMethods = methods.length > 0;
 
-  // Formats the input strings into comma separated, single quoted values.
   const proxyCmpFormattedInputs = formatToQuotedList(inputs.map(mapPropName));
-  // Formats the input strings into comma separated, single quoted values if optional.
-  // Formats the required input strings into comma separated {name, required} objects.
   const formattedInputs = formatInputs(inputs);
-  // Formats the output strings into comma separated, single quoted values.
   const formattedOutputs = formatToQuotedList(outputs);
-  // Formats the method strings into comma separated, single quoted values.
   const formattedMethods = formatToQuotedList(methods);
 
   const proxyCmpOptions = [];
 
   if (includeImportCustomElements) {
     const defineCustomElementFn = `define${tagNameAsPascal}`;
-
     proxyCmpOptions.push(`\n  defineCustomElementFn: ${defineCustomElementFn}`);
   }
 
@@ -108,7 +103,6 @@ export const createAngularComponentDefinition = (
   }
 
   let standaloneOption = '';
-
   if (!standalone) {
     standaloneOption = `\n  standalone: false`;
   }
@@ -121,23 +115,26 @@ export const createAngularComponentDefinition = (
     .filter((event) => !event.internal)
     .map((event) => {
       const camelCaseOutput = event.name.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
-      const outputType = `EventEmitter<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
-      return `@Output() ${camelCaseOutput} = new ${outputType}();`;
+
+      return `
+  ${camelCaseOutput}$ = fromEvent<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>(this.el, "${event.name}")${componentsOutputUsesEventDetail
+      ? `.pipe(map((e) => e.detail))`
+      : ''};
+  ${camelCaseOutput}Change = outputFromObservable(this.${camelCaseOutput}$);`;
     });
 
   const propertiesDeclarationText = [
-    `protected el: HTML${tagNameAsPascal}Element;`,
+    `private readonly elementRef = inject(ElementRef<HTML${tagNameAsPascal}Element>);`,
+    `private readonly cdr = inject(ChangeDetectorRef);`,
+    ``,
+    `protected get el(): HTML${tagNameAsPascal}Element {`,
+    `  return this.elementRef.nativeElement;`,
+    `}`,
+    ``,
     ...propertyDeclarations,
     ...outputDeclarations,
   ].join('\n  ');
 
-  /**
-   * Notes on the generated output:
-   * - We disable @angular-eslint/no-inputs-metadata-property, so that
-   * Angular does not complain about the inputs property. The output target
-   * uses the inputs property to define the inputs of the component instead of
-   * having to use the @Input decorator (and manually define the type and default value).
-   */
   const output = `@ProxyCmp({${proxyCmpOptions.join(',')}\n})
 @Component({
   selector: '${tagName}',
@@ -148,9 +145,9 @@ export const createAngularComponentDefinition = (
 })
 export class ${tagNameAsPascal} {
   ${propertiesDeclarationText}
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
-    c.detach();
-    this.el = r.nativeElement;
+  
+  constructor() {
+    this.cdr.detach();
   }
 }`;
 
