@@ -32,6 +32,7 @@ export default defineConfig({
         'scoped': ['my-counter'],
         default: 'declarative-shadow-dom',
       },
+      setTagTransformer: (tag) => tag.startsWith('my-transform-') ? `v1-${tag}` : tag,
     }),
   ],
 });

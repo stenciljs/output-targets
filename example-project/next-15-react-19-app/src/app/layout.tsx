@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { TagTransformerInit } from './TagTransformerInit';
 
 export const metadata: Metadata = {
   title: 'Stencil / NextJS coexistence demo',
@@ -14,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
+        <TagTransformerInit />
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
           {children}
         </main>

@@ -77,6 +77,8 @@ type RenderToString = (
 export type HydrateModule = {
   renderToString: RenderToString;
   serializeProperty: (value: any) => string;
+  transformTag: (tagName: string) => string;
+  setTagTransformer: (transformer: (tagName: string) => string) => void;
 };
 interface CreateComponentForServerSideRenderingOptions<I extends HTMLElement = HTMLElement, E extends EventNames = {}> {
   clientModule: ReactWebComponent<I, E>;
@@ -85,7 +87,7 @@ interface CreateComponentForServerSideRenderingOptions<I extends HTMLElement = H
   renderToString: RenderToString;
   serializeProperty: (value: any) => string;
   serializeShadowRoot?: SerializeShadowRootOptions;
-  transformTagFn?: (tagName: string) => string;
+  transformTag?: (tagName: string) => string;
 }
 
 type StencilProps<I extends HTMLElement> = WebComponentProps<I>;
@@ -165,7 +167,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      * ensure we only run on server
      */
     if (!('process' in globalThis) || typeof window !== 'undefined') {
-      throw new Error('`createComponent` can only be run on the server');
+      throw new Error('`createComponentForServerSideRendering` can only be run on the server');
     }
 
     /**
@@ -201,7 +203,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      * if its light DOM contains other elements.
      */
     let serializedChildren = '';
-    const transformedTagName = options.transformTagFn ? options.transformTagFn(options.tagName) : options.tagName;
+    const transformedTagName = options.transformTag ? options.transformTag(options.tagName) : options.tagName;
     const toSerialize = `<${transformedTagName}${stringProps} suppressHydrationWarning="true">`;
     const originalConsoleError = console.error;
     try {
@@ -501,10 +503,14 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
 
 type CreateComponentForSSROptions<I extends HTMLElement, E extends EventNames = {}> = Omit<
   CreateComponentForServerSideRenderingOptions<I, E>,
-  'renderToString' | 'serializeProperty'
+  'renderToString' | 'serializeProperty' | 'transformTag'
 > & {
   hydrateModule: Promise<HydrateModule>;
+  transformTag?: (tag: string) => string;
+  getTagTransformer?: () => ((tag: string) => string) | undefined;
 };
+
+let hydrateModeuleCache: HydrateModule | null = null;
 
 /**
  * Defines a custom element and creates a React component for server side rendering.
@@ -530,7 +536,21 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
    * bundling them in the runtime and serving them in the browser.
    */
   return (async (props: WebComponentProps<I>) => {
-    const resolvedHydrateModule = await options.hydrateModule;
+    let firstTime = false;
+    if (!hydrateModeuleCache) {
+      hydrateModeuleCache = await options.hydrateModule;
+      firstTime = true;
+    }
+    const resolvedHydrateModule = hydrateModeuleCache;
+
+    if (options.getTagTransformer && firstTime) {
+      const tagTransformer = options.getTagTransformer();
+      if (tagTransformer) {
+        resolvedHydrateModule.setTagTransformer(tagTransformer);
+      }
+    }
+    options.transformTag = resolvedHydrateModule.transformTag;
+
     return createComponentForServerSideRendering<I, E>({
       renderToString: resolvedHydrateModule.renderToString,
       serializeProperty: resolvedHydrateModule.serializeProperty,

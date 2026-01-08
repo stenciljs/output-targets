@@ -36,5 +36,33 @@ export const testScenarios: Record<TransformedComponents, () => void> = {
       await minusButton.click()
       await expect($('my-counter').$('span')).toHaveText('43')
     })
+  },
+  'transform-tag-test': () => {
+    it('should transform tag names correctly', async () => {
+      await browser.url('/transform-tag-test')
+
+      // The my-transform-test component should be transformed to v1-my-transform-test
+      const transformedElement = $('v1-my-transform-test')
+      await expect(transformedElement).toBePresent()
+
+      // Verify the original tag name is NOT in the DOM
+      const originalElement = $('my-transform-test')
+      await expect(originalElement).not.toBePresent()
+
+      // Verify the component renders correctly with the transformed tag
+      await expect(transformedElement).toHaveText(expect.stringContaining('Tag transformation test'))
+    })
+
+    it('should server side render with transformed tag', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('transform-tag-test')
+      // Verify the SSR HTML contains the transformed tag
+      expect(html).toContain('v1-my-transform-test')
+      // Verify the SSR HTML does NOT contain the original tag
+      expect(html).not.toContain('<my-transform-test')
+    })
   }
 }

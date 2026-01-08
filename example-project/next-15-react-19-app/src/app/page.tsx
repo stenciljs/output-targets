@@ -4,6 +4,7 @@ import {
   MyCounter,
   MyRadioGroup,
   MyRadio,
+  MyTransformTest,
 } from 'component-library-react';
 import Input from './Input/Input';
 import Button from './Button/Button';
@@ -35,8 +36,9 @@ export default function Home() {
       <MyRadioGroup name="myRadio" value="foo">
         <MyRadio value="foo">Foo</MyRadio>
         <MyRadio value="bar">Bar</MyRadio>
-        <MyRadio value="baz">Baz</MyRadio>
+        <MyRadio value="baz">Baz?</MyRadio>
       </MyRadioGroup>
+      <MyTransformTest message="Tag transformation test: should render as v1-my-transform-test" />
     </>
   );
 }

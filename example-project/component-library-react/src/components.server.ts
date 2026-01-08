@@ -7,6 +7,7 @@
 
 // @ts-ignore - ignore potential type issues as the project is importing itself
 import * as clientComponents from 'component-library-react';
+import { getTagTransformer } from './tag-transformer.js';
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent, type HydrateModule, type ReactWebComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
@@ -32,7 +33,6 @@ import { MyRange as MyRangeElement } from "component-library/components/my-range
 import { MyToggleContent as MyToggleContentElement } from "component-library/components/my-toggle-content.js";
 import { MyToggle as MyToggleElement } from "component-library/components/my-toggle.js";
 import { MyTransformTest as MyTransformTestElement } from "component-library/components/my-transform-test.js";
-import { transformTag } from 'component-library/hydrate';
 
 export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter"], "default": "declarative-shadow-dom" };
 
@@ -61,7 +61,7 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents> = 
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyButton as ReactWebComponent<MyButtonElement, MyButtonEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyButtonScopedEvents = {
@@ -89,7 +89,7 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyButtonScoped as ReactWebComponent<MyButtonScopedElement, MyButtonScopedEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyCheckboxEvents = {
@@ -115,7 +115,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyCheckbox as ReactWebComponent<MyCheckboxElement, MyCheckboxEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyComplexPropsEvents = NonNullable<unknown>;
@@ -126,7 +126,7 @@ export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComp
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyComplexProps as ReactWebComponent<MyComplexPropsElement, MyComplexPropsEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyComplexPropsScopedEvents = NonNullable<unknown>;
@@ -137,7 +137,7 @@ export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedEle
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyComplexPropsScoped as ReactWebComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyComponentEvents = NonNullable<unknown>;
@@ -152,7 +152,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyComponent as ReactWebComponent<MyComponentElement, MyComponentEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyComponentScopedEvents = { onMyCustomEvent: EventName<MyComponentScopedCustomEvent<IMyComponent.someVar>> };
@@ -167,7 +167,7 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyComponentScoped as ReactWebComponent<MyComponentScopedElement, MyComponentScopedEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyCounterEvents = { onCount: EventName<MyCounterCustomEvent<number>> };
@@ -178,7 +178,7 @@ export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents>
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyCounter as ReactWebComponent<MyCounterElement, MyCounterEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyInputEvents = {
@@ -221,7 +221,7 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents> = /*@
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyInput as ReactWebComponent<MyInputElement, MyInputEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyInputScopedEvents = {
@@ -264,7 +264,7 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyInputScoped as ReactWebComponent<MyInputScopedElement, MyInputScopedEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyListEvents = NonNullable<unknown>;
@@ -275,7 +275,7 @@ export const MyList: StencilReactComponent<MyListElement, MyListEvents> = /*@__P
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyList as ReactWebComponent<MyListElement, MyListEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyListItemEvents = NonNullable<unknown>;
@@ -286,7 +286,7 @@ export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEven
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyListItem as ReactWebComponent<MyListItemElement, MyListItemEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyListItemScopedEvents = NonNullable<unknown>;
@@ -297,7 +297,7 @@ export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, My
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyListItemScoped as ReactWebComponent<MyListItemScopedElement, MyListItemScopedEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyListScopedEvents = NonNullable<unknown>;
@@ -308,7 +308,7 @@ export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScop
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyListScoped as ReactWebComponent<MyListScopedElement, MyListScopedEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyPopoverEvents = {
@@ -333,7 +333,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents>
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyPopover as ReactWebComponent<MyPopoverElement, MyPopoverEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyRadioEvents = {
@@ -355,7 +355,7 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents> = /*@
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyRadio as ReactWebComponent<MyRadioElement, MyRadioEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyRadioGroupEvents = { onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>> };
@@ -371,7 +371,7 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyRadioGroup as ReactWebComponent<MyRadioGroupElement, MyRadioGroupEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyRangeEvents = {
@@ -399,7 +399,7 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents> = /*@
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyRange as ReactWebComponent<MyRangeElement, MyRangeEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyToggleEvents = NonNullable<unknown>;
@@ -410,7 +410,7 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents> = 
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyToggle as ReactWebComponent<MyToggleElement, MyToggleEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyToggleContentEvents = NonNullable<unknown>;
@@ -421,7 +421,7 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyTo
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyToggleContent as ReactWebComponent<MyToggleContentElement, MyToggleContentEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });
 
 export type MyTransformTestEvents = NonNullable<unknown>;
@@ -432,5 +432,5 @@ export const MyTransformTest: StencilReactComponent<MyTransformTestElement, MyTr
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyTransformTest as ReactWebComponent<MyTransformTestElement, MyTransformTestEvents>,
     serializeShadowRoot,
-    transformTagFn: transformTag
+    getTagTransformer
 });

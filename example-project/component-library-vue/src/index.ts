@@ -606,3 +606,7 @@ export const MyTransformTest: StencilVueComponent<JSX.MyTransformTest> = /*@__PU
   transformTagFn: transformTagSSR
 });
 
+
+// Re-export transformTag utilities
+export { transformTag, setTagTransformer } from 'component-library';
+

@@ -12,6 +12,7 @@ import {
   MyCounter,
   MyComplexProps,
   MyComplexPropsScoped,
+  MyTransformTest,
 } from 'component-library-react/next';
 import { InputShadow, InputScoped } from './Input';
 
@@ -35,11 +36,12 @@ const testComponents = [
   'input-shadow',
   // transformed tests
   'transform-scoped-to-shadow',
+  'transform-tag-test',
 ] as const;
 export type TestComponent = (typeof testComponents)[number];
 export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
 export type ScopedComponents = Exclude<Extract<TestComponent, `${string}scoped`>, 'transform-scoped-to-shadow'>;
-export type TransformedComponents = Extract<TestComponent, 'transform-scoped-to-shadow'>;
+export type TransformedComponents = Extract<TestComponent, 'transform-scoped-to-shadow' | 'transform-tag-test'>;
 interface TestComponentProps {
   name: TestComponent;
 }
@@ -113,6 +115,9 @@ const TestComponent = ({ name }: TestComponentProps) => {
   }
   if (name === 'input-shadow') {
     return <InputShadow />;
+  }
+  if (name === 'transform-tag-test') {
+    return <MyTransformTest message="Tag transformation test: should render as v1-my-transform-test" />;
   }
 
   return (
