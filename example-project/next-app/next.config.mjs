@@ -1,4 +1,5 @@
 import stencilSSR from '@stencil/ssr/next';
+import transformer from './tag-transformer.js'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {};
@@ -11,4 +12,5 @@ export default stencilSSR({
     scoped: ['my-counter', 'my-radio'],
     default: 'declarative-shadow-dom',
   },
+  setTagTransformer: transformer,
 })(nextConfig);

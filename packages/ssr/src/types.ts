@@ -32,6 +32,19 @@ export interface StencilSSROptions {
    * @default 'declarative-shadow-dom'
    */
   serializeShadowRoot?: SerializeShadowRootOptions;
+  /**
+   * Optional function to transform tag names during SSR.
+   * This allows consuming applications to control tag transformation for versioning scenarios.
+   *
+   * @param tagName - The original tag name (e.g., 'my-component')
+   * @returns The transformed tag name (e.g., 'v1-my-component')
+   *
+   * @example
+   * ```typescript
+   * setTagTransformer: (tag) => tag.startsWith('my-') ? `v1-${tag}` : tag
+   * ```
+   */
+  setTagTransformer?: (tagName: string) => string;
 }
 
 export interface TransformOptions {

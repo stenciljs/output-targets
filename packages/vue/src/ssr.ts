@@ -103,8 +103,8 @@ export function defineStencilSSRComponent<Props, VModelType = string | number | 
            * by default Vue strips out the <style> tag, so this little trick
            * makes it work by wrapping it in a component tag
            */
-          .replace('<style>', `<component :is="'style'">`)
-          .replace('</style>', '</component>'),
+          .replace(/<style([^>]*)>/g, `<component :is="'style'" $1>`)
+          .replace(/<\/style>/g, '</component>'),
         {
           comments: true,
           isCustomElement: (tag) => tag === transformedTagName || tag === options.tagName,

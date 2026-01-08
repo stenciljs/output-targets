@@ -10,6 +10,10 @@
     "./next": {
       "types": "./dist/components.server.d.ts",
       "import": "./dist/components.server.js"
+    },
+    "./tag-transform": {
+      "import": "./dist/tag-transformer.js",
+      "types": "./dist/tag-transformer.d.ts"
     }
   },
   "scripts": {

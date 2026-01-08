@@ -6,6 +6,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
+import { setTagTransformer } from "component-library-react/tag-transform";
 
 import "./tailwind.css";
 
@@ -21,6 +22,9 @@ export const links: LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+
+// Configure tag transformation
+setTagTransformer((tag) => tag.startsWith('my-transform-') ? `v1-${tag}` : tag);
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

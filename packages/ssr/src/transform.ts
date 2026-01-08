@@ -26,18 +26,26 @@ import type { StencilSSROptions, SerializeShadowRootOptions, TransformOptions } 
 const VALID_JSX_IMPORTS = ['jsxDEV', 'jsx', 'jsxs'];
 const NEW_LINE = '\n';
 
+/**
+ * WeakMap to track which hydrate modules we've already configured
+ * to avoid calling setTagTransformer multiple times
+ */
+const configuredModules = new WeakMap<object, boolean>();
+
 interface HydrateModule {
   serializeProperty: (value: any) => string;
   renderToString: (
     tpl: string,
     options: { prettyHtml?: boolean; fullDocument?: boolean; serializeShadowRoot?: SerializeShadowRootOptions }
   ) => Promise<{ html: string; styles: { id?: string; content?: string; href?: string }[] }>;
+  setTagTransformer?: (transformer: (tagName: string) => string) => void;
+  transformTag?: (tagName: string) => string;
 }
 
 export async function transform(
   code: string,
   sourcefile: string,
-  { from, module, hydrateModule, serializeShadowRoot, strategy }: StencilSSROptions & TransformOptions
+  { from, module, hydrateModule, serializeShadowRoot, setTagTransformer, strategy }: StencilSSROptions & TransformOptions
 ) {
   /**
    * Find all static imports of the component library used in the code
@@ -82,6 +90,20 @@ export async function transform(
    * - the components from the user's component library
    */
   const importedHydrateModule = (await hydrateModule) as HydrateModule;
+
+  /**
+   * Configure tag transformer if provided by the consuming application
+   * We track if we've already configured this module to avoid the Stencil warning
+   */
+  if (setTagTransformer && importedHydrateModule.setTagTransformer) {
+    if (!configuredModules.has(importedHydrateModule)) {
+      importedHydrateModule.setTagTransformer(setTagTransformer);
+      configuredModules.set(importedHydrateModule, true);
+    }
+  }
+
+  const transformTag = importedHydrateModule.transformTag || ((tagName: string) => tagName);
+
   const components = Object.keys(await module);
   const componentCalls: {
     identifier: string;
@@ -156,7 +178,7 @@ export async function transform(
       componentIdentifier.add(args[0].name);
       componentCalls.push({
         identifier,
-        tagName: decamelize(args[0].name, { separator: '-' }),
+        tagName: transformTag(decamelize(args[0].name, { separator: '-' })),
         properties: args[1].properties.map((p) => {
           /**
            * If the property is a variable, we need to resolve it

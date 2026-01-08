@@ -3,6 +3,7 @@ import path from 'node:path';
 import { Project, SourceFile } from 'ts-morph';
 import { createEsModulesComponentsFile } from './create-es-modules-components-file.js';
 import { createStencilReactComponents } from './create-stencil-react-components.js';
+import { createTagTransformer } from './create-tag-transformer.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
 
 export const createComponentWrappers = async ({
@@ -78,6 +79,14 @@ export const createComponentWrappers = async ({
       transformTag,
     });
     fileContents[outputPath] = stencilReactComponent;
+
+    /**
+     * create tag-transformer file (for both client and server)
+     */
+    if (transformTag) {
+      const tagTransformerPath = path.join(outDir, 'tag-transformer.ts');
+      fileContents[tagTransformerPath] = createTagTransformer({ stencilPackageName, customElementsDir });
+    }
 
     /**
      * create a server side component
