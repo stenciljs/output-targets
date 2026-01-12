@@ -5,8 +5,8 @@ import { dashToPascalCase } from './utils';
 
 /**
  * Generates the patch-transform-selectors.mjs script for Angular transformTag support.
- * This script patches component selectors in the built Angular library to use attribute
- * selectors for transformed tags.
+ * This script patches component selectors in the built Angular library to use the
+ * transformed tag names (e.g., 'my-component' -> 'v1-my-component').
  */
 export async function generateTransformTagScript(
   compilerCtx: CompilerCtx,
@@ -15,6 +15,8 @@ export async function generateTransformTagScript(
   packageName: string
 ) {
   const scriptsDirectory = path.join(path.dirname(outputTarget.directivesProxyFile), '../../scripts');
+  const customElementsDir = outputTarget.customElementsDir || 'dist/components';
+  const stencilImportPath = `${outputTarget.componentCorePackage}/${customElementsDir}/index.js`;
 
   // Generate the mappings object
   const mappings = components
@@ -37,43 +39,85 @@ export async function generateTransformTagScript(
  * This script patches @Component selectors in the installed Angular component library
  * to match your runtime tag transformer. Run this as a postinstall script in your app.
  *
- * Usage:
- * Add to your app's package.json:
+ * Usage Option 1 - Config file (recommended for complex transformers):
+ * Create tag-transformer.config.mjs in your app root:
+ *    export default (tag) => {
+ *      if (tag.startsWith('my-transform-')) return \`v1-\${tag}\`;
+ *      // ... complex logic
+ *      return tag;
+ *    };
+ *
+ * Then in package.json:
+ *    "scripts": {
+ *      "postinstall": "patch-transform-selectors"
+ *    }
+ *
+ * Usage Option 2 - CLI argument (for simple transformers):
  *    "scripts": {
  *      "postinstall": "patch-transform-selectors \\"(tag) => tag.startsWith('my-transform-') ? \\\\\`v1-\\\${tag}\\\\\` : tag\\""
  *    }
- *
- * The transformer function string must match your runtime setTagTransformer() call.
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Get the transformer function from command line argument
-const transformerArg = process.argv[2];
-
-if (!transformerArg) {
-  console.error('[TransformTag] Error: No transformer function provided.');
-  console.error('Usage: patch-transform-selectors "(tag) => tag.startsWith(\\'my-\\') ? \`v1-\${tag}\` : tag"');
-  process.exit(1);
-}
-
-// Evaluate the transformer string to get the function
+// Try to load transformer from config file or CLI argument
 let TAG_TRANSFORMER;
-try {
-  TAG_TRANSFORMER = eval(transformerArg);
-  if (typeof TAG_TRANSFORMER !== 'function') {
-    throw new Error('Transformer must be a function');
+let transformerArg;
+
+// Option 1: Look for tag-transformer.config.mjs in the consuming app
+const configPath = join(process.cwd(), 'tag-transformer.config.mjs');
+if (existsSync(configPath)) {
+  console.log('[TransformTag] Loading transformer from tag-transformer.config.mjs');
+  try {
+    const configUrl = pathToFileURL(configPath).href;
+    const config = await import(configUrl);
+    TAG_TRANSFORMER = config.default;
+
+    if (typeof TAG_TRANSFORMER !== 'function') {
+      throw new Error('Config file must export a default function');
+    }
+
+    // Store as string for injection later
+    transformerArg = TAG_TRANSFORMER.toString();
+    console.log('[TransformTag] Loaded transformer from config file');
+  } catch (error) {
+    console.error('[TransformTag] Error loading tag-transformer.config.mjs:', error.message);
+    console.error('Make sure the file exports a default function.');
+    process.exit(1);
   }
-} catch (error) {
-  console.error('[TransformTag] Error: Invalid transformer function:', error.message);
-  console.error('The transformer must be a valid JavaScript function expression.');
-  console.error('Example: "(tag) => tag.startsWith(\\'my-\\') ? \`v1-\${tag}\` : tag"');
-  process.exit(1);
+} else {
+  // Option 2: Fall back to CLI argument
+  transformerArg = process.argv[2];
+
+  if (!transformerArg) {
+    console.error('[TransformTag] Error: No transformer provided.');
+    console.error('');
+    console.error('Option 1 - Create tag-transformer.config.mjs in your app root:');
+    console.error('  export default (tag) => tag.startsWith(\\'my-\\') ? \`v1-\${tag}\` : tag;');
+    console.error('');
+    console.error('Option 2 - Pass transformer as CLI argument:');
+    console.error('  patch-transform-selectors "(tag) => tag.startsWith(\\'my-\\') ? \`v1-\${tag}\` : tag"');
+    process.exit(1);
+  }
+
+  // Evaluate the transformer string to get the function
+  try {
+    TAG_TRANSFORMER = eval(transformerArg);
+    if (typeof TAG_TRANSFORMER !== 'function') {
+      throw new Error('Transformer must be a function');
+    }
+    console.log('[TransformTag] Using transformer from CLI argument');
+  } catch (error) {
+    console.error('[TransformTag] Error: Invalid transformer function:', error.message);
+    console.error('The transformer must be a valid JavaScript function expression.');
+    console.error('Example: "(tag) => tag.startsWith(\\'my-\\') ? \`v1-\${tag}\` : tag"');
+    process.exit(1);
+  }
 }
 
 const TAG_MAPPINGS = {
@@ -149,9 +193,8 @@ try {
 
       // Only patch if the tag is actually transformed
       if (transformedTag !== originalTag) {
-        // Update selector from tag name to attribute selector
-        // e.g., selector: 'my-button' becomes selector: '[MyButton]'
-        // This needs to match both the ɵɵngDeclareComponent and the decorator args
+        // Update selector from original tag name to transformed tag name
+        // e.g., selector: 'my-transform-test' becomes selector: 'v1-my-transform-test'
         const selectorRegex = new RegExp(
           \`(selector:\\\\s*)(['"\\\`])\${originalTag}\\\\2\`,
           'g'
@@ -159,15 +202,29 @@ try {
 
         const newContent = bundleContent.replace(
           selectorRegex,
-          \`$1'[\${pascalName}]'\`
+          \`$1'\${transformedTag}'\`
         );
 
         if (newContent !== bundleContent) {
           bundleContent = newContent;
           patchedCount++;
-          console.log(\`[TransformTag] Patched selector for \${originalTag} -> [\${pascalName}]\`);
+          console.log(\`[TransformTag] Patched selector for \${originalTag} -> \${transformedTag}\`);
         }
       }
+    }
+
+    // Inject setTagTransformer call with the user's transformer
+    // Find the export statement and add the call before it
+    const exportMatch = bundleContent.match(/export \\{ setTagTransformer/);
+    if (exportMatch && patchedCount > 0) {
+      const transformerCode = \`
+// Auto-injected by patch-transform-selectors
+// Call setTagTransformer with the user-provided transformer
+import { setTagTransformer as stencilSetTagTransformer } from '${stencilImportPath}';
+stencilSetTagTransformer(\${transformerArg});
+\`;
+      bundleContent = transformerCode + bundleContent;
+      console.log('[TransformTag] Injected setTagTransformer call into bundle');
     }
 
     // Write the patched bundle
@@ -222,7 +279,7 @@ try {
 
             const newTypeContent = typeDefsContent.replace(
               typeDefRegex,
-              \`$1"[\${pascalName}]"\`
+              \`$1"\${transformedTag}"\`
             );
 
             if (newTypeContent !== typeDefsContent) {
