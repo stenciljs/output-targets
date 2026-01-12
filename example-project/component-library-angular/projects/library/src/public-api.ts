@@ -10,3 +10,6 @@ export * from './directives/radio-value-accessor';
 export * from './directives/text-value-accessor';
 export * from './directives/select-value-accessor';
 export * from './directives/value-accessor';
+
+// Re-export transformTag utilities from component-library
+export { transformTag, setTagTransformer } from 'component-library';
