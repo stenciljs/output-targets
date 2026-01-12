@@ -536,9 +536,30 @@ importers:
       '@angular/compiler-cli':
         specifier: ^20.0.0
         version: 20.0.3(@angular/compiler@20.0.3)(typescript@5.8.3)
+      '@wdio/cli':
+        specifier: ^9.11.0
+        version: 9.15.0(puppeteer-core@24.10.1)
+      '@wdio/globals':
+        specifier: ^9.11.0
+        version: 9.15.0(@wdio/logger@9.15.0)(puppeteer-core@24.10.1)
+      '@wdio/local-runner':
+        specifier: ^9.11.0
+        version: 9.15.0(puppeteer-core@24.10.1)
+      '@wdio/mocha-framework':
+        specifier: ^9.11.0
+        version: 9.15.0
+      '@wdio/spec-reporter':
+        specifier: ^9.11.0
+        version: 9.15.0
+      expect-webdriverio:
+        specifier: ^5.1.0
+        version: 5.3.0(@wdio/globals@9.15.0(@wdio/logger@9.15.0)(puppeteer-core@24.10.1))(@wdio/logger@9.15.0)(webdriverio@9.15.0(puppeteer-core@24.10.1))
       typescript:
         specifier: ~5.8.2
         version: 5.8.3
+      webdriverio:
+        specifier: ^9.11.0
+        version: 9.15.0(puppeteer-core@24.10.1)
 
   example-project/nuxt-app:
     dependencies:
