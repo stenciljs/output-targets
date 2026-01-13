@@ -49,6 +49,20 @@ describe('Stencil Vue Integration', () => {
         await radioBtns[2].click();
         await expect(await radioGroup.getText()).toEqual('Radio Group Value: option3');
       });
+
+      it('should transform tag names correctly', async () => {
+        // The my-transform-test component should be transformed to v1-my-transform-test
+        const transformedElement = $('v1-my-transform-test');
+        await expect(transformedElement).toExist();
+
+        // Verify the original tag name is NOT in the DOM
+        const originalElement = $('my-transform-test');
+        await expect(originalElement).not.toExist();
+
+        // Verify the component renders correctly with the transformed tag
+        const message = await transformedElement.getText();
+        await expect(message).toContain('This component\'s tag should be transformed');
+      });
     })
   })
 });

@@ -22,6 +22,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./tag-transformer": {
+      "types": "./dist/tag-transformer.d.ts",
+      "import": "./dist/tag-transformer.js"
     }
   },
   "types": "./dist/index.d.ts",

@@ -26,8 +26,7 @@ import { defineCustomElement as defineMyRange } from 'component-library/componen
 import { defineCustomElement as defineMyToggle } from 'component-library/components/my-toggle.js';
 import { defineCustomElement as defineMyToggleContent } from 'component-library/components/my-toggle-content.js';
 import { defineCustomElement as defineMyTransformTest } from 'component-library/components/my-transform-test.js';
-import { transformTag } from 'component-library';
-import { transformTag as transformTagSSR } from 'component-library/hydrate';
+import { transformTag, getTagTransformer } from './tag-transformer.js';
 
 
 
@@ -70,7 +69,7 @@ export const MyButton: StencilVueComponent<JSX.MyButton> = /*@__PURE__*/ globalT
     'onMyFocus': [Function],
     'onMyBlur': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -113,7 +112,7 @@ export const MyButtonScoped: StencilVueComponent<JSX.MyButtonScoped> = /*@__PURE
     'onMyFocus': [Function],
     'onMyBlur': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -154,7 +153,7 @@ export const MyCheckbox: StencilVueComponent<JSX.MyCheckbox, JSX.MyCheckbox["che
     'onIonFocus': [Function],
     'onIonBlur': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -170,7 +169,7 @@ export const MyComplexProps: StencilVueComponent<JSX.MyComplexProps> = /*@__PURE
   props: {
     'grault': [Number, "grault"]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -186,7 +185,7 @@ export const MyComplexPropsScoped: StencilVueComponent<JSX.MyComplexPropsScoped>
   props: {
     'grault': [Number, "grault"]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -202,7 +201,7 @@ export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ g
     'middleName': [String, "middle-name"],
     'last': [String, "last"]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -222,7 +221,7 @@ export const MyComponentScoped: StencilVueComponent<JSX.MyComponentScoped> = /*@
     'last': [String, "last"],
     'onMyCustomEvent': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -238,7 +237,7 @@ export const MyCounter: StencilVueComponent<JSX.MyCounter> = /*@__PURE__*/ globa
     'startValue': [Number, "start-value"],
     'onCount': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -313,7 +312,7 @@ export const MyInput: StencilVueComponent<JSX.MyInput, JSX.MyInput["value"]> = /
     'onMyBlur': [Function],
     'onMyFocus': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -387,7 +386,7 @@ export const MyInputScoped: StencilVueComponent<JSX.MyInputScoped> = /*@__PURE__
     'onMyBlur': [Function],
     'onMyFocus': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -397,7 +396,7 @@ export const MyList: StencilVueComponent<JSX.MyList> = /*@__PURE__*/ globalThis.
   props: {
     
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -407,7 +406,7 @@ export const MyListItem: StencilVueComponent<JSX.MyListItem> = /*@__PURE__*/ glo
   props: {
     
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -417,7 +416,7 @@ export const MyListItemScoped: StencilVueComponent<JSX.MyListItemScoped> = /*@__
   props: {
     
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -427,7 +426,7 @@ export const MyListScoped: StencilVueComponent<JSX.MyListScoped> = /*@__PURE__*/
   props: {
     
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -466,7 +465,7 @@ export const MyPopover: StencilVueComponent<JSX.MyPopover> = /*@__PURE__*/ globa
     'onMyPopoverWillDismiss': [Function],
     'onMyPopoverDidDismiss': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -496,7 +495,7 @@ export const MyRadio: StencilVueComponent<JSX.MyRadio> = /*@__PURE__*/ globalThi
     'onIonFocus': [Function],
     'onIonBlur': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -521,7 +520,7 @@ export const MyRadioGroup: StencilVueComponent<JSX.MyRadioGroup, JSX.MyRadioGrou
     'onMyChange': [Function],
     'onMyValueChange': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -569,7 +568,7 @@ export const MyRange: StencilVueComponent<JSX.MyRange, JSX.MyRange["value"]> = /
     'onMyFocus': [Function],
     'onMyBlur': [Function]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -579,7 +578,7 @@ export const MyToggle: StencilVueComponent<JSX.MyToggle> = /*@__PURE__*/ globalT
   props: {
     
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -591,7 +590,7 @@ export const MyToggleContent: StencilVueComponent<JSX.MyToggleContent> = /*@__PU
   props: {
     'visible': [Boolean, "visible"]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
 
@@ -603,10 +602,7 @@ export const MyTransformTest: StencilVueComponent<JSX.MyTransformTest> = /*@__PU
   props: {
     'message': [String, "message"]
   },
-  transformTagFn: transformTagSSR
+  getTagTransformer: getTagTransformer
 });
 
-
-// Re-export transformTag utilities
-export { transformTag, setTagTransformer } from 'component-library';
 

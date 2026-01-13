@@ -47,7 +47,7 @@ export const createComponentDefinition =
     ${Object.entries(propMap)
       .map(([key, [type, attr]]) => (attr ? `'${key}': [${type}, "${attr}"]` : `'${key}': [${type}]`))
       .join(',\n    ')}
-  }${outputTarget.transformTag ? ',\n  transformTagFn: transformTagSSR' : ''}
+  }${outputTarget.transformTag ? ',\n  getTagTransformer: getTagTransformer' : ''}
 })`
       : '';
 
