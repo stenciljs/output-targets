@@ -1,4 +1,10 @@
-export const createTagTransformer = ({ stencilPackageName, customElementsDir }: { stencilPackageName: string, customElementsDir: string }) => {
+export const createTagTransformer = ({
+  stencilPackageName,
+  customElementsDir,
+}: {
+  stencilPackageName: string;
+  customElementsDir: string;
+}) => {
   return `import { setTagTransformer as clientSetTagTransformer } from '${stencilPackageName}/${customElementsDir}/index.js';
 
 let tagTransformer: ((tagName: string) => string) | undefined;

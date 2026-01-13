@@ -54,14 +54,14 @@ export async function angularDirectiveProxyOutput(
     } catch (e) {
       throw new Error(
         `Could not read Angular library package.json at ${angularPkgJsonPath}. ` +
-        `The package name is required to generate the transformTag patch script.`
+          `The package name is required to generate the transformTag patch script.`
       );
     }
 
     if (!angularPackageName) {
       throw new Error(
         `Angular library package.json at ${angularPkgJsonPath} does not have a "name" field. ` +
-        `The package name is required to generate the transformTag patch script.`
+          `The package name is required to generate the transformTag patch script.`
       );
     }
 

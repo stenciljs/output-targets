@@ -23,7 +23,10 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
   tagName,
   transformTag,
   ...options
-}: Options<I, E> & { defineCustomElement: () => void; transformTag?: (tagName: string) => string }): StencilReactComponent<I, E> => {
+}: Options<I, E> & {
+  defineCustomElement: () => void;
+  transformTag?: (tagName: string) => string;
+}): StencilReactComponent<I, E> => {
   if (typeof defineCustomElement !== 'undefined') {
     defineCustomElement();
   }
