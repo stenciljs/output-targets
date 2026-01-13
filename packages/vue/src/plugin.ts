@@ -2,6 +2,7 @@ import type { Config, OutputTargetCustom } from '@stencil/core/internal';
 import { normalizePath } from './utils';
 import type { OutputTargetVue } from './types';
 import { vueProxyOutput } from './output-vue';
+import { createTagTransformer } from './create-tag-transformer';
 import path from 'path';
 
 export const vueOutputTarget = (outputTarget: OutputTargetVue): OutputTargetCustom => ({
@@ -14,6 +15,20 @@ export const vueOutputTarget = (outputTarget: OutputTargetVue): OutputTargetCust
     const timespan = buildCtx.createTimeSpan(`generate vue started`, true);
 
     await vueProxyOutput(config, compilerCtx, outputTarget, buildCtx.components);
+
+    // Generate tag-transformer.ts if transformTag is enabled
+    if (outputTarget.transformTag && outputTarget.componentCorePackage) {
+      const customElementsDir = outputTarget.customElementsDir || 'components';
+
+      const tagTransformerContent = createTagTransformer({
+        stencilPackageName: outputTarget.componentCorePackage,
+        customElementsDir,
+      });
+
+      const proxiesDir = path.dirname(outputTarget.proxiesFile);
+      const tagTransformerPath = path.join(proxiesDir, 'tag-transformer.ts');
+      await compilerCtx.fs.writeFile(tagTransformerPath, tagTransformerContent);
+    }
 
     timespan.finish(`generate vue finished`);
   },

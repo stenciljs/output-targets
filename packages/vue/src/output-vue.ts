@@ -82,20 +82,17 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
   }
 
   // Add transformTag import if enabled
-  // For client-side, import from the component library
-  // For SSR, transformTag must be imported from the hydrate module
-  // See: https://stenciljs.com/docs/tag-transformation#usage-via-dist-hydrate-script-output-on-a-nodejs-server
+  // Import from the local tag-transformer file which syncs with Stencil's runtime
   let transformTagImport = '';
   if (outputTarget.transformTag && outputTarget.componentCorePackage) {
-    if (outputTarget.hydrateModule) {
-      // Import both: client from component library, SSR from hydrate
-      transformTagImport = `import { transformTag } from '${normalizePath(outputTarget.componentCorePackage)}';\n`;
-      transformTagImport += `import { transformTag as transformTagSSR } from '${normalizePath(outputTarget.hydrateModule)}';\n`;
-    } else {
-      // No SSR, just import from component library
-      transformTagImport = `import { transformTag } from '${normalizePath(outputTarget.componentCorePackage)}';\n`;
-    }
+    // Always import from tag-transformer.ts (both client and SSR use it)
+    transformTagImport = `import { transformTag, getTagTransformer } from './tag-transformer.js';\n`;
   }
+
+  // Don't re-export transformTag utilities from main index
+  // Users should import from component-library-vue/tag-transformer instead
+  // to set the transformer before importing components
+  let reExports = '';
 
   const final: string[] = [
     imports,
@@ -104,6 +101,7 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
     transformTagImport,
     registerCustomElements,
     components.map(createComponentDefinition(IMPORT_TYPES, outputTarget)).join('\n'),
+    reExports,
   ];
 
   return final.join('\n') + '\n';

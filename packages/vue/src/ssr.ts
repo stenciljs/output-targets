@@ -16,9 +16,13 @@ type RenderToString = (html: string, options: RenderToStringOptions) => Promise<
 
 interface StencilSSRComponentOptions {
   tagName: string;
-  hydrateModule: Promise<{ renderToString: RenderToString }>;
+  hydrateModule: Promise<{
+    renderToString: RenderToString;
+    setTagTransformer?: (transformer: (tag: string) => string) => void;
+    transformTag?: (tag: string) => string;
+  }>;
   props?: Record<string, [any, string?]>;
-  transformTagFn?: (tagName: string) => string;
+  getTagTransformer?: () => ((tag: string) => string) | undefined;
 }
 
 /**
@@ -85,9 +89,22 @@ export function defineStencilSSRComponent<Props, VModelType = string | number | 
       /**
        * transform component into Declarative Shadow DOM by lazy loading the hydrate module
        */
-      const transformedTagName = options.transformTagFn ? options.transformTagFn(options.tagName) : options.tagName;
+      const hydrateModule = await options.hydrateModule;
+
+      // Sync the tag transformer with the hydrate module if provided
+      if (options.getTagTransformer) {
+        const tagTransformer = options.getTagTransformer();
+        if (tagTransformer && hydrateModule.setTagTransformer) {
+          hydrateModule.setTagTransformer(tagTransformer);
+        }
+      }
+
+      // Use the hydrate module's transformTag if available, otherwise use the tag as-is
+      const transformedTagName = hydrateModule.transformTag
+        ? hydrateModule.transformTag(options.tagName)
+        : options.tagName;
       const toSerialize = `<${transformedTagName}${stringProps}>${renderedLightDom}</${transformedTagName}>`;
-      const { renderToString } = await options.hydrateModule;
+      const { renderToString } = hydrateModule;
       const { html } = await renderToString(toSerialize, {
         fullDocument: false,
         serializeShadowRoot: true,

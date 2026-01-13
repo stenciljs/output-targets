@@ -4,7 +4,7 @@ import HelloWorld from '../components/HelloWorld.vue'
 import Input from '../components/Input.vue'
 // @ts-ignore
 import Checkbox from '../components/Checkbox.vue';
-import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup } from 'component-library-vue'
+import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup, MyTransformTest } from 'component-library-vue'
 import { ref } from 'vue'
 
 
@@ -49,6 +49,12 @@ const radioGroupValue = ref('option1')
     <my-radio value="option3">Option 3</my-radio>
   </my-radio-group>
   <p data-testid="radio-group-value">Radio Group Value: {{ radioGroupValue }}</p>
+  <hr />
+  <h2>Transform Tag Test</h2>
+  <MyTransformTest message="This component's tag should be transformed to v1-my-transform-test" />
+  <p data-testid="transform-test-info">
+    Check the DOM: the tag should be &lt;v1-my-transform-test&gt; instead of &lt;my-transform-test&gt;
+  </p>
 </template>
 
 <style scoped>
