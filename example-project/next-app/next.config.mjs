@@ -1,5 +1,5 @@
 import stencilSSR from '@stencil/ssr/next';
-import transformer from './tag-transformer.js'
+import transformer from './tag-transformer.js';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {};

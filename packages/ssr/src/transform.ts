@@ -45,7 +45,14 @@ interface HydrateModule {
 export async function transform(
   code: string,
   sourcefile: string,
-  { from, module, hydrateModule, serializeShadowRoot, setTagTransformer, strategy }: StencilSSROptions & TransformOptions
+  {
+    from,
+    module,
+    hydrateModule,
+    serializeShadowRoot,
+    setTagTransformer,
+    strategy,
+  }: StencilSSROptions & TransformOptions
 ) {
   /**
    * Find all static imports of the component library used in the code

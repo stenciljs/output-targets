@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { setTagTransformer } from 'component-library-react/tag-transform'
-import { transformer } from './tag-transformer'
+import { setTagTransformer } from 'component-library-react/tag-transform';
+import { transformer } from './tag-transformer';
 import { TagTransformerInit } from './TagTransformerInit';
 
-setTagTransformer(transformer)
+setTagTransformer(transformer);
 
 export const metadata: Metadata = {
   title: 'Stencil / NextJS coexistence demo',

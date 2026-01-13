@@ -62,10 +62,10 @@ export interface OutputTargetAngular {
    * setTagTransformer((tag) => tag.startsWith('my-') ? `v1-${tag}` : tag);
    * ```
    *
-   * Angular relies on a static selector string so the patch script is used to 
-   * modify the installed Angular component library for transformed tags. 
+   * Angular relies on a static selector string so the patch script is used to
+   * modify the installed Angular component library for transformed tags.
    * For example, if `my-button` transforms to `v1-my-button`, the selector
-   * will be patched from `selector: 'my-button'` to `selector: 'v1-my-button'`. 
+   * will be patched from `selector: 'my-button'` to `selector: 'v1-my-button'`.
    *
    * @default false
    */
