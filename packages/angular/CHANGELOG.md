@@ -9,5 +9,4 @@
 
 ### :rocket: Enhancement
 
-* **angular:** add tag transformation ([00921e0](https://github.com/stenciljs/output-targets/commit/00921e0c3c6ad1c2f51444d534b8421467b1434e))
 * **angular:** add tag transformation ([b7cdbbf](https://github.com/stenciljs/output-targets/commit/b7cdbbf70277d46eedc7ba7fd5e530a6efa81ae6))
