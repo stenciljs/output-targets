@@ -23,20 +23,47 @@ export const config: WebdriverIO.Config = {
   onPrepare: async function() {
     const { spawn } = await import('child_process');
     const isWindows = process.platform === 'win32';
-    const command = isWindows ? 'pnpm.cmd' : 'pnpm';
-    const ngServe = spawn(command, ['start'], { cwd: process.cwd(), stdio: 'inherit' });
+
+    // On Windows, use shell mode with the full command string
+    const ngServe = isWindows
+      ? spawn('pnpm start', {
+          cwd: process.cwd(),
+          stdio: 'inherit',
+          shell: true
+        })
+      : spawn('pnpm', ['start'], {
+          cwd: process.cwd(),
+          stdio: 'inherit'
+        });
+
+    // Handle process errors
+    ngServe.on('error', (err) => {
+      console.error('Failed to start dev server:', err);
+      throw err;
+    });
 
     // Wait for server to be ready - check for port
-    const maxWait = 60000;
+    const maxWait = 120000; // Increase timeout to 2 minutes for Windows CI
     const startTime = Date.now();
+    console.log('Waiting for dev server to be ready on http://localhost:4200...');
     while (Date.now() - startTime < maxWait) {
       try {
         const response = await fetch('http://localhost:4200');
-        if (response.ok) break;
+        if (response.ok) {
+          console.log('Dev server is ready!');
+          break;
+        }
       } catch {
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
+
+    // Check if we timed out
+    if (Date.now() - startTime >= maxWait) {
+      console.error('Dev server failed to start within timeout period');
+      throw new Error('Dev server failed to start');
+    }
+
     (global as any).ngServe = ngServe;
   },
   onComplete: function() {
