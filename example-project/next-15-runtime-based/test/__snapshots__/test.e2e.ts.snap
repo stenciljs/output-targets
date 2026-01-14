@@ -250,14 +250,13 @@ exports[`single-children-scoped > should correctly server side render 1`] = `
     .sc-my-button-scoped-h{display:block;background-color:green;color:white;font-weight:bold;border-radius:5px;cursor:pointer}slot-fb{display:contents}slot-fb[hidden]{display:none}
   </style>
   <my-button-scoped
-    class="button button-outline hydrated my-activatable my-focusable sc-my-button-scoped sc-my-button-scoped-h"
+    class="hydrated my-activatable my-focusable sc-my-button-scoped sc-my-button-scoped-h undefined undefined-outline"
     fill="outline"
     s-id="x"
   >
     <button
       c-id="x"
       class="button-native sc-my-button-scoped"
-      type="button"
     >
       <span
         c-id="x"
@@ -280,7 +279,7 @@ exports[`single-children-shadow > should correctly server side render 1`] = `
   >
   </template>
   <my-button
-    class="button button-outline hydrated my-activatable my-focusable sc-my-button sc-my-button-h"
+    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-outline"
     fill="outline"
     s-id="x"
   >
@@ -291,7 +290,6 @@ exports[`single-children-shadow > should correctly server side render 1`] = `
       <button
         c-id="x"
         class="button-native sc-my-button"
-        type="button"
       >
         <span
           c-id="x"
