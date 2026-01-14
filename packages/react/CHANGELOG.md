@@ -8,5 +8,4 @@
 
 ### :rocket: Enhancement
 
-* **react:** add tag transformation ([9e996c3](https://github.com/stenciljs/output-targets/commit/9e996c3b8a0c485bcbee6c3ddd31fd2e4c71da3b))
 * **react:** add tag transformation ([b8030dc](https://github.com/stenciljs/output-targets/commit/b8030dc15884e11103111d376730bcd459d7a8ab))
