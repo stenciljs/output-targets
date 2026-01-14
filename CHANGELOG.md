@@ -1,3 +1,140 @@
+## [0.2.0](https://github.com/stenciljs/output-targets/compare/@stencil/ssr@0.1.0...@stencil/ssr@0.2.0) (2026-01-14)
+
+
+### :rocket: Enhancement
+
+* **angular:** add tag transformation ([b7cdbbf](https://github.com/stenciljs/output-targets/commit/b7cdbbf70277d46eedc7ba7fd5e530a6efa81ae6))
+* **react:** add tag transformation ([b8030dc](https://github.com/stenciljs/output-targets/commit/b8030dc15884e11103111d376730bcd459d7a8ab))
+* **react:** enhance React output target with unified server/client imports and improved SSR property serialization ([132f9d9](https://github.com/stenciljs/output-targets/commit/132f9d9fe72e1f9f63f3e91e4be98f75de1cefda))
+* **ssr:** add tag transformation ([667c09c](https://github.com/stenciljs/output-targets/commit/667c09cd24f894bb170a76ab0db2587c52459ba7))
+* Upgraded component-library-angular to Angular 20 and added a new Angular app to example-project ([#652](https://github.com/stenciljs/output-targets/issues/652)) ([a6fefb6](https://github.com/stenciljs/output-targets/commit/a6fefb6d8cebe32a00d0e7289a079dc12120d26d)), closes [#643](https://github.com/stenciljs/output-targets/issues/643)
+* **vue:** add tag transformation ([ec904bc](https://github.com/stenciljs/output-targets/commit/ec904bc7e25b5f81d33db37d55bab9c71a5127f2))
+* **vue:** add tag transformation ([35985fd](https://github.com/stenciljs/output-targets/commit/35985fd895cbbf8898e07847d03ec24928afab18))
+* **vue:** add tag transformation ([2951f39](https://github.com/stenciljs/output-targets/commit/2951f390914ad041722adc86e989afce199aed72))
+* **vue:** implement custom event property as source for v-model ([#689](https://github.com/stenciljs/output-targets/issues/689)) ([bc385bb](https://github.com/stenciljs/output-targets/commit/bc385bb0794e3062bd579669f18bb4f3ccf3aef3))
+
+
+### :bug: Bug Fix
+
+* **#646:** react create components.ts file ([#647](https://github.com/stenciljs/output-targets/issues/647)) ([7524cbf](https://github.com/stenciljs/output-targets/commit/7524cbf0b74e87c1e5856ed27d128cdbed3853bd)), closes [#646](https://github.com/stenciljs/output-targets/issues/646) [#646](https://github.com/stenciljs/output-targets/issues/646)
+* **angular:** include outputs in angular component definition ([#688](https://github.com/stenciljs/output-targets/issues/688)) ([16f1fd1](https://github.com/stenciljs/output-targets/commit/16f1fd18d63754dc1efdddc2cebdf1b9ba5137d6)), closes [#643](https://github.com/stenciljs/output-targets/issues/643) [#643](https://github.com/stenciljs/output-targets/issues/643)
+* **angular:** prettify code ([69e1cba](https://github.com/stenciljs/output-targets/commit/69e1cbaa5b9a86a1b6ba654a1d2255de6fd184c9))
+* **angular:** use forwardRef in control value accessor directives. ([#697](https://github.com/stenciljs/output-targets/issues/697)) ([dcb4bd2](https://github.com/stenciljs/output-targets/commit/dcb4bd28f659070e329b8e0f7454770b3fd8bbed))
+* **ci:** run in macos environment ([0631306](https://github.com/stenciljs/output-targets/commit/063130616cda2bf86d9b2296e9a06154905a0a6d))
+* **dependabot:** don't run updates based on projects ([3d43687](https://github.com/stenciljs/output-targets/commit/3d43687a81e8376104653684d1b6104cbd4bf3a1))
+* **dependabot:** group updates of minor and patch versions in a single PR ([47bdb20](https://github.com/stenciljs/output-targets/commit/47bdb209e2caae1d7f55ae2c1db79d3be053775d))
+* **dependabot:** optimize configuration ([ce29757](https://github.com/stenciljs/output-targets/commit/ce29757f3194eeaea4b3c3d8c626788d15b50419))
+* **internal:** update changelog ([4bb6cfc](https://github.com/stenciljs/output-targets/commit/4bb6cfc84ebdebbf0975f159b26b2ced92193d1f))
+* nuxt ssr mismatch class errors ([#651](https://github.com/stenciljs/output-targets/issues/651)) ([be797b1](https://github.com/stenciljs/output-targets/commit/be797b179d3073848c4082c8db603d82bb76d0d7))
+* **react:** always use per-component CustomEvent types for event props ([#716](https://github.com/stenciljs/output-targets/issues/716)) ([8ebba85](https://github.com/stenciljs/output-targets/commit/8ebba85f603518482457faf74997d0008ded3dc9)), closes [#531](https://github.com/stenciljs/output-targets/issues/531)
+* **react:** better style to css transformation ([ccc76a7](https://github.com/stenciljs/output-targets/commit/ccc76a7dd7b65dddbc28d05334652bba01e5c6ba))
+* **react:** fixed wording in component wrapper ([a83bb4b](https://github.com/stenciljs/output-targets/commit/a83bb4bd29fa276f8b5fa895e9b4637164a6753d))
+* **react:** forward ref to underlying web component ([#655](https://github.com/stenciljs/output-targets/issues/655)) ([9f20ee0](https://github.com/stenciljs/output-targets/commit/9f20ee0add49b0a149d958a8b2676a7ebee79aa7))
+* **react:** improved SSR for Next.js ([#683](https://github.com/stenciljs/output-targets/issues/683)) ([c49a3b5](https://github.com/stenciljs/output-targets/commit/c49a3b5d9ec11c680bd55413f2e9fea76e23ac4c))
+* **react:** make types compatible with v18 and v19 ([f887ae7](https://github.com/stenciljs/output-targets/commit/f887ae76b0e9de58e46231af3376daf06f945071))
+* **react:** properly type generated component files ([3e7cc0c](https://github.com/stenciljs/output-targets/commit/3e7cc0cddf9d535228fccb8eccc3b53fd6c015f3))
+* **react:** revive esModules option ([d98df24](https://github.com/stenciljs/output-targets/commit/d98df248168ad61ad122cfc9c96d81e7767ab226))
+* revert model update event renaming ([#649](https://github.com/stenciljs/output-targets/issues/649)) ([5c67692](https://github.com/stenciljs/output-targets/commit/5c676928bf310f897e8e8c40d35230638bf0ac82))
+* **ssr:** improved SSR handling in Next.js ([#641](https://github.com/stenciljs/output-targets/issues/641)) ([22e075f](https://github.com/stenciljs/output-targets/commit/22e075f5eb8461af6465598dadd8dd1923f70ff3))
+* **vue:** remove unnecessary vue patch ([34f7ce2](https://github.com/stenciljs/output-targets/commit/34f7ce225dc751c08627e27dfbe945a09d77c976))
+
+
+### :memo: Documentation
+
+* **internal:** link release workflow ([0e69d0e](https://github.com/stenciljs/output-targets/commit/0e69d0eff7cf3829dafa8cbb16f9082ed1329cc6))
+* **internal:** update contributing guidelines ([08c96fd](https://github.com/stenciljs/output-targets/commit/08c96fdac6078f04459c12406ba2b6dcf7e1363b))
+
+## [1.2.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.1.0...@stencil/angular-output-target@1.2.0) (2026-01-14)
+
+
+### :rocket: Enhancement
+
+* **angular:** add tag transformation ([b7cdbbf](https://github.com/stenciljs/output-targets/commit/b7cdbbf70277d46eedc7ba7fd5e530a6efa81ae6))
+* **react:** add tag transformation ([b8030dc](https://github.com/stenciljs/output-targets/commit/b8030dc15884e11103111d376730bcd459d7a8ab))
+* **ssr:** add tag transformation ([667c09c](https://github.com/stenciljs/output-targets/commit/667c09cd24f894bb170a76ab0db2587c52459ba7))
+* **vue:** add tag transformation ([ec904bc](https://github.com/stenciljs/output-targets/commit/ec904bc7e25b5f81d33db37d55bab9c71a5127f2))
+* **vue:** add tag transformation ([35985fd](https://github.com/stenciljs/output-targets/commit/35985fd895cbbf8898e07847d03ec24928afab18))
+* **vue:** add tag transformation ([2951f39](https://github.com/stenciljs/output-targets/commit/2951f390914ad041722adc86e989afce199aed72))
+* **vue:** implement custom event property as source for v-model ([#689](https://github.com/stenciljs/output-targets/issues/689)) ([bc385bb](https://github.com/stenciljs/output-targets/commit/bc385bb0794e3062bd579669f18bb4f3ccf3aef3))
+
+
+### :bug: Bug Fix
+
+* **angular:** include outputs in angular component definition ([#688](https://github.com/stenciljs/output-targets/issues/688)) ([16f1fd1](https://github.com/stenciljs/output-targets/commit/16f1fd18d63754dc1efdddc2cebdf1b9ba5137d6)), closes [#643](https://github.com/stenciljs/output-targets/issues/643) [#643](https://github.com/stenciljs/output-targets/issues/643)
+* **angular:** use forwardRef in control value accessor directives. ([#697](https://github.com/stenciljs/output-targets/issues/697)) ([dcb4bd2](https://github.com/stenciljs/output-targets/commit/dcb4bd28f659070e329b8e0f7454770b3fd8bbed))
+* **internal:** update changelog ([4bb6cfc](https://github.com/stenciljs/output-targets/commit/4bb6cfc84ebdebbf0975f159b26b2ced92193d1f))
+* **react:** always use per-component CustomEvent types for event props ([#716](https://github.com/stenciljs/output-targets/issues/716)) ([8ebba85](https://github.com/stenciljs/output-targets/commit/8ebba85f603518482457faf74997d0008ded3dc9)), closes [#531](https://github.com/stenciljs/output-targets/issues/531)
+* **react:** improved SSR for Next.js ([#683](https://github.com/stenciljs/output-targets/issues/683)) ([c49a3b5](https://github.com/stenciljs/output-targets/commit/c49a3b5d9ec11c680bd55413f2e9fea76e23ac4c))
+
+
+### :memo: Documentation
+
+* **internal:** link release workflow ([0e69d0e](https://github.com/stenciljs/output-targets/commit/0e69d0eff7cf3829dafa8cbb16f9082ed1329cc6))
+* **internal:** update contributing guidelines ([08c96fd](https://github.com/stenciljs/output-targets/commit/08c96fdac6078f04459c12406ba2b6dcf7e1363b))
+
+## [1.3.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.2.0...@stencil/react-output-target@1.3.0) (2026-01-14)
+
+
+### :rocket: Enhancement
+
+* **angular:** add tag transformation ([b7cdbbf](https://github.com/stenciljs/output-targets/commit/b7cdbbf70277d46eedc7ba7fd5e530a6efa81ae6))
+* **react:** add tag transformation ([b8030dc](https://github.com/stenciljs/output-targets/commit/b8030dc15884e11103111d376730bcd459d7a8ab))
+* **ssr:** add tag transformation ([667c09c](https://github.com/stenciljs/output-targets/commit/667c09cd24f894bb170a76ab0db2587c52459ba7))
+* **vue:** add tag transformation ([ec904bc](https://github.com/stenciljs/output-targets/commit/ec904bc7e25b5f81d33db37d55bab9c71a5127f2))
+* **vue:** add tag transformation ([35985fd](https://github.com/stenciljs/output-targets/commit/35985fd895cbbf8898e07847d03ec24928afab18))
+* **vue:** add tag transformation ([2951f39](https://github.com/stenciljs/output-targets/commit/2951f390914ad041722adc86e989afce199aed72))
+* **vue:** implement custom event property as source for v-model ([#689](https://github.com/stenciljs/output-targets/issues/689)) ([bc385bb](https://github.com/stenciljs/output-targets/commit/bc385bb0794e3062bd579669f18bb4f3ccf3aef3))
+
+
+### :bug: Bug Fix
+
+* **angular:** include outputs in angular component definition ([#688](https://github.com/stenciljs/output-targets/issues/688)) ([16f1fd1](https://github.com/stenciljs/output-targets/commit/16f1fd18d63754dc1efdddc2cebdf1b9ba5137d6)), closes [#643](https://github.com/stenciljs/output-targets/issues/643) [#643](https://github.com/stenciljs/output-targets/issues/643)
+* **angular:** use forwardRef in control value accessor directives. ([#697](https://github.com/stenciljs/output-targets/issues/697)) ([dcb4bd2](https://github.com/stenciljs/output-targets/commit/dcb4bd28f659070e329b8e0f7454770b3fd8bbed))
+* **react:** always use per-component CustomEvent types for event props ([#716](https://github.com/stenciljs/output-targets/issues/716)) ([8ebba85](https://github.com/stenciljs/output-targets/commit/8ebba85f603518482457faf74997d0008ded3dc9)), closes [#531](https://github.com/stenciljs/output-targets/issues/531)
+
+
+### :memo: Documentation
+
+* **internal:** link release workflow ([0e69d0e](https://github.com/stenciljs/output-targets/commit/0e69d0eff7cf3829dafa8cbb16f9082ed1329cc6))
+* **internal:** update contributing guidelines ([08c96fd](https://github.com/stenciljs/output-targets/commit/08c96fdac6078f04459c12406ba2b6dcf7e1363b))
+
+## [0.11.0](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.10.8...@stencil/vue-output-target@0.11.0) (2026-01-14)
+
+
+### :bug: Bug Fix
+
+* **angular:** include outputs in angular component definition ([#688](https://github.com/stenciljs/output-targets/issues/688)) ([16f1fd1](https://github.com/stenciljs/output-targets/commit/16f1fd18d63754dc1efdddc2cebdf1b9ba5137d6)), closes [#643](https://github.com/stenciljs/output-targets/issues/643) [#643](https://github.com/stenciljs/output-targets/issues/643)
+* **angular:** prettify code ([69e1cba](https://github.com/stenciljs/output-targets/commit/69e1cbaa5b9a86a1b6ba654a1d2255de6fd184c9))
+* **angular:** use forwardRef in control value accessor directives. ([#697](https://github.com/stenciljs/output-targets/issues/697)) ([dcb4bd2](https://github.com/stenciljs/output-targets/commit/dcb4bd28f659070e329b8e0f7454770b3fd8bbed))
+* **dependabot:** don't run updates based on projects ([3d43687](https://github.com/stenciljs/output-targets/commit/3d43687a81e8376104653684d1b6104cbd4bf3a1))
+* **dependabot:** group updates of minor and patch versions in a single PR ([47bdb20](https://github.com/stenciljs/output-targets/commit/47bdb209e2caae1d7f55ae2c1db79d3be053775d))
+* **dependabot:** optimize configuration ([ce29757](https://github.com/stenciljs/output-targets/commit/ce29757f3194eeaea4b3c3d8c626788d15b50419))
+* **internal:** update changelog ([4bb6cfc](https://github.com/stenciljs/output-targets/commit/4bb6cfc84ebdebbf0975f159b26b2ced92193d1f))
+* **react:** always use per-component CustomEvent types for event props ([#716](https://github.com/stenciljs/output-targets/issues/716)) ([8ebba85](https://github.com/stenciljs/output-targets/commit/8ebba85f603518482457faf74997d0008ded3dc9)), closes [#531](https://github.com/stenciljs/output-targets/issues/531)
+* **react:** better style to css transformation ([ccc76a7](https://github.com/stenciljs/output-targets/commit/ccc76a7dd7b65dddbc28d05334652bba01e5c6ba))
+* **react:** forward ref to underlying web component ([#655](https://github.com/stenciljs/output-targets/issues/655)) ([9f20ee0](https://github.com/stenciljs/output-targets/commit/9f20ee0add49b0a149d958a8b2676a7ebee79aa7))
+* **react:** improved SSR for Next.js ([#683](https://github.com/stenciljs/output-targets/issues/683)) ([c49a3b5](https://github.com/stenciljs/output-targets/commit/c49a3b5d9ec11c680bd55413f2e9fea76e23ac4c))
+* **react:** properly type generated component files ([3e7cc0c](https://github.com/stenciljs/output-targets/commit/3e7cc0cddf9d535228fccb8eccc3b53fd6c015f3))
+* **vue:** remove unnecessary vue patch ([34f7ce2](https://github.com/stenciljs/output-targets/commit/34f7ce225dc751c08627e27dfbe945a09d77c976))
+
+
+### :memo: Documentation
+
+* **internal:** link release workflow ([0e69d0e](https://github.com/stenciljs/output-targets/commit/0e69d0eff7cf3829dafa8cbb16f9082ed1329cc6))
+* **internal:** update contributing guidelines ([08c96fd](https://github.com/stenciljs/output-targets/commit/08c96fdac6078f04459c12406ba2b6dcf7e1363b))
+
+
+### :rocket: Enhancement
+
+* **angular:** add tag transformation ([b7cdbbf](https://github.com/stenciljs/output-targets/commit/b7cdbbf70277d46eedc7ba7fd5e530a6efa81ae6))
+* **react:** add tag transformation ([b8030dc](https://github.com/stenciljs/output-targets/commit/b8030dc15884e11103111d376730bcd459d7a8ab))
+* **react:** enhance React output target with unified server/client imports and improved SSR property serialization ([132f9d9](https://github.com/stenciljs/output-targets/commit/132f9d9fe72e1f9f63f3e91e4be98f75de1cefda))
+* **ssr:** add tag transformation ([667c09c](https://github.com/stenciljs/output-targets/commit/667c09cd24f894bb170a76ab0db2587c52459ba7))
+* **vue:** add tag transformation ([ec904bc](https://github.com/stenciljs/output-targets/commit/ec904bc7e25b5f81d33db37d55bab9c71a5127f2))
+* **vue:** add tag transformation ([35985fd](https://github.com/stenciljs/output-targets/commit/35985fd895cbbf8898e07847d03ec24928afab18))
+* **vue:** add tag transformation ([2951f39](https://github.com/stenciljs/output-targets/commit/2951f390914ad041722adc86e989afce199aed72))
+* **vue:** implement custom event property as source for v-model ([#689](https://github.com/stenciljs/output-targets/issues/689)) ([bc385bb](https://github.com/stenciljs/output-targets/commit/bc385bb0794e3062bd579669f18bb4f3ccf3aef3))
+
 ## @stencil/react-output-target@1.2.1 
 
 #### :bug: Bug Fix
