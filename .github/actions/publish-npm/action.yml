@@ -13,7 +13,7 @@ inputs:
   node-version:
     description: 'Node.js version to use for publishing.'
     required: false
-    default: '20.10.0'
+    default: '20.20.0'
   registry-url:
     description: 'Registry URL to publish to.'
     required: false
