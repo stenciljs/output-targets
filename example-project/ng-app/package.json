@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "pretest": "pnpm patcher",
     "test": "wdio run ./wdio.conf.ts",
-    "patcher": "test -f node_modules/.bin/patch-transform-selectors && node_modules/.bin/patch-transform-selectors || echo '[patcher] patch-transform-selectors not found, skipping'"
+    "patcher": "pnpm exec patch-transform-selectors || echo '[patcher] patch-transform-selectors not found, skipping'"
   },
   "private": true,
   "files": [
