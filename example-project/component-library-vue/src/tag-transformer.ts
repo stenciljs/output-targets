@@ -1,3 +1,5 @@
+/* eslint-disable */
+/* tslint:disable */
 import { setTagTransformer as clientSetTagTransformer } from 'component-library/components/index.js';
 
 let tagTransformer: ((tagName: string) => string) | undefined;
