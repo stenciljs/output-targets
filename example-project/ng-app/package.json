@@ -3,9 +3,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "postinstall": "patch-transform-selectors",
+    "postinstall": "command -v patch-transform-selectors >/dev/null 2>&1 && patch-transform-selectors || echo 'Skipping patch-transform-selectors (not yet available)'",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "pretest": "command -v patch-transform-selectors >/dev/null 2>&1 && patch-transform-selectors || true",
     "test": "wdio run ./wdio.conf.ts"
   },
   "private": true,
