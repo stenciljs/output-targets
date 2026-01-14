@@ -3,6 +3,7 @@ import { MyComplexProps } from 'component-library-angular';
 
 @Component({
   selector: 'app-complex-props-tests',
+  standalone: true,
   imports: [MyComplexProps],
   templateUrl: './complex-props-tests.html',
   styles: ``,

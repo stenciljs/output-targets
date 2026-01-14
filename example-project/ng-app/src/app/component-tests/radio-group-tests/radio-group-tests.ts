@@ -4,6 +4,7 @@ import { MyRadio, MyRadioGroup, SelectValueAccessor } from 'component-library-an
 
 @Component({
   selector: 'app-radio-group-tests',
+  standalone: true,
   imports: [MyRadio, MyRadioGroup, SelectValueAccessor, FormsModule],
   templateUrl: './radio-group-tests.html',
   styles: ``,

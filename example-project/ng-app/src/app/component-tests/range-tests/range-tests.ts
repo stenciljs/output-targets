@@ -4,6 +4,7 @@ import { MyRange, SelectValueAccessor } from 'component-library-angular';
 
 @Component({
   selector: 'app-range-tests',
+  standalone: true,
   imports: [MyRange, SelectValueAccessor, FormsModule],
   templateUrl: './range-tests.html',
   styles: ``,
