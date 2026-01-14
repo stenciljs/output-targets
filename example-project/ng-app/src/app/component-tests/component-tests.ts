@@ -9,7 +9,7 @@ import { RangeTests } from './range-tests/range-tests';
 
 @Component({
   selector: 'app-component-tests',
-  // standalone: true,
+  standalone: true,
   imports: [
     MyComponent,
     MyCounter,

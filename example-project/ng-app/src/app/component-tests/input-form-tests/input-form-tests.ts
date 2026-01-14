@@ -5,6 +5,7 @@ import { MyInput, TextValueAccessor } from 'component-library-angular';
 
 @Component({
   selector: 'app-input-form-tests',
+  standalone: true,
   imports: [ReactiveFormsModule, MyInput, TextValueAccessor, JsonPipe],
   templateUrl: './input-form-tests.html',
   styles: ``,

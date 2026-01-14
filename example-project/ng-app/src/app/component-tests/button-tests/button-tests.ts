@@ -3,6 +3,7 @@ import { MyButton } from 'component-library-angular';
 
 @Component({
   selector: 'app-button-tests',
+  standalone: true,
   imports: [MyButton],
   templateUrl: './button-tests.html',
   styles: ``,

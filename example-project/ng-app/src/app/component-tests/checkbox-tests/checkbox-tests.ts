@@ -4,6 +4,7 @@ import { MyCheckbox, BooleanValueAccessor } from 'component-library-angular';
 
 @Component({
   selector: 'app-checkbox-tests',
+  standalone: true,
   imports: [MyCheckbox, FormsModule, BooleanValueAccessor],
   templateUrl: './checkbox-tests.html',
   styles: ``,
