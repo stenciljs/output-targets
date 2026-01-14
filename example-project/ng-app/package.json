@@ -3,11 +3,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "postinstall": "command -v patch-transform-selectors >/dev/null 2>&1 && patch-transform-selectors || echo 'Skipping patch-transform-selectors (not yet available)'",
+    "postinstall": "pnpm run-patcher",
+    "prebuild": "pnpm run-patcher",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "pretest": "command -v patch-transform-selectors >/dev/null 2>&1 && patch-transform-selectors || true",
-    "test": "wdio run ./wdio.conf.ts"
+    "pretest": "pnpm run-patcher",
+    "test": "wdio run ./wdio.conf.ts",
+    "patcher": "command -v patch-transform-selectors >/dev/null 2>&1 && patch-transform-selectors || true"
   },
   "private": true,
   "files": [
