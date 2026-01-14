@@ -22,7 +22,7 @@ export const config: WebdriverIO.Config = {
   reporters: ['spec'],
   onPrepare: async function() {
     const { spawn } = await import('child_process');
-    const ngServe = spawn('npm', ['start'], { cwd: process.cwd(), stdio: 'inherit' });
+    const ngServe = spawn('pnpm', ['start'], { cwd: process.cwd(), stdio: 'inherit' });
 
     // Wait for server to be ready - check for port
     const maxWait = 60000;
