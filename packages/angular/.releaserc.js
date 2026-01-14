@@ -31,22 +31,6 @@ module.exports = {
         writerOpts: {
           commitsSort: ['scope', 'subject'],
           commitGroupsSort: 'title',
-          transform: (commit, context) => {
-            // Only include commits with 'angular' scope
-            if (commit.scope !== 'angular') {
-              return;
-            }
-            return commit;
-          },
-          mainTemplate: `## @stencil/angular-output-target / {{version}}{{#if date}} {{date}}{{/if}}
-
-{{> header}}
-
-{{body}}
-
-{{> footer}}
-`,
-          headerPartial: '',
         },
       },
     ],

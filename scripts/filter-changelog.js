@@ -68,8 +68,10 @@ try {
     // Check bullet points for scope
     if (inSection && line.trim().startsWith('*')) {
       // Extract scope from commit message
-      // Format: * **scope:** message
-      const scopeMatch = line.match(/\*\s+\*\*([^:]+):\*\*/);
+      // Format can be either:
+      // * scope: message (conventional-changelog format)
+      // * **scope:** message (alternative format)
+      const scopeMatch = line.match(/\*\s+(?:\*\*)?([^:*\s]+)(?:\*\*)?:/);
 
       if (scopeMatch) {
         const commitScope = scopeMatch[1];

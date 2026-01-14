@@ -18,7 +18,20 @@ module.exports = {
     [
       '@semantic-release/release-notes-generator',
       {
-        config: './release-config.js'
+        preset: 'conventionalcommits',
+        presetConfig: {
+          types: [
+            { type: 'feat', section: ':rocket: Enhancement' },
+            { type: 'fix', section: ':bug: Bug Fix' },
+            { type: 'perf', section: ':zap: Performance' },
+            { type: 'docs', section: ':memo: Documentation', hidden: false },
+            { type: 'chore', section: ':house: Internal', hidden: true }
+          ]
+        },
+        writerOpts: {
+          commitsSort: ['scope', 'subject'],
+          commitGroupsSort: 'title',
+        }
       }
     ],
     [
