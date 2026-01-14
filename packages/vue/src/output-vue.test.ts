@@ -31,7 +31,9 @@ import type { JSX } from 'component-library';
 
 import { applyPolyfills, defineCustomElements } from 'component-library/dist/loader';
 
+
 applyPolyfills().then(() => defineCustomElements());
+
 
 `
     );
@@ -56,7 +58,9 @@ import type { JSX } from 'component-library';
 
 import { defineCustomElements } from 'component-library/dist/loader';
 
+
 defineCustomElements();
+
 
 `
     );
@@ -78,6 +82,8 @@ defineCustomElements();
 import { defineContainer, type StencilVueComponent } from '@stencil/vue-output-target/runtime';
 
 import type { JSX } from 'component-library';
+
+
 
 
 
@@ -104,6 +110,8 @@ import type { JSX } from 'component-library';
 
 
 
+
+
 `
     );
   });
@@ -123,6 +131,8 @@ import type { JSX } from 'component-library';
 import { defineContainer, type StencilVueComponent } from '@stencil/vue-output-target/runtime';
 
 import type { JSX } from 'component-library/custom-dir/hello';
+
+
 
 
 

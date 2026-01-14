@@ -280,6 +280,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyComponent as ReactWebComponent<MyComponentElement, MyComponentEvents>,
     serializeShadowRoot,
+    getTagTransformer
 });
 `);
   });
