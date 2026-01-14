@@ -3,11 +3,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "postinstall": "pnpm run-patcher",
-    "prebuild": "pnpm run-patcher",
+    "postinstall": "pnpm patcher",
+    "prebuild": "pnpm patcher",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "pretest": "pnpm run-patcher",
+    "pretest": "pnpm patcher",
     "test": "wdio run ./wdio.conf.ts",
     "patcher": "command -v patch-transform-selectors >/dev/null 2>&1 && patch-transform-selectors || true"
   },
