@@ -9,6 +9,6 @@ export const setTagTransformer = (transformer: (tagName: string) => string) => {
 
 export const transformTag = (tag: string): string => {
   return tagTransformer ? tagTransformer(tag) : tag;
-};
+}
 
 export const getTagTransformer = () => tagTransformer;
