@@ -5,7 +5,9 @@ export const createTagTransformer = ({
   stencilPackageName: string;
   customElementsDir: string;
 }) => {
-  return `import { setTagTransformer as clientSetTagTransformer } from '${stencilPackageName}/${customElementsDir}/index.js';
+  return `/* eslint-disable */
+/* tslint:disable */
+import { setTagTransformer as clientSetTagTransformer } from '${stencilPackageName}/${customElementsDir}/index.js';
 
 let tagTransformer: ((tagName: string) => string) | undefined;
 
