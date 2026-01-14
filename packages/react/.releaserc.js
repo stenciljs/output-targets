@@ -31,24 +31,35 @@ module.exports = {
         writerOpts: {
           commitsSort: ['scope', 'subject'],
           commitGroupsSort: 'title',
-          transform: (commit) => {
+          transform: (commit, context) => {
             // Only include commits with 'react' scope
             if (commit.scope !== 'react') {
-              return null;
+              return;
             }
             return commit;
-          }
+          },
+          mainTemplate: `## @stencil/react-output-target / {{version}}{{#if date}} {{date}}{{/if}}
+
+{{> header}}
+
+{{body}}
+
+{{> footer}}
+`,
+          headerPartial: ''
         }
       }
     ],
     [
       '@semantic-release/changelog',
       {
-        changelogFile: '../../CHANGELOG.md',
-        preset: 'conventionalcommits',
-        presetConfig: {
-          header: '## @stencil/react-output-target / {{version}} {{date}}'
-        }
+        changelogFile: 'CHANGELOG.md'
+      }
+    ],
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'node ../../scripts/filter-changelog.js react CHANGELOG.md'
       }
     ],
     [

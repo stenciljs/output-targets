@@ -18,37 +18,19 @@ module.exports = {
     [
       '@semantic-release/release-notes-generator',
       {
-        preset: 'conventionalcommits',
-        presetConfig: {
-          types: [
-            { type: 'feat', section: ':rocket: Enhancement' },
-            { type: 'fix', section: ':bug: Bug Fix' },
-            { type: 'perf', section: ':zap: Performance' },
-            { type: 'docs', section: ':memo: Documentation', hidden: false },
-            { type: 'chore', section: ':house: Internal', hidden: true }
-          ]
-        },
-        writerOpts: {
-          commitsSort: ['scope', 'subject'],
-          commitGroupsSort: 'title',
-          transform: (commit) => {
-            // Only include commits with 'ssr' scope
-            if (commit.scope !== 'ssr') {
-              return null;
-            }
-            return commit;
-          }
-        }
+        config: './release-config.js'
       }
     ],
     [
       '@semantic-release/changelog',
       {
-        changelogFile: '../../CHANGELOG.md',
-        preset: 'conventionalcommits',
-        presetConfig: {
-          header: '## @stencil/ssr / {{version}} {{date}}'
-        }
+        changelogFile: 'CHANGELOG.md'
+      }
+    ],
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'node ../../scripts/filter-changelog.js ssr CHANGELOG.md'
       }
     ],
     [

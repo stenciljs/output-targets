@@ -117,11 +117,14 @@ if [ "$HAS_CHANGES" = true ]; then
     git config user.name "semantic-release-bot" || true
     git config user.email "semantic-release-bot@martynus.net" || true
 
-    # Add all changed package.json files and CHANGELOG.md
-    git add CHANGELOG.md
+    # Add all changed package.json and CHANGELOG.md files
+    git add CHANGELOG.md 2>/dev/null || true
     for PKG_DIR in "${PACKAGES[@]}"; do
       if [ -f "$PKG_DIR/package.json" ]; then
         git add "$PKG_DIR/package.json"
+      fi
+      if [ -f "$PKG_DIR/CHANGELOG.md" ]; then
+        git add "$PKG_DIR/CHANGELOG.md"
       fi
     done
 

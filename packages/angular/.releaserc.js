@@ -11,9 +11,9 @@ module.exports = {
           { type: 'fix', scope: 'angular', release: 'patch' },
           { type: 'perf', scope: 'angular', release: 'patch' },
           { breaking: true, scope: 'angular', release: 'major' },
-          { scope: '!angular', release: false }
-        ]
-      }
+          { scope: '!angular', release: false },
+        ],
+      },
     ],
     [
       '@semantic-release/release-notes-generator',
@@ -25,37 +25,48 @@ module.exports = {
             { type: 'fix', section: ':bug: Bug Fix' },
             { type: 'perf', section: ':zap: Performance' },
             { type: 'docs', section: ':memo: Documentation', hidden: false },
-            { type: 'chore', section: ':house: Internal', hidden: true }
-          ]
+            { type: 'chore', section: ':house: Internal', hidden: true },
+          ],
         },
         writerOpts: {
           commitsSort: ['scope', 'subject'],
           commitGroupsSort: 'title',
-          transform: (commit) => {
+          transform: (commit, context) => {
             // Only include commits with 'angular' scope
             if (commit.scope !== 'angular') {
-              return null;
+              return;
             }
             return commit;
-          }
-        }
-      }
+          },
+          mainTemplate: `## @stencil/angular-output-target / {{version}}{{#if date}} {{date}}{{/if}}
+
+{{> header}}
+
+{{body}}
+
+{{> footer}}
+`,
+          headerPartial: '',
+        },
+      },
     ],
     [
       '@semantic-release/changelog',
       {
-        changelogFile: '../../CHANGELOG.md',
-        preset: 'conventionalcommits',
-        presetConfig: {
-          header: '## @stencil/angular-output-target / {{version}} {{date}}'
-        }
-      }
+        changelogFile: 'CHANGELOG.md',
+      },
+    ],
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'node ../../scripts/filter-changelog.js angular CHANGELOG.md',
+      },
     ],
     [
       '@semantic-release/npm',
       {
-        npmPublish: false
-      }
-    ]
-  ]
+        npmPublish: false,
+      },
+    ],
+  ],
 };
