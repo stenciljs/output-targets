@@ -75,7 +75,7 @@ for PKG_DIR in "${PACKAGES[@]}"; do
         echo "ℹ️  No changes for $PKG_NAME"
       fi
     else
-      # Run semantic-release without git plugin (it will update package.json and CHANGELOG.md)
+      # Run semantic-release (it will update package.json, CHANGELOG.md, and create git tags)
       OUTPUT=$(npx semantic-release --no-ci 2>&1 || true)
 
       # Check if a release was created
@@ -134,11 +134,7 @@ if [ "$HAS_CHANGES" = true ]; then
     # Create the commit
     git commit -m "$COMMIT_MSG"
 
-    # Create tags for each release
-    for TAG in "${RELEASE_TAGS[@]}"; do
-      echo "🏷️  Creating tag $TAG"
-      git tag "$TAG"
-    done
+    # Note: Tags are already created by semantic-release, no need to create them again
 
     echo ""
     echo "✅ Created commit and tags for: ${RELEASE_TAGS[*]}"
