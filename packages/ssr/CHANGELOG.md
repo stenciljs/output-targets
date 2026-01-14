@@ -1,11 +1,4 @@
-## [0.3.0](https://github.com/stenciljs/output-targets/compare/@stencil/ssr@0.2.0...@stencil/ssr@0.3.0) (2026-01-14)
-
-
-### :rocket: Enhancement
-
-* **ssr:** add tag transformation ([31244b4](https://github.com/stenciljs/output-targets/commit/31244b41dde944cca2dac2abe2f9b0e04084089c))
-
-## [0.2.0](https://github.com/stenciljs/output-targets/compare/@stencil/ssr@0.1.0...@stencil/ssr@0.2.0) (2026-01-14)
+## [0.3.0](https://github.com/stenciljs/output-targets/compare/@stencil/ssr@0.1.0...@stencil/ssr@0.2.0) (2026-01-14)
 
 
 ### :bug: Bug Fix
