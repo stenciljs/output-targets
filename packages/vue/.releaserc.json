@@ -68,14 +68,19 @@
           "commitsSort": [
             "scope",
             "subject"
-          ]
+          ],
+          "commitGroupsSort": "title"
         }
       }
     ],
     [
       "@semantic-release/changelog",
       {
-        "changelogFile": "../../CHANGELOG.md"
+        "changelogFile": "../../CHANGELOG.md",
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "header": "## @stencil/vue-output-target / {{version}} {{date}}"
+        }
       }
     ],
     [

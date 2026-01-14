@@ -75,7 +75,11 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogFile": "../../CHANGELOG.md"
+        "changelogFile": "../../CHANGELOG.md",
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "header": "## @stencil/react-output-target / {{version}} {{date}}"
+        }
       }
     ],
     [
