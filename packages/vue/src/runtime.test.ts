@@ -5,13 +5,13 @@ import { defineComponent, h, ref } from 'vue';
 
 describe('defineContainer', () => {
   it('should render a basic web component', () => {
-    const MyComponent = defineContainer('my-component', {} as any);
+    const MyComponent = defineContainer('my-component', undefined as any);
     const wrapper = mount(MyComponent);
     expect(wrapper.element.tagName.toLowerCase()).toBe('my-component');
   });
 
   it('should apply static classes', () => {
-    const MyComponent = defineContainer('my-component', {} as any);
+    const MyComponent = defineContainer('my-component', undefined as any);
     const wrapper = mount(MyComponent, {
       attrs: {
         class: 'static-class',
@@ -22,7 +22,7 @@ describe('defineContainer', () => {
 
   describe('hydrated class preservation (issue #708)', () => {
     it('should preserve external classes like "hydrated" when Vue re-renders', async () => {
-      const MyComponent = defineContainer('my-component', {} as any);
+      const MyComponent = defineContainer('my-component', undefined as any);
 
       // Create a wrapper component that uses reactive :class binding
       const WrapperComponent = defineComponent({
@@ -62,7 +62,7 @@ describe('defineContainer', () => {
     });
 
     it('should preserve multiple external classes when Vue re-renders', async () => {
-      const MyComponent = defineContainer('my-component', {} as any);
+      const MyComponent = defineContainer('my-component', undefined as any);
 
       const WrapperComponent = defineComponent({
         components: { MyComponent },
@@ -97,7 +97,7 @@ describe('defineContainer', () => {
     });
 
     it('should handle combined static and reactive classes without losing external classes', async () => {
-      const MyComponent = defineContainer('my-component', {} as any);
+      const MyComponent = defineContainer('my-component', undefined as any);
 
       const WrapperComponent = defineComponent({
         components: { MyComponent },
