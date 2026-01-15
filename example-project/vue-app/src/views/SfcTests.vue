@@ -4,6 +4,7 @@ import HelloWorld from '../components/HelloWorld.vue'
 import Input from '../components/Input.vue'
 // @ts-ignore
 import Checkbox from '../components/Checkbox.vue';
+import HydratedClassTest from '../components/HydratedClassTest.vue';
 import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup, MyTransformTest } from 'component-library-vue'
 import { ref } from 'vue'
 
@@ -55,6 +56,8 @@ const radioGroupValue = ref('option1')
   <p data-testid="transform-test-info">
     Check the DOM: the tag should be &lt;v1-my-transform-test&gt; instead of &lt;my-transform-test&gt;
   </p>
+  <hr />
+  <HydratedClassTest />
 </template>
 
 <style scoped>

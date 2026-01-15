@@ -6,6 +6,7 @@ import {
   inject,
   onMounted,
   PropType,
+  Ref,
   ref,
   withDirectives,
 } from 'vue';
@@ -40,18 +41,24 @@ const getComponentClasses = (classes: unknown) => {
   return (classes as string)?.split(' ') || [];
 };
 
-const getElementClasses = (
-  el: HTMLElement | undefined,
+const syncElementClasses = (
+  ref: Ref<HTMLElement | undefined>,
   componentClasses: Set<string>,
   defaultClasses: string[] = []
 ) => {
-  const combinedClasses = new Set([
-    ...Array.from(el?.classList || []),
-    ...Array.from(componentClasses),
-    ...defaultClasses,
-  ]);
+  if (ref?.value) {
+    const element = ref.value;
+    // makes sure vue classes are on the actual element
+    componentClasses.forEach((c) => {
+      if (!!c && !element.classList.contains(c)) {
+        element.classList.add(c);
+      }
+    });
+  }
 
-  return Array.from(combinedClasses);
+  return [...Array.from(ref.value?.classList || []), ...defaultClasses].filter((c: string, i, self) => {
+    return !componentClasses.has(c) && self.indexOf(c) === i;
+  });
 };
 
 /**
@@ -161,7 +168,6 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
       const currentInstance = getCurrentInstance();
       const hasRouter = currentInstance?.appContext?.provides[NAV_MANAGER];
       const navManager: NavManager | undefined = hasRouter ? inject(NAV_MANAGER) : undefined;
-      const elBeforeHydrate = <HTMLElement>currentInstance?.vnode.el;
 
       const handleRouterLink = (ev: Event) => {
         const { routerLink } = props;
@@ -212,7 +218,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
 
         const propsToAdd: Record<string, unknown> = {
           ref: containerRef,
-          class: getElementClasses(elBeforeHydrate, classes),
+          class: syncElementClasses(containerRef, classes),
           onClick: handleClick,
         };
 
