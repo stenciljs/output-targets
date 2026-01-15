@@ -67,10 +67,13 @@
     "@types/node": "^18.0.0",
     "@rollup/plugin-typescript": "^12.1.0",
     "@vue/shared": "^3.5.12",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "^26.0.0",
     "rimraf": "^5.0.0",
     "rollup": "^4.14.3",
     "typescript": "~5.7.0",
     "vitest": "^3.0.8",
+    "vue": "^3.5.12",
     "vue-router": "^4.5.0"
   }
 }
