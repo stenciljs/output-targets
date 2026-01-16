@@ -71,9 +71,14 @@ export const config: WebdriverIO.Config = {
     if (ngServe && ngServe.pid) {
       const isWindows = process.platform === 'win32';
       if (isWindows) {
-        // On Windows, kill the entire process tree
-        const { spawn } = await import('child_process');
-        spawn('taskkill', ['/pid', ngServe.pid.toString(), '/f', '/t'], { shell: true });
+        // On Windows, kill the entire process tree and wait for it
+        const { execSync } = await import('child_process');
+        try {
+          execSync(`taskkill /pid ${ngServe.pid} /f /t`, { stdio: 'ignore' });
+        } catch {
+          // Process may already be dead
+          console.log('Dev server process already terminated.');
+        }
       } else {
         ngServe.kill();
       }
