@@ -39,14 +39,16 @@ export const createStencilReactComponents = ({
  */\n\n`;
 
   const disableEslint = `/* eslint-disable */\n`;
+  const getTagTransformerImport = transformTag ? `import { getTagTransformer } from './tag-transformer.js';\n` : '';
   const createComponentImport = hydrateModule
     ? [
         `// @ts-ignore - ignore potential type issues as the project is importing itself`,
-        `import { getTagTransformer } from './tag-transformer.js';`,
         `import * as clientComponents from '${clientModule}';`,
-        '',
+        getTagTransformerImport,
         `import { createComponent, type SerializeShadowRootOptions, type HydrateModule, type ReactWebComponent, type DynamicFunction } from '@stencil/react-output-target/ssr';`,
-      ].join('\n')
+      ]
+        .filter(Boolean)
+        .join('\n')
     : `import { createComponent } from '@stencil/react-output-target/runtime';`;
   // transformTag should be imported from tag-transformer for both client and server
   const transformTagImport = transformTag ? `import { transformTag } from './tag-transformer.js';\n` : '';
