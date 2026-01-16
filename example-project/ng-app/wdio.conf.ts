@@ -66,9 +66,22 @@ export const config: WebdriverIO.Config = {
 
     (global as any).ngServe = ngServe;
   },
-  onComplete: function() {
-    if ((global as any).ngServe) {
-      (global as any).ngServe.kill();
+  onComplete: async function() {
+    const ngServe = (global as any).ngServe;
+    if (ngServe && ngServe.pid) {
+      const isWindows = process.platform === 'win32';
+      if (isWindows) {
+        // On Windows, kill the entire process tree and wait for it
+        const { execSync } = await import('child_process');
+        try {
+          execSync(`taskkill /pid ${ngServe.pid} /f /t`, { stdio: 'ignore' });
+        } catch {
+          // Process may already be dead
+          console.log('Dev server process already terminated.');
+        }
+      } else {
+        ngServe.kill();
+      }
     }
   },
   mochaOpts: {

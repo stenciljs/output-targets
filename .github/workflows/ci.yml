@@ -9,16 +9,11 @@ on:
       - '**'
 
 jobs:
-  build_and_test:
-    strategy:
-      matrix:
-        os: ['macos-latest', 'windows-latest']
-
-    name: Node on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-
       - name: 📥 Checkout Code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
@@ -37,11 +32,66 @@ jobs:
       - name: 🏗️ Build
         run: pnpm run build
 
-      - name: 🧪 Test
-        run: pnpm test
-
       - name: 🔍 Check Git Context
         uses: ./.github/workflows/actions/check-git-context
+
+      - name: 📤 Upload Build Artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: build-artifacts
+          path: |
+            packages/*/dist
+            packages/*/loader
+            example-project/component-library/dist
+            example-project/component-library/loader
+            example-project/component-library-angular
+            example-project/component-library-react/dist
+            example-project/component-library-vue/dist
+          retention-days: 1
+
+  test:
+    name: Test ${{ matrix.ecosystem }} (${{ matrix.os }})
+    needs: build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['macos-latest', 'windows-latest']
+        ecosystem: ['angular', 'react', 'vue', 'ssr']
+        include:
+          - ecosystem: angular
+            filter: --filter "@stencil/angular-output-target" --filter "*angular*" --filter "ng-app"
+          - ecosystem: react
+            filter: --filter "@stencil/react-output-target" --filter "*react*" --filter "remix-app"
+          - ecosystem: vue
+            filter: --filter "@stencil/vue-output-target" --filter "*vue*" --filter "*nuxt*"
+          - ecosystem: ssr
+            filter: --filter "@stencil/ssr" --filter "next-app"
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+
+      - name: 🟢 Use Node
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+
+      - name: 🔧 Install Dependencies
+        run: pnpm install
+
+      - name: 📥 Download Build Artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: build-artifacts
+          path: .
+
+      - name: 🧪 Test
+        run: pnpm ${{ matrix.filter }} test
 
   format:
     name: Format
