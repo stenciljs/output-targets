@@ -66,9 +66,17 @@ export const config: WebdriverIO.Config = {
 
     (global as any).ngServe = ngServe;
   },
-  onComplete: function() {
-    if ((global as any).ngServe) {
-      (global as any).ngServe.kill();
+  onComplete: async function() {
+    const ngServe = (global as any).ngServe;
+    if (ngServe && ngServe.pid) {
+      const isWindows = process.platform === 'win32';
+      if (isWindows) {
+        // On Windows, kill the entire process tree
+        const { spawn } = await import('child_process');
+        spawn('taskkill', ['/pid', ngServe.pid.toString(), '/f', '/t'], { shell: true });
+      } else {
+        ngServe.kill();
+      }
     }
   },
   mochaOpts: {
