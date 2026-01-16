@@ -1,1 +1,0 @@
-export default (tag) => tag.startsWith('my-transform-') ? `v1-${tag}` : tag;
