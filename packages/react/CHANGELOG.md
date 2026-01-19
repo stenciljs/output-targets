@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.3.0...@stencil/react-output-target@1.3.1) (2026-01-19)
+
+
+### :bug: Bug Fix
+
+* **react:** stop tag-transformer being added to components.server ([02ed7a1](https://github.com/stenciljs/output-targets/commit/02ed7a159c8d0b1cb3e4d6d1c4505b75fd7e01f7))
+
+
 ## [1.3.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.2.0...@stencil/react-output-target@1.3.0) (2026-01-14)
 
 
