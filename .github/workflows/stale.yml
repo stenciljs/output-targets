@@ -1,0 +1,40 @@
+name: Close Stale Issues
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 1 * * *' # Run daily at 1:30 AM UTC
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.repository == 'stenciljs/output-targets'
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # Only target issues with "needs reproduction" label
+          only-labels: 'needs reproduction'
+
+          # Don't mark issues as stale, just close them after 7 days
+          days-before-stale: -1
+          days-before-close: 7
+
+          # Message when closing
+          close-issue-message: |
+            This issue was closed because it was open for 7 days without a minimal reproduction being provided.
+
+            If you can provide a reproduction, please open a new issue with a link to your reproduction. You can use one of these templates:
+            - [Angular](https://codesandbox.io/p/github/johnjenkins/stencil-angular-starter/)
+            - [React](https://codesandbox.io/p/github/johnjenkins/stencil-starter-react/)
+            - [Vue](https://codesandbox.io/p/github/johnjenkins/stencil-starter-vue/)
+
+          # Labels
+          stale-issue-label: 'stale'
+          close-issue-label: 'closed-by-bot'
+          remove-stale-when-updated: true
+
+          # Limits
+          operations-per-run: 300

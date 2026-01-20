@@ -16,16 +16,6 @@ comment:
         the pull request and make sure there isn't duplicated effort.
 
         Thank you!
-    - label: "ionitron: needs reproduction"
-      message: >
-        Thanks for the issue! This issue has been labeled as `needs reproduction`. This label
-        is added to issues that need a code reproduction.
-
-
-        Please reproduce this issue in a Stencil project and provide a way for us to access it (GitHub repo, etc). Without a reliable code reproduction, it is unlikely we will be able to resolve the issue, leading to it being closed.
-
-
-        If you have already provided a code snippet and are seeing this message, it is likely that the code snippet was not enough for our team to reproduce the issue.
     - label: "triage"
       message: >
         Thanks for the issue!
@@ -79,9 +69,11 @@ stale:
     - help wanted
     - internal
     - 'needs: reply' # allow the `noReply` configuration above to handle these issues
+    - 'needs reproduction' # handled by stale.yml workflow
     - 'package: angular'
     - 'package: react'
     - 'package: vue'
+    - 'pending triage'
     - triage
     - 'type: bug'
     - 'type: feature'

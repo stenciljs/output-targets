@@ -1,12 +1,21 @@
-name: 🐛 Bug Report
+name: Bug Report
 description: Create a report to help us improve the Stencil Framework Output Targets
 title: 'bug: '
+labels: ['pending triage']
 body:
   - type: markdown
     attributes:
       value: |
-        At this time, this repository is maintained on an as-needed basis for the Ionic Framework.
-        As a result, we may not immediately get around to resolving your issue.
+        Thanks for taking the time to fill out this bug report!
+
+        Please provide a minimal reproduction using one of our starter templates:
+        - **Angular**: [CodeSandbox](https://codesandbox.io/p/github/johnjenkins/stencil-angular-starter/)
+        - **React**: [CodeSandbox](https://codesandbox.io/p/github/johnjenkins/stencil-starter-react/)
+        - **Vue**: [CodeSandbox](https://codesandbox.io/p/github/johnjenkins/stencil-starter-vue/)
+
+        A minimal reproduction is **required** unless you are absolutely sure the issue is obvious.
+        If the issue cannot be reliably reproduced, it will be labeled `needs reproduction` and may be closed.
+
   - type: checkboxes
     attributes:
       label: Prerequisites
@@ -18,55 +27,82 @@ body:
           required: true
         - label: I have searched for [existing issues](https://github.com/stenciljs/output-targets/issues) that already report this problem, without success.
           required: true
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework Output Target
+      description: Which framework output target does this issue relate to?
+      options:
+        - Angular (@stencil/angular-output-target)
+        - React (@stencil/react-output-target)
+        - Vue (@stencil/vue-output-target)
+        - SSR (@stencil/ssr)
+        - Multiple / Other
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Output Target Version
+      description: The version of the output target package you are using.
+      placeholder: e.g., 0.8.0
+    validations:
+      required: true
+
   - type: input
     attributes:
       label: Stencil Version
-      description: The version number of Stencil where the issue is occurring.
+      description: The version of @stencil/core you are using.
+      placeholder: e.g., 4.0.0
     validations:
       required: true
-  - type: dropdown
-    id: stencil-framework-output-target
-    attributes:
-      label: Stencil Framework Output Target
-      description: Which Stencil Framework Output Target are you using?
-      options:
-        - Angular
-        - React
-        - Vue
-    validations:
-      required: true
+
   - type: input
     attributes:
-      label: Stencil Framework Output Target Version
-      description: Which version of Framework Output Target are you using?
+      label: Reproduction URL
+      description: |
+        Please provide a link to a reproduction. Use one of our starter templates:
+        - [Angular](https://codesandbox.io/p/github/johnjenkins/stencil-angular-starter/)
+        - [React](https://codesandbox.io/p/github/johnjenkins/stencil-starter-react/)
+        - [Vue](https://codesandbox.io/p/github/johnjenkins/stencil-starter-vue/)
+      placeholder: https://codesandbox.io/p/...
     validations:
       required: true
+
   - type: textarea
     attributes:
-      label: Current Behavior
-      description: A clear description of what the bug is and how it manifests. For example, what does the incorrect output look like?
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is. If you intend to submit a PR for this issue, tell us in the description.
     validations:
       required: true
-  - type: textarea
-    attributes:
-      label: Expected Behavior
-      description: A clear description of what you expected to happen. For example, what does the correct output look like?
-    validations:
-      required: true
+
   - type: textarea
     attributes:
       label: Steps to Reproduce
-      description: Please explain the steps required to duplicate this issue.
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. See error
     validations:
       required: true
-  - type: input
-    attributes:
-      label: Code Reproduction URL
-      description: Please reproduce this issue in a blank Stencil starter application and provide a link to the repo. Run `npm init stencil` to quickly spin up a Stencil project. This is the best way to ensure this issue is triaged quickly. Issues without a code reproduction may be closed if the Stencil Team cannot reproduce the issue you are reporting.
-      placeholder: https://github.com/...
-    validations:
-      required: true
+
   - type: textarea
     attributes:
-      label: Additional Information
-      description: List any other information that is relevant to your issue. Stack traces, related issues, suggestions on how to fix, Stack Overflow links, forum links, etc.
+      label: Expected Behavior
+      description: A clear description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here (e.g., screenshots, logs, related issues).
+
+  - type: textarea
+    attributes:
+      label: Logs
+      description: |
+        Optional if provided reproduction. Please try not to insert an image but copy paste the log text.
+      render: shell-session
