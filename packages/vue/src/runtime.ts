@@ -79,7 +79,7 @@ const syncElementClasses = (
  */
 export const defineContainer = <Props, VModelType = string | number | boolean>(
   name: string,
-  defineCustomElement: () => void,
+  defineCustomElement?: () => void,
   componentProps: string[] = [],
   emitProps: string[] = [],
   modelProp?: string,
