@@ -266,7 +266,7 @@ describe('createStencilReactComponents', () => {
     properties: { value: 'value' },
     hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyComponent as ReactWebComponent<MyComponentElement, MyComponentEvents>,
-    serializeShadowRoot,`);
+    serializeShadowRoot`);
   });
 
   it('should filter out properties without attributes for SSR', () => {
