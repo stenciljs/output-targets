@@ -1,3 +1,10 @@
+## [0.12.2](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.12.1...@stencil/vue-output-target@0.12.2) (2026-01-20)
+
+
+### :bug: Bug Fix
+
+* **vue:** types definition - make `defineCustomElement` optional ([c05f24c](https://github.com/stenciljs/output-targets/commit/c05f24cdc9f9f213fd6cb56d157be22b64e1073c))
+
 ## [0.12.1](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.12.0...@stencil/vue-output-target@0.12.1) (2026-01-16)
 
 
