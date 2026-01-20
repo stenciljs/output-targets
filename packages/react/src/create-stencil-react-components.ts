@@ -183,6 +183,7 @@ ${transformTagImport}
     defineCustomElement: define${reactTagName}${transformTagParam}
   })`;
 
+    const getTagTransformerParam = transformTag ? ',\n    getTagTransformer' : '';
     const serverComponentCall = `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}>({
     tagName: '${tagName}',
     properties: {${component.properties
@@ -195,8 +196,7 @@ ${transformTagImport}
       .join(',\n')}},
     hydrateModule: import('${hydrateModule}') as Promise<HydrateModule>,
     clientModule: clientComponents.${reactTagName} as ReactWebComponent<${componentElement}, ${componentEventNamesType}>,
-    serializeShadowRoot,
-    getTagTransformer
+    serializeShadowRoot${getTagTransformerParam}
   })`;
 
     sourceFile.addVariableStatement({
