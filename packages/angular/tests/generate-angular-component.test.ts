@@ -504,6 +504,51 @@ export declare interface MyComponent extends Components.MyComponent {
       );
     });
 
+    it('correctly handles union types with arrays', () => {
+      // Regression test: array types like ITreeNode[] were being converted to [object Object][]
+      const definition = createComponentTypeDefinition(
+        'component',
+        'ExampleInput',
+        [
+          {
+            name: 'exampleFocus',
+            method: 'exampleFocus',
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+            docs: {
+              tags: [],
+              text: 'Emitted when the input receives focus',
+            },
+            complexType: {
+              original: 'ITreeNode | ITreeNode[]',
+              resolved: 'ITreeNode | ITreeNode[]',
+              references: {
+                ITreeNode: {
+                  location: 'local',
+                  path: './example-input',
+                  id: 'src/components/example-input/example-input.tsx::ITreeNode',
+                } as any,
+              },
+            },
+            internal: false,
+          },
+        ],
+        '@example/stencil-lib'
+      );
+
+      expect(definition).toEqual(
+        `import type { ITreeNode as IExampleInputITreeNode } from '@example/stencil-lib';
+
+export declare interface ExampleInput extends Components.ExampleInput {
+  /**
+   * Emitted when the input receives focus
+   */
+  exampleFocus: EventEmitter<CustomEvent<IExampleInputITreeNode | IExampleInputITreeNode[]>>;
+}`
+      );
+    });
+
     it('rewrites complex nested generic types within custom events', () => {
       // Issue: https://github.com/stenciljs/output-targets/issues/369
       const definition = createComponentTypeDefinition(
