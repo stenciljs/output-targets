@@ -28,6 +28,7 @@ jobs:
 
             If you can provide a reproduction, please open a new issue with a link to your reproduction. You can use one of these templates:
             - [Angular](https://codesandbox.io/p/github/johnjenkins/stencil-angular-starter/)
+            - [NextJs](https://codesandbox.io/p/github/johnjenkins/stencil-starter-next/)
             - [React](https://codesandbox.io/p/github/johnjenkins/stencil-starter-react/)
             - [Vue](https://codesandbox.io/p/github/johnjenkins/stencil-starter-vue/)
 

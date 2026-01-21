@@ -11,6 +11,7 @@ Please use one of the following starter templates to create a minimal reproducti
 | Framework | CodeSandbox Template |
 |-----------|---------------------|
 | Angular | [stencil-angular-starter](https://codesandbox.io/p/github/johnjenkins/stencil-angular-starter/) |
+| NextJs | [stencil-starter-next](https://codesandbox.io/p/github/johnjenkins/stencil-starter-next/) |
 | React | [stencil-starter-react](https://codesandbox.io/p/github/johnjenkins/stencil-starter-react/) |
 | Vue | [stencil-starter-vue](https://codesandbox.io/p/github/johnjenkins/stencil-starter-vue/) |
 

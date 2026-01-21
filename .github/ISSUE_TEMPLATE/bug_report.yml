@@ -10,6 +10,7 @@ body:
 
         Please provide a minimal reproduction using one of our starter templates:
         - **Angular**: [CodeSandbox](https://codesandbox.io/p/github/johnjenkins/stencil-angular-starter/)
+        - **NextJs**: [CodeSandbox](https://codesandbox.io/p/github/johnjenkins/stencil-starter-next/)
         - **React**: [CodeSandbox](https://codesandbox.io/p/github/johnjenkins/stencil-starter-react/)
         - **Vue**: [CodeSandbox](https://codesandbox.io/p/github/johnjenkins/stencil-starter-vue/)
 
@@ -64,6 +65,7 @@ body:
       description: |
         Please provide a link to a reproduction. Use one of our starter templates:
         - [Angular](https://codesandbox.io/p/github/johnjenkins/stencil-angular-starter/)
+        - [NextJs](https://codesandbox.io/p/github/johnjenkins/stencil-starter-next/)
         - [React](https://codesandbox.io/p/github/johnjenkins/stencil-starter-react/)
         - [Vue](https://codesandbox.io/p/github/johnjenkins/stencil-starter-vue/)
       placeholder: https://codesandbox.io/p/...
