@@ -549,6 +549,48 @@ export declare interface ExampleInput extends Components.ExampleInput {
       );
     });
 
+    it('strips single-line comments from inline types', () => {
+      // Regression test: inline types with comments would break when collapsed to single line
+      const definition = createComponentTypeDefinition(
+        'component',
+        'ExampleInput',
+        [
+          {
+            name: 'exampleFocus',
+            method: 'exampleFocus',
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+            docs: {
+              tags: [],
+              text: 'Emitted when the input receives focus',
+            },
+            complexType: {
+              original: `{
+    field: {};
+    field2: {};
+    // someCommentLikeTsIgnoreOrElse
+    errorField: {};
+  }`,
+              resolved: '{ field: {}; field2: {}; errorField: {}; }',
+              references: {},
+            },
+            internal: false,
+          },
+        ],
+        '@example/stencil-lib'
+      );
+
+      expect(definition).toEqual(
+        `export declare interface ExampleInput extends Components.ExampleInput {
+  /**
+   * Emitted when the input receives focus
+   */
+  exampleFocus: EventEmitter<CustomEvent<{ field: {}; field2: {}; errorField: {}; }>>;
+}`
+      );
+    });
+
     it('rewrites complex nested generic types within custom events', () => {
       // Issue: https://github.com/stenciljs/output-targets/issues/369
       const definition = createComponentTypeDefinition(

@@ -213,9 +213,11 @@ const formatOutputType = (componentClassName: string, event: ComponentCompilerEv
         );
       },
       event.complexType.original
+        .replace(/\/\/.*$/gm, '') // Remove single-line comments before collapsing newlines
         .replace(/\n/g, ' ')
         .replace(/\s{2,}/g, ' ')
         .replace(/,\s*/g, ', ')
+        .trim()
     );
 };
 
