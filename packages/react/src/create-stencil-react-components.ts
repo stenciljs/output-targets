@@ -1,6 +1,6 @@
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
 import { Project, VariableDeclarationKind } from 'ts-morph';
-import { eventListenerName, kebabToPascalCase } from './utils/string-utils.js';
+import { eventListenerName, kebabToPascalCase, normalizeTypeString } from './utils/string-utils.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
 
 interface ReactEvent {
@@ -161,7 +161,7 @@ ${transformTagImport}
       events.push({
         originalName: event.name,
         name: eventListenerName(event.name),
-        type: `EventName<${componentCustomEvent}<${event.complexType.original}>>`,
+        type: `EventName<${componentCustomEvent}<${normalizeTypeString(event.complexType.original)}>>`,
       });
     }
 
