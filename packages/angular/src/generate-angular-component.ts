@@ -120,7 +120,7 @@ export const createAngularComponentDefinition = (
   const outputDeclarations = events
     .filter((event) => !event.internal)
     .map((event) => {
-      const camelCaseOutput = event.name.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
+      const camelCaseOutput = event.name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
       const outputType = `EventEmitter<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
       return `@Output() ${camelCaseOutput} = new ${outputType}();`;
     });
@@ -173,7 +173,7 @@ const formatOutputType = (componentClassName: string, event: ComponentCompilerEv
   return Object.entries(event.complexType.references)
     .filter(([_, refObject]) => refObject.location === 'local' || refObject.location === 'import')
     .reduce(
-      (type, [src, dst]) => {
+      (type, [src]) => {
         let renamedType = type;
         if (!type.startsWith(prefix)) {
           if (type.startsWith('{') && type.endsWith('}')) {
@@ -193,24 +193,22 @@ const formatOutputType = (componentClassName: string, event: ComponentCompilerEv
           }
         }
 
+        const prefixedTypeName = `${prefix}${src}`;
         return (
           renamedType
-            .replace(new RegExp(`^${src}$`, 'g'), `${dst}`)
+            .replace(new RegExp(`^${src}$`, 'g'), prefixedTypeName)
             // Capture all instances of the `src` field surrounded by non-word characters on each side and join them.
-            .replace(new RegExp(`([^\\w])${src}([^\\w])`, 'g'), (v, p1, p2) => {
-              if (dst?.location === 'import') {
-                /**
-                 * Replaces a complex type reference within a generic type.
-                 * For example, remapping a type like `EventEmitter<CustomEvent<MyEvent<T>>>` to
-                 * `EventEmitter<CustomEvent<IMyComponentMyEvent<IMyComponentT>>>`.
-                 */
-                return [p1, `I${componentClassName}${v.substring(1, v.length - 1)}`, p2].join('');
-              }
-              return [p1, dst, p2].join('');
+            .replace(new RegExp(`([^\\w])${src}([^\\w])`, 'g'), (_, p1, p2) => {
+              /**
+               * Replaces a complex type reference within a generic type.
+               * For example, remapping a type like `EventEmitter<CustomEvent<MyEvent<T>>>` to
+               * `EventEmitter<CustomEvent<IMyComponentMyEvent<IMyComponentT>>>`.
+               */
+              return [p1, prefixedTypeName, p2].join('');
             })
             // Capture all instances that contain sub types, e.g. `IMyComponent.SomeMoreComplexType.SubType`.
             .replace(new RegExp(`^${src}(\.\\w+)+$`, 'g'), (type: string) => {
-              return `I${componentClassName}${src}.${type.split('.').slice(1).join('.')}`;
+              return `${prefix}${src}.${type.split('.').slice(1).join('.')}`;
             })
         );
       },
