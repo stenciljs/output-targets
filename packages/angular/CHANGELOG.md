@@ -1,3 +1,16 @@
+## [1.3.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.2.0...@stencil/angular-output-target@1.3.0) (2026-01-23)
+
+
+### :bug: Bug Fix
+
+* **angular:** event type union ([61cd6ad](https://github.com/stenciljs/output-targets/commit/61cd6ada5915e2331f9eaffd1bd855a6be3a8752))
+* **angular:** strip comments from types ([60715b4](https://github.com/stenciljs/output-targets/commit/60715b4b206d5c39d393cc903e941977246ca159))
+
+
+### :rocket: Enhancement
+
+* **angular:** add `esModules` for better tree shaking ([46f9186](https://github.com/stenciljs/output-targets/commit/46f91868aeedc154ae2eae90387254197e6180ea))
+
 ## [1.2.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.1.0...@stencil/angular-output-target@1.2.0) (2026-01-14)
 
 
