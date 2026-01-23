@@ -78,6 +78,12 @@ export interface OutputTargetVue {
    * @default false
    */
   transformTag?: boolean;
+  /**
+   * If `true`, the output target will generate a separate ES module for each Vue component wrapper (better for tree-shaking).
+   * This option only applies when `includeImportCustomElements` is `true`.
+   * @default false
+   */
+  esModules?: boolean;
 }
 
 export interface ComponentModelConfig {
