@@ -1,3 +1,10 @@
+## [0.13.0](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.12.2...@stencil/vue-output-target@0.13.0) (2026-01-23)
+
+
+### :rocket: Enhancement
+
+* **vue:** add `esModules` for better tree shaking ([1690426](https://github.com/stenciljs/output-targets/commit/16904268d75b136b14b7cf60044cd8b728705e9a))
+
 ## [0.12.2](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.12.1...@stencil/vue-output-target@0.12.2) (2026-01-20)
 
 

@@ -1,3 +1,11 @@
+## [1.3.3](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.3.2...@stencil/react-output-target@1.3.3) (2026-01-23)
+
+
+### :bug: Bug Fix
+
+* **react:** strip comments from types ([2dbcc16](https://github.com/stenciljs/output-targets/commit/2dbcc16cacd7ada6252376f6e4e0abb18e3242eb))
+
+
 ## [1.3.2](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.3.1...@stencil/react-output-target@1.3.2) (2026-01-20)
 
 
