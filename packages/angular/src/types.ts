@@ -1,8 +1,8 @@
 /**
  * The type of output that can be generated with the Angular output target.
- * - `component` - Generate many component wrappers tied to a single Angular module (lazy/hydrated approach).
- * - `scam` - Generate a Single Component Angular Module for each component.
- * - `standalone` - Generates standalone components.
+ * - `component` - Generate many component wrappers tied to a single Angular module (requires `dist`, lazy/hydrated approach).
+ * - `scam` - Generate a Single Component Angular Module for each component (requires `dist-custom-elements` output).
+ * - `standalone` - Generates standalone components (requires `dist-custom-elements` output).
  */
 export type OutputType = 'component' | 'scam' | 'standalone';
 
@@ -17,15 +17,33 @@ export interface OutputTargetAngular {
    * or a relative path from the root directory of the Stencil library.
    */
   directivesProxyFile: string;
+  /**
+   * Optional path to generate a file containing a `DIRECTIVES` array constant.
+   * This is primarily useful with `outputType: 'component'` (lazy-loaded) where you want
+   * to declare all components in a shared NgModule:
+   *
+   * ```ts
+   * import { DIRECTIVES } from './directives';
+   *
+   * @NgModule({
+   *   declarations: [...DIRECTIVES],
+   *   exports: [...DIRECTIVES],
+   * })
+   * export class ComponentLibraryModule {}
+   * ```
+   *
+   * This option is less relevant for `outputType: 'scam'` or `'standalone'` where
+   * consumers typically import individual component modules or standalone components directly.
+   */
   directivesArrayFile?: string;
   valueAccessorConfigs?: ValueAccessorConfig[];
   excludeComponents?: string[];
   customElementsDir?: string;
   /**
    * The type of output that should be generated.
-   * - `component` - Generate many component wrappers tied to a single Angular module (lazy/hydrated approach).
-   * - `scam` - Generate a Single Component Angular Module for each component.
-   * - `standalone` - (default) Generates standalone components.
+   * - `component` - Generate many component wrappers tied to a single Angular module (requires `dist`, lazy/hydrated approach).
+   * - `scam` - Generate a Single Component Angular Module for each component (requires `dist-custom-elements` output).
+   * - `standalone` - (default) Generates standalone components (requires `dist-custom-elements` output).
    */
   outputType?: OutputType;
   /**
@@ -70,6 +88,13 @@ export interface OutputTargetAngular {
    * @default false
    */
   transformTag?: boolean;
+  /**
+   * If `true`, the output target will generate a separate ES module for each Angular component wrapper.
+   * This enables better tree-shaking as bundlers can exclude unused components.
+   * This option only applies when `outputType` is `'scam'` or `'standalone'` (i.e., using `dist-custom-elements`).
+   * @default false
+   */
+  esModules?: boolean;
 }
 
 export type ValueAccessorTypes = 'text' | 'radio' | 'select' | 'number' | 'boolean';
