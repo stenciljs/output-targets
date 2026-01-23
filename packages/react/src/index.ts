@@ -41,7 +41,7 @@ export interface ReactOutputTargetOptions {
    */
   excludeServerSideRenderingFor?: string[];
   /**
-   * If `true`, the output target will generate a separate ES module for each React component wrapper. Defaults to `false`.
+   * If `true`, the output target will generate a separate ES module for each React component wrapper (better for tree-shaking).
    * @default false
    */
   esModules?: boolean;
