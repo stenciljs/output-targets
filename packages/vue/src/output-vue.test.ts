@@ -166,7 +166,9 @@ describe('generateComponentProxy', () => {
 
     const result = generateComponentProxy(config, component, pkgData, outputTarget, rootDir);
 
-    expect(result).toContain("import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';");
+    expect(result).toContain(
+      "import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';"
+    );
     expect(result).toContain("import type { JSX } from 'component-library/components';");
     expect(result).toContain('export const MyComponent');
   });

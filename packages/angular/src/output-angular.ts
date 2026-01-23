@@ -304,9 +304,7 @@ ${createImportStatement(angularCoreImports, '@angular/core')}
 ${createImportStatement(['ProxyCmp'], './angular-component-lib/utils')}\n`;
 
   // Type imports
-  let importLocation = componentCorePackage
-    ? normalizePath(componentCorePackage)
-    : normalizePath(componentsTypeFile);
+  let importLocation = componentCorePackage ? normalizePath(componentCorePackage) : normalizePath(componentsTypeFile);
   importLocation += isCustomElementsBuild ? `/${customElementsDir}` : '';
   const typeImports = `import ${isCustomElementsBuild ? 'type ' : ''}{ ${IMPORT_TYPES} } from '${importLocation}';\n`;
 
