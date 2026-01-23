@@ -28,14 +28,37 @@ export async function angularDirectiveProxyOutput(
   const rootDir = config.rootDir as string;
   const pkgData = await readPackageJson(config, rootDir);
 
-  const finalText = generateProxies(filteredComponents, pkgData, outputTarget, config.rootDir as string);
+  // esModules defaults to true, but only applies when outputType is 'scam' or 'standalone'
+  const isCustomElementsBuild = isOutputTypeCustomElementsBuild(outputTarget.outputType!);
+  const useEsModules = isCustomElementsBuild && outputTarget.esModules === true;
 
-  const tasks = [
-    compilerCtx.fs.writeFile(outputTarget.directivesProxyFile, finalText),
+  const tasks: Promise<any>[] = [
     copyResources(config, outputTarget),
-    generateAngularDirectivesFile(compilerCtx, filteredComponents, outputTarget),
     generateValueAccessors(compilerCtx, filteredComponents, outputTarget, config),
   ];
+
+  if (useEsModules) {
+    // Generate separate files for each component
+    const proxiesDir = path.dirname(outputTarget.directivesProxyFile);
+
+    for (const component of filteredComponents) {
+      const componentFile = path.join(proxiesDir, `${component.tagName}.ts`);
+      const componentText = generateComponentProxy(component, pkgData, outputTarget, rootDir);
+      tasks.push(compilerCtx.fs.writeFile(componentFile, componentText));
+    }
+
+    // Generate barrel file that re-exports all components
+    const barrelText = generateBarrelFile(filteredComponents, outputTarget);
+    tasks.push(compilerCtx.fs.writeFile(outputTarget.directivesProxyFile, barrelText));
+
+    // Generate DIRECTIVES file (imports from barrel)
+    tasks.push(generateAngularDirectivesFile(compilerCtx, filteredComponents, outputTarget));
+  } else {
+    // Generate single file with all components (original behavior)
+    const finalText = generateProxies(filteredComponents, pkgData, outputTarget, rootDir);
+    tasks.push(compilerCtx.fs.writeFile(outputTarget.directivesProxyFile, finalText));
+    tasks.push(generateAngularDirectivesFile(compilerCtx, filteredComponents, outputTarget));
+  }
 
   // Generate transformer script if transformTag is enabled
   if (outputTarget.transformTag) {
@@ -243,6 +266,137 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
   const final: string[] = [imports, typeImports, sourceImports, ...proxyFileOutput];
 
   return final.join('\n') + '\n';
+}
+
+/**
+ * Generate a single component proxy file for ES modules output
+ */
+export function generateComponentProxy(
+  cmpMeta: ComponentCompilerMeta,
+  pkgData: PackageJSON,
+  outputTarget: OutputTargetAngular,
+  rootDir: string
+) {
+  const { outputType, componentCorePackage, customElementsDir } = outputTarget;
+  const distTypesDir = path.dirname(pkgData.types);
+  const dtsFilePath = path.join(rootDir, distTypesDir, GENERATED_DTS);
+  const componentsTypeFile = relativeImport(outputTarget.directivesProxyFile, dtsFilePath, '.d.ts');
+  const includeSingleComponentAngularModules = outputType === OutputTypes.Scam;
+  const isCustomElementsBuild = isOutputTypeCustomElementsBuild(outputType!);
+  const isStandaloneBuild = outputType === OutputTypes.Standalone;
+
+  const tagNameAsPascal = dashToPascalCase(cmpMeta.tagName);
+  const hasOutputs = cmpMeta.events?.some((event) => !event.internal);
+
+  // Angular core imports for this component
+  const angularCoreImports = ['ChangeDetectionStrategy', 'ChangeDetectorRef', 'Component', 'ElementRef', 'NgZone'];
+  if (hasOutputs) {
+    angularCoreImports.push('EventEmitter', 'Output');
+  }
+  if (includeSingleComponentAngularModules) {
+    angularCoreImports.push('NgModule');
+  }
+
+  const imports = `/* tslint:disable */
+/* auto-generated angular directive proxies */
+${createImportStatement(angularCoreImports, '@angular/core')}
+
+${createImportStatement(['ProxyCmp'], './angular-component-lib/utils')}\n`;
+
+  // Type imports
+  let importLocation = componentCorePackage
+    ? normalizePath(componentCorePackage)
+    : normalizePath(componentsTypeFile);
+  importLocation += isCustomElementsBuild ? `/${customElementsDir}` : '';
+  const typeImports = `import ${isCustomElementsBuild ? 'type ' : ''}{ ${IMPORT_TYPES} } from '${importLocation}';\n`;
+
+  // defineCustomElement import
+  let sourceImport = '';
+  if (isCustomElementsBuild && componentCorePackage !== undefined) {
+    sourceImport = `import { defineCustomElement as define${tagNameAsPascal} } from '${normalizePath(
+      componentCorePackage
+    )}/${customElementsDir}/${cmpMeta.tagName}.js';\n`;
+  }
+
+  // Generate component definition
+  const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
+  const mapInputProp = (prop: { name: string; required?: boolean }) => ({
+    name: prop.name,
+    required: prop.required ?? false,
+  });
+
+  const internalProps: ComponentCompilerProperty[] = [];
+  if (cmpMeta.properties) {
+    internalProps.push(...cmpMeta.properties.filter(filterInternalProps));
+  }
+
+  const inputs = internalProps.map(mapInputProp);
+  if (cmpMeta.virtualProperties) {
+    inputs.push(...cmpMeta.virtualProperties.map(mapInputProp));
+  }
+
+  const orderedInputs = sortBy(inputs, (cip: ComponentInputProperty) => cip.name);
+
+  const methods: string[] = [];
+  if (cmpMeta.methods) {
+    methods.push(...cmpMeta.methods.filter(filterInternalProps).map(mapPropName));
+  }
+
+  const inlineComponentProps = outputTarget.inlineProperties ? internalProps : [];
+
+  const componentDefinition = createAngularComponentDefinition(
+    cmpMeta.tagName,
+    orderedInputs,
+    methods,
+    isCustomElementsBuild,
+    isStandaloneBuild,
+    inlineComponentProps,
+    cmpMeta.events || []
+  );
+
+  const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
+
+  const componentTypeDefinition = createComponentTypeDefinition(
+    outputType!,
+    tagNameAsPascal,
+    cmpMeta.events,
+    componentCorePackage,
+    customElementsDir
+  );
+
+  const proxyFileOutput = [componentDefinition, '\n'];
+  if (includeSingleComponentAngularModules) {
+    proxyFileOutput.push(moduleDefinition, '\n');
+  }
+  proxyFileOutput.push(componentTypeDefinition, '\n');
+
+  const final: string[] = [imports, typeImports, sourceImport, ...proxyFileOutput];
+
+  return final.join('\n') + '\n';
+}
+
+/**
+ * Generate a barrel file that re-exports all components
+ */
+export function generateBarrelFile(components: ComponentCompilerMeta[], outputTarget: OutputTargetAngular) {
+  const { outputType } = outputTarget;
+  const includeSingleComponentAngularModules = outputType === OutputTypes.Scam;
+
+  const header = `/* tslint:disable */
+/**
+ * This file was automatically generated by the Stencil Angular Output Target.
+ * Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.
+ */\n\n`;
+
+  const exports = components
+    .map((component) => {
+      const pascalName = dashToPascalCase(component.tagName);
+      const moduleExport = includeSingleComponentAngularModules ? `, ${pascalName}Module` : '';
+      return `export { ${pascalName}${moduleExport} } from './${component.tagName}.js';`;
+    })
+    .join('\n');
+
+  return header + exports + '\n';
 }
 
 const GENERATED_DTS = 'components.d.ts';
