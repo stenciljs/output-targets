@@ -20,6 +20,11 @@
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.js"
     },
+    "./*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./components/*.js",
+      "require": "./components/*.js"
+    },
     "./hydrate": {
       "types": "./hydrate/index.d.ts",
       "import": "./hydrate/index.mjs",
@@ -62,5 +67,13 @@
     "@stencil/react-output-target": "workspace:*",
     "@stencil/vue-output-target": "workspace:*",
     "@types/puppeteer": "2.0.1"
+  },
+  "peerDependencies": {
+    "@types/react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
   }
 }
