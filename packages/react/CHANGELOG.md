@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.3.3...@stencil/react-output-target@1.4.0) (2026-01-24)
+
+
+### :rocket: Enhancement
+
+* **react:** new `nativeTypesPath`; output types for React 19 ([bd8d3ed](https://github.com/stenciljs/output-targets/commit/bd8d3edda06024a4e14a49342b4a007b9a6831f1))
+
 ## [1.3.3](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.3.2...@stencil/react-output-target@1.3.3) (2026-01-23)
 
 
