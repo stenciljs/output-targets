@@ -36,7 +36,7 @@ export interface ReactOutputTargetOptions {
    * ```tsx
    * // Import the generated types (side-effect import)
    * import 'my-library/react-native-types';
-   * 
+   *
    * // use your web components in jsx
    * ```
    */
@@ -152,9 +152,7 @@ export const reactOutputTarget = ({
        * Validate that at least one output is configured.
        */
       if (!outDir && !nativeTypesPath) {
-        throw new Error(
-          `The '${PLUGIN_NAME}' requires either 'outDir' or 'nativeTypesPath' to be specified.`
-        );
+        throw new Error(`The '${PLUGIN_NAME}' requires either 'outDir' or 'nativeTypesPath' to be specified.`);
       }
 
       /**

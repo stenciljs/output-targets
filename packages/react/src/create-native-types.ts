@@ -106,9 +106,7 @@ export const createNativeTypes = ({
   // Add import for CustomEvent types from the Stencil package
   const allImports = new Set([...customEventTypes, ...referencedTypes]);
   if (allImports.size > 0) {
-    lines.push(
-      `import type { ${Array.from(allImports).sort().join(', ')} } from '${stencilPackageName}';`
-    );
+    lines.push(`import type { ${Array.from(allImports).sort().join(', ')} } from '${stencilPackageName}';`);
   }
 
   lines.push('');
@@ -140,9 +138,7 @@ export const createNativeTypes = ({
         ? `  /** Event: ${event.name} - ${event.docs.text.trim()} */\n`
         : `  /** Event: ${event.name} */\n`;
       const handlerName = toLowercaseEventHandler(event.name);
-      interfaceProperties.push(
-        `${docs}  '${handlerName}'?: (event: ${componentCustomEvent}<${eventType}>) => void;`
-      );
+      interfaceProperties.push(`${docs}  '${handlerName}'?: (event: ${componentCustomEvent}<${eventType}>) => void;`);
     }
 
     // Generate the props interface
