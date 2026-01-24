@@ -305,7 +305,9 @@ describe('createNativeTypes', () => {
     });
 
     expect(result).toContain(`interface MyEmptyNativeProps {}`);
-    expect(result).toContain(`'my-empty': DetailedHTMLProps<HTMLAttributes<HTMLMyEmptyElement> & MyEmptyNativeProps, HTMLMyEmptyElement>;`);
+    expect(result).toContain(
+      `'my-empty': DetailedHTMLProps<HTMLAttributes<HTMLMyEmptyElement> & MyEmptyNativeProps, HTMLMyEmptyElement>;`
+    );
   });
 
   it('should import referenced types from properties', () => {
