@@ -19,7 +19,7 @@ describe('reactOutputTarget', () => {
         []
       )
     ).toThrowError(
-      `The 'react-output-target' requires 'dist-custom-elements' output target. Add { type: 'dist-custom-elements' }, to the outputTargets config.`
+      `The 'react-output-target' requires 'dist-custom-elements' output target when 'outDir' is specified. Add { type: 'dist-custom-elements' }, to the outputTargets config.`
     );
   });
 
@@ -176,7 +176,7 @@ describe('reactOutputTarget', () => {
     }
   });
 
-  it('should throw an error if the outDir option is not provided', () => {
+  it('should throw an error if neither outDir nor nativeTypesPath is provided', () => {
     const { validate } = reactOutputTarget({
       stencilPackageName: 'my-components',
     } as any);
@@ -197,6 +197,75 @@ describe('reactOutputTarget', () => {
         } as any,
         []
       )
-    ).toThrowError(`The 'outDir' option is required.`);
+    ).toThrowError(`The 'react-output-target' requires either 'outDir' or 'nativeTypesPath' to be specified.`);
+  });
+
+  it('should not throw an error if only nativeTypesPath is provided', () => {
+    const { validate } = reactOutputTarget({
+      stencilPackageName: 'my-components',
+      nativeTypesPath: 'dist/react-native-types.d.ts',
+    });
+
+    if (!validate) {
+      throw new Error('validate is not defined');
+    }
+
+    // Should not require dist-custom-elements when only generating native types
+    expect(() =>
+      validate(
+        {
+          outputTargets: [],
+        } as any,
+        []
+      )
+    ).not.toThrowError();
+  });
+
+  it('should allow both outDir and nativeTypesPath to be specified', () => {
+    const { validate } = reactOutputTarget({
+      stencilPackageName: 'my-components',
+      outDir: 'dist/components',
+      nativeTypesPath: 'dist/react-native-types.d.ts',
+    });
+
+    if (!validate) {
+      throw new Error('validate is not defined');
+    }
+
+    expect(() =>
+      validate(
+        {
+          outputTargets: [
+            {
+              type: 'dist-custom-elements',
+              externalRuntime: false,
+            },
+          ],
+        } as any,
+        []
+      )
+    ).not.toThrowError();
+  });
+
+  it('should require dist-custom-elements only when outDir is specified', () => {
+    const { validate } = reactOutputTarget({
+      stencilPackageName: 'my-components',
+      outDir: 'dist/components',
+    });
+
+    if (!validate) {
+      throw new Error('validate is not defined');
+    }
+
+    expect(() =>
+      validate(
+        {
+          outputTargets: [],
+        } as any,
+        []
+      )
+    ).toThrowError(
+      `The 'react-output-target' requires 'dist-custom-elements' output target when 'outDir' is specified.`
+    );
   });
 });

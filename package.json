@@ -75,5 +75,10 @@
     "node": ">=20.10.0",
     "pnpm": ">=9.4.0"
   },
-  "packageManager": "pnpm@10.12.3"
+  "packageManager": "pnpm@10.12.3",
+  "pnpm": {
+    "overrides": {
+      "@types/react@>=19": "19.0.12"
+    }
+  }
 }

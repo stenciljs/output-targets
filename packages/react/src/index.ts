@@ -1,13 +1,46 @@
 import type { BuildCtx, OutputTargetCustom, OutputTargetDistCustomElements } from '@stencil/core/internal';
+import path from 'node:path';
 import { Project } from 'ts-morph';
 import { createComponentWrappers } from './create-component-wrappers.js';
+import { createNativeTypes } from './create-native-types.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
+
+const DEFAULT_NATIVE_TYPES_FILENAME = 'react-native-types.d.ts';
 
 export interface ReactOutputTargetOptions {
   /**
    * Specify the output directory or path where the generated React components will be saved.
+   *
+   * This option is required unless `nativeTypesPath` is specified. When only generating
+   * native type definitions for React 19+, this option can be omitted.
    */
-  outDir: string;
+  outDir?: string;
+  /**
+   * Path to generate a TypeScript declaration file (.d.ts) that provides type definitions
+   * for using Stencil web components as native custom elements in React 19+.
+   *
+   * This can be either:
+   * - A full file path ending in `.d.ts` (e.g., `'dist/types/my-types.d.ts'`) or
+   * - A directory path (e.g., `'dist/types'`), which will generate `react-native-types.d.ts` in that directory
+   *
+   * **Important:** Your component library's `package.json` should include `@types/react` as an
+   * optional peer dependency to ensure proper TypeScript module resolution:
+   * ```json
+   * {
+   *   "peerDependencies": { "@types/react": ">=18" },
+   *   "peerDependenciesMeta": { "@types/react": { "optional": true } }
+   * }
+   * ```
+   *
+   * Example usage in your React app:
+   * ```tsx
+   * // Import the generated types (side-effect import)
+   * import 'my-library/react-native-types';
+   * 
+   * // use your web components in jsx
+   * ```
+   */
+  nativeTypesPath?: string;
   /**
    * Specify the components that should be excluded from the React output target.
    */
@@ -99,6 +132,7 @@ interface ReactOutputTarget extends OutputTargetCustom {
  */
 export const reactOutputTarget = ({
   outDir,
+  nativeTypesPath,
   esModules,
   stencilPackageName,
   excludeComponents,
@@ -115,63 +149,71 @@ export const reactOutputTarget = ({
     name: PLUGIN_NAME,
     validate(config) {
       /**
-       * Validate the configuration to ensure that the dist-custom-elements
-       * output target is defined in the Stencil configuration.
-       *
-       * This context is used to detect a customized output path.
+       * Validate that at least one output is configured.
        */
-      if (customElementsDirOverride) {
-        customElementsDir = customElementsDirOverride;
-      } else {
-        const customElementsOutputTarget = (config.outputTargets || []).find(
-          (o) => o.type === DIST_CUSTOM_ELEMENTS
-        ) as OutputTargetDistCustomElements;
-        if (customElementsOutputTarget == null) {
-          throw new Error(
-            `The '${PLUGIN_NAME}' requires '${DIST_CUSTOM_ELEMENTS}' output target. Add { type: '${DIST_CUSTOM_ELEMENTS}' }, to the outputTargets config.`
-          );
-        }
-        if (customElementsOutputTarget.dir !== undefined) {
-          /**
-           * If the developer has configured a custom output path for the Stencil components,
-           * we need to use that path when importing the components in the React components.
-           */
-          customElementsDir = customElementsOutputTarget.dir;
-        }
-
-        /**
-         * Validate the configuration for `dist-custom-elements` output target to ensure that
-         * the bundle generates its own runtime. This is important because we need to ensure that
-         * the Stencil runtime has hydration flags set which the default Stencil runtime does not have.
-         */
-        if (customElementsOutputTarget.externalRuntime !== false) {
-          throw new Error(
-            `The '${PLUGIN_NAME}' requires the '${DIST_CUSTOM_ELEMENTS}' output target to have 'externalRuntime: false' set in its configuration.`
-          );
-        }
+      if (!outDir && !nativeTypesPath) {
+        throw new Error(
+          `The '${PLUGIN_NAME}' requires either 'outDir' or 'nativeTypesPath' to be specified.`
+        );
       }
 
       /**
-       * Validate the configuration to ensure that the dist-hydrate-script
-       * output target is defined in the Stencil configuration if the hydrateModule is provided.
+       * Validate the configuration to ensure that the dist-custom-elements
+       * output target is defined in the Stencil configuration when generating
+       * wrapper components (outDir is set).
+       *
+       * This context is used to detect a customized output path.
        */
-      if (hydrateModule) {
-        const hydrateOutputTarget = (config.outputTargets || []).find((o) => o.type === HYDRATE_OUTPUT_TARGET);
-        if (hydrateOutputTarget == null) {
-          throw new Error(
-            `The '${PLUGIN_NAME}' requires '${HYDRATE_OUTPUT_TARGET}' output target when the 'hydrateModule' option is set. Add { type: '${HYDRATE_OUTPUT_TARGET}' }, to the outputTargets config.`
-          );
+      if (outDir) {
+        if (customElementsDirOverride) {
+          customElementsDir = customElementsDirOverride;
+        } else {
+          const customElementsOutputTarget = (config.outputTargets || []).find(
+            (o) => o.type === DIST_CUSTOM_ELEMENTS
+          ) as OutputTargetDistCustomElements;
+          if (customElementsOutputTarget == null) {
+            throw new Error(
+              `The '${PLUGIN_NAME}' requires '${DIST_CUSTOM_ELEMENTS}' output target when 'outDir' is specified. Add { type: '${DIST_CUSTOM_ELEMENTS}' }, to the outputTargets config.`
+            );
+          }
+          if (customElementsOutputTarget.dir !== undefined) {
+            /**
+             * If the developer has configured a custom output path for the Stencil components,
+             * we need to use that path when importing the components in the React components.
+             */
+            customElementsDir = customElementsOutputTarget.dir;
+          }
+
+          /**
+           * Validate the configuration for `dist-custom-elements` output target to ensure that
+           * the bundle generates its own runtime. This is important because we need to ensure that
+           * the Stencil runtime has hydration flags set which the default Stencil runtime does not have.
+           */
+          if (customElementsOutputTarget.externalRuntime !== false) {
+            throw new Error(
+              `The '${PLUGIN_NAME}' requires the '${DIST_CUSTOM_ELEMENTS}' output target to have 'externalRuntime: false' set in its configuration.`
+            );
+          }
         }
 
-        if (clientModule == null) {
-          throw new Error(
-            `The '${PLUGIN_NAME}' requires the 'clientModule' option when the 'hydrateModule' option is set. Please provide the clientModule manually to the ${PLUGIN_NAME} output target.`
-          );
-        }
-      }
+        /**
+         * Validate the configuration to ensure that the dist-hydrate-script
+         * output target is defined in the Stencil configuration if the hydrateModule is provided.
+         */
+        if (hydrateModule) {
+          const hydrateOutputTarget = (config.outputTargets || []).find((o) => o.type === HYDRATE_OUTPUT_TARGET);
+          if (hydrateOutputTarget == null) {
+            throw new Error(
+              `The '${PLUGIN_NAME}' requires '${HYDRATE_OUTPUT_TARGET}' output target when the 'hydrateModule' option is set. Add { type: '${HYDRATE_OUTPUT_TARGET}' }, to the outputTargets config.`
+            );
+          }
 
-      if (!outDir) {
-        throw new Error(`The 'outDir' option is required.`);
+          if (clientModule == null) {
+            throw new Error(
+              `The '${PLUGIN_NAME}' requires the 'clientModule' option when the 'hydrateModule' option is set. Please provide the clientModule manually to the ${PLUGIN_NAME} output target.`
+            );
+          }
+        }
       }
 
       /**
@@ -195,26 +237,52 @@ export const reactOutputTarget = ({
 
       const components = buildCtx.components;
 
-      const project = new Project();
+      // Generate wrapper components if outDir is specified
+      if (outDir) {
+        const project = new Project();
 
-      const sourceFiles = await createComponentWrappers({
-        outDir,
-        components,
-        stencilPackageName: stencilPackageName!,
-        customElementsDir,
-        excludeComponents,
-        esModules: esModules === true,
-        project,
-        hydrateModule,
-        clientModule,
-        excludeServerSideRenderingFor,
-        serializeShadowRoot,
-        transformTag,
-      });
+        const sourceFiles = await createComponentWrappers({
+          outDir,
+          components,
+          stencilPackageName: stencilPackageName!,
+          customElementsDir,
+          excludeComponents,
+          esModules: esModules === true,
+          project,
+          hydrateModule,
+          clientModule,
+          excludeServerSideRenderingFor,
+          serializeShadowRoot,
+          transformTag,
+        });
 
-      await Promise.all(
-        sourceFiles.map((sourceFile) => compilerCtx.fs.writeFile(sourceFile.getFilePath(), sourceFile.getFullText()))
-      );
+        await Promise.all(
+          sourceFiles.map((sourceFile) => compilerCtx.fs.writeFile(sourceFile.getFilePath(), sourceFile.getFullText()))
+        );
+      }
+
+      // Generate native types if nativeTypesPath is specified
+      if (nativeTypesPath) {
+        const nativeTypesContent = createNativeTypes({
+          components,
+          stencilPackageName: stencilPackageName!,
+          excludeComponents,
+        });
+
+        if (nativeTypesContent) {
+          // If the path doesn't end with .d.ts, treat it as a directory and append the default filename
+          let outputPath = nativeTypesPath.endsWith('.d.ts')
+            ? nativeTypesPath
+            : path.join(nativeTypesPath, DEFAULT_NATIVE_TYPES_FILENAME);
+
+          // Normalize to absolute path if relative
+          if (!path.isAbsolute(outputPath) && _config.rootDir) {
+            outputPath = path.join(_config.rootDir, outputPath);
+          }
+
+          await compilerCtx.fs.writeFile(outputPath, nativeTypesContent);
+        }
+      }
 
       timespan.finish(`generate ${PLUGIN_NAME} finished`);
     },

@@ -72,6 +72,7 @@ export const config: Config = {
       clientModule: 'component-library-react',
       serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' },
       transformTag: true,
+      nativeTypesPath: 'dist/types',
     }),
     vueOutputTarget({
       includeImportCustomElements: true,
