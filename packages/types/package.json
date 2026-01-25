@@ -1,6 +1,6 @@
 {
   "name": "@stencil/types-output-target",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Generate native TypeScript type definitions for using Stencil web components in various frameworks (React, Vue, Svelte, Solid, Preact).",
   "author": "Ionic Team",
   "homepage": "https://stenciljs.com/",
