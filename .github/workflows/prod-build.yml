@@ -12,6 +12,7 @@ on:
           - angular
           - react
           - ssr
+          - types
       tag:
         required: true
         type: choice

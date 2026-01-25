@@ -5,7 +5,7 @@
 
 set -e
 
-PACKAGES=("packages/vue" "packages/react" "packages/angular" "packages/ssr")
+PACKAGES=("packages/vue" "packages/react" "packages/angular" "packages/ssr" "packages/types")
 DRY_RUN=${1:-""}
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 

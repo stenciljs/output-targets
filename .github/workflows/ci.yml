@@ -58,7 +58,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['macos-latest', 'windows-latest']
-        ecosystem: ['angular', 'react', 'vue', 'ssr']
+        ecosystem: ['angular', 'react', 'vue', 'ssr', 'types']
         include:
           - ecosystem: angular
             filter: --filter "@stencil/angular-output-target" --filter "*angular*" --filter "ng-app"
@@ -68,6 +68,8 @@ jobs:
             filter: --filter "@stencil/vue-output-target" --filter "*vue*" --filter "*nuxt*"
           - ecosystem: ssr
             filter: --filter "@stencil/ssr" --filter "next-app"
+          - ecosystem: types
+            filter: --filter "@stencil/types-output-target"
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
