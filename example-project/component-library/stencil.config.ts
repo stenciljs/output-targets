@@ -1,6 +1,7 @@
 import { Config } from '@stencil/core';
 import { angularOutputTarget, ValueAccessorConfig } from '@stencil/angular-output-target';
 import { reactOutputTarget } from '@stencil/react-output-target';
+import { typesOutputTarget } from '@stencil/types-output-target';
 import { vueOutputTarget, ComponentModelConfig } from '@stencil/vue-output-target';
 
 
@@ -72,7 +73,13 @@ export const config: Config = {
       clientModule: 'component-library-react',
       serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' },
       transformTag: true,
-      nativeTypesPath: 'dist/types',
+    }),
+    typesOutputTarget({
+      reactTypesPath: 'dist/types',
+      vueTypesPath: 'dist/types',
+      solidTypesPath: 'dist/types',
+      svelteTypesPath: 'dist/types',
+      preactTypesPath: 'dist/types',
     }),
     vueOutputTarget({
       includeImportCustomElements: true,

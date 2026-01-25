@@ -1,0 +1,58 @@
+{
+  "name": "@stencil/types-output-target",
+  "version": "0.1.0",
+  "description": "Generate native TypeScript type definitions for using Stencil web components in various frameworks (React, Vue, Svelte, Solid, Preact).",
+  "author": "Ionic Team",
+  "homepage": "https://stenciljs.com/",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stenciljs/output-targets/issues"
+  },
+  "files": [
+    "dist/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "prepublishOnly": "pnpm run build",
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "version": "pnpm run build",
+    "prettier": "prettier \"./src/**/*.{html,ts,tsx,js,jsx}\" --write",
+    "release": "np",
+    "test": "vitest run",
+    "test.watch": "vitest --watch",
+    "coverage": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stenciljs/output-targets.git"
+  },
+  "peerDependencies": {
+    "@stencil/core": ">=3 || >= 4.0.0-beta.0 || >= 4.0.0"
+  },
+  "devDependencies": {
+    "@stencil/core": "4.41.0",
+    "@types/node": "^20.14.12",
+    "typescript": "^5.4.4",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.8.1"
+  },
+  "peerDependenciesMeta": {
+    "@stencil/core": {
+      "optional": false
+    }
+  }
+}
