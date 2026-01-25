@@ -62,8 +62,9 @@ Ensure that your Stencil component library's `package.json` includes the necessa
 
 ### Using the Generated Types
 
-Your users can now import the generated type definitions in their projects to get type support for your Stencil web components in their chosen framework. For example, in a React project:
+Your users can now import the generated type definitions in their projects to get type support for your Stencil web components in their chosen framework. 
+For example, in a React project:
 
 ```tsx
-import 'your-component-library/dist/types/react-types';
+import 'your-component-library/react-types';
 ```
