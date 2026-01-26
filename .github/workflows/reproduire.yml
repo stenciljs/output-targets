@@ -13,6 +13,6 @@ jobs:
     if: github.event.label.name == 'needs reproduction'
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
-      - uses: Hebilicious/reproduire@v0.0.9-mp
+      - uses: Hebilicious/reproduire@v0.0.9
         with:
           label: needs reproduction
