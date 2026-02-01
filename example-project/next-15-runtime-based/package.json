@@ -7,7 +7,7 @@
     "start": "next dev -p 3002",
     "lint": "next lint",
     "prettier": "prettier --write --print-width 80 \"*.mjs\" \"*.json\" \"src/**/*.tsx\" \"*.ts\"",
-    "test": "wdio run ./wdio.conf.ts"
+    "test": "node scripts/run-tests-with-coverage.js"
   },
   "overrides": {
     "react": "$react",
