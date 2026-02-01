@@ -10,6 +10,7 @@ import { CheckboxChangeEventDetail, CheckboxChangeNestedEventDetail } from "./co
 import { Baz, Foo, Grault, Quux, Waldo } from "./components/my-complex-props/my-complex-props";
 import { Baz as Baz1, Foo as Foo1, Grault as Grault1, Quux as Quux1, Waldo as Waldo1 } from "./components/my-complex-props-scoped/my-complex-props-scoped";
 import { IMyComponent } from "./components/helpers";
+import { TableColumn, TableRow } from "./components/my-data-table/my-data-table";
 import { InputChangeEventDetail } from "./components/my-input/my-input";
 import { InputChangeEventDetail as InputChangeEventDetail1 } from "./components/my-input-scoped/my-input-scoped";
 import { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
@@ -20,6 +21,7 @@ export { CheckboxChangeEventDetail, CheckboxChangeNestedEventDetail } from "./co
 export { Baz, Foo, Grault, Quux, Waldo } from "./components/my-complex-props/my-complex-props";
 export { Baz as Baz1, Foo as Foo1, Grault as Grault1, Quux as Quux1, Waldo as Waldo1 } from "./components/my-complex-props-scoped/my-complex-props-scoped";
 export { IMyComponent } from "./components/helpers";
+export { TableColumn, TableRow } from "./components/my-data-table/my-data-table";
 export { InputChangeEventDetail } from "./components/my-input/my-input";
 export { InputChangeEventDetail as InputChangeEventDetail1 } from "./components/my-input-scoped/my-input-scoped";
 export { RadioGroupChangeEventDetail } from "./components/my-radio-group/my-radio-group";
@@ -276,6 +278,27 @@ export namespace Components {
           * The start value
          */
         "startValue": number;
+    }
+    interface MyDataTable {
+        /**
+          * Array of column definitions
+          * @default []
+         */
+        "columns": TableColumn[];
+        /**
+          * Array of data rows
+          * @default []
+         */
+        "data": TableRow[];
+        /**
+          * Initial column widths (can be used for resize functionality)
+         */
+        "initialColumnWidths"?: Record<string, number>;
+        /**
+          * Whether column reordering is enabled
+          * @default false
+         */
+        "reorderColumns": boolean;
     }
     interface MyInput {
         /**
@@ -740,6 +763,38 @@ export namespace Components {
     interface MyToggleContent {
         "visible": boolean;
     }
+    /**
+     * Tooltip component for testing SSR hydration with slot detection
+     * This component demonstrates a pattern where:
+     * - Slot presence is checked in componentWillLoad()
+     * - State is set based on slot detection
+     * - This can cause hydration mismatches because slot detection may differ between server and client
+     */
+    interface MyTooltip {
+        /**
+          * Heading text for the popover
+          * @default ''
+         */
+        "heading": string;
+        /**
+          * Method to hide the tooltip
+         */
+        "hide": () => Promise<void>;
+        /**
+          * Whether the popover is open
+          * @default false
+         */
+        "isOpen": boolean;
+        /**
+          * Placement of the popover
+          * @default 'top'
+         */
+        "placement": 'top' | 'bottom' | 'left' | 'right';
+        /**
+          * Method to show the tooltip
+         */
+        "show": () => Promise<void>;
+    }
     interface MyTransformTest {
         /**
           * @default 'Transform Test Component'
@@ -790,6 +845,10 @@ export interface MyRadioGroupCustomEvent<T> extends CustomEvent<T> {
 export interface MyRangeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMyRangeElement;
+}
+export interface MyTooltipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMyTooltipElement;
 }
 declare global {
     interface HTMLMyButtonElementEventMap {
@@ -899,6 +958,12 @@ declare global {
     var HTMLMyCounterElement: {
         prototype: HTMLMyCounterElement;
         new (): HTMLMyCounterElement;
+    };
+    interface HTMLMyDataTableElement extends Components.MyDataTable, HTMLStencilElement {
+    }
+    var HTMLMyDataTableElement: {
+        prototype: HTMLMyDataTableElement;
+        new (): HTMLMyDataTableElement;
     };
     interface HTMLMyInputElementEventMap {
         "myInput": KeyboardEvent;
@@ -1052,6 +1117,31 @@ declare global {
         prototype: HTMLMyToggleContentElement;
         new (): HTMLMyToggleContentElement;
     };
+    interface HTMLMyTooltipElementEventMap {
+        "myTooltipOpen": void;
+        "myTooltipClose": void;
+    }
+    /**
+     * Tooltip component for testing SSR hydration with slot detection
+     * This component demonstrates a pattern where:
+     * - Slot presence is checked in componentWillLoad()
+     * - State is set based on slot detection
+     * - This can cause hydration mismatches because slot detection may differ between server and client
+     */
+    interface HTMLMyTooltipElement extends Components.MyTooltip, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMyTooltipElementEventMap>(type: K, listener: (this: HTMLMyTooltipElement, ev: MyTooltipCustomEvent<HTMLMyTooltipElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMyTooltipElementEventMap>(type: K, listener: (this: HTMLMyTooltipElement, ev: MyTooltipCustomEvent<HTMLMyTooltipElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMyTooltipElement: {
+        prototype: HTMLMyTooltipElement;
+        new (): HTMLMyTooltipElement;
+    };
     interface HTMLMyTransformTestElement extends Components.MyTransformTest, HTMLStencilElement {
     }
     var HTMLMyTransformTestElement: {
@@ -1067,6 +1157,7 @@ declare global {
         "my-component": HTMLMyComponentElement;
         "my-component-scoped": HTMLMyComponentScopedElement;
         "my-counter": HTMLMyCounterElement;
+        "my-data-table": HTMLMyDataTableElement;
         "my-input": HTMLMyInputElement;
         "my-input-scoped": HTMLMyInputScopedElement;
         "my-list": HTMLMyListElement;
@@ -1079,6 +1170,7 @@ declare global {
         "my-range": HTMLMyRangeElement;
         "my-toggle": HTMLMyToggleElement;
         "my-toggle-content": HTMLMyToggleContentElement;
+        "my-tooltip": HTMLMyTooltipElement;
         "my-transform-test": HTMLMyTransformTestElement;
     }
 }
@@ -1372,6 +1464,27 @@ declare namespace LocalJSX {
           * The start value
          */
         "startValue"?: number;
+    }
+    interface MyDataTable {
+        /**
+          * Array of column definitions
+          * @default []
+         */
+        "columns"?: TableColumn[];
+        /**
+          * Array of data rows
+          * @default []
+         */
+        "data"?: TableRow[];
+        /**
+          * Initial column widths (can be used for resize functionality)
+         */
+        "initialColumnWidths"?: Record<string, number>;
+        /**
+          * Whether column reordering is enabled
+          * @default false
+         */
+        "reorderColumns"?: boolean;
     }
     interface MyInput {
         /**
@@ -1879,6 +1992,38 @@ declare namespace LocalJSX {
     interface MyToggleContent {
         "visible"?: boolean;
     }
+    /**
+     * Tooltip component for testing SSR hydration with slot detection
+     * This component demonstrates a pattern where:
+     * - Slot presence is checked in componentWillLoad()
+     * - State is set based on slot detection
+     * - This can cause hydration mismatches because slot detection may differ between server and client
+     */
+    interface MyTooltip {
+        /**
+          * Heading text for the popover
+          * @default ''
+         */
+        "heading"?: string;
+        /**
+          * Whether the popover is open
+          * @default false
+         */
+        "isOpen"?: boolean;
+        /**
+          * Event emitted when the tooltip closes
+         */
+        "onMyTooltipClose"?: (event: MyTooltipCustomEvent<void>) => void;
+        /**
+          * Event emitted when the tooltip opens
+         */
+        "onMyTooltipOpen"?: (event: MyTooltipCustomEvent<void>) => void;
+        /**
+          * Placement of the popover
+          * @default 'top'
+         */
+        "placement"?: 'top' | 'bottom' | 'left' | 'right';
+    }
     interface MyTransformTest {
         /**
           * @default 'Transform Test Component'
@@ -1894,6 +2039,7 @@ declare namespace LocalJSX {
         "my-component": MyComponent;
         "my-component-scoped": MyComponentScoped;
         "my-counter": MyCounter;
+        "my-data-table": MyDataTable;
         "my-input": MyInput;
         "my-input-scoped": MyInputScoped;
         "my-list": MyList;
@@ -1906,6 +2052,7 @@ declare namespace LocalJSX {
         "my-range": MyRange;
         "my-toggle": MyToggle;
         "my-toggle-content": MyToggleContent;
+        "my-tooltip": MyTooltip;
         "my-transform-test": MyTransformTest;
     }
 }
@@ -1921,6 +2068,7 @@ declare module "@stencil/core" {
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "my-component-scoped": LocalJSX.MyComponentScoped & JSXBase.HTMLAttributes<HTMLMyComponentScopedElement>;
             "my-counter": LocalJSX.MyCounter & JSXBase.HTMLAttributes<HTMLMyCounterElement>;
+            "my-data-table": LocalJSX.MyDataTable & JSXBase.HTMLAttributes<HTMLMyDataTableElement>;
             "my-input": LocalJSX.MyInput & JSXBase.HTMLAttributes<HTMLMyInputElement>;
             "my-input-scoped": LocalJSX.MyInputScoped & JSXBase.HTMLAttributes<HTMLMyInputScopedElement>;
             "my-list": LocalJSX.MyList & JSXBase.HTMLAttributes<HTMLMyListElement>;
@@ -1933,6 +2081,14 @@ declare module "@stencil/core" {
             "my-range": LocalJSX.MyRange & JSXBase.HTMLAttributes<HTMLMyRangeElement>;
             "my-toggle": LocalJSX.MyToggle & JSXBase.HTMLAttributes<HTMLMyToggleElement>;
             "my-toggle-content": LocalJSX.MyToggleContent & JSXBase.HTMLAttributes<HTMLMyToggleContentElement>;
+            /**
+             * Tooltip component for testing SSR hydration with slot detection
+             * This component demonstrates a pattern where:
+             * - Slot presence is checked in componentWillLoad()
+             * - State is set based on slot detection
+             * - This can cause hydration mismatches because slot detection may differ between server and client
+             */
+            "my-tooltip": LocalJSX.MyTooltip & JSXBase.HTMLAttributes<HTMLMyTooltipElement>;
             "my-transform-test": LocalJSX.MyTransformTest & JSXBase.HTMLAttributes<HTMLMyTransformTestElement>;
         }
     }

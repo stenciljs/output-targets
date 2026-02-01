@@ -11,7 +11,7 @@ import { getTagTransformer } from './tag-transformer.js';
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent, type HydrateModule, type ReactWebComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
-import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type MyTooltipCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import { MyButtonScoped as MyButtonScopedElement } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement } from "component-library/components/my-checkbox.js";
@@ -20,6 +20,7 @@ import { MyComplexProps as MyComplexPropsElement } from "component-library/compo
 import { MyComponentScoped as MyComponentScopedElement } from "component-library/components/my-component-scoped.js";
 import { MyComponent as MyComponentElement } from "component-library/components/my-component.js";
 import { MyCounter as MyCounterElement } from "component-library/components/my-counter.js";
+import { MyDataTable as MyDataTableElement } from "component-library/components/my-data-table.js";
 import { MyInputScoped as MyInputScopedElement } from "component-library/components/my-input-scoped.js";
 import { MyInput as MyInputElement } from "component-library/components/my-input.js";
 import { MyListItemScoped as MyListItemScopedElement } from "component-library/components/my-list-item-scoped.js";
@@ -32,6 +33,7 @@ import { MyRadio as MyRadioElement } from "component-library/components/my-radio
 import { MyRange as MyRangeElement } from "component-library/components/my-range.js";
 import { MyToggleContent as MyToggleContentElement } from "component-library/components/my-toggle-content.js";
 import { MyToggle as MyToggleElement } from "component-library/components/my-toggle.js";
+import { MyTooltip as MyTooltipElement } from "component-library/components/my-tooltip.js";
 import { MyTransformTest as MyTransformTestElement } from "component-library/components/my-transform-test.js";
 
 export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter"], "default": "declarative-shadow-dom" };
@@ -177,6 +179,17 @@ export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents>
     properties: { startValue: 'start-value' },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyCounter as ReactWebComponent<MyCounterElement, MyCounterEvents>,
+    serializeShadowRoot,
+    getTagTransformer
+});
+
+export type MyDataTableEvents = NonNullable<unknown>;
+
+export const MyDataTable: StencilReactComponent<MyDataTableElement, MyDataTableEvents> = /*@__PURE__*/ createComponent<MyDataTableElement, MyDataTableEvents>({
+    tagName: 'my-data-table',
+    properties: { reorderColumns: 'reorder-columns' },
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: clientComponents.MyDataTable as ReactWebComponent<MyDataTableElement, MyDataTableEvents>,
     serializeShadowRoot,
     getTagTransformer
 });
@@ -420,6 +433,24 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyTo
     properties: { visible: 'visible' },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyToggleContent as ReactWebComponent<MyToggleContentElement, MyToggleContentEvents>,
+    serializeShadowRoot,
+    getTagTransformer
+});
+
+export type MyTooltipEvents = {
+    onMyTooltipOpen: EventName<MyTooltipCustomEvent<void>>,
+    onMyTooltipClose: EventName<MyTooltipCustomEvent<void>>
+};
+
+export const MyTooltip: StencilReactComponent<MyTooltipElement, MyTooltipEvents> = /*@__PURE__*/ createComponent<MyTooltipElement, MyTooltipEvents>({
+    tagName: 'my-tooltip',
+    properties: {
+        placement: 'placement',
+        isOpen: 'is-open',
+        heading: 'heading'
+    },
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: clientComponents.MyTooltip as ReactWebComponent<MyTooltipElement, MyTooltipEvents>,
     serializeShadowRoot,
     getTagTransformer
 });

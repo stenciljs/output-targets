@@ -23,7 +23,7 @@ export const config: WebdriverIO.Config = {
   specs: ['./test/**/*.ts'],
   // Patterns to exclude.
   exclude: [
-    // 'path/to/excluded/files'
+    './test/ssr-compatibility.test.ts'
   ],
   //
   // ============

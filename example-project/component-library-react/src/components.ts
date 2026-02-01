@@ -9,7 +9,7 @@
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent } from '@stencil/react-output-target/runtime';
-import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type MyTooltipCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
@@ -18,6 +18,7 @@ import { MyComplexProps as MyComplexPropsElement, defineCustomElement as defineM
 import { MyComponentScoped as MyComponentScopedElement, defineCustomElement as defineMyComponentScoped } from "component-library/components/my-component-scoped.js";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "component-library/components/my-component.js";
 import { MyCounter as MyCounterElement, defineCustomElement as defineMyCounter } from "component-library/components/my-counter.js";
+import { MyDataTable as MyDataTableElement, defineCustomElement as defineMyDataTable } from "component-library/components/my-data-table.js";
 import { MyInputScoped as MyInputScopedElement, defineCustomElement as defineMyInputScoped } from "component-library/components/my-input-scoped.js";
 import { MyInput as MyInputElement, defineCustomElement as defineMyInput } from "component-library/components/my-input.js";
 import { MyListItemScoped as MyListItemScopedElement, defineCustomElement as defineMyListItemScoped } from "component-library/components/my-list-item-scoped.js";
@@ -30,6 +31,7 @@ import { MyRadio as MyRadioElement, defineCustomElement as defineMyRadio } from 
 import { MyRange as MyRangeElement, defineCustomElement as defineMyRange } from "component-library/components/my-range.js";
 import { MyToggleContent as MyToggleContentElement, defineCustomElement as defineMyToggleContent } from "component-library/components/my-toggle-content.js";
 import { MyToggle as MyToggleElement, defineCustomElement as defineMyToggle } from "component-library/components/my-toggle.js";
+import { MyTooltip as MyTooltipElement, defineCustomElement as defineMyTooltip } from "component-library/components/my-tooltip.js";
 import { MyTransformTest as MyTransformTestElement, defineCustomElement as defineMyTransformTest } from "component-library/components/my-transform-test.js";
 import React from 'react';
 import { transformTag } from './tag-transformer.js';
@@ -149,6 +151,18 @@ export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents>
     react: React,
     events: { onCount: 'count' } as MyCounterEvents,
     defineCustomElement: defineMyCounter,
+    transformTag
+});
+
+export type MyDataTableEvents = NonNullable<unknown>;
+
+export const MyDataTable: StencilReactComponent<MyDataTableElement, MyDataTableEvents> = /*@__PURE__*/ createComponent<MyDataTableElement, MyDataTableEvents>({
+    tagName: 'my-data-table',
+    elementClass: MyDataTableElement,
+    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
+    react: React,
+    events: {} as MyDataTableEvents,
+    defineCustomElement: defineMyDataTable,
     transformTag
 });
 
@@ -337,6 +351,24 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyTo
     react: React,
     events: {} as MyToggleContentEvents,
     defineCustomElement: defineMyToggleContent,
+    transformTag
+});
+
+export type MyTooltipEvents = {
+    onMyTooltipOpen: EventName<MyTooltipCustomEvent<void>>,
+    onMyTooltipClose: EventName<MyTooltipCustomEvent<void>>
+};
+
+export const MyTooltip: StencilReactComponent<MyTooltipElement, MyTooltipEvents> = /*@__PURE__*/ createComponent<MyTooltipElement, MyTooltipEvents>({
+    tagName: 'my-tooltip',
+    elementClass: MyTooltipElement,
+    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
+    react: React,
+    events: {
+        onMyTooltipOpen: 'myTooltipOpen',
+        onMyTooltipClose: 'myTooltipClose'
+    } as MyTooltipEvents,
+    defineCustomElement: defineMyTooltip,
     transformTag
 });
 

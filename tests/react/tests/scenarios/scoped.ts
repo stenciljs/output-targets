@@ -91,5 +91,25 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
         'Scoped Change Event: Hello World!',
       ].join('\n'))
     })
+  },
+  'my-popover': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-popover')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-radio-group': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-radio-group')
+      expect(html).toMatchSnapshot()
+    })
   }
 }

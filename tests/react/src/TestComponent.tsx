@@ -28,19 +28,30 @@ const testComponents = [
   'nested-scoped',
   'complex-props-scoped',
   'input-scoped',
+  'my-popover',
+  'my-radio-group',
   // shadow tests
   'single-no-child-shadow',
   'single-children-shadow',
   'nested-shadow',
   'complex-props-shadow',
   'input-shadow',
+  'my-component',
+  'my-list',
+  'my-counter',
+  'my-range',
+  'my-toggle',
+  'my-toggle-content',
+  'my-data-table',
+  'my-tooltip',
+  'my-checkbox',
   // transformed tests
   'transform-scoped-to-shadow',
   'transform-tag-test',
 ] as const;
 export type TestComponent = (typeof testComponents)[number];
-export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
-export type ScopedComponents = Exclude<Extract<TestComponent, `${string}scoped`>, 'transform-scoped-to-shadow'>;
+export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow` | 'my-component' | 'my-list' | 'my-counter' | 'my-range' | 'my-toggle' | 'my-toggle-content' | 'my-data-table' | 'my-tooltip' | 'my-checkbox'>, 'transform-scoped-to-shadow'>;
+export type ScopedComponents = Exclude<Extract<TestComponent, `${string}scoped` | 'my-popover' | 'my-radio-group'>, 'transform-scoped-to-shadow'>;
 export type TransformedComponents = Extract<TestComponent, 'transform-scoped-to-shadow' | 'transform-tag-test'>;
 interface TestComponentProps {
   name: TestComponent;

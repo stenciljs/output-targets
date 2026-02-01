@@ -13,6 +13,7 @@ import { defineCustomElement as defineMyComplexPropsScoped } from 'component-lib
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
 import { defineCustomElement as defineMyComponentScoped } from 'component-library/components/my-component-scoped.js';
 import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
+import { defineCustomElement as defineMyDataTable } from 'component-library/components/my-data-table.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
 import { defineCustomElement as defineMyInputScoped } from 'component-library/components/my-input-scoped.js';
 import { defineCustomElement as defineMyList } from 'component-library/components/my-list.js';
@@ -25,6 +26,7 @@ import { defineCustomElement as defineMyRadioGroup } from 'component-library/com
 import { defineCustomElement as defineMyRange } from 'component-library/components/my-range.js';
 import { defineCustomElement as defineMyToggle } from 'component-library/components/my-toggle.js';
 import { defineCustomElement as defineMyToggleContent } from 'component-library/components/my-toggle-content.js';
+import { defineCustomElement as defineMyTooltip } from 'component-library/components/my-tooltip.js';
 import { defineCustomElement as defineMyTransformTest } from 'component-library/components/my-transform-test.js';
 import { transformTag, getTagTransformer } from './tag-transformer.js';
 
@@ -236,6 +238,21 @@ export const MyCounter: StencilVueComponent<JSX.MyCounter> = /*@__PURE__*/ globa
   props: {
     'startValue': [Number, "start-value"],
     'onCount': [Function]
+  },
+  getTagTransformer: getTagTransformer
+});
+
+
+export const MyDataTable: StencilVueComponent<JSX.MyDataTable> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyDataTable>('my-data-table', defineMyDataTable, [
+  'columns',
+  'data',
+  'initialColumnWidths',
+  'reorderColumns'
+], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyDataTable>({
+  tagName: 'my-data-table',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'reorderColumns': [Boolean, "reorder-columns"]
   },
   getTagTransformer: getTagTransformer
 });
@@ -589,6 +606,29 @@ export const MyToggleContent: StencilVueComponent<JSX.MyToggleContent> = /*@__PU
   hydrateModule: import('component-library/hydrate'),
   props: {
     'visible': [Boolean, "visible"]
+  },
+  getTagTransformer: getTagTransformer
+});
+
+
+export const MyTooltip: StencilVueComponent<JSX.MyTooltip> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyTooltip>('my-tooltip', defineMyTooltip, [
+  'placement',
+  'isOpen',
+  'heading',
+  'myTooltipOpen',
+  'myTooltipClose'
+], [
+  'myTooltipOpen',
+  'myTooltipClose'
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyTooltip>({
+  tagName: 'my-tooltip',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    'placement': [String, "placement"],
+    'isOpen': [Boolean, "is-open"],
+    'heading': [String, "heading"],
+    'onMyTooltipOpen': [Function],
+    'onMyTooltipClose': [Function]
   },
   getTagTransformer: getTagTransformer
 });

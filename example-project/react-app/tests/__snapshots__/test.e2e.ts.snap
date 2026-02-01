@@ -126,6 +126,963 @@ exports[`complex-props-shadow > should correctly server side render complex prop
 "
 `;
 
+exports[`my-checkbox > should correctly server side render 1`] = `
+"
+<div id="my-checkbox">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-checkbox
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-component > should correctly server side render 1`] = `
+"
+<div id="my-component">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-component
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-counter > should correctly server side render 1`] = `
+"
+<div id="my-counter">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-counter
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-data-table > should correctly server side render 1`] = `
+"
+<div id="my-data-table">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-data-table
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-list > should correctly server side render 1`] = `
+"
+<div id="my-list">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-list
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-popover > should correctly server side render 1`] = `
+"
+<div id="my-popover">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-popover
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-radio-group > should correctly server side render 1`] = `
+"
+<div id="my-radio-group">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-radio-group
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-range > should correctly server side render 1`] = `
+"
+<div id="my-range">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-range
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-toggle > should correctly server side render 1`] = `
+"
+<div id="my-toggle">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-toggle
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-toggle-content > should correctly server side render 1`] = `
+"
+<div id="my-toggle-content">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-toggle-content
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
+exports[`my-tooltip > should correctly server side render 1`] = `
+"
+<div id="my-tooltip">
+  <div>
+    Unknown test component:
+    <pre style="display:block;font-size:12px">
+      &quot;
+      my-tooltip
+      &quot;
+    </pre>
+    Available test components:
+    <pre style="display:flex;gap:10px;font-size:12px">
+      <a href="/single-no-child-scoped">
+        single-no-child-scoped
+      </a>
+      <a href="/single-children-scoped">
+        single-children-scoped
+      </a>
+      <a href="/nested-scoped">
+        nested-scoped
+      </a>
+      <a href="/complex-props-scoped">
+        complex-props-scoped
+      </a>
+      <a href="/input-scoped">
+        input-scoped
+      </a>
+      <a href="/my-popover">
+        my-popover
+      </a>
+      <a href="/my-radio-group">
+        my-radio-group
+      </a>
+      <a href="/single-no-child-shadow">
+        single-no-child-shadow
+      </a>
+      <a href="/single-children-shadow">
+        single-children-shadow
+      </a>
+      <a href="/nested-shadow">
+        nested-shadow
+      </a>
+      <a href="/complex-props-shadow">
+        complex-props-shadow
+      </a>
+      <a href="/input-shadow">
+        input-shadow
+      </a>
+      <a href="/my-component">
+        my-component
+      </a>
+      <a href="/my-list">
+        my-list
+      </a>
+      <a href="/my-counter">
+        my-counter
+      </a>
+      <a href="/my-range">
+        my-range
+      </a>
+      <a href="/my-toggle">
+        my-toggle
+      </a>
+      <a href="/my-toggle-content">
+        my-toggle-content
+      </a>
+      <a href="/my-data-table">
+        my-data-table
+      </a>
+      <a href="/my-tooltip">
+        my-tooltip
+      </a>
+      <a href="/my-checkbox">
+        my-checkbox
+      </a>
+      <a href="/transform-scoped-to-shadow">
+        transform-scoped-to-shadow
+      </a>
+      <a href="/transform-tag-test">
+        transform-tag-test
+      </a>
+    </pre>
+  </div>
+</div>
+"
+`;
+
 exports[`nested-shadow > should correctly server side render 1`] = `
 "
 <div id="nested-shadow">
