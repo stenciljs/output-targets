@@ -28,7 +28,23 @@
     "tag": "my-component",
     "status": "failed",
     "errors": [
-      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              <Suspense>\n                    ...\n"
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
+    ]
+  },
+  {
+    "component": "my-counter",
+    "tag": "my-counter",
+    "status": "failed",
+    "errors": [
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
+    ]
+  },
+  {
+    "component": "my-data-table",
+    "tag": "my-data-table",
+    "status": "failed",
+    "errors": [
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
     ]
   },
   {
@@ -52,15 +68,39 @@
     "tag": "my-list",
     "status": "failed",
     "errors": [
-      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              <Suspense>\n                    ...\n"
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
     ]
   },
   {
-    "component": "my-list-item",
-    "tag": "my-list-item",
+    "component": "my-range",
+    "tag": "my-range",
     "status": "failed",
     "errors": [
-      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              <Suspense>\n                    ...\n"
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
+    ]
+  },
+  {
+    "component": "my-toggle",
+    "tag": "my-toggle",
+    "status": "failed",
+    "errors": [
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
+    ]
+  },
+  {
+    "component": "my-toggle-content",
+    "tag": "my-toggle-content",
+    "status": "failed",
+    "errors": [
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
+    ]
+  },
+  {
+    "component": "my-tooltip",
+    "tag": "my-tooltip",
+    "status": "failed",
+    "errors": [
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
     ]
   },
   {
@@ -69,6 +109,14 @@
     "status": "failed",
     "errors": [
       "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              <Suspense>\n                    ...\n"
+    ]
+  },
+  {
+    "component": "my-checkbox",
+    "tag": "my-checkbox",
+    "status": "failed",
+    "errors": [
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
     ]
   },
   {
@@ -96,11 +144,19 @@
     ]
   },
   {
-    "component": "my-list-item",
-    "tag": "my-list-item-scoped",
+    "component": "my-popover",
+    "tag": "my-popover",
     "status": "failed",
     "errors": [
-      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              <Suspense>\n                    ...\n"
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
+    ]
+  },
+  {
+    "component": "my-radio-group",
+    "tag": "my-radio-group",
+    "status": "failed",
+    "errors": [
+      "webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            <Suspense>\n                      ...\n"
     ]
   }
 ]

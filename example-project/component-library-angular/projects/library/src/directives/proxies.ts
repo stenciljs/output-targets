@@ -14,6 +14,7 @@ import { defineCustomElement as defineMyComplexPropsScoped } from 'component-lib
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
 import { defineCustomElement as defineMyComponentScoped } from 'component-library/components/my-component-scoped.js';
 import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
+import { defineCustomElement as defineMyDataTable } from 'component-library/components/my-data-table.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
 import { defineCustomElement as defineMyInputScoped } from 'component-library/components/my-input-scoped.js';
 import { defineCustomElement as defineMyList } from 'component-library/components/my-list.js';
@@ -26,6 +27,7 @@ import { defineCustomElement as defineMyRadioGroup } from 'component-library/com
 import { defineCustomElement as defineMyRange } from 'component-library/components/my-range.js';
 import { defineCustomElement as defineMyToggle } from 'component-library/components/my-toggle.js';
 import { defineCustomElement as defineMyToggleContent } from 'component-library/components/my-toggle-content.js';
+import { defineCustomElement as defineMyTooltip } from 'component-library/components/my-tooltip.js';
 import { defineCustomElement as defineMyTransformTest } from 'component-library/components/my-transform-test.js';
 @ProxyCmp({
   defineCustomElementFn: defineMyButton,
@@ -277,6 +279,29 @@ export declare interface MyCounter extends Components.MyCounter {
    */
   count: EventEmitter<CustomEvent<number>>;
 }
+
+
+@ProxyCmp({
+  defineCustomElementFn: defineMyDataTable,
+  inputs: ['columns', 'data', 'initialColumnWidths', 'reorderColumns']
+})
+@Component({
+  selector: 'my-data-table',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['columns', 'data', 'initialColumnWidths', 'reorderColumns'],
+})
+export class MyDataTable {
+  protected el: HTMLMyDataTableElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}
+
+
+export declare interface MyDataTable extends Components.MyDataTable {}
 
 
 @ProxyCmp({
@@ -665,6 +690,42 @@ export class MyToggleContent {
 
 
 export declare interface MyToggleContent extends Components.MyToggleContent {}
+
+
+@ProxyCmp({
+  defineCustomElementFn: defineMyTooltip,
+  inputs: ['heading', 'isOpen', 'placement'],
+  methods: ['show', 'hide']
+})
+@Component({
+  selector: 'my-tooltip',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['heading', 'isOpen', 'placement'],
+  outputs: ['myTooltipOpen', 'myTooltipClose'],
+})
+export class MyTooltip {
+  protected el: HTMLMyTooltipElement;
+  @Output() myTooltipOpen = new EventEmitter<CustomEvent<void>>();
+  @Output() myTooltipClose = new EventEmitter<CustomEvent<void>>();
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}
+
+
+export declare interface MyTooltip extends Components.MyTooltip {
+  /**
+   * Event emitted when the tooltip opens
+   */
+  myTooltipOpen: EventEmitter<CustomEvent<void>>;
+  /**
+   * Event emitted when the tooltip closes
+   */
+  myTooltipClose: EventEmitter<CustomEvent<void>>;
+}
 
 
 @ProxyCmp({
