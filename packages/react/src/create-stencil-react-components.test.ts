@@ -252,7 +252,7 @@ describe('createStencilReactComponents', () => {
       clientModule: './client',
     });
 
-    expect(result).not.toContain(`'use client';`);
+    expect(result).toContain(`'use client';`);
     expect(result).toContain(`// @ts-ignore - ignore potential type issues as the project is importing itself`);
     expect(result).toContain(`import * as clientComponents from './client';`);
     expect(result).toContain(`from '@stencil/react-output-target/ssr'`);
