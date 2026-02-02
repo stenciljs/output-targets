@@ -5,13 +5,13 @@
 
 /* eslint-disable */
 
-// @ts-ignore - ignore potential type issues as the project is importing itself
-import * as clientComponents from 'component-library-react';
 import { getTagTransformer } from './tag-transformer.js';
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent, type HydrateModule, type ReactWebComponent, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
 import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+// @ts-ignore - ignore potential type issues as the project is importing itself
+import * as clientComponents from "component-library-react";
 import { MyButtonScoped as MyButtonScopedElement } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement } from "component-library/components/my-button.js";
 import { MyCheckbox as MyCheckboxElement } from "component-library/components/my-checkbox.js";

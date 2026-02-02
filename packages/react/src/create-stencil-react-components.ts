@@ -42,8 +42,6 @@ export const createStencilReactComponents = ({
   const getTagTransformerImport = transformTag ? `import { getTagTransformer } from './tag-transformer.js';\n` : '';
   const createComponentImport = hydrateModule
     ? [
-        `// @ts-ignore - ignore potential type issues as the project is importing itself`,
-        `import * as clientComponents from '${clientModule}';`,
         getTagTransformerImport,
         `import { createComponent, type SerializeShadowRootOptions, type HydrateModule, type ReactWebComponent, type DynamicFunction } from '@stencil/react-output-target/ssr';`,
       ]
@@ -61,6 +59,17 @@ import type { EventName, StencilReactComponent } from '@stencil/react-output-tar
 ${transformTagImport}
   `
   );
+
+  /**
+   * Add the `clientComponents` import if hydrateModule is provided.
+   * This import needs a @ts-ignore comment, which will be added after organizeImports().
+   */
+  if (hydrateModule && clientModule) {
+    sourceFile.addImportDeclaration({
+      moduleSpecifier: clientModule,
+      namespaceImport: 'clientComponents',
+    });
+  }
 
   /**
    * Add the `serializeShadowRoot` variable to the file if the hydrateModule is provided.
@@ -214,6 +223,24 @@ ${transformTagImport}
   }
 
   sourceFile.organizeImports();
+
+  /**
+   * Add the @ts-ignore comment to the clientComponents import after organizeImports()
+   * to ensure the comment stays attached to the correct import.
+   */
+  if (hydrateModule && clientModule) {
+    const clientComponentsImport = sourceFile
+      .getImportDeclarations()
+      .find((imp) => imp.getNamespaceImport()?.getText() === 'clientComponents');
+
+    if (clientComponentsImport) {
+      sourceFile.insertText(
+        clientComponentsImport.getStart(),
+        '// @ts-ignore - ignore potential type issues as the project is importing itself\n'
+      );
+    }
+  }
+
   sourceFile.formatText();
 
   return sourceFile.getFullText();
