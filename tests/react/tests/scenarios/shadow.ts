@@ -86,5 +86,95 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
         'Shadow Change Event: Hello World!',
       ].join('\n'))
     })
+  },
+  'my-component': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-component')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-list': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-list')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-counter': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-counter')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-range': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-range')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-toggle': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-toggle')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-toggle-content': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-toggle-content')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-data-table': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-data-table')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-tooltip': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-tooltip')
+      expect(html).toMatchSnapshot()
+    })
+  },
+  'my-checkbox': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('my-checkbox')
+      expect(html).toMatchSnapshot()
+    })
   }
 }

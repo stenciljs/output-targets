@@ -99,6 +99,7 @@ const TAG_MAPPINGS = {
   'my-component': 'MyComponent',
   'my-component-scoped': 'MyComponentScoped',
   'my-counter': 'MyCounter',
+  'my-data-table': 'MyDataTable',
   'my-input': 'MyInput',
   'my-input-scoped': 'MyInputScoped',
   'my-list': 'MyList',
@@ -111,6 +112,7 @@ const TAG_MAPPINGS = {
   'my-range': 'MyRange',
   'my-toggle': 'MyToggle',
   'my-toggle-content': 'MyToggleContent',
+  'my-tooltip': 'MyTooltip',
   'my-transform-test': 'MyTransformTest'
 };
 

@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSR Compatibility Coverage Report</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 20px;
+      margin: -20px -20px 30px -20px;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    
+    header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    
+    header .meta {
+      opacity: 0.9;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .header-info-icon {
+      width: 24px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      flex-shrink: 0;
+    }
+    
+    .header-info-icon:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .header-info-icon .info-tooltip {
+      width: 350px;
+      max-width: calc(100vw - 40px);
+      white-space: normal;
+      text-align: left;
+      line-height: 1.5;
+      font-size: 0.9em;
+      bottom: auto;
+      top: 125%;
+      left: auto;
+      right: 100%;
+      margin-right: 10px;
+      transform: none;
+    }
+    
+    .header-info-icon .info-tooltip::after {
+      bottom: auto;
+      top: 10px;
+      left: auto;
+      right: -5px;
+      border-top-color: transparent;
+      border-bottom-color: transparent;
+      border-left-color: transparent;
+      border-right-color: #1f2937;
+    }
+    
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .summary-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    
+    .summary-card .number {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .summary-card.green .number { color: #10b981; }
+    .summary-card.red .number { color: #ef4444; }
+    .summary-card.unknown .number { color: #6b7280; }
+    
+    .summary-card .label {
+      color: #6b7280;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 600;
+      font-style: normal;
+      line-height: 1;
+      cursor: help;
+      position: relative;
+      transition: all 0.2s ease;
+      border: 1.5px solid #d1d5db;
+      flex-shrink: 0;
+    }
+    
+    .info-icon:hover {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+      transform: scale(1.1);
+    }
+    
+    .info-icon::before {
+      content: "i";
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-style: normal;
+    }
+    
+    .info-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: white;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 0.8em;
+      line-height: 1.4;
+      white-space: normal;
+      width: 220px;
+      text-align: left;
+      z-index: 1000;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: opacity 0.2s, visibility 0.2s;
+      pointer-events: none;
+    }
+    
+    .info-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #1f2937;
+    }
+    
+    .info-icon:hover .info-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.7em;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    
+    .status-badge.green {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    }
+    
+    .status-badge.red {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .status-badge.unknown {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+    
+    /* Hide badge for green cards in green section */
+    .section.green .status-badge.green {
+      display: none;
+    }
+    
+    .section {
+      margin-bottom: 50px;
+    }
+    
+    .section-header {
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 0;
+      border-bottom: 3px solid;
+      transition: opacity 0.2s;
+    }
+    
+    .section-header:hover {
+      opacity: 0.8;
+    }
+    
+    .section.green .section-header { border-color: #10b981; color: #065f46; }
+    .section.red .section-header { border-color: #ef4444; color: #991b1b; }
+    .section.unknown .section-header { border-color: #6b7280; color: #4b5563; }
+    
+    .section-title {
+      font-size: 1.8em;
+      margin: 0;
+      flex: 1;
+    }
+    
+    .section-toggle {
+      font-size: 1.2em;
+      transition: transform 0.3s;
+    }
+    
+    .section.collapsed .section-toggle {
+      transform: rotate(-90deg);
+    }
+    
+    .section-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+      max-height: 10000px;
+      opacity: 1;
+    }
+    
+    .section.collapsed .section-content {
+      max-height: 0;
+      opacity: 0;
+      margin: 0;
+    }
+    
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+      gap: 25px;
+    }
+    
+    .component-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .component-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .component-card.green { border-left: 3px solid #10b981; }
+    .component-card.red { border-left: 3px solid #ef4444; }
+    .component-card.unknown { border-left: 3px solid #6b7280; }
+    
+    .component-header {
+      padding: 16px 20px;
+    }
+    
+    .component-name {
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #111827;
+    }
+    
+    .component-tag {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      background: #f3f4f6;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.8em;
+      color: #4b5563;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    
+    .component-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 0.85em;
+      color: #6b7280;
+      flex-wrap: wrap;
+    }
+    
+    .component-meta strong {
+      color: #374151;
+    }
+    
+    .component-body {
+      padding: 0 20px 20px 20px;
+    }
+    
+    .component-notes {
+      background: #fef3c7;
+      border-left: 3px solid #f59e0b;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      line-height: 1.5;
+    }
+    
+    .component-notes.error {
+      background: #fee2e2;
+      border-color: #ef4444;
+    }
+    
+    .component-notes ul {
+      margin-top: 6px;
+    }
+    
+    .component-notes li {
+      margin-bottom: 4px;
+    }
+    
+    .example-section {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .example-section h4 {
+      margin-bottom: 10px;
+      color: #6b7280;
+      font-size: 0.75em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.8em;
+      line-height: 1.7;
+      border: 1px solid #334155;
+      position: relative;
+    }
+    
+    .code-block code {
+      color: #e2e8f0;
+      white-space: pre;
+      display: block;
+    }
+    
+    .code-block::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .code-block::-webkit-scrollbar-track {
+      background: #0f172a;
+      border-radius: 4px;
+    }
+    
+    .code-block::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    
+    .code-block::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+    
+    .test-page-section {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .test-page-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .test-page-url {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.8em;
+      color: #6b7280;
+    }
+    
+    .test-page-link {
+      display: inline-flex;
+      align-items: center;
+      color: #667eea;
+      text-decoration: none;
+      font-size: 0.875em;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    
+    .test-page-link:hover {
+      color: #5568d3;
+      text-decoration: underline;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+    
+    .environment-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .environment-title {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .environment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    
+    .environment-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .environment-label {
+      font-size: 0.85em;
+      color: #6b7280;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .environment-value {
+      font-size: 1.1em;
+      color: #111827;
+      font-weight: 600;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .environment-value-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    
+    .audit-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .audit-title {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    
+    .audit-table-wrapper {
+      overflow-x: auto;
+    }
+    
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.9em;
+    }
+    
+    .audit-table thead {
+      background: #f9fafb;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .audit-table th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .audit-table th.status {
+      text-align: center;
+    }
+    
+    .audit-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #111827;
+    }
+    
+    .audit-table tbody tr {
+      transition: background 0.2s;
+    }
+    
+    .audit-table tbody tr:hover {
+      background: #f9fafb;
+    }
+    
+    
+    .audit-table .timestamp {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.85em;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    
+    .audit-table .version {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.85em;
+      color: #111827;
+    }
+    
+    .audit-table .status {
+      text-align: center;
+    }
+    
+    .audit-table .status-passed {
+      color: #10b981;
+      font-weight: 600;
+    }
+    
+    .audit-table .status-failed {
+      color: #ef4444;
+      font-weight: 600;
+    }
+    
+    
+    @media (max-width: 768px) {
+      .components-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      header h1 {
+        font-size: 2em;
+      }
+      
+      .summary {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>SSR Compatibility Coverage Report</h1>
+      <div class="meta">
+        Generated: 2/1/2026, 11:45:16 AM
+        <span class="info-icon header-info-icon">
+          <span class="info-tooltip">This report shows results from the <strong>SSR compatibility test suite</strong> (ssr-compatibility.test.ts), which tests for hydration mismatch errors. <strong>Snapshot comparison tests</strong> (test.e2e.ts) are also part of the test suite and run alongside these tests, verifying that server-rendered HTML matches expected snapshots. However, snapshot test results could not be reliably captured for inclusion in this report due to limitations in accessing WebDriverIO test results programmatically.</span>
+        </span>
+      </div>
+    </header>
+    
+    <div class="summary">
+      <div class="summary-card green">
+        <div class="number">0</div>
+        <div class="label">
+          ✅ Runtime SSR-compatible
+          <span class="info-icon">
+            <span class="info-tooltip">Components that pass all SSR compatibility tests, including hydration mismatch detection. These components are safe to use with Next.js runtime-based SSR.</span>
+          </span>
+        </div>
+      </div>
+      <div class="summary-card red">
+        <div class="number" title="my-button-scoped, my-button, my-checkbox, my-complex-props, my-complex-props-scoped, my-component, my-component-scoped, my-counter, my-data-table, my-input, my-input-scoped, my-list-scoped, my-list, my-popover, my-radio-group, my-range, my-toggle, my-toggle-content, my-tooltip, my-transform-test" style="cursor: help;">20</div>
+        <div class="label">
+          ❌ Not SSR-Compatible
+          <span class="info-icon">
+            <span class="info-tooltip">Components with known hydration mismatch errors or other SSR incompatibilities. These components should not be used with SSR until issues are resolved. Hover over the number to see component names.</span>
+          </span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="number">22</div>
+        <div class="label">
+          Total Components
+          <span class="info-icon">
+            <span class="info-tooltip">The total number of components discovered in the component library, including all encapsulation types (shadow and scoped).</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+    <div class="section red">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-toggle">▼</span>
+        <h2 class="section-title">❌ Not SSR-Compatible Components (20)</h2>
+      </div>
+      <div class="section-content">
+        <div class="components-grid">
+          
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-button
+        </div>
+        <div class="component-tag">my-button-scoped</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>scoped</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              &lt;Suspense&gt;
+                    ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/single-children-scoped</span>
+            <a href="http://localhost:3002/single-children-scoped" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function SingleChildrenScoped() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;single-children-scoped&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-button
+        </div>
+        <div class="component-tag">my-button</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              &lt;Suspense&gt;
+                    ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/single-children-shadow</span>
+            <a href="http://localhost:3002/single-children-shadow" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function SingleChildrenShadow() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;single-children-shadow&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-checkbox
+        </div>
+        <div class="component-tag">my-checkbox</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Note:</strong> Hydration mismatch error when rendered
+      </div>
+    
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-checkbox</span>
+            <a href="http://localhost:3002/my-checkbox" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyCheckboxPage() {
+  return &lt;TestStage name=&quot;my-checkbox&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-complex-props
+        </div>
+        <div class="component-tag">my-complex-props</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              &lt;Suspense&gt;
+                    ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/complex-props-shadow</span>
+            <a href="http://localhost:3002/complex-props-shadow" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function ComplexPropsShadow() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;complex-props-shadow&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-complex-props-scoped
+        </div>
+        <div class="component-tag">my-complex-props-scoped</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>scoped</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Note:</strong> Hydration mismatch error when rendered
+      </div>
+    
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              &lt;Suspense&gt;
+                    ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/complex-props-scoped</span>
+            <a href="http://localhost:3002/complex-props-scoped" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function ComplexPropsScoped() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;complex-props-scoped&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-component
+        </div>
+        <div class="component-tag">my-component</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-component</span>
+            <a href="http://localhost:3002/my-component" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyComponentPage() {
+  return &lt;TestStage name=&quot;my-component&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-component-scoped
+        </div>
+        <div class="component-tag">my-component-scoped</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>scoped</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Note:</strong> Hydration mismatch error when rendered
+      </div>
+    
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              &lt;Suspense&gt;
+                    ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/single-no-child-scoped</span>
+            <a href="http://localhost:3002/single-no-child-scoped" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function SingleNoChildScoped() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;single-no-child-scoped&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-counter
+        </div>
+        <div class="component-tag">my-counter</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-counter</span>
+            <a href="http://localhost:3002/my-counter" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyCounterPage() {
+  return &lt;TestStage name=&quot;my-counter&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-data-table
+        </div>
+        <div class="component-tag">my-data-table</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-data-table</span>
+            <a href="http://localhost:3002/my-data-table" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyDataTablePage() {
+  return &lt;TestStage name=&quot;my-data-table&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-input
+        </div>
+        <div class="component-tag">my-input</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …                       ...
+                  ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/input-shadow</span>
+            <a href="http://localhost:3002/input-shadow" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function InputShadow() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;input-shadow&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-input-scoped
+        </div>
+        <div class="component-tag">my-input-scoped</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>scoped</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …                       ...
+                  ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/input-scoped</span>
+            <a href="http://localhost:3002/input-scoped" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function InputScoped() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;input-scoped&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-list
+        </div>
+        <div class="component-tag">my-list-scoped</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>scoped</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Note:</strong> Hydration mismatch error when rendered
+      </div>
+    
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              &lt;Suspense&gt;
+                    ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/nested-scoped</span>
+            <a href="http://localhost:3002/nested-scoped" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function NestedScoped() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;nested-scoped&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-list
+        </div>
+        <div class="component-tag">my-list</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-list</span>
+            <a href="http://localhost:3002/my-list" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyListPage() {
+  return &lt;TestStage name=&quot;my-list&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-popover
+        </div>
+        <div class="component-tag">my-popover</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>scoped</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Note:</strong> Slot detection in componentWillLoad causes hydration mismatch
+      </div>
+    
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-popover</span>
+            <a href="http://localhost:3002/my-popover" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyPopoverPage() {
+  return &lt;TestStage name=&quot;my-popover&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-radio-group
+        </div>
+        <div class="component-tag">my-radio-group</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>scoped</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Note:</strong> Hydration mismatch error when rendered
+      </div>
+    
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-radio-group</span>
+            <a href="http://localhost:3002/my-radio-group" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyRadioGroupPage() {
+  return &lt;TestStage name=&quot;my-radio-group&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-range
+        </div>
+        <div class="component-tag">my-range</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-range</span>
+            <a href="http://localhost:3002/my-range" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyRangePage() {
+  return &lt;TestStage name=&quot;my-range&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-toggle
+        </div>
+        <div class="component-tag">my-toggle</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-toggle</span>
+            <a href="http://localhost:3002/my-toggle" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyTogglePage() {
+  return &lt;TestStage name=&quot;my-toggle&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-toggle-content
+        </div>
+        <div class="component-tag">my-toggle-content</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-toggle-content</span>
+            <a href="http://localhost:3002/my-toggle-content" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyToggleContentPage() {
+  return &lt;TestStage name=&quot;my-toggle-content&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-tooltip
+        </div>
+        <div class="component-tag">my-tooltip</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …            &lt;Suspense&gt;
+                      ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/my-tooltip</span>
+            <a href="http://localhost:3002/my-tooltip" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function MyTooltipPage() {
+  return &lt;TestStage name=&quot;my-tooltip&quot; /&gt;;
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+    <div class="component-card red">
+      <div class="component-header">
+        <div class="component-name">
+          <span class="status-badge red">Not Compatible</span>
+          my-transform-test
+        </div>
+        <div class="component-tag">my-transform-test</div>
+        <div class="component-meta">
+          <span>Encapsulation: <strong>shadow</strong></span>
+        </div>
+      </div>
+      <div class="component-body">
+        
+      <div class="component-notes error">
+        <strong>Errors:</strong>
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@15.3.3_react-dom@19.1.0_react@19.1.0__react@19.1.0_sass@1.89.2/node_modules/next/dist/client/react-client-callbacks/on-recoverable-error.js 27:45 Uncaught Error: Hydration failed because the server rendered HTML …              &lt;Suspense&gt;
+                    ...
+</li>
+        </ul>
+      </div>
+    
+        
+        <div class="test-page-section">
+          <div class="test-page-info">
+            <span class="test-page-url">/transform-tag-test</span>
+            <a href="http://localhost:3002/transform-tag-test" class="test-page-link" target="_blank">View Test Page →</a>
+          </div>
+        </div>
+        
+        
+      <div class="example-section">
+        <h4>Example Usage</h4>
+        <div class="code-block">
+          <code>import { TestStage } from &#039;react-test-components/next&#039;;
+
+export default function TransformTagTest() {
+  return (
+    &lt;div&gt;
+      &lt;TestStage name=&quot;transform-tag-test&quot; /&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+        </div>
+      </div>
+    
+      </div>
+    </div>
+  
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="environment-section">
+      <h2 class="environment-title">Current Testing Environment</h2>
+      <div class="environment-grid">
+        <div class="environment-item">
+          <div class="environment-label">Node Version</div>
+          <div class="environment-value">v22.16.0</div>
+        </div>
+        <div class="environment-item">
+          <div class="environment-label">Browser</div>
+          <div class="environment-value">Chrome 144.0.7559.110</div>
+        </div>
+        <div class="environment-item">
+          <div class="environment-label">Next.js Version</div>
+          <div class="environment-value">15.3.3</div>
+        </div>
+        <div class="environment-item">
+          <div class="environment-label">Stencil Core Version</div>
+          <div class="environment-value">4.41.0</div>
+        </div>
+        <div class="environment-item">
+          <div class="environment-label">Output-Targets Version</div>
+          <div class="environment-value">workspace:* (local)</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="audit-section" id="audit-section" style="display: none;">
+      <h2 class="audit-title" id="audit-title">
+        Test Run History
+      </h2>
+      <div class="audit-table-wrapper">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Node</th>
+              <th>Browser</th>
+              <th>Next.js</th>
+              <th>Stencil Core</th>
+              <th>Output-Targets</th>
+              <th class="status">Passed</th>
+              <th class="status">Failed</th>
+              <th class="status">Total</th>
+            </tr>
+          </thead>
+          <tbody id="audit-table-body">
+            <!-- Table rows will be dynamically generated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <script>
+      // Fallback: embed current history data in case fetch fails (e.g., file:// protocol)
+      let testRunHistory = [{"timestamp":"2026-02-01T04:45:16.566Z","environment":{"nodeVersion":"v22.16.0","browser":"Chrome","chromeVersion":"144.0.7559.110","nextjsVersion":"15.3.3","outputTargetsVersion":"workspace:* (local)","stencilCoreVersion":"4.41.0"},"summary":{"total":22,"passed":0,"failed":20,"skipped":0,"notTested":2},"componentResults":{"my-button-scoped":{"status":"failed","name":"my-button","encapsulation":"scoped"},"my-button":{"status":"failed","name":"my-button","encapsulation":"shadow"},"my-checkbox":{"status":"failed","name":"my-checkbox","encapsulation":"shadow"},"my-complex-props":{"status":"failed","name":"my-complex-props","encapsulation":"shadow"},"my-complex-props-scoped":{"status":"failed","name":"my-complex-props-scoped","encapsulation":"scoped"},"my-component":{"status":"failed","name":"my-component","encapsulation":"shadow"},"my-component-scoped":{"status":"failed","name":"my-component-scoped","encapsulation":"scoped"},"my-counter":{"status":"failed","name":"my-counter","encapsulation":"shadow"},"my-data-table":{"status":"failed","name":"my-data-table","encapsulation":"shadow"},"my-input":{"status":"failed","name":"my-input","encapsulation":"shadow"},"my-input-scoped":{"status":"failed","name":"my-input-scoped","encapsulation":"scoped"},"my-list-scoped":{"status":"failed","name":"my-list","encapsulation":"scoped"},"my-list":{"status":"failed","name":"my-list","encapsulation":"shadow"},"my-list-item-scoped":{"status":"not-tested","name":"my-list-item","encapsulation":"scoped"},"my-list-item":{"status":"not-tested","name":"my-list-item","encapsulation":"shadow"},"my-popover":{"status":"failed","name":"my-popover","encapsulation":"scoped"},"my-radio-group":{"status":"failed","name":"my-radio-group","encapsulation":"scoped"},"my-range":{"status":"failed","name":"my-range","encapsulation":"shadow"},"my-toggle":{"status":"failed","name":"my-toggle","encapsulation":"shadow"},"my-toggle-content":{"status":"failed","name":"my-toggle-content","encapsulation":"shadow"},"my-tooltip":{"status":"failed","name":"my-tooltip","encapsulation":"shadow"},"my-transform-test":{"status":"failed","name":"my-transform-test","encapsulation":"shadow"}}},{"timestamp":"2026-02-01T04:30:57.738Z","environment":{"nodeVersion":"v22.16.0","browser":"Chrome","chromeVersion":"144.0.7559.110","nextjsVersion":"15.3.3","outputTargetsVersion":"workspace:* (local)","stencilCoreVersion":"4.41.0"},"summary":{"total":20,"passed":2,"failed":16,"skipped":0,"notTested":2},"componentResults":{"my-button-scoped":{"status":"failed","name":"my-button","encapsulation":"scoped"},"my-button":{"status":"failed","name":"my-button","encapsulation":"shadow"},"my-checkbox":{"status":"failed","name":"my-checkbox","encapsulation":"shadow"},"my-complex-props":{"status":"failed","name":"my-complex-props","encapsulation":"shadow"},"my-complex-props-scoped":{"status":"failed","name":"my-complex-props-scoped","encapsulation":"scoped"},"my-component":{"status":"passed","name":"my-component","encapsulation":"shadow"},"my-component-scoped":{"status":"failed","name":"my-component-scoped","encapsulation":"scoped"},"my-counter":{"status":"failed","name":"my-counter","encapsulation":"shadow"},"my-data-table":{"status":"not-tested","name":"my-data-table","encapsulation":"shadow"},"my-input":{"status":"failed","name":"my-input","encapsulation":"shadow"},"my-input-scoped":{"status":"failed","name":"my-input-scoped","encapsulation":"scoped"},"my-list-scoped":{"status":"failed","name":"my-list","encapsulation":"scoped"},"my-list":{"status":"passed","name":"my-list","encapsulation":"shadow"},"my-popover":{"status":"failed","name":"my-popover","encapsulation":"scoped"},"my-radio-group":{"status":"failed","name":"my-radio-group","encapsulation":"scoped"},"my-range":{"status":"failed","name":"my-range","encapsulation":"shadow"},"my-toggle":{"status":"failed","name":"my-toggle","encapsulation":"shadow"},"my-toggle-content":{"status":"failed","name":"my-toggle-content","encapsulation":"shadow"},"my-tooltip":{"status":"not-tested","name":"my-tooltip","encapsulation":"shadow"},"my-transform-test":{"status":"failed","name":"my-transform-test","encapsulation":"shadow"}}},{"timestamp":"2026-02-01T02:49:16.229Z","environment":{"nodeVersion":"v22.16.0","browser":"Chrome","chromeVersion":"144.0.7559.110","nextjsVersion":"15.3.3","outputTargetsVersion":"workspace:* (local)","stencilCoreVersion":"4.41.0"},"summary":{"total":22,"passed":3,"failed":17,"skipped":0,"notTested":2},"componentResults":{"my-button-scoped":{"status":"failed","name":"my-button","encapsulation":"scoped"},"my-button":{"status":"failed","name":"my-button","encapsulation":"shadow"},"my-checkbox":{"status":"failed","name":"my-checkbox","encapsulation":"shadow"},"my-complex-props":{"status":"failed","name":"my-complex-props","encapsulation":"shadow"},"my-complex-props-scoped":{"status":"failed","name":"my-complex-props-scoped","encapsulation":"scoped"},"my-component":{"status":"passed","name":"my-component","encapsulation":"shadow"},"my-component-scoped":{"status":"failed","name":"my-component-scoped","encapsulation":"scoped"},"my-counter":{"status":"failed","name":"my-counter","encapsulation":"shadow"},"my-data-table":{"status":"not-tested","name":"my-data-table","encapsulation":"shadow"},"my-input":{"status":"failed","name":"my-input","encapsulation":"shadow"},"my-input-scoped":{"status":"failed","name":"my-input-scoped","encapsulation":"scoped"},"my-list-scoped":{"status":"failed","name":"my-list","encapsulation":"scoped"},"my-list":{"status":"passed","name":"my-list","encapsulation":"shadow"},"my-list-item-scoped":{"status":"failed","name":"my-list-item","encapsulation":"scoped"},"my-list-item":{"status":"passed","name":"my-list-item","encapsulation":"shadow"},"my-popover":{"status":"failed","name":"my-popover","encapsulation":"scoped"},"my-radio-group":{"status":"failed","name":"my-radio-group","encapsulation":"scoped"},"my-range":{"status":"failed","name":"my-range","encapsulation":"shadow"},"my-toggle":{"status":"failed","name":"my-toggle","encapsulation":"shadow"},"my-toggle-content":{"status":"failed","name":"my-toggle-content","encapsulation":"shadow"},"my-tooltip":{"status":"not-tested","name":"my-tooltip","encapsulation":"shadow"},"my-transform-test":{"status":"failed","name":"my-transform-test","encapsulation":"shadow"}}},{"timestamp":"2026-02-01T02:47:17.057Z","environment":{"nodeVersion":"v22.16.0","browser":"Chrome","chromeVersion":"144.0.7559.110","nextjsVersion":"15.3.3","outputTargetsVersion":"workspace:* (local)","stencilCoreVersion":"4.41.0"},"summary":{"total":22,"passed":3,"failed":17,"skipped":0,"notTested":2},"componentResults":{"my-button-scoped":{"status":"failed","name":"my-button","encapsulation":"scoped"},"my-button":{"status":"failed","name":"my-button","encapsulation":"shadow"},"my-checkbox":{"status":"failed","name":"my-checkbox","encapsulation":"shadow"},"my-complex-props":{"status":"failed","name":"my-complex-props","encapsulation":"shadow"},"my-complex-props-scoped":{"status":"failed","name":"my-complex-props-scoped","encapsulation":"scoped"},"my-component":{"status":"passed","name":"my-component","encapsulation":"shadow"},"my-component-scoped":{"status":"failed","name":"my-component-scoped","encapsulation":"scoped"},"my-counter":{"status":"failed","name":"my-counter","encapsulation":"shadow"},"my-data-table":{"status":"not-tested","name":"my-data-table","encapsulation":"shadow"},"my-input":{"status":"failed","name":"my-input","encapsulation":"shadow"},"my-input-scoped":{"status":"failed","name":"my-input-scoped","encapsulation":"scoped"},"my-list-scoped":{"status":"failed","name":"my-list","encapsulation":"scoped"},"my-list":{"status":"passed","name":"my-list","encapsulation":"shadow"},"my-list-item-scoped":{"status":"failed","name":"my-list-item","encapsulation":"scoped"},"my-list-item":{"status":"passed","name":"my-list-item","encapsulation":"shadow"},"my-popover":{"status":"failed","name":"my-popover","encapsulation":"scoped"},"my-radio-group":{"status":"failed","name":"my-radio-group","encapsulation":"scoped"},"my-range":{"status":"failed","name":"my-range","encapsulation":"shadow"},"my-toggle":{"status":"failed","name":"my-toggle","encapsulation":"shadow"},"my-toggle-content":{"status":"failed","name":"my-toggle-content","encapsulation":"shadow"},"my-tooltip":{"status":"not-tested","name":"my-tooltip","encapsulation":"shadow"},"my-transform-test":{"status":"failed","name":"my-transform-test","encapsulation":"shadow"}}},{"timestamp":"2026-02-01T02:43:48.279Z","environment":{"nodeVersion":"v22.16.0","browser":"Chrome","chromeVersion":"144.0.7559.110","nextjsVersion":"15.3.3","outputTargetsVersion":"workspace:* (local)","stencilCoreVersion":"4.41.0"},"summary":{"total":22,"passed":3,"failed":17,"skipped":0,"notTested":2},"componentResults":{"my-button-scoped":{"status":"failed","name":"my-button","encapsulation":"scoped"},"my-button":{"status":"failed","name":"my-button","encapsulation":"shadow"},"my-checkbox":{"status":"failed","name":"my-checkbox","encapsulation":"shadow"},"my-complex-props":{"status":"failed","name":"my-complex-props","encapsulation":"shadow"},"my-complex-props-scoped":{"status":"failed","name":"my-complex-props-scoped","encapsulation":"scoped"},"my-component":{"status":"passed","name":"my-component","encapsulation":"shadow"},"my-component-scoped":{"status":"failed","name":"my-component-scoped","encapsulation":"scoped"},"my-counter":{"status":"failed","name":"my-counter","encapsulation":"shadow"},"my-data-table":{"status":"not-tested","name":"my-data-table","encapsulation":"shadow"},"my-input":{"status":"failed","name":"my-input","encapsulation":"shadow"},"my-input-scoped":{"status":"failed","name":"my-input-scoped","encapsulation":"scoped"},"my-list-scoped":{"status":"failed","name":"my-list","encapsulation":"scoped"},"my-list":{"status":"passed","name":"my-list","encapsulation":"shadow"},"my-list-item-scoped":{"status":"failed","name":"my-list-item","encapsulation":"scoped"},"my-list-item":{"status":"passed","name":"my-list-item","encapsulation":"shadow"},"my-popover":{"status":"failed","name":"my-popover","encapsulation":"scoped"},"my-radio-group":{"status":"failed","name":"my-radio-group","encapsulation":"scoped"},"my-range":{"status":"failed","name":"my-range","encapsulation":"shadow"},"my-toggle":{"status":"failed","name":"my-toggle","encapsulation":"shadow"},"my-toggle-content":{"status":"failed","name":"my-toggle-content","encapsulation":"shadow"},"my-tooltip":{"status":"not-tested","name":"my-tooltip","encapsulation":"shadow"},"my-transform-test":{"status":"failed","name":"my-transform-test","encapsulation":"shadow"}}},{"timestamp":"2026-02-01T02:41:44.836Z","environment":{"nodeVersion":"v22.16.0","browser":"Chrome","chromeVersion":"144.0.7559.110","nextjsVersion":"15.3.3","outputTargetsVersion":"workspace:* (local)","stencilCoreVersion":"4.41.0"},"summary":{"total":22,"passed":3,"failed":10,"skipped":0,"notTested":9},"componentResults":{"my-button-scoped":{"status":"failed","name":"my-button","encapsulation":"scoped"},"my-button":{"status":"failed","name":"my-button","encapsulation":"shadow"},"my-checkbox":{"status":"not-tested","name":"my-checkbox","encapsulation":"shadow"},"my-complex-props":{"status":"failed","name":"my-complex-props","encapsulation":"shadow"},"my-complex-props-scoped":{"status":"failed","name":"my-complex-props-scoped","encapsulation":"scoped"},"my-component":{"status":"passed","name":"my-component","encapsulation":"shadow"},"my-component-scoped":{"status":"failed","name":"my-component-scoped","encapsulation":"scoped"},"my-counter":{"status":"not-tested","name":"my-counter","encapsulation":"shadow"},"my-data-table":{"status":"not-tested","name":"my-data-table","encapsulation":"shadow"},"my-input":{"status":"failed","name":"my-input","encapsulation":"shadow"},"my-input-scoped":{"status":"failed","name":"my-input-scoped","encapsulation":"scoped"},"my-list-scoped":{"status":"failed","name":"my-list","encapsulation":"scoped"},"my-list":{"status":"passed","name":"my-list","encapsulation":"shadow"},"my-list-item-scoped":{"status":"failed","name":"my-list-item","encapsulation":"scoped"},"my-list-item":{"status":"passed","name":"my-list-item","encapsulation":"shadow"},"my-popover":{"status":"not-tested","name":"my-popover","encapsulation":"scoped"},"my-radio-group":{"status":"not-tested","name":"my-radio-group","encapsulation":"scoped"},"my-range":{"status":"not-tested","name":"my-range","encapsulation":"shadow"},"my-toggle":{"status":"not-tested","name":"my-toggle","encapsulation":"shadow"},"my-toggle-content":{"status":"not-tested","name":"my-toggle-content","encapsulation":"shadow"},"my-tooltip":{"status":"not-tested","name":"my-tooltip","encapsulation":"shadow"},"my-transform-test":{"status":"failed","name":"my-transform-test","encapsulation":"shadow"}}},{"timestamp":"2026-02-01T02:36:02.583Z","environment":{"nodeVersion":"v22.16.0","browser":"Chrome","chromeVersion":"144.0.7559.110","nextjsVersion":"15.3.3","outputTargetsVersion":"workspace:* (local)","stencilCoreVersion":"4.41.0"},"summary":{"total":22,"passed":3,"failed":10,"skipped":0,"notTested":9},"componentResults":{"my-button-scoped":{"status":"failed","name":"my-button","encapsulation":"scoped"},"my-button":{"status":"failed","name":"my-button","encapsulation":"shadow"},"my-checkbox":{"status":"not-tested","name":"my-checkbox","encapsulation":"shadow"},"my-complex-props":{"status":"failed","name":"my-complex-props","encapsulation":"shadow"},"my-complex-props-scoped":{"status":"failed","name":"my-complex-props-scoped","encapsulation":"scoped"},"my-component":{"status":"passed","name":"my-component","encapsulation":"shadow"},"my-component-scoped":{"status":"failed","name":"my-component-scoped","encapsulation":"scoped"},"my-counter":{"status":"not-tested","name":"my-counter","encapsulation":"shadow"},"my-data-table":{"status":"not-tested","name":"my-data-table","encapsulation":"shadow"},"my-popover":{"status":"not-tested","name":"my-popover","encapsulation":"scoped"},"my-input":{"status":"failed","name":"my-input","encapsulation":"shadow"},"my-input-scoped":{"status":"failed","name":"my-input-scoped","encapsulation":"scoped"},"my-list-scoped":{"status":"failed","name":"my-list","encapsulation":"scoped"},"my-list":{"status":"passed","name":"my-list","encapsulation":"shadow"},"my-list-item-scoped":{"status":"failed","name":"my-list-item","encapsulation":"scoped"},"my-list-item":{"status":"passed","name":"my-list-item","encapsulation":"shadow"},"my-radio-group":{"status":"not-tested","name":"my-radio-group","encapsulation":"scoped"},"my-range":{"status":"not-tested","name":"my-range","encapsulation":"shadow"},"my-toggle":{"status":"not-tested","name":"my-toggle","encapsulation":"shadow"},"my-toggle-content":{"status":"not-tested","name":"my-toggle-content","encapsulation":"shadow"},"my-tooltip":{"status":"not-tested","name":"my-tooltip","encapsulation":"shadow"},"my-transform-test":{"status":"failed","name":"my-transform-test","encapsulation":"shadow"}}},{"timestamp":"2026-02-01T02:26:51.755Z","environment":{"nodeVersion":"v22.16.0","browser":"Chrome","chromeVersion":"144.0.7559.110","nextjsVersion":"15.3.3","outputTargetsVersion":"workspace:* (local)","stencilCoreVersion":"4.41.0"},"summary":{"total":20,"passed":0,"failed":13,"skipped":0,"notTested":7},"componentResults":{"my-button-scoped":{"status":"failed","name":"my-button","encapsulation":"scoped"},"my-button":{"status":"failed","name":"my-button","encapsulation":"shadow"},"my-checkbox":{"status":"not-tested","name":"my-checkbox","encapsulation":"shadow"},"my-complex-props":{"status":"failed","name":"my-complex-props","encapsulation":"shadow"},"my-complex-props-scoped":{"status":"failed","name":"my-complex-props-scoped","encapsulation":"scoped"},"my-component":{"status":"failed","name":"my-component","encapsulation":"shadow"},"my-component-scoped":{"status":"failed","name":"my-component-scoped","encapsulation":"scoped"},"my-counter":{"status":"not-tested","name":"my-counter","encapsulation":"shadow"},"my-popover":{"status":"not-tested","name":"my-dialog","encapsulation":"scoped"},"my-input":{"status":"failed","name":"my-input","encapsulation":"shadow"},"my-input-scoped":{"status":"failed","name":"my-input-scoped","encapsulation":"scoped"},"my-list-scoped":{"status":"failed","name":"my-list","encapsulation":"scoped"},"my-list":{"status":"failed","name":"my-list","encapsulation":"shadow"},"my-list-item-scoped":{"status":"failed","name":"my-list-item","encapsulation":"scoped"},"my-list-item":{"status":"failed","name":"my-list-item","encapsulation":"shadow"},"my-radio-group":{"status":"not-tested","name":"my-radio-group","encapsulation":"scoped"},"my-range":{"status":"not-tested","name":"my-range","encapsulation":"shadow"},"my-toggle":{"status":"not-tested","name":"my-toggle","encapsulation":"shadow"},"my-toggle-content":{"status":"not-tested","name":"my-toggle-content","encapsulation":"shadow"},"my-transform-test":{"status":"failed","name":"my-transform-test","encapsulation":"shadow"}}}];
+      
+      function renderAuditTable() {
+        const auditSection = document.getElementById('audit-section');
+        const auditTableBody = document.getElementById('audit-table-body');
+        const auditTitle = document.getElementById('audit-title');
+        
+        if (!testRunHistory || !Array.isArray(testRunHistory) || testRunHistory.length === 0) {
+          auditSection.style.display = 'none';
+          return;
+        }
+        
+        auditSection.style.display = 'block';
+        auditTableBody.innerHTML = '';
+        auditTitle.innerHTML = 'Test Run History';
+        
+        testRunHistory.forEach((run) => {
+          if (!run || !run.summary) {
+            return; // Skip invalid entries
+          }
+          
+          // Get failed component names for tooltip
+          let failedNames = [];
+          if (run.componentResults) {
+            Object.keys(run.componentResults).forEach(tag => {
+              const result = run.componentResults[tag];
+              if (result && result.status === 'failed') {
+                failedNames.push(tag);
+              }
+            });
+          }
+          const failedTooltip = failedNames.length > 0 ? ' title="' + failedNames.join(', ') + '" style="cursor: help;"' : '';
+          
+          const browserDisplay = (run.environment.browser || 'Chrome') + ' ' + (run.environment.chromeVersion !== 'Unknown' ? run.environment.chromeVersion : 'N/A');
+          const row = document.createElement('tr');
+          row.innerHTML = '<td class="timestamp">' + new Date(run.timestamp).toLocaleString() + '</td>' +
+            '<td class="version">' + run.environment.nodeVersion + '</td>' +
+            '<td class="version">' + browserDisplay + '</td>' +
+            '<td class="version">' + run.environment.nextjsVersion + '</td>' +
+            '<td class="version">' + run.environment.stencilCoreVersion + '</td>' +
+            '<td class="version">' + run.environment.outputTargetsVersion + '</td>' +
+            '<td class="status status-passed">' + run.summary.passed + '</td>' +
+            '<td class="status status-failed"' + failedTooltip + '>' + run.summary.failed + '</td>' +
+            '<td class="status">' + run.summary.total + '</td>';
+          
+          auditTableBody.appendChild(row);
+        });
+      }
+      
+      // Load test run history from JSON file (updates embedded data if fetch succeeds)
+      async function loadTestRunHistory() {
+        // Check if we're in a file:// context (can't fetch)
+        const isFileProtocol = window.location.protocol === 'file:';
+        
+        if (isFileProtocol) {
+          // Can't fetch in file:// protocol, use embedded data
+          console.log('Using embedded test run history data (file:// protocol detected)');
+          return false;
+        }
+        
+        // Try multiple possible paths (only works with http/https)
+        const paths = [
+          './test-run-history.json',
+          'test-run-history.json',
+          '/test/test-run-history.json'
+        ];
+        
+        for (const path of paths) {
+          try {
+            const response = await fetch(path);
+            if (response.ok) {
+              const data = await response.json();
+              if (Array.isArray(data)) {
+                testRunHistory = data;
+                console.log('Loaded test run history from:', path);
+                return true;
+              }
+            }
+          } catch (error) {
+            // Silently try next path (CORS errors are expected in some contexts)
+            continue;
+          }
+        }
+        
+        // If fetch fails, use embedded data (already set as fallback)
+        console.log('Using embedded test run history data (fetch failed or not available)');
+        return false;
+      }
+      
+      // Render audit table when page loads
+      document.addEventListener('DOMContentLoaded', async function() {
+        // Load data from JSON file (or use embedded)
+        await loadTestRunHistory();
+        // Render the tables (will use embedded data if fetch failed)
+        renderAuditTable();
+        
+        // Collapse all component sections by default
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+          section.classList.add('collapsed');
+        });
+      });
+    </script>
+  </div>
+  <script>
+    function toggleSection(header) {
+      const section = header.closest('.section');
+      section.classList.toggle('collapsed');
+    }
+  </script>
+</body>
+</html>
