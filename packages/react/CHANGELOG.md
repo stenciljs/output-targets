@@ -1,3 +1,12 @@
+## [1.4.1](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.4.0...@stencil/react-output-target@1.4.1) (2026-02-10)
+
+
+### :bug: Bug Fix
+
+* **react:** Fix hydration mismatch errors with NextJs Runtime SSR ([#757](https://github.com/stenciljs/output-targets/issues/757)) ([f8fcabd](https://github.com/stenciljs/output-targets/commit/f8fcabd2dd7d3513f687c4f6efe0fe1a3ff4dd42))
+* **react:** keep ts-ignore with correct import ([8b2c0ef](https://github.com/stenciljs/output-targets/commit/8b2c0ef0de46edfb975aae0cddf137d76d54257a))
+
+
 ## [1.4.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.3.3...@stencil/react-output-target@1.4.0) (2026-01-24)
 
 
