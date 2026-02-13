@@ -27,9 +27,15 @@ interface TestScenarioOptions {
    * @default true
    */
   assertClientSideErrors?: boolean
+  /**
+   * Array of test component names that are known to have hydration errors.
+   * These components will not fail the test if hydration errors are detected.
+   * @default []
+   */
+  knownFailures?: TestComponent[]
 }
 
-export const runTestScenarios = ({ only, exclude, ...opts }: TestScenarioOptions = {}) => {
+export const runTestScenarios = ({ only, exclude, knownFailures = [], ...opts }: TestScenarioOptions = {}) => {
   const scenarions = (Object.entries(testScenarios) as [TestComponent, () => void][])
     .filter(([key]) => !only || only.includes(key))
     .filter(([key]) => !exclude || !exclude.includes(key))
@@ -39,10 +45,19 @@ export const runTestScenarios = ({ only, exclude, ...opts }: TestScenarioOptions
    * that no errors were logged
    */
   if (typeof opts.assertClientSideErrors !== 'boolean' || opts.assertClientSideErrors) {
-    assertClientSideErrors()
+    assertClientSideErrors(knownFailures)
   }
 
   scenarions.forEach(([name, test]) => {
-    describe(name, test)
+    describe(name, () => {
+      // Set the current test component so assertClientSideErrors can identify known failures
+      // We set it in beforeEach and keep it set so afterEach hooks can access it
+      beforeEach(() => {
+        ;(global as any).__currentTestComponent = name
+      })
+      test()
+      // Note: We don't clear __currentTestComponent here because the afterEach
+      // hook in helpers.ts needs to access it, and hooks run in reverse order
+    })
   })
 }

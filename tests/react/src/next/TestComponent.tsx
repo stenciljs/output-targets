@@ -13,6 +13,13 @@ import {
   MyComplexProps,
   MyComplexPropsScoped,
   MyTransformTest,
+  MyCheckbox,
+  MyRange,
+  MyToggle,
+  MyToggleContent,
+  MyPopover,
+  MyRadioGroup,
+  MyRadio,
 } from 'component-library-react/next';
 import { InputShadow, InputScoped } from './Input';
 
@@ -37,6 +44,17 @@ const testComponents = [
   // transformed tests
   'transform-scoped-to-shadow',
   'transform-tag-test',
+  // individual component tests
+  'my-button',
+  'my-checkbox',
+  'my-component',
+  'my-counter',
+  'my-list',
+  'my-popover',
+  'my-radio-group',
+  'my-range',
+  'my-toggle',
+  'my-toggle-content',
 ] as const;
 export type TestComponent = (typeof testComponents)[number];
 export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
@@ -118,6 +136,52 @@ const TestComponent = ({ name }: TestComponentProps) => {
   }
   if (name === 'transform-tag-test') {
     return <MyTransformTest message="Tag transformation test: should render as v1-my-transform-test" />;
+  }
+  if (name === 'my-button') {
+    return <MyButton>Click Me</MyButton>;
+  }
+  if (name === 'my-checkbox') {
+    return <MyCheckbox>Checkbox Label</MyCheckbox>;
+  }
+  if (name === 'my-component') {
+    return <MyComponent first="John" middleName="William" last="Doe" />;
+  }
+  if (name === 'my-counter') {
+    return <MyCounter startValue={10} />;
+  }
+  if (name === 'my-list') {
+    return (
+      <MyList>
+        <MyListItem>Item 1 Shadow</MyListItem>
+        <MyListItem>Item 2 Shadow</MyListItem>
+        <MyListItem>Item 3 Shadow</MyListItem>
+      </MyList>
+    );
+  }
+  if (name === 'my-popover') {
+    return <MyPopover showBackdrop={true} />;
+  }
+  if (name === 'my-radio-group') {
+    return (
+      <MyRadioGroup name="test-radio" value="option1">
+        <MyRadio value="option1">Option 1</MyRadio>
+        <MyRadio value="option2">Option 2</MyRadio>
+        <MyRadio value="option3">Option 3</MyRadio>
+      </MyRadioGroup>
+    );
+  }
+  if (name === 'my-range') {
+    return (
+      <MyRange name="test-range" min={0} max={100} value={50}>
+        Range Label
+      </MyRange>
+    );
+  }
+  if (name === 'my-toggle') {
+    return <MyToggle>Toggle Content</MyToggle>;
+  }
+  if (name === 'my-toggle-content') {
+    return <MyToggleContent>Toggle Content</MyToggleContent>;
   }
 
   return (
