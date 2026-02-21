@@ -1,3 +1,11 @@
+## [1.4.2](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.4.1...@stencil/react-output-target@1.4.2) (2026-02-21)
+
+
+### :bug: Bug Fix
+
+* **react:** fix(react): improve prop serialization ([#764](https://github.com/stenciljs/output-targets/pull/764)) ([1b09cae](https://github.com/stenciljs/output-targets/commit/92bf3492f39e6ab457d7aa39a9f373c0b9fba809))
+  
+
 ## [1.4.1](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.4.0...@stencil/react-output-target@1.4.1) (2026-02-10)
 
 
