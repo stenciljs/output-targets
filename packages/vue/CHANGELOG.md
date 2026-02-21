@@ -1,3 +1,11 @@
+## [0.13.1](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.13.0...@stencil/vue-output-target@0.13.1) (2026-02-21)
+
+
+### :bug: Bug Fix
+
+* **vue:** update vue-router peer dependency to support v5 ([#763](https://github.com/stenciljs/output-targets/issues/763)) ([59b31fd](https://github.com/stenciljs/output-targets/commit/59b31fdaf4128af14a420a85445584111a4a5cd0)), closes [#760](https://github.com/stenciljs/output-targets/issues/760)
+
+
 ## [0.13.0](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.12.2...@stencil/vue-output-target@0.13.0) (2026-01-23)
 
 
