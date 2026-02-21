@@ -151,6 +151,13 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      */
     let stringProps = '';
     for (const [key, value] of Object.entries(props)) {
+      /**
+       * Skip boolean false values per the HTML spec for boolean attributes
+       */
+      if (typeof value === 'boolean' && value === false) {
+        continue;
+      }
+
       let propValue = isPrimitive(value)
         ? `"${value}"`
         : typeof value !== 'function'
@@ -229,6 +236,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
     const serializedComponentByLine = html.split('\n');
     const hydrationComment = '<!--r.1-->';
     const isShadowComponent = serializedComponentByLine[1].includes('shadowrootmode="open"');
+    const delegatesFocus = serializedComponentByLine[1].includes('shadowrootdelegatesfocus');
     let templateContent: undefined | string = undefined;
     if (isShadowComponent) {
       const templateEndTag = '  </template>';
@@ -295,6 +303,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
                 <template
                   // @ts-expect-error
                   shadowrootmode="open"
+                  {...(delegatesFocus ? { shadowrootdelegatesfocus: '' } : {})}
                   suppressHydrationWarning={true}
                   dangerouslySetInnerHTML={{ __html: hydrationComment + templateContent }}
                 ></template>
