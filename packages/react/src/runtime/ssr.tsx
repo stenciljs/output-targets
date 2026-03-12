@@ -390,12 +390,12 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
     // Handle React Lazy Component
     // https://github.com/facebook/react/blob/main/packages/react/src/ReactLazy.js
     const payload = type._payload;
-    const { deault: lazyComponet } =
+    const { default: lazyComponent } =
       payload._status === -1 // Uninitialized = -1 so we need resolve the promise
         ? await payload._result()
         : payload._result;
     // Now resolve the actual component type of the lazy component
-    resolvedType = await resolveType(lazyComponet, props);
+    resolvedType = await resolveType(lazyComponent, props);
   } else if (typeof type !== 'object') {
     // Child is a Function Component because React Server
     // Components can be a Promise we need to await it
@@ -426,7 +426,7 @@ type CreateComponentForSSROptions<I extends HTMLElement, E extends EventNames = 
   clientModule?: ReactWebComponent<I, E>;
 };
 
-let hydrateModeuleCache: HydrateModule | null = null;
+let hydrateModuleCache: HydrateModule | null = null;
 
 /**
  * Defines a custom element and creates a React component for server side rendering.
@@ -462,11 +462,11 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
    */
   return (async (props: WebComponentProps<I>) => {
     let firstTime = false;
-    if (!hydrateModeuleCache) {
-      hydrateModeuleCache = await options.hydrateModule;
+    if (!hydrateModuleCache) {
+      hydrateModuleCache = await options.hydrateModule;
       firstTime = true;
     }
-    const resolvedHydrateModule = hydrateModeuleCache;
+    const resolvedHydrateModule = hydrateModuleCache;
 
     if (options.getTagTransformer && firstTime) {
       const tagTransformer = options.getTagTransformer();
