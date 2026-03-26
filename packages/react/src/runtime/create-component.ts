@@ -8,7 +8,8 @@ type EventNames = Record<string, EventName | string>;
 type StencilProps<I extends HTMLElement, E extends EventNames> = Omit<React.HTMLAttributes<I>, keyof E> &
   Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
   Partial<Omit<I, keyof HTMLElement>> &
-  React.RefAttributes<I>;
+  React.RefAttributes<I> &
+  { autofocus?: boolean };
 
 export type StencilReactComponent<I extends HTMLElement, E extends EventNames = {}> = React.FunctionComponent<
   StencilProps<I, E>
