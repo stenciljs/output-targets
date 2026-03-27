@@ -36,7 +36,7 @@ import { MyToggleContent as MyToggleContentElement } from "component-library/com
 import { MyToggle as MyToggleElement } from "component-library/components/my-toggle.js";
 import { MyTransformTest as MyTransformTestElement } from "component-library/components/my-transform-test.js";
 
-export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter"], "default": "declarative-shadow-dom" };
+export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter", "my-button", "my-component", "my-radio"], "default": "declarative-shadow-dom" };
 
 export type MyButtonEvents = {
     onMyFocus: EventName<MyButtonCustomEvent<void>>,
