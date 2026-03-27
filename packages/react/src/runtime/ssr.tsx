@@ -1,5 +1,5 @@
 import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react';
-import React, { Component, JSXElementConstructor, ReactNode } from 'react';
+import React, { Component, Fragment, JSXElementConstructor, ReactNode } from 'react';
 import { stringifyCSSProperties } from 'react-style-stringify';
 
 import { createComponent as createComponentWrapper } from './create-component.js';
@@ -49,7 +49,16 @@ export interface RenderToStringOptions {
    */
   serializeShadowRoot?: SerializeShadowRootOptions;
 }
-type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
+export interface HydrateStyleElement {
+  id?: string;
+  href?: string | null;
+  content?: string;
+}
+
+type RenderToString = (
+  html: string,
+  options: RenderToStringOptions
+) => Promise<{ html: string | null; styles: HydrateStyleElement[] }>;
 
 export type HydrateModule = {
   renderToString: RenderToString;
@@ -220,7 +229,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      * first render the component with `prettyHtml` flag so it makes it easier to
      * access the inner content of the component.
      */
-    const { html } = await options.renderToString(toSerializeWithChildren, {
+    const { html, styles } = await options.renderToString(toSerializeWithChildren, {
       fullDocument: false,
       serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
       prettyHtml: true,
@@ -289,8 +298,23 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
                  */
                 .replace(/(?<=>)\s+(?=<)/g, '');
 
+              const renderStyles =
+                styles.length > 0 &&
+                styles.map((style) => {
+                  return (
+                    <style
+                      href={`stencil-${options.tagName}`}
+                      precedence="stencil"
+                      suppressHydrationWarning={true}
+                      dangerouslySetInnerHTML={{ __html: style.content || '' }}
+                    />
+                  );
+                });
               return (
-                <CustomTag {...customProps} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html }} />
+                <Fragment>
+                  {renderStyles}
+                  <CustomTag {...customProps} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html }} />
+                </Fragment>
               );
             }
 
