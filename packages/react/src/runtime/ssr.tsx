@@ -2,8 +2,9 @@ import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react
 import React, { Component, JSXElementConstructor, ReactNode } from 'react';
 import { stringifyCSSProperties } from 'react-style-stringify';
 
-import { createComponent as createComponentWrapper } from './create-component.js';
+import { createComponent as createComponentWrapper, StencilReactComponent } from './create-component.js';
 import { possibleStandardNames } from './constants.js';
+import { ComponentInterface } from '@stencil/core';
 
 const LOG_PREFIX = '[react-output-target]';
 
@@ -416,14 +417,15 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
   return resolvedType;
 };
 
-type CreateComponentForSSROptions<I extends HTMLElement, E extends EventNames = {}> = Omit<
-  CreateComponentForServerSideRenderingOptions,
-  'renderToString' | 'serializeProperty' | 'transformTag'
-> & {
+type CreateComponentForSSROptions<
+  I extends HTMLElement,
+  C extends ComponentInterface,
+  E extends EventNames = {},
+> = Omit<CreateComponentForServerSideRenderingOptions, 'renderToString' | 'serializeProperty' | 'transformTag'> & {
   hydrateModule: Promise<HydrateModule>;
   transformTag?: (tag: string) => string;
   getTagTransformer?: () => ((tag: string) => string) | undefined;
-  clientModule?: ReactWebComponent<I, E>;
+  clientModule?: StencilReactComponent<I, C, E>;
 };
 
 let hydrateModuleCache: HydrateModule | null = null;
@@ -432,9 +434,9 @@ let hydrateModuleCache: HydrateModule | null = null;
  * Defines a custom element and creates a React component for server side rendering.
  * @public
  */
-export const createComponent = <I extends HTMLElement, E extends EventNames = {}>(
-  options: CreateComponentForSSROptions<I, E>
-): ReactWebComponent<I, E> => {
+export const createComponent = <I extends HTMLElement, C extends ComponentInterface, E extends EventNames = {}>(
+  options: CreateComponentForSSROptions<I, C, E>
+): StencilReactComponent<I, C, E> => {
   /**
    * If we are running in the browser, we can use the `clientModule` function
    * to create a React component that can be used in the browser. This allows to import
@@ -449,7 +451,7 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
       return createComponentWrapper<I, E>({
         tagName: options.tagName,
         properties: options.properties,
-      } as any) as unknown as ReactWebComponent<I, E>;
+      } as any) as unknown as StencilReactComponent<I, C, E>;
     }
   }
 
@@ -481,5 +483,5 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
       serializeProperty: resolvedHydrateModule.serializeProperty,
       ...options,
     })(props as any);
-  }) as unknown as ReactWebComponent<I, E>;
+  }) as unknown as StencilReactComponent<I, C, E>;
 };
