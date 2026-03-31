@@ -12,7 +12,7 @@ type StencilProps<I extends HTMLElement, C extends ComponentInterface, E extends
 > &
   Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
   Partial<C> &
-  React.RefAttributes<I> & { autofocus?: boolean };
+  React.RefAttributes<I>;
 
 export type StencilReactComponent<
   I extends HTMLElement,
