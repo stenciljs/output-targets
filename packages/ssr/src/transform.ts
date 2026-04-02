@@ -32,6 +32,8 @@ const NEW_LINE = '\n';
  */
 const configuredModules = new WeakMap<object, boolean>();
 
+const shadowRootTemplateRegExp = /<template.* shadowrootmode="open"/;
+
 interface HydrateModule {
   serializeProperty: (value: any) => string;
   renderToString: (
@@ -367,7 +369,7 @@ export async function transform(
       /**
        * render the component to a string
        *
-       * Note: we purposly don't parse in a light DOM as we can't evaluate the code during SSR.
+       * Note: we purposely don't parse in a light DOM as we can't evaluate the code during SSR.
        */
       const children = (propObject as Record<string, any>).children;
       const toRender =
@@ -378,7 +380,10 @@ export async function transform(
         serializeShadowRoot,
       });
 
-      const isScopedComponent = !html.includes('<template shadowrootmode="open">');
+      const lines = html.split(NEW_LINE);
+      const potentialTemplateTagLine = lines[1];
+
+      const isScopedComponent = !shadowRootTemplateRegExp.test(potentialTemplateTagLine);
       const isScoped =
         typeof serializeShadowRoot === 'string'
           ? serializeShadowRoot === 'scoped'
@@ -387,8 +392,6 @@ export async function transform(
               ? true
               : serializeShadowRoot['scoped']?.includes(tagName)
             : false;
-
-      const lines = html.split(NEW_LINE);
 
       /**
        * serialize scoped component
