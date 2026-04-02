@@ -1,5 +1,5 @@
 import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react';
-import React, { Component, JSXElementConstructor, ReactNode } from 'react';
+import React, { Component, Fragment, JSXElementConstructor, ReactNode } from 'react';
 import { stringifyCSSProperties } from 'react-style-stringify';
 
 import { createComponent as createComponentWrapper } from './create-component.js';
@@ -49,7 +49,16 @@ export interface RenderToStringOptions {
    */
   serializeShadowRoot?: SerializeShadowRootOptions;
 }
-type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
+export interface HydrateStyleElement {
+  id?: string;
+  href?: string | null;
+  content?: string;
+}
+
+type RenderToString = (
+  html: string,
+  options: RenderToStringOptions
+) => Promise<{ html: string | null; styles: HydrateStyleElement[] }>;
 
 export type HydrateModule = {
   renderToString: RenderToString;
@@ -197,7 +206,12 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       }
       const awaitedChildren = await resolveComponentTypes(children);
       const { renderToString } = await import('react-dom/server');
-      serializedChildren = renderToString(awaitedChildren);
+      serializedChildren = renderToString(awaitedChildren)
+        /**
+         * collapse any newline + indentation sequences in the serialized children
+         * to prevent hydration mismatches from formatted React output
+         */
+        .replace(/\n\s+/g, '');
     } catch (err: unknown) {
       /**
        * if rendering the light DOM fails, we log a warning and continue to render the component
@@ -220,7 +234,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      * first render the component with `prettyHtml` flag so it makes it easier to
      * access the inner content of the component.
      */
-    const { html } = await options.renderToString(toSerializeWithChildren, {
+    const { html, styles } = await options.renderToString(toSerializeWithChildren, {
       fullDocument: false,
       serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
       prettyHtml: true,
@@ -287,10 +301,32 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
                 /**
                  * remove any whitespace between tags that may cause hydration errors
                  */
-                .replace(/(?<=>)\s+(?=<)/g, '');
+                .replace(/(?<=>)\s+(?=<)/g, '')
+                /**
+                 * collapse any remaining newline + indentation sequences not caught
+                 * by the previous regex (e.g. within text nodes or attribute boundaries)
+                 */
+                .replace(/\n\s+/g, '');
 
+              const renderStyles =
+                styles.length > 0 &&
+                styles.map((style, index) => {
+                  return (
+                    <style
+                      href={`stencil-${style.id || options.tagName}`}
+                      key={style.id || index}
+                      id={style.id}
+                      precedence="stencil"
+                      suppressHydrationWarning={true}
+                      dangerouslySetInnerHTML={{ __html: style.content || '' }}
+                    />
+                  );
+                });
               return (
-                <CustomTag {...customProps} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html }} />
+                <Fragment>
+                  {renderStyles}
+                  <CustomTag {...customProps} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html }} />
+                </Fragment>
               );
             }
 

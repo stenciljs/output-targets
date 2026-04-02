@@ -9,7 +9,7 @@ export default stencilSSR({
   from: 'component-library-react',
   hydrateModule: import('component-library/hydrate'),
   serializeShadowRoot: {
-    scoped: ['my-counter', 'my-radio'],
+    scoped: ["my-counter", "my-button", "my-component", "my-radio"],
     default: 'declarative-shadow-dom',
   },
   setTagTransformer: transformer,

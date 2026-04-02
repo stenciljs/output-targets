@@ -240,45 +240,17 @@ exports[`single-children-shadow > should correctly server side render 1`] = `
     fill="outline"
     s-id="x"
   >
-    <template shadowrootmode="open">
-      <style sty-id="sc-my-button">
-        :host{display:block;background-color:green;color:white;font-weight:bold;border-radius:5px;cursor:pointer}
-      </style>
-      <button
+    <button
+      c-id="x"
+      class="button-native sc-my-button"
+    >
+      <span
         c-id="x"
-        class="button-native sc-my-button"
+        class="button-inner sc-my-button sc-my-button-s"
       >
-        <span
-          c-id="x"
-          class="button-inner sc-my-button"
-        >
-          <slot
-            c-id="x"
-            class="sc-my-button"
-            name="icon-only"
-          >
-          </slot>
-          <slot
-            c-id="x"
-            class="sc-my-button"
-            name="start"
-          >
-          </slot>
-          <slot
-            c-id="x"
-            class="sc-my-button"
-          >
-          </slot>
-          <slot
-            c-id="x"
-            class="sc-my-button"
-            name="end"
-          >
-          </slot>
-        </span>
-      </button>
-    </template>
-    Test
+        Test
+      </span>
+    </button>
   </my-button>
 </div>
 "
@@ -315,18 +287,326 @@ exports[`single-no-child-shadow > should correctly server side render 1`] = `
     middle-name="William"
     s-id="x"
   >
-    <template shadowrootmode="open">
-      <style sty-id="sc-my-component">
-        :host{display:block;color:green}
-      </style>
+    <div
+      c-id="x"
+      class="sc-my-component"
+    >
+      Hello, World! I'm John William Doe
+    </div>
+  </my-component>
+</div>
+"
+`;
+
+exports[`style-deduplication-scoped > should server side render component with style tags and precedence attributes 1`] = `
+"
+<div id="style-deduplication-scoped">
+  <my-counter
+    class="hydrated sc-my-counter-h"
+    s-id="x"
+    start-value="1"
+  >
+    <div
+      c-id="x"
+      class="sc-my-counter"
+    >
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        -
+      </button>
+      <span
+        c-id="x"
+        class="sc-my-counter"
+      >
+        1
+      </span>
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        +
+      </button>
+    </div>
+  </my-counter>
+  <my-counter
+    class="hydrated sc-my-counter-h"
+    s-id="x"
+    start-value="2"
+  >
+    <div
+      c-id="x"
+      class="sc-my-counter"
+    >
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        -
+      </button>
+      <span
+        c-id="x"
+        class="sc-my-counter"
+      >
+        2
+      </span>
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        +
+      </button>
+    </div>
+  </my-counter>
+  <my-counter
+    class="hydrated sc-my-counter-h"
+    s-id="x"
+    start-value="3"
+  >
+    <div
+      c-id="x"
+      class="sc-my-counter"
+    >
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        -
+      </button>
+      <span
+        c-id="x"
+        class="sc-my-counter"
+      >
+        3
+      </span>
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        +
+      </button>
+    </div>
+  </my-counter>
+  <my-button
+    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-outline"
+    fill="outline"
+    s-id="x"
+  >
+    <button
+      c-id="x"
+      class="button-native sc-my-button"
+    >
+      <span
+        c-id="x"
+        class="button-inner sc-my-button sc-my-button-s"
+      >
+        Button 1
+      </span>
+    </button>
+  </my-button>
+  <my-button
+    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-solid"
+    fill="solid"
+    s-id="x"
+  >
+    <button
+      c-id="x"
+      class="button-native sc-my-button"
+    >
+      <span
+        c-id="x"
+        class="button-inner sc-my-button sc-my-button-s"
+      >
+        Button 2
+      </span>
+    </button>
+  </my-button>
+  <my-button
+    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-clear"
+    fill="clear"
+    s-id="x"
+  >
+    <button
+      c-id="x"
+      class="button-native sc-my-button"
+    >
+      <span
+        c-id="x"
+        class="button-inner sc-my-button sc-my-button-s"
+      >
+        Button 3
+      </span>
+    </button>
+  </my-button>
+  <my-component
+    class="hydrated sc-my-component-h"
+    first="John"
+    last="Doe"
+    middle-name="A"
+    s-id="x"
+  >
+    <div
+      c-id="x"
+      class="sc-my-component"
+    >
+      Hello, World! I'm John A Doe
+    </div>
+  </my-component>
+  <my-component
+    class="hydrated sc-my-component-h"
+    first="Jane"
+    last="Smith"
+    middle-name="B"
+    s-id="x"
+  >
+    <div
+      c-id="x"
+      class="sc-my-component"
+    >
+      Hello, World! I'm Jane B Smith
+    </div>
+  </my-component>
+  <my-component
+    class="hydrated sc-my-component-h"
+    first="Bob"
+    last="Jones"
+    middle-name="C"
+    s-id="x"
+  >
+    <div
+      c-id="x"
+      class="sc-my-component"
+    >
+      Hello, World! I'm Bob C Jones
+    </div>
+  </my-component>
+  <my-radio
+    aria-checked="false"
+    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
+    role="radio"
+    s-id="x"
+    value="option1"
+  >
+    <label
+      c-id="x"
+      class="radio-wrapper sc-my-radio"
+    >
       <div
         c-id="x"
-        class="sc-my-component"
+        class="label-text-wrapper sc-my-radio sc-my-radio-s"
+        part="label"
       >
-        Hello, World! I'm John William Doe
+        Option 1
       </div>
-    </template>
-  </my-component>
+      <div
+        c-id="x"
+        class="native-wrapper sc-my-radio"
+      >
+        <div
+          c-id="x"
+          class="radio-icon sc-my-radio"
+          part="container"
+        >
+          <div
+            c-id="x"
+            class="radio-inner sc-my-radio"
+            part="mark"
+          >
+          </div>
+          <div
+            c-id="x"
+            class="radio-ripple sc-my-radio"
+          >
+          </div>
+        </div>
+      </div>
+    </label>
+  </my-radio>
+  <my-radio
+    aria-checked="false"
+    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
+    role="radio"
+    s-id="x"
+    value="option2"
+  >
+    <label
+      c-id="x"
+      class="radio-wrapper sc-my-radio"
+    >
+      <div
+        c-id="x"
+        class="label-text-wrapper sc-my-radio sc-my-radio-s"
+        part="label"
+      >
+        Option 2
+      </div>
+      <div
+        c-id="x"
+        class="native-wrapper sc-my-radio"
+      >
+        <div
+          c-id="x"
+          class="radio-icon sc-my-radio"
+          part="container"
+        >
+          <div
+            c-id="x"
+            class="radio-inner sc-my-radio"
+            part="mark"
+          >
+          </div>
+          <div
+            c-id="x"
+            class="radio-ripple sc-my-radio"
+          >
+          </div>
+        </div>
+      </div>
+    </label>
+  </my-radio>
+  <my-radio
+    aria-checked="false"
+    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
+    role="radio"
+    s-id="x"
+    value="option3"
+  >
+    <label
+      c-id="x"
+      class="radio-wrapper sc-my-radio"
+    >
+      <div
+        c-id="x"
+        class="label-text-wrapper sc-my-radio sc-my-radio-s"
+        part="label"
+      >
+        Option 3
+      </div>
+      <div
+        c-id="x"
+        class="native-wrapper sc-my-radio"
+      >
+        <div
+          c-id="x"
+          class="radio-icon sc-my-radio"
+          part="container"
+        >
+          <div
+            c-id="x"
+            class="radio-inner sc-my-radio"
+            part="mark"
+          >
+          </div>
+          <div
+            c-id="x"
+            class="radio-ripple sc-my-radio"
+          >
+          </div>
+        </div>
+      </div>
+    </label>
+  </my-radio>
 </div>
 "
 `;

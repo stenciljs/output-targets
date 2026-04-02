@@ -114,7 +114,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: ^20.0.2
-        version: 20.0.2(4f95b6723e9aa55cfdbbe897c6cd226b)
+        version: 20.0.2(c0f415c7e9c767effe5914c144208b73)
       '@angular/cli':
         specifier: ^20.0.2
         version: 20.0.2(@types/node@22.15.31)(chokidar@4.0.3)
@@ -166,6 +166,21 @@ importers:
       component-library:
         specifier: workspace:*
         version: link:../../../component-library
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  example-project/component-library-angular/projects/library/dist:
+    dependencies:
+      '@angular/common':
+        specifier: ^20.0.0
+        version: 20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
+      '@angular/core':
+        specifier: ^20.0.0
+        version: 20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1)
+      component-library:
+        specifier: workspace:*
+        version: link:../../../../component-library
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -240,6 +255,8 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.15.31)(jsdom@26.1.0)(less@4.3.0)(sass@1.89.2)(terser@5.42.0)
+
+  example-project/component-library/hydrate: {}
 
   example-project/next-15-runtime-based:
     dependencies:
@@ -437,7 +454,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: ^20.0.2
-        version: 20.0.2(c0f415c7e9c767effe5914c144208b73)
+        version: 20.0.2(4f95b6723e9aa55cfdbbe897c6cd226b)
       '@angular/cli':
         specifier: ^20.0.2
         version: 20.0.2(@types/node@22.15.31)(chokidar@4.0.3)
@@ -521,14 +538,14 @@ importers:
         specifier: ^5.0.1
         version: 5.1.0
       react:
-        specifier: ^19.0.0
-        version: 19.0.0
+        specifier: ^19.1.0
+        version: 19.1.0
       react-dom:
-        specifier: ^19.0.0
-        version: 19.0.0(react@19.0.0)
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
       react-router:
         specifier: ^7.4.0
-        version: 7.6.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 7.6.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-test-components:
         specifier: workspace:*
         version: link:../../tests/react
@@ -2527,6 +2544,7 @@ packages:
   '@lerna/create@8.2.2':
     resolution: {integrity: sha512-1yn1MvWn2Yz0SFgTTQnef2m1YedF7KwqLLVIOrGkgQrkVHzsveAIk1A1RcRa2yyUh+siKI1YcJ7lUZIEt+qQ3Q==}
     engines: {node: '>=18.0.0'}
+    deprecated: This package is an implementation detail of Lerna and is no longer published separately.
 
   '@listr2/prompt-adapter-inquirer@2.0.22':
     resolution: {integrity: sha512-hV36ZoY+xKL6pYOt1nPNnkciFkn89KZwqLhAFzJvYysAvL5uBQdiADZx/8bIDXIukzzwG0QlPYolgMzQUtKgpQ==}
@@ -5448,6 +5466,7 @@ packages:
   basic-ftp@5.0.5:
     resolution: {integrity: sha512-4Bcg1P8xhUuqcii/S0Z9wiHIrQVPMermM1any+MX5GeGD7faD3/msQUDGLol9wOcz4/jbg/WJnGqoJF6LiBdtg==}
     engines: {node: '>=10.0.0'}
+    deprecated: Security vulnerability fixed in 5.2.0, please upgrade
 
   beasties@0.3.4:
     resolution: {integrity: sha512-NmzN1zN1cvGccXFyZ73335+ASXwBlVWcUPssiUDIlFdfyatHPRRufjCd5w8oPaQPvVnf9ELklaCGb1gi9FBwIw==}
@@ -7536,6 +7555,7 @@ packages:
   git-raw-commits@3.0.0:
     resolution: {integrity: sha512-b5OHmZ3vAgGrDn/X0kS+9qCfNKWe4K/jFnhwzVWWg0/k5eLa3060tZShrRg8Dja5kPc+YjS0Gc6y7cRr44Lpjw==}
     engines: {node: '>=14'}
+    deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
     hasBin: true
 
   git-remote-origin-url@2.0.0:
@@ -7545,6 +7565,7 @@ packages:
   git-semver-tags@5.0.1:
     resolution: {integrity: sha512-hIvOeZwRbQ+7YEUmCkHqo8FOLQZCEn18yevLHADlFPZY02KJGsu5FZt9YW/lybfK2uhWFI7Qg/07LekJiTv7iA==}
     engines: {node: '>=14'}
+    deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
     hasBin: true
 
   git-up@7.0.0:
@@ -7579,29 +7600,33 @@ packages:
   glob@10.3.10:
     resolution: {integrity: sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==}
     engines: {node: '>=16 || 14 >=14.17'}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@11.0.3:
     resolution: {integrity: sha512-2Nim7dha1KVkaiF4q6Dj+ngPPMdfvLJEOpZk/jKiUAkqKebpGAWQXAq9z1xu9HKu5lWfqw/FASuccEjyznjPaA==}
     engines: {node: 20 || >=22}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
     engines: {node: '>=16 || 14 >=14.17'}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   global-directory@4.0.1:
     resolution: {integrity: sha512-wHTUcDUoZ1H5/0iVqEudYW4/kAlN5cZ3j/bXn0Dpbizl9iaUVeWSHqiOjsgk6OW2bkLclbBjzewBz6weQ1zA2Q==}
@@ -12128,10 +12153,12 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   temp-dir@1.0.0:
     resolution: {integrity: sha512-xZFXEGbG7SNC3itwBzI3RYjq/cEhBkx2hJuKGIUOcEULmkQExXiHat2z/qkISYsuR+IKumhEfKKbV5qXmhICFQ==}
@@ -12679,6 +12706,7 @@ packages:
 
   unplugin-vue-router@0.12.0:
     resolution: {integrity: sha512-xjgheKU0MegvXQcy62GVea0LjyOdMxN0/QH+ijN29W62ZlMhG7o7K+0AYqfpprvPwpWtuRjiyC5jnV2SxWye2w==}
+    deprecated: 'Merged into vuejs/router. Migrate: https://router.vuejs.org/guide/migration/v4-to-v5.html'
     peerDependencies:
       vue-router: ^4.4.0
     peerDependenciesMeta:
@@ -17692,6 +17720,14 @@ snapshots:
     optionalDependencies:
       vite: 5.4.19(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(terser@5.42.0)
 
+  '@vitest/mocker@3.2.3(vite@5.4.19(@types/node@18.19.111)(less@4.3.0)(sass@1.89.2)(terser@5.42.0))':
+    dependencies:
+      '@vitest/spy': 3.2.3
+      estree-walker: 3.0.3
+      magic-string: 0.30.17
+    optionalDependencies:
+      vite: 5.4.19(@types/node@18.19.111)(less@4.3.0)(sass@1.89.2)(terser@5.42.0)
+
   '@vitest/mocker@3.2.3(vite@5.4.19(@types/node@22.15.31)(less@4.3.0)(sass@1.88.0)(terser@5.42.0))':
     dependencies:
       '@vitest/spy': 3.2.3
@@ -20565,7 +20601,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
@@ -20595,7 +20631,7 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.9.0
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -20665,7 +20701,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.34.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -26100,13 +26136,13 @@ snapshots:
       '@remix-run/router': 1.23.0
       react: 18.3.1
 
-  react-router@7.6.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  react-router@7.6.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       cookie: 1.0.2
-      react: 19.0.0
+      react: 19.1.0
       set-cookie-parser: 2.7.1
     optionalDependencies:
-      react-dom: 19.0.0(react@19.0.0)
+      react-dom: 19.1.0(react@19.1.0)
 
   react-style-stringify@1.2.0:
     dependencies:
@@ -28560,7 +28596,7 @@ snapshots:
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.3
-      '@vitest/mocker': 3.2.3(vite@5.4.19(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(terser@5.42.0))
+      '@vitest/mocker': 3.2.3(vite@5.4.19(@types/node@18.19.111)(less@4.3.0)(sass@1.89.2)(terser@5.42.0))
       '@vitest/pretty-format': 3.2.3
       '@vitest/runner': 3.2.3
       '@vitest/snapshot': 3.2.3
