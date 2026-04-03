@@ -332,7 +332,7 @@ export function serializeShadowComponent(
   const templateAttributes = [
     'shadowrootmode="open"',
     suppressHydrationWarning,
-    `dangerouslySetInnerHTML={{ __html: \`${__html}\` }}`
+    `dangerouslySetInnerHTML={{ __html: \`${__html}\` }}`,
   ];
 
   if (templateTag.includes('shadowrootdelegatesfocus')) {
