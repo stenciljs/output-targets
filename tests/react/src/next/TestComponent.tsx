@@ -13,8 +13,10 @@ import {
   MyComplexProps,
   MyComplexPropsScoped,
   MyTransformTest,
+  MyRadio,
 } from 'component-library-react/next';
 import { InputShadow, InputScoped } from './Input';
+import { Fragment } from 'react/jsx-runtime';
 
 /**
  * A list of all test components that are available to be
@@ -37,11 +39,18 @@ const testComponents = [
   // transformed tests
   'transform-scoped-to-shadow',
   'transform-tag-test',
+  'style-deduplication-scoped',
 ] as const;
 export type TestComponent = (typeof testComponents)[number];
 export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
-export type ScopedComponents = Exclude<Extract<TestComponent, `${string}scoped`>, 'transform-scoped-to-shadow'>;
-export type TransformedComponents = Extract<TestComponent, 'transform-scoped-to-shadow' | 'transform-tag-test'>;
+export type ScopedComponents = Exclude<
+  Extract<TestComponent, `${string}scoped`>,
+  'transform-scoped-to-shadow' | 'style-deduplication-scoped'
+>;
+export type TransformedComponents = Extract<
+  TestComponent,
+  'transform-scoped-to-shadow' | 'transform-tag-test' | 'style-deduplication-scoped'
+>;
 interface TestComponentProps {
   name: TestComponent;
 }
@@ -118,6 +127,43 @@ const TestComponent = ({ name }: TestComponentProps) => {
   }
   if (name === 'transform-tag-test') {
     return <MyTransformTest message="Tag transformation test: should render as v1-my-transform-test" />;
+  }
+  if (name === 'style-deduplication-scoped') {
+    return (
+      <Fragment>
+        <MyCounter startValue={1} />
+        <MyCounter startValue={2} />
+        <MyCounter startValue={3} />
+        <MyButton fill="outline">Button 1</MyButton>
+        <MyButton fill="solid">Button 2</MyButton>
+        <MyButton fill="clear">Button 3</MyButton>
+        <MyComponent first="John" middleName="A" last="Doe" />
+        <MyComponent first="Jane" middleName="B" last="Smith" />
+        <MyComponent first="Bob" middleName="C" last="Jones" />
+        <MyRadio value="option1">Option 1</MyRadio>
+        <MyRadio value="option2">Option 2</MyRadio>
+        <MyRadio value="option3">Option 3</MyRadio>
+      </Fragment>
+    );
+  }
+
+  if (name === 'style-no-deduplication-scoped') {
+    return (
+      <>
+        <MyCounter startValue={1} />
+        <MyCounter startValue={2} />
+        <MyCounter startValue={3} />
+        <MyButton fill="outline">Button 1</MyButton>
+        <MyButton fill="solid">Button 2</MyButton>
+        <MyButton fill="clear">Button 3</MyButton>
+        <MyComponent first="John" middleName="A" last="Doe" />
+        <MyComponent first="Jane" middleName="B" last="Smith" />
+        <MyComponent first="Bob" middleName="C" last="Jones" />
+        <MyRadio value="option1">Option 1</MyRadio>
+        <MyRadio value="option2">Option 2</MyRadio>
+        <MyRadio value="option3">Option 3</MyRadio>
+      </>
+    );
   }
 
   return (

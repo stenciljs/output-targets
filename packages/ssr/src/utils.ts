@@ -240,18 +240,23 @@ export function serializeScopedComponent(
   const __html = html.slice(1, -1).join('\n').trim();
 
   /**
+   * Extract the tag name from the component tag (e.g., <my-counter class="..."> → my-counter)
+   */
+  const tagNameMatch = cmpTag.match(/<([a-z-]+)/);
+  const tagName = tagNameMatch?.[1] || '';
+  const styleId = `stencil-${tagName}`;
+
+  /**
    * In most cases we directly render the component through a wrapper that injects the styles
    * tag into an extra container.
    */
   const directlyRenderedComponent = `\nconst ${identifier} = ({ children, ...props }) => {
-    return (<div style={{ display: 'contents' }} ${suppressHydrationWarning}>
-      <style>{\`
-        ${styles.join('\n')}
-      \`}</style>
+     return (<div style={{ display: 'contents' }} ${suppressHydrationWarning}>
+       <style href={${JSON.stringify(styleId)}} precedence="stencil" id={${JSON.stringify(tagName)}} dangerouslySetInnerHTML={{ __html: ${JSON.stringify(styles.join('\n'))} }} />
 
-      ${cmpTag} {...props} ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
-    </div>)
-  }\n`;
+       ${cmpTag} {...props} ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
+     </div>)
+   }\n`;
 
   if (strategy === 'react') {
     return directlyRenderedComponent;

@@ -4,7 +4,6 @@ import { reactOutputTarget } from '@stencil/react-output-target';
 import { typesOutputTarget } from '@stencil/types-output-target';
 import { vueOutputTarget, ComponentModelConfig } from '@stencil/vue-output-target';
 
-
 const angularValueAccessorBindings: ValueAccessorConfig[] = [
   {
     elementSelectors: ['my-input[type=text],my-input[type=email],my-input[type=password]'],
@@ -48,7 +47,7 @@ const vueComponentModels: ComponentModelConfig[] = [
     elements: ['my-checkbox'],
     event: 'ionChangeNested',
     targetAttr: 'checked',
-    eventAttr: 'detail.nested.checked'
+    eventAttr: 'detail.nested.checked',
   },
   {
     elements: ['my-range', 'my-radio-group'],
@@ -71,7 +70,10 @@ export const config: Config = {
       outDir: '../component-library-react/src',
       hydrateModule: 'component-library/hydrate',
       clientModule: 'component-library-react',
-      serializeShadowRoot: { scoped: ['my-counter'], default: 'declarative-shadow-dom' },
+      serializeShadowRoot: {
+        scoped: ['my-counter', 'my-button', 'my-component', 'my-radio'],
+        default: 'declarative-shadow-dom',
+      },
       transformTag: true,
     }),
     typesOutputTarget({
@@ -94,7 +96,7 @@ export const config: Config = {
     {
       type: 'dist-custom-elements',
       externalRuntime: false,
-      dir: 'components'
+      dir: 'components',
     },
     {
       type: 'dist',
@@ -114,5 +116,5 @@ export const config: Config = {
   ],
   extras: {
     additionalTagTransformers: true,
-  }
+  },
 };
