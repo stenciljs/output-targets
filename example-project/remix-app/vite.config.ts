@@ -1,9 +1,9 @@
-import { vitePlugin as remix } from "@remix-run/dev";
-import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
-import { stencilSSR } from "@stencil/ssr";
+import { vitePlugin as remix } from '@remix-run/dev';
+import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import { stencilSSR } from '@stencil/ssr';
 
-declare module "@remix-run/node" {
+declare module '@remix-run/node' {
   interface Future {
     v3_singleFetch: true;
   }
@@ -29,10 +29,10 @@ export default defineConfig({
       from: 'component-library-react',
       hydrateModule: import('component-library/hydrate'),
       serializeShadowRoot: {
-        'scoped': ['my-counter'],
+        scoped: ['my-counter', 'my-button', 'my-component', 'my-radio'],
         default: 'declarative-shadow-dom',
       },
-      setTagTransformer: (tag) => tag.startsWith('my-transform-') ? `v1-${tag}` : tag,
+      setTagTransformer: (tag) => (tag.startsWith('my-transform-') ? `v1-${tag}` : tag),
     }),
   ],
 });
