@@ -29,7 +29,7 @@ const testComponents = [
   'nested-scoped',
   'complex-props-scoped',
   'input-scoped',
-    // style deduplication tests
+  // style deduplication tests
   'style-deduplication-scoped',
   'style-no-deduplication-scoped',
   // shadow tests
