@@ -257,6 +257,8 @@ export namespace Components {
          */
         "middleName": string;
     }
+    interface MyComponentDelegatesFocus {
+    }
     interface MyComponentScoped {
         /**
           * The first name
@@ -866,6 +868,12 @@ declare global {
         prototype: HTMLMyComponentElement;
         new (): HTMLMyComponentElement;
     };
+    interface HTMLMyComponentDelegatesFocusElement extends Components.MyComponentDelegatesFocus, HTMLStencilElement {
+    }
+    var HTMLMyComponentDelegatesFocusElement: {
+        prototype: HTMLMyComponentDelegatesFocusElement;
+        new (): HTMLMyComponentDelegatesFocusElement;
+    };
     interface HTMLMyComponentScopedElementEventMap {
         "myCustomEvent": IMyComponent.someVar;
     }
@@ -1065,6 +1073,7 @@ declare global {
         "my-complex-props": HTMLMyComplexPropsElement;
         "my-complex-props-scoped": HTMLMyComplexPropsScopedElement;
         "my-component": HTMLMyComponentElement;
+        "my-component-delegates-focus": HTMLMyComponentDelegatesFocusElement;
         "my-component-scoped": HTMLMyComponentScopedElement;
         "my-counter": HTMLMyCounterElement;
         "my-input": HTMLMyInputElement;
@@ -1344,6 +1353,8 @@ declare namespace LocalJSX {
           * The middle name (using kebab case name)
          */
         "middleName"?: string;
+    }
+    interface MyComponentDelegatesFocus {
     }
     interface MyComponentScoped {
         /**
@@ -1892,6 +1903,7 @@ declare namespace LocalJSX {
         "my-complex-props": MyComplexProps;
         "my-complex-props-scoped": MyComplexPropsScoped;
         "my-component": MyComponent;
+        "my-component-delegates-focus": MyComponentDelegatesFocus;
         "my-component-scoped": MyComponentScoped;
         "my-counter": MyCounter;
         "my-input": MyInput;
@@ -1919,6 +1931,7 @@ declare module "@stencil/core" {
             "my-complex-props": LocalJSX.MyComplexProps & JSXBase.HTMLAttributes<HTMLMyComplexPropsElement>;
             "my-complex-props-scoped": LocalJSX.MyComplexPropsScoped & JSXBase.HTMLAttributes<HTMLMyComplexPropsScopedElement>;
             "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "my-component-delegates-focus": LocalJSX.MyComponentDelegatesFocus & JSXBase.HTMLAttributes<HTMLMyComponentDelegatesFocusElement>;
             "my-component-scoped": LocalJSX.MyComponentScoped & JSXBase.HTMLAttributes<HTMLMyComponentScopedElement>;
             "my-counter": LocalJSX.MyCounter & JSXBase.HTMLAttributes<HTMLMyCounterElement>;
             "my-input": LocalJSX.MyInput & JSXBase.HTMLAttributes<HTMLMyInputElement>;

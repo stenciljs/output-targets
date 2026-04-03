@@ -1,158 +1,152 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`transform > should transform the code 1`] = `
+exports[`transform > should transform the code using "declarative-shadow-dom" 1`] = `
 "import Input from "../components/Input";
 
-import { MyComponent, MyCounter, MyList, MyListItem } from "component-library-react";
+import { MyComponent, MyComponentDelegatesFocus, MyCounter, MyList, MyListItem } from "component-library-react";
 
 import { jsxDEV } from "react/jsx-dev-runtime";
 
 
 const MyComponent$0 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-component", precedence: "stencil", id: "my-component", dangerouslySetInnerHTML: { __html: "/*!@:host*/.sc-my-component-h{display:block;color:green}" } }, void 0, false, {
-      lineNumber: 4,
-      columnNumber: 8
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "9", suppressHydrationWarning: true, ...props, children: [
+    /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<style sty-id="sc-my-component">
+      :host{display:block;color:green}
+    </style>
+    <div c-id="9.0.0.0" class="sc-my-component">
+      <!--t.9.1.1.0-->
+      Hello, World! I'm John undefined Doe
+    </div>\` } }, void 0, false, {
+      lineNumber: 3,
+      columnNumber: 9
     }),
-    /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "1", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.1-->
-  <div c-id="1.0.0.0" class="sc-my-component">
-    <!--t.1.1.1.0-->
-    Hello, World! I'm John undefined Doe
-  </div>\` } }, void 0, false, {
-      lineNumber: 6,
-      columnNumber: 8
-    })
+    children
   ] }, void 0, true, {
-    lineNumber: 3,
+    lineNumber: 2,
     columnNumber: 14
   });
 };
 const MyComponent$1 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-component", precedence: "stencil", id: "my-component", dangerouslySetInnerHTML: { __html: "/*!@:host*/.sc-my-component-h{display:block;color:green}" } }, void 0, false, {
-      lineNumber: 17,
-      columnNumber: 8
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", "s-id": "10", suppressHydrationWarning: true, ...props, children: [
+    /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<style sty-id="sc-my-component">
+      :host{display:block;color:green}
+    </style>
+    <div c-id="10.0.0.0" class="sc-my-component">
+      <!--t.10.1.1.0-->
+      Hello, World! I'm undefined undefined undefined
+    </div>\` } }, void 0, false, {
+      lineNumber: 16,
+      columnNumber: 9
     }),
-    /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", "s-id": "2", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.2-->
-  <div c-id="2.0.0.0" class="sc-my-component">
-    <!--t.2.1.1.0-->
-    Hello, World! I'm undefined undefined undefined
-  </div>\` } }, void 0, false, {
-      lineNumber: 19,
-      columnNumber: 8
-    })
+    children
   ] }, void 0, true, {
-    lineNumber: 16,
+    lineNumber: 15,
     columnNumber: 14
   });
 };
-const MyList$2 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list", precedence: "stencil", id: "my-list", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
-      lineNumber: 30,
-      columnNumber: 8
+const MyComponentDelegatesFocus$2 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-component-delegates-focus", { class: "hydrated sc-my-component-delegates-focus-h", "s-id": "11", suppressHydrationWarning: true, ...props, children: [
+    /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<style sty-id="sc-my-component-delegates-focus">
+      :host{display:block;color:green}
+    </style>
+    <div c-id="11.0.0.0" class="sc-my-component-delegates-focus">
+      <!--t.11.1.1.0-->
+      Focusing the host should focus this button
+      <button c-id="11.2.1.1" class="sc-my-component-delegates-focus">
+        <!--t.11.3.2.0-->
+        Button
+      </button>
+    </div>\` }, shadowrootdelegatesfocus: "true" }, void 0, false, {
+      lineNumber: 29,
+      columnNumber: 9
     }),
-    /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "3", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.3-->
-  <ul c-id="3.0.0.0" class="sc-my-list sc-my-list-s">
-    <!--s.3.1.1.0.-->
-  </ul>\` } }, void 0, false, {
-      lineNumber: 32,
-      columnNumber: 8
-    })
+    children
   ] }, void 0, true, {
-    lineNumber: 29,
+    lineNumber: 28,
     columnNumber: 14
   });
 };
-const MyListItem$3 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list-item", precedence: "stencil", id: "my-list-item", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
-      lineNumber: 42,
-      columnNumber: 8
+const MyList$3 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "12", suppressHydrationWarning: true, ...props, children: [
+    /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<ul c-id="12.0.0.0" class="sc-my-list">
+      <slot c-id="12.1.1.0" class="sc-my-list"></slot>
+    </ul>\` } }, void 0, false, {
+      lineNumber: 46,
+      columnNumber: 9
     }),
-    /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "4", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.4-->
-  <!--o.0.1.-->
-  <li c-id="4.0.0.0" class="sc-my-list-item sc-my-list-item-s">
-    <!--s.4.1.1.0.-->
-    <!--t.0.1-->
-    Item 1
-  </li>\` } }, void 0, false, {
-      lineNumber: 44,
-      columnNumber: 8
-    })
+    children
   ] }, void 0, true, {
-    lineNumber: 41,
+    lineNumber: 45,
     columnNumber: 14
   });
 };
 const MyListItem$4 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list-item", precedence: "stencil", id: "my-list-item", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
-      lineNumber: 57,
-      columnNumber: 8
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "13", suppressHydrationWarning: true, ...props, children: [
+    /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<li c-id="13.0.0.0" class="sc-my-list-item">
+      <slot c-id="13.1.1.0" class="sc-my-list-item"></slot>
+    </li>\` } }, void 0, false, {
+      lineNumber: 55,
+      columnNumber: 9
     }),
-    /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "5", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.5-->
-  <!--o.0.2.-->
-  <li c-id="5.0.0.0" class="sc-my-list-item sc-my-list-item-s">
-    <!--s.5.1.1.0.-->
-    <!--t.0.2-->
-    Item 2
-  </li>\` } }, void 0, false, {
-      lineNumber: 59,
-      columnNumber: 8
-    })
+    children
   ] }, void 0, true, {
-    lineNumber: 56,
+    lineNumber: 54,
     columnNumber: 14
   });
 };
 const MyListItem$5 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list-item", precedence: "stencil", id: "my-list-item", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
-      lineNumber: 72,
-      columnNumber: 8
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "14", suppressHydrationWarning: true, ...props, children: [
+    /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<li c-id="14.0.0.0" class="sc-my-list-item">
+      <slot c-id="14.1.1.0" class="sc-my-list-item"></slot>
+    </li>\` } }, void 0, false, {
+      lineNumber: 64,
+      columnNumber: 9
     }),
-    /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "6", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.6-->
-  <!--o.0.3.-->
-  <li c-id="6.0.0.0" class="sc-my-list-item sc-my-list-item-s">
-    <!--s.6.1.1.0.-->
-    <!--t.0.3-->
-    Item 3
-  </li>\` } }, void 0, false, {
-      lineNumber: 74,
-      columnNumber: 8
-    })
+    children
   ] }, void 0, true, {
-    lineNumber: 71,
+    lineNumber: 63,
     columnNumber: 14
   });
 };
-const MyCounter$6 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-counter", precedence: "stencil", id: "my-counter", dangerouslySetInnerHTML: { __html: "/*!@:host button*/.sc-my-counter-h button.sc-my-counter{padding:5px 10px;font-size:20px;margin:0 10px}/*!@:host span*/.sc-my-counter-h span.sc-my-counter{font-size:20px;margin:0 10px}" } }, void 0, false, {
-      lineNumber: 87,
-      columnNumber: 8
+const MyListItem$6 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "15", suppressHydrationWarning: true, ...props, children: [
+    /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<li c-id="15.0.0.0" class="sc-my-list-item">
+      <slot c-id="15.1.1.0" class="sc-my-list-item"></slot>
+    </li>\` } }, void 0, false, {
+      lineNumber: 73,
+      columnNumber: 9
     }),
-    /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "7", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.7-->
-  <div c-id="7.0.0.0" class="sc-my-counter">
-    <button c-id="7.1.1.0" class="sc-my-counter">
-      <!--t.7.2.2.0-->
-      -
-    </button>
-    <span c-id="7.3.1.1" class="sc-my-counter">
-      <!--t.7.4.2.0-->
-      0
-    </span>
-    <button c-id="7.5.1.2" class="sc-my-counter">
-      <!--t.7.6.2.0-->
-      +
-    </button>
-  </div>\` } }, void 0, false, {
-      lineNumber: 89,
-      columnNumber: 8
-    })
+    children
   ] }, void 0, true, {
-    lineNumber: 86,
+    lineNumber: 72,
+    columnNumber: 14
+  });
+};
+const MyCounter$7 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "16", suppressHydrationWarning: true, ...props, children: [
+    /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<style sty-id="sc-my-counter">
+      :host button{padding:5px 10px;font-size:20px;margin:0 10px}:host span{font-size:20px;margin:0 10px}
+    </style>
+    <div c-id="16.0.0.0" class="sc-my-counter">
+      <button c-id="16.1.1.0" class="sc-my-counter">
+        <!--t.16.2.2.0-->
+        -
+      </button>
+      <span c-id="16.3.1.1" class="sc-my-counter">
+        <!--t.16.4.2.0-->
+        0
+      </span>
+      <button c-id="16.5.1.2" class="sc-my-counter">
+        <!--t.16.6.2.0-->
+        +
+      </button>
+    </div>\` } }, void 0, false, {
+      lineNumber: 82,
+      columnNumber: 9
+    }),
+    children
+  ] }, void 0, true, {
+    lineNumber: 81,
     columnNumber: 14
   });
 };
@@ -238,44 +232,50 @@ export default function Index() {
           lineNumber: 38,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV(MyList$2, {
+        /* @__PURE__ */ jsxDEV(MyComponentDelegatesFocus$2, {
+      suppressHydrationWarning: true
+    }, void 0, false, {
+          lineNumber: 39,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(MyList$3, {
       children: [
-            /* @__PURE__ */ jsxDEV(MyListItem$3, {
-        children: "Item 1",
-        suppressHydrationWarning: true
-      }, void 0, false, {
-              lineNumber: 40,
-              columnNumber: 13
-            }, this),
             /* @__PURE__ */ jsxDEV(MyListItem$4, {
-        children: "Item 2",
+        children: "Item 1",
         suppressHydrationWarning: true
       }, void 0, false, {
               lineNumber: 41,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV(MyListItem$5, {
-        children: "Item 3",
+        children: "Item 2",
         suppressHydrationWarning: true
       }, void 0, false, {
               lineNumber: 42,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV(MyListItem$6, {
+        children: "Item 3",
+        suppressHydrationWarning: true
+      }, void 0, false, {
+              lineNumber: 43,
               columnNumber: 13
             }, this)
           ],
 
       suppressHydrationWarning: true
     }, void 0, true, {
-          lineNumber: 39,
+          lineNumber: 40,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV(Input, {}, void 0, false, {
-          lineNumber: 44,
+          lineNumber: 45,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV(MyCounter$6, {
+        /* @__PURE__ */ jsxDEV(MyCounter$7, {
       suppressHydrationWarning: true
     }, void 0, false, {
-          lineNumber: 45,
+          lineNumber: 46,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV("ul", { children: resources.map(({ href, text, icon }) => /* @__PURE__ */ jsxDEV("li", { children: /* @__PURE__ */ jsxDEV(
@@ -293,15 +293,15 @@ export default function Index() {
           void 0,
           true,
           {
-            lineNumber: 49,
+            lineNumber: 50,
             columnNumber: 17
           },
           this
         ) }, href, false, {
-          lineNumber: 48,
+          lineNumber: 49,
           columnNumber: 15
         }, this)) }, void 0, false, {
-          lineNumber: 46,
+          lineNumber: 47,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
@@ -341,7 +341,7 @@ const resources = [
           void 0,
           false,
           {
-            lineNumber: 80,
+            lineNumber: 81,
             columnNumber: 9
           },
           this
@@ -350,7 +350,7 @@ const resources = [
       void 0,
       false,
       {
-        lineNumber: 72,
+        lineNumber: 73,
         columnNumber: 7
       },
       this
@@ -379,7 +379,7 @@ const resources = [
           void 0,
           false,
           {
-            lineNumber: 101,
+            lineNumber: 102,
             columnNumber: 9
           },
           this
@@ -388,7 +388,7 @@ const resources = [
       void 0,
       false,
       {
-        lineNumber: 93,
+        lineNumber: 94,
         columnNumber: 7
       },
       this
@@ -416,7 +416,7 @@ const resources = [
           void 0,
           false,
           {
-            lineNumber: 122,
+            lineNumber: 123,
             columnNumber: 9
           },
           this
@@ -425,7 +425,7 @@ const resources = [
       void 0,
       false,
       {
-        lineNumber: 114,
+        lineNumber: 115,
         columnNumber: 7
       },
       this
@@ -452,7 +452,7 @@ const resources = [
           void 0,
           false,
           {
-            lineNumber: 142,
+            lineNumber: 143,
             columnNumber: 9
           },
           this
@@ -461,7 +461,7 @@ const resources = [
       void 0,
       false,
       {
-        lineNumber: 134,
+        lineNumber: 135,
         columnNumber: 7
       },
       this
@@ -471,10 +471,10 @@ const resources = [
 "
 `;
 
-exports[`transform should transform the code 1`] = `
+exports[`transform > should transform the code using "scoped" 1`] = `
 "import Input from "../components/Input";
 
-import { MyComponent, MyCounter, MyList, MyListItem } from "component-library-react";
+import { MyComponent, MyComponentDelegatesFocus, MyCounter, MyList, MyListItem } from "component-library-react";
 
 import { jsxDEV } from "react/jsx-dev-runtime";
 
@@ -517,16 +517,21 @@ const MyComponent$1 = ({ children, ...props }) => {
     columnNumber: 14
   });
 };
-const MyList$2 = ({ children, ...props }) => {
+const MyComponentDelegatesFocus$2 = ({ children, ...props }) => {
   return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list", precedence: "stencil", id: "my-list", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
+    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-component-delegates-focus", precedence: "stencil", id: "my-component-delegates-focus", dangerouslySetInnerHTML: { __html: "/*!@:host*/.sc-my-component-delegates-focus-h{display:block;color:green}" } }, void 0, false, {
       lineNumber: 30,
       columnNumber: 8
     }),
-    /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "3", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.3-->
-  <ul c-id="3.0.0.0" class="sc-my-list sc-my-list-s">
-    <!--s.3.1.1.0.-->
-  </ul>\` } }, void 0, false, {
+    /* @__PURE__ */ jsxDEV("my-component-delegates-focus", { class: "hydrated sc-my-component-delegates-focus-h", "s-id": "3", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.3-->
+  <div c-id="3.0.0.0" class="sc-my-component-delegates-focus">
+    <!--t.3.1.1.0-->
+    Focusing the host should focus this button
+    <button c-id="3.2.1.1" class="sc-my-component-delegates-focus">
+      <!--t.3.3.2.0-->
+      Button
+    </button>
+  </div>\` } }, void 0, false, {
       lineNumber: 32,
       columnNumber: 8
     })
@@ -535,95 +540,113 @@ const MyList$2 = ({ children, ...props }) => {
     columnNumber: 14
   });
 };
-const MyListItem$3 = ({ children, ...props }) => {
+const MyList$3 = ({ children, ...props }) => {
   return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list-item", precedence: "stencil", id: "my-list-item", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
-      lineNumber: 42,
+    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list", precedence: "stencil", id: "my-list", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
+      lineNumber: 47,
       columnNumber: 8
     }),
-    /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "4", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.4-->
-  <!--o.0.1.-->
-  <li c-id="4.0.0.0" class="sc-my-list-item sc-my-list-item-s">
+    /* @__PURE__ */ jsxDEV("my-list", { class: "hydrated sc-my-list-h", "s-id": "4", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.4-->
+  <ul c-id="4.0.0.0" class="sc-my-list sc-my-list-s">
     <!--s.4.1.1.0.-->
-    <!--t.0.1-->
-    Item 1
-  </li>\` } }, void 0, false, {
-      lineNumber: 44,
+  </ul>\` } }, void 0, false, {
+      lineNumber: 49,
       columnNumber: 8
     })
   ] }, void 0, true, {
-    lineNumber: 41,
+    lineNumber: 46,
     columnNumber: 14
   });
 };
 const MyListItem$4 = ({ children, ...props }) => {
   return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
     /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list-item", precedence: "stencil", id: "my-list-item", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
-      lineNumber: 57,
+      lineNumber: 59,
       columnNumber: 8
     }),
     /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "5", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.5-->
-  <!--o.0.2.-->
+  <!--o.0.1.-->
   <li c-id="5.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.5.1.1.0.-->
-    <!--t.0.2-->
-    Item 2
+    <!--t.0.1-->
+    Item 1
   </li>\` } }, void 0, false, {
-      lineNumber: 59,
+      lineNumber: 61,
       columnNumber: 8
     })
   ] }, void 0, true, {
-    lineNumber: 56,
+    lineNumber: 58,
     columnNumber: 14
   });
 };
 const MyListItem$5 = ({ children, ...props }) => {
   return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
     /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list-item", precedence: "stencil", id: "my-list-item", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
-      lineNumber: 72,
+      lineNumber: 74,
       columnNumber: 8
     }),
     /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "6", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.6-->
-  <!--o.0.3.-->
+  <!--o.0.2.-->
   <li c-id="6.0.0.0" class="sc-my-list-item sc-my-list-item-s">
     <!--s.6.1.1.0.-->
-    <!--t.0.3-->
-    Item 3
+    <!--t.0.2-->
+    Item 2
   </li>\` } }, void 0, false, {
-      lineNumber: 74,
+      lineNumber: 76,
       columnNumber: 8
     })
   ] }, void 0, true, {
-    lineNumber: 71,
+    lineNumber: 73,
     columnNumber: 14
   });
 };
-const MyCounter$6 = ({ children, ...props }) => {
+const MyListItem$6 = ({ children, ...props }) => {
   return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
-    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-counter", precedence: "stencil", id: "my-counter", dangerouslySetInnerHTML: { __html: "/*!@:host button*/.sc-my-counter-h button.sc-my-counter{padding:5px 10px;font-size:20px;margin:0 10px}/*!@:host span*/.sc-my-counter-h span.sc-my-counter{font-size:20px;margin:0 10px}" } }, void 0, false, {
-      lineNumber: 87,
+    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-list-item", precedence: "stencil", id: "my-list-item", dangerouslySetInnerHTML: { __html: "" } }, void 0, false, {
+      lineNumber: 89,
       columnNumber: 8
     }),
-    /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "7", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.7-->
-  <div c-id="7.0.0.0" class="sc-my-counter">
-    <button c-id="7.1.1.0" class="sc-my-counter">
-      <!--t.7.2.2.0-->
-      -
-    </button>
-    <span c-id="7.3.1.1" class="sc-my-counter">
-      <!--t.7.4.2.0-->
-      0
-    </span>
-    <button c-id="7.5.1.2" class="sc-my-counter">
-      <!--t.7.6.2.0-->
-      +
-    </button>
-  </div>\` } }, void 0, false, {
-      lineNumber: 89,
+    /* @__PURE__ */ jsxDEV("my-list-item", { class: "hydrated sc-my-list-item-h", "s-id": "7", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.7-->
+  <!--o.0.3.-->
+  <li c-id="7.0.0.0" class="sc-my-list-item sc-my-list-item-s">
+    <!--s.7.1.1.0.-->
+    <!--t.0.3-->
+    Item 3
+  </li>\` } }, void 0, false, {
+      lineNumber: 91,
       columnNumber: 8
     })
   ] }, void 0, true, {
-    lineNumber: 86,
+    lineNumber: 88,
+    columnNumber: 14
+  });
+};
+const MyCounter$7 = ({ children, ...props }) => {
+  return /* @__PURE__ */ jsxDEV("div", { style: { display: "contents" }, suppressHydrationWarning: true, children: [
+    /* @__PURE__ */ jsxDEV("style", { href: "stencil-my-counter", precedence: "stencil", id: "my-counter", dangerouslySetInnerHTML: { __html: "/*!@:host button*/.sc-my-counter-h button.sc-my-counter{padding:5px 10px;font-size:20px;margin:0 10px}/*!@:host span*/.sc-my-counter-h span.sc-my-counter{font-size:20px;margin:0 10px}" } }, void 0, false, {
+      lineNumber: 104,
+      columnNumber: 8
+    }),
+    /* @__PURE__ */ jsxDEV("my-counter", { class: "hydrated sc-my-counter-h", "s-id": "8", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.8-->
+  <div c-id="8.0.0.0" class="sc-my-counter">
+    <button c-id="8.1.1.0" class="sc-my-counter">
+      <!--t.8.2.2.0-->
+      -
+    </button>
+    <span c-id="8.3.1.1" class="sc-my-counter">
+      <!--t.8.4.2.0-->
+      0
+    </span>
+    <button c-id="8.5.1.2" class="sc-my-counter">
+      <!--t.8.6.2.0-->
+      +
+    </button>
+  </div>\` } }, void 0, false, {
+      lineNumber: 106,
+      columnNumber: 8
+    })
+  ] }, void 0, true, {
+    lineNumber: 103,
     columnNumber: 14
   });
 };
@@ -709,44 +732,50 @@ export default function Index() {
           lineNumber: 38,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV(MyList$2, {
+        /* @__PURE__ */ jsxDEV(MyComponentDelegatesFocus$2, {
+      suppressHydrationWarning: true
+    }, void 0, false, {
+          lineNumber: 39,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(MyList$3, {
       children: [
-            /* @__PURE__ */ jsxDEV(MyListItem$3, {
-        children: "Item 1",
-        suppressHydrationWarning: true
-      }, void 0, false, {
-              lineNumber: 40,
-              columnNumber: 13
-            }, this),
             /* @__PURE__ */ jsxDEV(MyListItem$4, {
-        children: "Item 2",
+        children: "Item 1",
         suppressHydrationWarning: true
       }, void 0, false, {
               lineNumber: 41,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV(MyListItem$5, {
-        children: "Item 3",
+        children: "Item 2",
         suppressHydrationWarning: true
       }, void 0, false, {
               lineNumber: 42,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV(MyListItem$6, {
+        children: "Item 3",
+        suppressHydrationWarning: true
+      }, void 0, false, {
+              lineNumber: 43,
               columnNumber: 13
             }, this)
           ],
 
       suppressHydrationWarning: true
     }, void 0, true, {
-          lineNumber: 39,
+          lineNumber: 40,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV(Input, {}, void 0, false, {
-          lineNumber: 44,
+          lineNumber: 45,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV(MyCounter$6, {
+        /* @__PURE__ */ jsxDEV(MyCounter$7, {
       suppressHydrationWarning: true
     }, void 0, false, {
-          lineNumber: 45,
+          lineNumber: 46,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV("ul", { children: resources.map(({ href, text, icon }) => /* @__PURE__ */ jsxDEV("li", { children: /* @__PURE__ */ jsxDEV(
@@ -764,15 +793,15 @@ export default function Index() {
           void 0,
           true,
           {
-            lineNumber: 49,
+            lineNumber: 50,
             columnNumber: 17
           },
           this
         ) }, href, false, {
-          lineNumber: 48,
+          lineNumber: 49,
           columnNumber: 15
         }, this)) }, void 0, false, {
-          lineNumber: 46,
+          lineNumber: 47,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
@@ -812,7 +841,7 @@ const resources = [
           void 0,
           false,
           {
-            lineNumber: 80,
+            lineNumber: 81,
             columnNumber: 9
           },
           this
@@ -821,7 +850,7 @@ const resources = [
       void 0,
       false,
       {
-        lineNumber: 72,
+        lineNumber: 73,
         columnNumber: 7
       },
       this
@@ -850,7 +879,7 @@ const resources = [
           void 0,
           false,
           {
-            lineNumber: 101,
+            lineNumber: 102,
             columnNumber: 9
           },
           this
@@ -859,7 +888,7 @@ const resources = [
       void 0,
       false,
       {
-        lineNumber: 93,
+        lineNumber: 94,
         columnNumber: 7
       },
       this
@@ -887,7 +916,7 @@ const resources = [
           void 0,
           false,
           {
-            lineNumber: 122,
+            lineNumber: 123,
             columnNumber: 9
           },
           this
@@ -896,7 +925,7 @@ const resources = [
       void 0,
       false,
       {
-        lineNumber: 114,
+        lineNumber: 115,
         columnNumber: 7
       },
       this
@@ -923,7 +952,7 @@ const resources = [
           void 0,
           false,
           {
-            lineNumber: 142,
+            lineNumber: 143,
             columnNumber: 9
           },
           this
@@ -932,7 +961,7 @@ const resources = [
       void 0,
       false,
       {
-        lineNumber: 134,
+        lineNumber: 135,
         columnNumber: 7
       },
       this

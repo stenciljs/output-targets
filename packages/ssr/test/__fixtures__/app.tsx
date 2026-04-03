@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { MyComponent, MyList, MyListItem, MyCounter } from "component-library-react";
+import { MyComponent, MyList, MyListItem, MyCounter, MyComponentDelegatesFocus } from "component-library-react";
 import Input from "../components/Input";
 
 export const meta: MetaFunction = () => {
@@ -36,6 +36,7 @@ export default function Index() {
           </p>
           <MyComponent first="John" middle="William" last="Doe" kidsNames={['John', 'Jane', 'Jim']} />
           <MyComponent />
+          <MyComponentDelegatesFocus />
           <MyList>
             <MyListItem>Item 1</MyListItem>
             <MyListItem>Item 2</MyListItem>
