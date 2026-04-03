@@ -12,6 +12,11 @@ export function InputShadow() {
       <MyInput
         onMyInput={(ev) => setInputEvent(`${ev.target.value}`)}
         onMyChange={(ev) => setChangeEvent(`${ev.detail.value}`)}
+        /**
+         * Test that we can use a property shared between MyInput and
+         * HTMLElement that's absent from React.HTMLAttributes
+         */ 
+        autofocus={true}
       />
       <div className="inputResult">
         <p>Shadow Input Event: {inputEvent}</p>

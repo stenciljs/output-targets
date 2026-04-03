@@ -41,12 +41,14 @@ describe('createComponentWrappers', () => {
 
 import type { StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent } from '@stencil/react-output-target/runtime';
-import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
+
+import type { Components } from "my-package/dist/custom-elements";
+import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 
 export type MyComponentEvents = NonNullable<unknown>;
 
-export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
+export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -106,12 +108,14 @@ export { MyComponent } from "./my-component.js";
 
 import type { StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent } from '@stencil/react-output-target/runtime';
-import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
+
+import type { Components } from "my-package/dist/custom-elements";
+import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 
 export type MyComponentEvents = NonNullable<unknown>;
 
-export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
+export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -218,13 +222,15 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
 
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent } from '@stencil/react-output-target/runtime';
-import { type MyComponentCustomEvent } from "my-package";
-import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 import React from 'react';
+
+import { type MyComponentCustomEvent } from "my-package";
+import type { Components } from "my-package/dist/custom-elements";
+import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
 
 export type MyComponentEvents = { onMyEvent: EventName<MyComponentCustomEvent<IMyComponent.Events.Detail.MyComponentClicked>> };
 
-export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
+export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -274,11 +280,11 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
 
     const code = sourceFile.getFullText();
     expect(code)
-      .toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents>({
+      .toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
     tagName: 'my-component',
     properties: { hasMaxLength: 'max-length' },
     hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
-    clientModule: clientComponents.MyComponent as ReactWebComponent<MyComponentElement, MyComponentEvents>,
+    clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
     serializeShadowRoot
 });
 `);
@@ -341,7 +347,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     const sourceFile = sourceFiles[1];
 
     const code = sourceFile.getFullText();
-    expect(code).not.toContain('createComponent<MyComponentAElement, MyComponentAEvents>({');
-    expect(code).toContain('createComponent<MyComponentBElement, MyComponentBEvents>({');
+    expect(code).not.toContain('createComponent<MyComponentAElement, MyComponentAEvents, Components.MyComponentA>({');
+    expect(code).toContain('createComponent<MyComponentBElement, MyComponentBEvents, Components.MyComponentB>({');
   });
 });

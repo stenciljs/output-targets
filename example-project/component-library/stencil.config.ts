@@ -59,6 +59,7 @@ const vueComponentModels: ComponentModelConfig[] = [
 export const config: Config = {
   namespace: 'component-library',
   taskQueue: 'async',
+  minifyJs: false,
   outputTargets: [
     angularOutputTarget({
       componentCorePackage: 'component-library',
