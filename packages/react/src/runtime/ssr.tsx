@@ -419,13 +419,13 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
 
 type CreateComponentForSSROptions<
   I extends HTMLElement,
-  C extends ComponentInterface,
   E extends EventNames = {},
+  C extends ComponentInterface = ComponentInterface,
 > = Omit<CreateComponentForServerSideRenderingOptions, 'renderToString' | 'serializeProperty' | 'transformTag'> & {
   hydrateModule: Promise<HydrateModule>;
   transformTag?: (tag: string) => string;
   getTagTransformer?: () => ((tag: string) => string) | undefined;
-  clientModule?: StencilReactComponent<I, C, E>;
+  clientModule?: StencilReactComponent<I, E, C>;
 };
 
 let hydrateModuleCache: HydrateModule | null = null;
@@ -434,9 +434,9 @@ let hydrateModuleCache: HydrateModule | null = null;
  * Defines a custom element and creates a React component for server side rendering.
  * @public
  */
-export const createComponent = <I extends HTMLElement, C extends ComponentInterface, E extends EventNames = {}>(
-  options: CreateComponentForSSROptions<I, C, E>
-): StencilReactComponent<I, C, E> => {
+export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C extends ComponentInterface = ComponentInterface>(
+  options: CreateComponentForSSROptions<I, E, C>
+): StencilReactComponent<I, E, C> => {
   /**
    * If we are running in the browser, we can use the `clientModule` function
    * to create a React component that can be used in the browser. This allows to import
@@ -448,10 +448,10 @@ export const createComponent = <I extends HTMLElement, C extends ComponentInterf
     }
     // Fallback to createComponentWrapper if clientModule not provided (backward compatibility)
     if (createComponentWrapper) {
-      return createComponentWrapper<I, E>({
+      return createComponentWrapper<I, E, C>({
         tagName: options.tagName,
         properties: options.properties,
-      } as any) as unknown as StencilReactComponent<I, C, E>;
+      } as any) as unknown as StencilReactComponent<I, E, C>;
     }
   }
 
@@ -483,5 +483,5 @@ export const createComponent = <I extends HTMLElement, C extends ComponentInterf
       serializeProperty: resolvedHydrateModule.serializeProperty,
       ...options,
     })(props as any);
-  }) as unknown as StencilReactComponent<I, C, E>;
+  }) as unknown as StencilReactComponent<I, E, C>;
 };

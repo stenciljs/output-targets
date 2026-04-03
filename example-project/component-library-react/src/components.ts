@@ -41,7 +41,7 @@ export type MyButtonEvents = {
     onMyBlur: EventName<MyButtonCustomEvent<void>>
 };
 
-export const MyButton: StencilReactComponent<MyButtonElement, Components.MyButton, MyButtonEvents> = /*@__PURE__*/ createComponent<MyButtonElement, Components.MyButton, MyButtonEvents>({
+export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents, Components.MyButton> = /*@__PURE__*/ createComponent<MyButtonElement, MyButtonEvents, Components.MyButton>({
     tagName: 'my-button',
     elementClass: MyButtonElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -59,7 +59,7 @@ export type MyButtonScopedEvents = {
     onMyBlur: EventName<MyButtonScopedCustomEvent<void>>
 };
 
-export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, Components.MyButtonScoped, MyButtonScopedEvents> = /*@__PURE__*/ createComponent<MyButtonScopedElement, Components.MyButtonScoped, MyButtonScopedEvents>({
+export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButtonScopedEvents, Components.MyButtonScoped> = /*@__PURE__*/ createComponent<MyButtonScopedElement, MyButtonScopedEvents, Components.MyButtonScoped>({
     tagName: 'my-button-scoped',
     elementClass: MyButtonScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -79,7 +79,7 @@ export type MyCheckboxEvents = {
     onIonBlur: EventName<MyCheckboxCustomEvent<void>>
 };
 
-export const MyCheckbox: StencilReactComponent<MyCheckboxElement, Components.MyCheckbox, MyCheckboxEvents> = /*@__PURE__*/ createComponent<MyCheckboxElement, Components.MyCheckbox, MyCheckboxEvents>({
+export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEvents, Components.MyCheckbox> = /*@__PURE__*/ createComponent<MyCheckboxElement, MyCheckboxEvents, Components.MyCheckbox>({
     tagName: 'my-checkbox',
     elementClass: MyCheckboxElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -96,7 +96,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, Components.MyC
 
 export type MyComplexPropsEvents = NonNullable<unknown>;
 
-export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, Components.MyComplexProps, MyComplexPropsEvents> = /*@__PURE__*/ createComponent<MyComplexPropsElement, Components.MyComplexProps, MyComplexPropsEvents>({
+export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps> = /*@__PURE__*/ createComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps>({
     tagName: 'my-complex-props',
     elementClass: MyComplexPropsElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -108,7 +108,7 @@ export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, Compon
 
 export type MyComplexPropsScopedEvents = NonNullable<unknown>;
 
-export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedElement, Components.MyComplexPropsScoped, MyComplexPropsScopedEvents> = /*@__PURE__*/ createComponent<MyComplexPropsScopedElement, Components.MyComplexPropsScoped, MyComplexPropsScopedEvents>({
+export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped> = /*@__PURE__*/ createComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped>({
     tagName: 'my-complex-props-scoped',
     elementClass: MyComplexPropsScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -120,7 +120,7 @@ export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedEle
 
 export type MyComponentEvents = NonNullable<unknown>;
 
-export const MyComponent: StencilReactComponent<MyComponentElement, Components.MyComponent, MyComponentEvents> = /*@__PURE__*/ createComponent<MyComponentElement, Components.MyComponent, MyComponentEvents>({
+export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -132,7 +132,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, Components.M
 
 export type MyComponentScopedEvents = { onMyCustomEvent: EventName<MyComponentScopedCustomEvent<IMyComponent.someVar>> };
 
-export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, Components.MyComponentScoped, MyComponentScopedEvents> = /*@__PURE__*/ createComponent<MyComponentScopedElement, Components.MyComponentScoped, MyComponentScopedEvents>({
+export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, MyComponentScopedEvents, Components.MyComponentScoped> = /*@__PURE__*/ createComponent<MyComponentScopedElement, MyComponentScopedEvents, Components.MyComponentScoped>({
     tagName: 'my-component-scoped',
     elementClass: MyComponentScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -144,7 +144,7 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
 
 export type MyCounterEvents = { onCount: EventName<MyCounterCustomEvent<number>> };
 
-export const MyCounter: StencilReactComponent<MyCounterElement, Components.MyCounter, MyCounterEvents> = /*@__PURE__*/ createComponent<MyCounterElement, Components.MyCounter, MyCounterEvents>({
+export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents, Components.MyCounter> = /*@__PURE__*/ createComponent<MyCounterElement, MyCounterEvents, Components.MyCounter>({
     tagName: 'my-counter',
     elementClass: MyCounterElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -161,7 +161,7 @@ export type MyInputEvents = {
     onMyFocus: EventName<MyInputCustomEvent<void>>
 };
 
-export const MyInput: StencilReactComponent<MyInputElement, Components.MyInput, MyInputEvents> = /*@__PURE__*/ createComponent<MyInputElement, Components.MyInput, MyInputEvents>({
+export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents, Components.MyInput> = /*@__PURE__*/ createComponent<MyInputElement, MyInputEvents, Components.MyInput>({
     tagName: 'my-input',
     elementClass: MyInputElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -183,7 +183,7 @@ export type MyInputScopedEvents = {
     onMyFocus: EventName<MyInputScopedCustomEvent<void>>
 };
 
-export const MyInputScoped: StencilReactComponent<MyInputScopedElement, Components.MyInputScoped, MyInputScopedEvents> = /*@__PURE__*/ createComponent<MyInputScopedElement, Components.MyInputScoped, MyInputScopedEvents>({
+export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputScopedEvents, Components.MyInputScoped> = /*@__PURE__*/ createComponent<MyInputScopedElement, MyInputScopedEvents, Components.MyInputScoped>({
     tagName: 'my-input-scoped',
     elementClass: MyInputScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -200,7 +200,7 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, Componen
 
 export type MyListEvents = NonNullable<unknown>;
 
-export const MyList: StencilReactComponent<MyListElement, Components.MyList, MyListEvents> = /*@__PURE__*/ createComponent<MyListElement, Components.MyList, MyListEvents>({
+export const MyList: StencilReactComponent<MyListElement, MyListEvents, Components.MyList> = /*@__PURE__*/ createComponent<MyListElement, MyListEvents, Components.MyList>({
     tagName: 'my-list',
     elementClass: MyListElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -212,7 +212,7 @@ export const MyList: StencilReactComponent<MyListElement, Components.MyList, MyL
 
 export type MyListItemEvents = NonNullable<unknown>;
 
-export const MyListItem: StencilReactComponent<MyListItemElement, Components.MyListItem, MyListItemEvents> = /*@__PURE__*/ createComponent<MyListItemElement, Components.MyListItem, MyListItemEvents>({
+export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEvents, Components.MyListItem> = /*@__PURE__*/ createComponent<MyListItemElement, MyListItemEvents, Components.MyListItem>({
     tagName: 'my-list-item',
     elementClass: MyListItemElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -224,7 +224,7 @@ export const MyListItem: StencilReactComponent<MyListItemElement, Components.MyL
 
 export type MyListItemScopedEvents = NonNullable<unknown>;
 
-export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, Components.MyListItemScoped, MyListItemScopedEvents> = /*@__PURE__*/ createComponent<MyListItemScopedElement, Components.MyListItemScoped, MyListItemScopedEvents>({
+export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped> = /*@__PURE__*/ createComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped>({
     tagName: 'my-list-item-scoped',
     elementClass: MyListItemScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -236,7 +236,7 @@ export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, Co
 
 export type MyListScopedEvents = NonNullable<unknown>;
 
-export const MyListScoped: StencilReactComponent<MyListScopedElement, Components.MyListScoped, MyListScopedEvents> = /*@__PURE__*/ createComponent<MyListScopedElement, Components.MyListScoped, MyListScopedEvents>({
+export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped> = /*@__PURE__*/ createComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped>({
     tagName: 'my-list-scoped',
     elementClass: MyListScopedElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -253,7 +253,7 @@ export type MyPopoverEvents = {
     onMyPopoverDidDismiss: EventName<MyPopoverCustomEvent<OverlayEventDetail>>
 };
 
-export const MyPopover: StencilReactComponent<MyPopoverElement, Components.MyPopover, MyPopoverEvents> = /*@__PURE__*/ createComponent<MyPopoverElement, Components.MyPopover, MyPopoverEvents>({
+export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover> = /*@__PURE__*/ createComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover>({
     tagName: 'my-popover',
     elementClass: MyPopoverElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -273,7 +273,7 @@ export type MyRadioEvents = {
     onIonBlur: EventName<MyRadioCustomEvent<void>>
 };
 
-export const MyRadio: StencilReactComponent<MyRadioElement, Components.MyRadio, MyRadioEvents> = /*@__PURE__*/ createComponent<MyRadioElement, Components.MyRadio, MyRadioEvents>({
+export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents, Components.MyRadio> = /*@__PURE__*/ createComponent<MyRadioElement, MyRadioEvents, Components.MyRadio>({
     tagName: 'my-radio',
     elementClass: MyRadioElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -288,7 +288,7 @@ export const MyRadio: StencilReactComponent<MyRadioElement, Components.MyRadio, 
 
 export type MyRadioGroupEvents = { onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>> };
 
-export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, Components.MyRadioGroup, MyRadioGroupEvents> = /*@__PURE__*/ createComponent<MyRadioGroupElement, Components.MyRadioGroup, MyRadioGroupEvents>({
+export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGroupEvents, Components.MyRadioGroup> = /*@__PURE__*/ createComponent<MyRadioGroupElement, MyRadioGroupEvents, Components.MyRadioGroup>({
     tagName: 'my-radio-group',
     elementClass: MyRadioGroupElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -304,7 +304,7 @@ export type MyRangeEvents = {
     onMyBlur: EventName<MyRangeCustomEvent<void>>
 };
 
-export const MyRange: StencilReactComponent<MyRangeElement, Components.MyRange, MyRangeEvents> = /*@__PURE__*/ createComponent<MyRangeElement, Components.MyRange, MyRangeEvents>({
+export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents, Components.MyRange> = /*@__PURE__*/ createComponent<MyRangeElement, MyRangeEvents, Components.MyRange>({
     tagName: 'my-range',
     elementClass: MyRangeElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -320,7 +320,7 @@ export const MyRange: StencilReactComponent<MyRangeElement, Components.MyRange, 
 
 export type MyToggleEvents = NonNullable<unknown>;
 
-export const MyToggle: StencilReactComponent<MyToggleElement, Components.MyToggle, MyToggleEvents> = /*@__PURE__*/ createComponent<MyToggleElement, Components.MyToggle, MyToggleEvents>({
+export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents, Components.MyToggle> = /*@__PURE__*/ createComponent<MyToggleElement, MyToggleEvents, Components.MyToggle>({
     tagName: 'my-toggle',
     elementClass: MyToggleElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -332,7 +332,7 @@ export const MyToggle: StencilReactComponent<MyToggleElement, Components.MyToggl
 
 export type MyToggleContentEvents = NonNullable<unknown>;
 
-export const MyToggleContent: StencilReactComponent<MyToggleContentElement, Components.MyToggleContent, MyToggleContentEvents> = /*@__PURE__*/ createComponent<MyToggleContentElement, Components.MyToggleContent, MyToggleContentEvents>({
+export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent> = /*@__PURE__*/ createComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent>({
     tagName: 'my-toggle-content',
     elementClass: MyToggleContentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -344,7 +344,7 @@ export const MyToggleContent: StencilReactComponent<MyToggleContentElement, Comp
 
 export type MyTransformTestEvents = NonNullable<unknown>;
 
-export const MyTransformTest: StencilReactComponent<MyTransformTestElement, Components.MyTransformTest, MyTransformTestEvents> = /*@__PURE__*/ createComponent<MyTransformTestElement, Components.MyTransformTest, MyTransformTestEvents>({
+export const MyTransformTest: StencilReactComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest> = /*@__PURE__*/ createComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest>({
     tagName: 'my-transform-test',
     elementClass: MyTransformTestElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.

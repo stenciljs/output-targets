@@ -1,12 +1,12 @@
 import type { EventName, Options } from '@lit/react';
 import { createComponent as createComponentWrapper } from '@lit/react';
-import { ComponentInterface } from '@stencil/core';
+import type { ComponentInterface } from '@stencil/core';
 
 // A key value map matching React prop names to event names.
 type EventNames = Record<string, EventName | string>;
 
 // Type that's compatible with both React 18 and 19
-type StencilProps<I extends HTMLElement, C extends ComponentInterface, E extends EventNames> = Omit<
+type StencilProps<I extends HTMLElement, E extends EventNames, C extends ComponentInterface> = Omit<
   React.HTMLAttributes<I>,
   keyof E
 > &
@@ -16,15 +16,15 @@ type StencilProps<I extends HTMLElement, C extends ComponentInterface, E extends
 
 export type StencilReactComponent<
   I extends HTMLElement,
-  C extends ComponentInterface,
   E extends EventNames = {},
-> = React.FunctionComponent<StencilProps<I, C, E>>;
+  C extends ComponentInterface = ComponentInterface,
+> = React.FunctionComponent<StencilProps<I, E, C>>;
 
 /**
  * Defines a custom element and creates a React component.
  * @public
  */
-export const createComponent = <I extends HTMLElement, C extends ComponentInterface, E extends EventNames = {}>({
+export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C extends ComponentInterface = ComponentInterface>({
   defineCustomElement,
   tagName,
   transformTag,
@@ -32,14 +32,14 @@ export const createComponent = <I extends HTMLElement, C extends ComponentInterf
 }: Options<I, E> & {
   defineCustomElement: () => void;
   transformTag?: (tagName: string) => string;
-}): StencilReactComponent<I, C, E> => {
+}): StencilReactComponent<I, E, C> => {
   if (typeof defineCustomElement !== 'undefined') {
     defineCustomElement();
   }
   const finalTagName = transformTag ? transformTag(tagName) : tagName;
   return createComponentWrapper<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
     I,
-    C,
-    E
+    E,
+    C
   >;
 };
