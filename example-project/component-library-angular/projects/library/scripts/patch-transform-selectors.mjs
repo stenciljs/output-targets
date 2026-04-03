@@ -97,6 +97,7 @@ const TAG_MAPPINGS = {
   'my-complex-props': 'MyComplexProps',
   'my-complex-props-scoped': 'MyComplexPropsScoped',
   'my-component': 'MyComponent',
+  'my-component-delegates-focus': 'MyComponentDelegatesFocus',
   'my-component-scoped': 'MyComponentScoped',
   'my-counter': 'MyCounter',
   'my-input': 'MyInput',

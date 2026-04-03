@@ -309,6 +309,13 @@ export function serializeShadowComponent(
    * ```
    */
   const cmpTag = html[0];
+  /**
+   * this is the component's associated template tag, e.g.
+   * ```
+   * <template shadowrootmode="open" shadowrootdelegatesfocus>
+   * ```
+   */
+  const templateTag = html[1];
 
   /**
    * get the closing tag of the component, including potential HTML content that could come after the closing tag
@@ -322,6 +329,18 @@ export function serializeShadowComponent(
   const templateClosingIndex = html.findLastIndex((line) => line.includes('</template>'));
   const __html = html.slice(2, templateClosingIndex).join('\n').trim();
 
+  const templateAttributes = [
+    'shadowrootmode="open"',
+    suppressHydrationWarning,
+    `dangerouslySetInnerHTML={{ __html: \`${__html}\` }}`
+  ];
+
+  if (templateTag.includes('shadowrootdelegatesfocus')) {
+    templateAttributes.push('shadowrootdelegatesfocus="true"');
+  }
+
+  const serializedTemplateAttributes = templateAttributes.join(' ');
+
   /**
    * The default approach for SSR support with Stencil is to render the serialized version of the component
    * directly via `dangerouslySetInnerHTML`. We use this approach for all basic JSX scenarios when using Vite
@@ -330,7 +349,7 @@ export function serializeShadowComponent(
   if (strategy === 'react') {
     return `const ${identifier} = ({ children, ...props }) => {
       return ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
-        <template shadowrootmode="open" ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+        <template ${serializedTemplateAttributes}></template>
         {children}
       ${htmlToJsxWithStyleObject(cmpEndTag)}
     }\n`;
@@ -381,7 +400,7 @@ export function serializeShadowComponent(
    * we still provide a fallback to render the component directly via `dangerouslySetInnerHTML`.
    *
    * Here we are wrapping the component into a new `div` with `display: contents` to ensure that
-   * we can supress hydration warnings.
+   * we can suppress hydration warnings.
    */
   const directlyRenderedComponent = `const ${identifier} = ({ children, ...props }) => {
     if (typeof window !== 'undefined') {
@@ -395,7 +414,7 @@ export function serializeShadowComponent(
     return (
       <div style={{ display: 'contents' }} ${suppressHydrationWarning}>
         ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
-          <template shadowrootmode="open" ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }}></template>
+          <template ${serializedTemplateAttributes}></template>
           {children}
         ${htmlToJsxWithStyleObject(cmpEndTag)}
       </div>
