@@ -1,12 +1,11 @@
 import type { EventName, Options } from '@lit/react';
 import { createComponent as createComponentWrapper } from '@lit/react';
-import type { ComponentInterface } from '@stencil/core';
 
 // A key value map matching React prop names to event names.
 type EventNames = Record<string, EventName | string>;
 
 // Type that's compatible with both React 18 and 19
-type StencilProps<I extends HTMLElement, E extends EventNames, C extends ComponentInterface> = Omit<
+type StencilProps<I extends HTMLElement, E extends EventNames, C> = Omit<
   React.HTMLAttributes<I>,
   keyof E
 > &
@@ -17,14 +16,14 @@ type StencilProps<I extends HTMLElement, E extends EventNames, C extends Compone
 export type StencilReactComponent<
   I extends HTMLElement,
   E extends EventNames = {},
-  C extends ComponentInterface = ComponentInterface,
+  C = Omit<I, keyof HTMLElement>,
 > = React.FunctionComponent<StencilProps<I, E, C>>;
 
 /**
  * Defines a custom element and creates a React component.
  * @public
  */
-export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C extends ComponentInterface = ComponentInterface>({
+export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C = Omit<I, keyof HTMLElement>>({
   defineCustomElement,
   tagName,
   transformTag,

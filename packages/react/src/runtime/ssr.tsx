@@ -4,7 +4,6 @@ import { stringifyCSSProperties } from 'react-style-stringify';
 
 import { createComponent as createComponentWrapper, StencilReactComponent } from './create-component.js';
 import { possibleStandardNames } from './constants.js';
-import { ComponentInterface } from '@stencil/core';
 
 const LOG_PREFIX = '[react-output-target]';
 
@@ -420,7 +419,7 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
 type CreateComponentForSSROptions<
   I extends HTMLElement,
   E extends EventNames = {},
-  C extends ComponentInterface = ComponentInterface,
+  C = Omit<I, keyof HTMLElement>,
 > = Omit<CreateComponentForServerSideRenderingOptions, 'renderToString' | 'serializeProperty' | 'transformTag'> & {
   hydrateModule: Promise<HydrateModule>;
   transformTag?: (tag: string) => string;
@@ -434,7 +433,7 @@ let hydrateModuleCache: HydrateModule | null = null;
  * Defines a custom element and creates a React component for server side rendering.
  * @public
  */
-export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C extends ComponentInterface = ComponentInterface>(
+export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C = Omit<I, keyof HTMLElement>>(
   options: CreateComponentForSSROptions<I, E, C>
 ): StencilReactComponent<I, E, C> => {
   /**
