@@ -2,7 +2,7 @@
 import os from 'node:os'
 import { browser, expect, $ } from '@wdio/globals'
 
-import { fetchSourceCode } from '../helpers.js'
+import { fetchSourceCode, fetchFullPageHtml } from '../helpers.js'
 import type { TransformedComponents } from '../../src/TestComponent.js'
 
 export const testScenarios: Record<TransformedComponents, () => void> = {
@@ -64,5 +64,101 @@ export const testScenarios: Record<TransformedComponents, () => void> = {
       // Verify the SSR HTML does NOT contain the original tag
       expect(html).not.toContain('<my-transform-test')
     })
-  }
+  },
+  'style-deduplication-scoped': () => {
+    it('should server side render component with style tags and precedence attributes', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('style-deduplication-scoped')
+      expect(html).toMatchSnapshot()
+    })
+
+    it('should have precedence attributes in SSR HTML', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchFullPageHtml('style-deduplication-scoped')
+      // Verify precedence attributes are present
+      expect(html).toContain('precedence="stencil"')
+    })
+
+    it('should have stencil-prefixed href attributes', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchFullPageHtml('style-deduplication-scoped')
+      // Verify href attributes are prefixed with stencil-
+      expect(html).toMatch(/href="stencil-[^"]*"/)
+    })
+
+    it('should render as scoped component with style tags', async () => {
+      await browser.url('/style-deduplication-scoped')
+      const html = await fetchFullPageHtml('style-deduplication-scoped')
+
+      const styleTagMatches = html.match(/<style[^>]*data-precedence="stencil"[^>]*>/gi)
+      expect(styleTagMatches?.length).toBe(1)
+    })
+
+    it('should deduplicate styles for multiple component instances', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchFullPageHtml('style-deduplication-scoped')
+
+      // All scoped styles should be combined into a single <style> tag
+      const styleTagMatches = html.match(/<style[^>]*data-precedence="stencil"[^>]*>/gi)
+      expect(styleTagMatches?.length).toBe(1)
+
+      // The single style tag should reference all components in its data-href
+      const components = ['my-counter', 'my-button', 'my-component', 'my-radio']
+      const styleTag = styleTagMatches![0]
+      for (const component of components) {
+        expect(styleTag).toMatch(new RegExp(`stencil(-sc)?-${component}`))
+
+        // Each component should still have 3 instances
+        const componentMatches = html.match(new RegExp(`<${component}[^>]*s-id="\\d+"[^>]*>`, 'gi'))
+        expect(componentMatches?.length).toBe(3)
+      }
+    })
+  },
+  'style-no-deduplication-scoped': () => {
+    it('should server side render component with style tags and precedence attributes', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('style-no-deduplication-scoped')
+      expect(html).toMatchSnapshot()
+    })
+
+    it('should NOT deduplicate styles in React 18 without Next.js', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchFullPageHtml('style-no-deduplication-scoped')
+      const components = ['my-counter', 'my-button', 'my-component', 'my-radio']
+
+      for (const component of components) {
+        const styleTagMatches = html.match(
+          new RegExp(
+            `<style(?=[^>]*(?:data-)?href="stencil-${component}")(?=[^>]*(?:data-)?precedence="stencil")[^>]*>`,
+            'gi'
+          )
+        )
+        const styleTagCount = styleTagMatches ? styleTagMatches.length : 0
+
+        const componentMatches = html.match(new RegExp(`<${component}[^>]*s-id="\\d+"[^>]*>`, 'gi'))
+        const componentCount = componentMatches ? componentMatches.length : 0
+
+        expect(styleTagCount).toBe(3)
+        expect(componentCount).toBe(3)
+      }
+    })
+  },
 }

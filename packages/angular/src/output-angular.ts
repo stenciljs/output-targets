@@ -390,7 +390,7 @@ export function generateBarrelFile(components: ComponentCompilerMeta[], outputTa
     .map((component) => {
       const pascalName = dashToPascalCase(component.tagName);
       const moduleExport = includeSingleComponentAngularModules ? `, ${pascalName}Module` : '';
-      return `export { ${pascalName}${moduleExport} } from './${component.tagName}.js';`;
+      return `export { ${pascalName}${moduleExport} } from './${component.tagName}';`;
     })
     .join('\n');
 

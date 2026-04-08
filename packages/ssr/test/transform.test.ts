@@ -22,12 +22,25 @@ const code = removeFileNameLines((await esbuild.transform(template, {
 })).code);
 
 describe('transform', () => {
-  it('should transform the code', async () => {
+  it('should transform the code using "scoped"', async () => {
     const transformedCode = await transform(code, templatePath, {
       from: 'component-library-react',
       module: import('component-library-react'),
       hydrateModule: import('component-library/hydrate'),
       serializeShadowRoot: 'scoped',
+    })
+    if (!transformedCode) {
+      throw new Error('No transformed code')
+    }
+    expect(removeFileNameLines(transformedCode)).toMatchSnapshot()
+  })
+
+  it('should transform the code using "declarative-shadow-dom"', async () => {
+    const transformedCode = await transform(code, templatePath, {
+      from: 'component-library-react',
+      module: import('component-library-react'),
+      hydrateModule: import('component-library/hydrate'),
+      serializeShadowRoot: 'declarative-shadow-dom',
     })
     if (!transformedCode) {
       throw new Error('No transformed code')

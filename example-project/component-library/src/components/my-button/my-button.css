@@ -5,4 +5,9 @@
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
+  max-width: max-content;
+}
+
+:host button {
+  background-color: green;
 }
