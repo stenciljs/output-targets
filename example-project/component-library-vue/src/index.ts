@@ -11,6 +11,7 @@ import { defineCustomElement as defineMyCheckbox } from 'component-library/compo
 import { defineCustomElement as defineMyComplexProps } from 'component-library/components/my-complex-props.js';
 import { defineCustomElement as defineMyComplexPropsScoped } from 'component-library/components/my-complex-props-scoped.js';
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
+import { defineCustomElement as defineMyComponentDelegatesFocus } from 'component-library/components/my-component-delegates-focus.js';
 import { defineCustomElement as defineMyComponentScoped } from 'component-library/components/my-component-scoped.js';
 import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
@@ -200,6 +201,16 @@ export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ g
     'first': [String, "first"],
     'middleName': [String, "middle-name"],
     'last': [String, "last"]
+  },
+  getTagTransformer: getTagTransformer
+});
+
+
+export const MyComponentDelegatesFocus: StencilVueComponent<JSX.MyComponentDelegatesFocus> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComponentDelegatesFocus>('my-component-delegates-focus', defineMyComponentDelegatesFocus, [], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyComponentDelegatesFocus>({
+  tagName: 'my-component-delegates-focus',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    
   },
   getTagTransformer: getTagTransformer
 });

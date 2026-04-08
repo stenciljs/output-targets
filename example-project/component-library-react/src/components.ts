@@ -15,6 +15,7 @@ import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } fr
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from "component-library/components/my-checkbox.js";
 import { MyComplexPropsScoped as MyComplexPropsScopedElement, defineCustomElement as defineMyComplexPropsScoped } from "component-library/components/my-complex-props-scoped.js";
 import { MyComplexProps as MyComplexPropsElement, defineCustomElement as defineMyComplexProps } from "component-library/components/my-complex-props.js";
+import { MyComponentDelegatesFocus as MyComponentDelegatesFocusElement, defineCustomElement as defineMyComponentDelegatesFocus } from "component-library/components/my-component-delegates-focus.js";
 import { MyComponentScoped as MyComponentScopedElement, defineCustomElement as defineMyComponentScoped } from "component-library/components/my-component-scoped.js";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "component-library/components/my-component.js";
 import { MyCounter as MyCounterElement, defineCustomElement as defineMyCounter } from "component-library/components/my-counter.js";
@@ -125,6 +126,18 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     react: React,
     events: {} as MyComponentEvents,
     defineCustomElement: defineMyComponent,
+    transformTag
+});
+
+export type MyComponentDelegatesFocusEvents = NonNullable<unknown>;
+
+export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents> = /*@__PURE__*/ createComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents>({
+    tagName: 'my-component-delegates-focus',
+    elementClass: MyComponentDelegatesFocusElement,
+    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
+    react: React,
+    events: {} as MyComponentDelegatesFocusEvents,
+    defineCustomElement: defineMyComponentDelegatesFocus,
     transformTag
 });
 

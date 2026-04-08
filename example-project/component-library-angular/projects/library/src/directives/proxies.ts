@@ -12,6 +12,7 @@ import { defineCustomElement as defineMyCheckbox } from 'component-library/compo
 import { defineCustomElement as defineMyComplexProps } from 'component-library/components/my-complex-props.js';
 import { defineCustomElement as defineMyComplexPropsScoped } from 'component-library/components/my-complex-props-scoped.js';
 import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';
+import { defineCustomElement as defineMyComponentDelegatesFocus } from 'component-library/components/my-component-delegates-focus.js';
 import { defineCustomElement as defineMyComponentScoped } from 'component-library/components/my-component-scoped.js';
 import { defineCustomElement as defineMyCounter } from 'component-library/components/my-counter.js';
 import { defineCustomElement as defineMyInput } from 'component-library/components/my-input.js';
@@ -215,6 +216,28 @@ export class MyComponent {
 
 
 export declare interface MyComponent extends Components.MyComponent {}
+
+
+@ProxyCmp({
+  defineCustomElementFn: defineMyComponentDelegatesFocus
+})
+@Component({
+  selector: 'my-component-delegates-focus',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: [],
+})
+export class MyComponentDelegatesFocus {
+  protected el: HTMLMyComponentDelegatesFocusElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}
+
+
+export declare interface MyComponentDelegatesFocus extends Components.MyComponentDelegatesFocus {}
 
 
 @ProxyCmp({

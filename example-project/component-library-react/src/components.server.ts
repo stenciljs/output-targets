@@ -19,6 +19,7 @@ import { MyButton as MyButtonElement } from "component-library/components/my-but
 import { MyCheckbox as MyCheckboxElement } from "component-library/components/my-checkbox.js";
 import { MyComplexPropsScoped as MyComplexPropsScopedElement } from "component-library/components/my-complex-props-scoped.js";
 import { MyComplexProps as MyComplexPropsElement } from "component-library/components/my-complex-props.js";
+import { MyComponentDelegatesFocus as MyComponentDelegatesFocusElement } from "component-library/components/my-component-delegates-focus.js";
 import { MyComponentScoped as MyComponentScopedElement } from "component-library/components/my-component-scoped.js";
 import { MyComponent as MyComponentElement } from "component-library/components/my-component.js";
 import { MyCounter as MyCounterElement } from "component-library/components/my-counter.js";
@@ -153,6 +154,17 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     },
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
     clientModule: clientComponents.MyComponent as ReactWebComponent<MyComponentElement, MyComponentEvents>,
+    serializeShadowRoot,
+    getTagTransformer
+});
+
+export type MyComponentDelegatesFocusEvents = NonNullable<unknown>;
+
+export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents> = /*@__PURE__*/ createComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents>({
+    tagName: 'my-component-delegates-focus',
+    properties: {},
+    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    clientModule: clientComponents.MyComponentDelegatesFocus as ReactWebComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents>,
     serializeShadowRoot,
     getTagTransformer
 });
