@@ -1,3 +1,11 @@
+## [0.3.1](https://github.com/stenciljs/output-targets/compare/@stencil/ssr@0.3.0...@stencil/ssr@0.3.1) (2026-04-09)
+
+
+### :bug: Bug Fix
+
+* **ssr:** add consideration for shadowrootdelegatesfocus ([#779](https://github.com/stenciljs/output-targets/issues/779)) ([2c5ea17](https://github.com/stenciljs/output-targets/commit/2c5ea1700daae4dcf054af3ebddc91d0dc19c4b2))
+
+
 ## [0.3.0](https://github.com/stenciljs/output-targets/compare/@stencil/ssr@0.1.0...@stencil/ssr@0.2.0) (2026-01-14)
 
 

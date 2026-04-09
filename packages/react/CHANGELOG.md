@@ -1,3 +1,15 @@
+## [1.5.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.4.1...@stencil/react-output-target@1.5.0) (2026-04-09)
+
+
+### :bug: Bug Fix
+
+* **react:** use component type in component definitions ([#777](https://github.com/stenciljs/output-targets/issues/777)) ([6e474fb](https://github.com/stenciljs/output-targets/commit/6e474fbd105875b349b26ec991aec9fd0ef336d1))
+
+
+### :rocket: Enhancement
+
+* **react:** implement SSR style deduplication for scoped components ([#774](https://github.com/stenciljs/output-targets/issues/774)) ([456d02d](https://github.com/stenciljs/output-targets/commit/456d02d4c34442349f0f0365cdf0c6f65aea85a6))
+
 ## [1.4.2](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.4.1...@stencil/react-output-target@1.4.2) (2026-02-21)
 
 

@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.3.0...@stencil/angular-output-target@1.3.1) (2026-04-09)
+
+
+### :bug: Bug Fix
+
+* **angular:** remove .js extensions from esModules barrel file ([#781](https://github.com/stenciljs/output-targets/issues/781)) ([8ca2cfb](https://github.com/stenciljs/output-targets/commit/8ca2cfb69bc142b10e319eb3ae2bd5f99eec2305)), closes [stenciljs/output-targets#780](https://github.com/stenciljs/output-targets/issues/780)
+
+
 ## [1.3.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.2.0...@stencil/angular-output-target@1.3.0) (2026-01-23)
 
 
