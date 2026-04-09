@@ -162,11 +162,11 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
 
 export type MyComponentDelegatesFocusEvents = NonNullable<unknown>;
 
-export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents> = /*@__PURE__*/ createComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents>({
+export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus> = /*@__PURE__*/ createComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>({
     tagName: 'my-component-delegates-focus',
     properties: {},
     hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
-    clientModule: clientComponents.MyComponentDelegatesFocus as ReactWebComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents>,
+    clientModule: clientComponents.MyComponentDelegatesFocus as StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>,
     serializeShadowRoot,
     getTagTransformer
 });

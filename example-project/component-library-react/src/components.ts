@@ -133,7 +133,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
 
 export type MyComponentDelegatesFocusEvents = NonNullable<unknown>;
 
-export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents> = /*@__PURE__*/ createComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents>({
+export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus> = /*@__PURE__*/ createComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>({
     tagName: 'my-component-delegates-focus',
     elementClass: MyComponentDelegatesFocusElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
