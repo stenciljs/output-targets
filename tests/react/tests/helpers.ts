@@ -87,13 +87,16 @@ export async function fetchFullPageHtml(scenario: TestComponent, retries = 3) {
 /**
  * This is a helper function that is used to assert that no client side errors
  * were logged during the tests.
+ * 
+ * @param knownFailures - Array of test component names that are known to have hydration errors
  */
-export function assertClientSideErrors() {
+export function assertClientSideErrors (knownFailures: TestComponent[] = []) {
   /**
    * track all errors that are logged during the tests
    */
-  const errors: string[] = [];
-  let removeLogHandler: undefined | (() => void);
+  const errors: string[] = []
+  let removeLogHandler: undefined | (() => void)
+  
   beforeEach(async () => {
     errors.length = 0;
 
@@ -116,24 +119,51 @@ export function assertClientSideErrors() {
    * Verify that no errors were logged during the tests
    */
   afterEach(() => {
+    // Get the current test component from the describe block context
+    // The describe block name should match the component name
+    const currentTestComponent = (global as any).__currentTestComponent as TestComponent | undefined
+    const isKnownFailure = currentTestComponent && knownFailures.includes(currentTestComponent)
+
     /**
-     * TODO: include all errors once we have fixed the hydration issues
+     * Filter errors based on whether this is a known failure
+     * For known failures, we ignore hydration errors
+     * For other components, we check for hydration errors
      */
-    const nonHydrationErrors = errors.filter(
-      (error) =>
-        !error.toLowerCase().includes('hydration') &&
-        !error.includes('hydrating') &&
-        !error.includes('Expected server HTML to contain a matching') &&
-        !error.includes('Did not expect server HTML to contain') &&
-        !error.includes('error node') &&
-        /**
-         * WebdriverIO related socket errors that only appeared in CI on MacOS
-         */
-        !error.includes('failed to connect to websocket') &&
-        !error.includes('WebSocket closed without opened.')
-    );
-    if (nonHydrationErrors.length > 0) {
-      throw new Error(`Errors were logged during the tests:\n  - ${nonHydrationErrors.join('\n  - ')}`);
+    const relevantErrors = errors.filter((error) => {
+      const errorLower = error.toLowerCase()
+      const isHydrationError = (
+        errorLower.includes('hydration') ||
+        errorLower.includes('hydrating') ||
+        error.includes('Expected server HTML to contain a matching') ||
+        error.includes('Did not expect server HTML to contain') ||
+        error.includes('error node')
+      )
+      
+      // If it's a known failure, ignore hydration errors for this component
+      if (isKnownFailure && isHydrationError) {
+        return false
+      }
+      
+      // Always filter out non-hydration errors that we don't care about
+      if (!isHydrationError) {
+        // Filter out WebdriverIO related socket errors
+        if (
+          error.includes('failed to connect to websocket') ||
+          error.includes('WebSocket closed without opened.')
+        ) {
+          return false
+        }
+        // Keep other non-hydration errors
+        return true
+      }
+      
+      // For hydration errors on non-known-failures, we want to catch them
+      return true
+    })
+    
+    if (relevantErrors.length > 0) {
+      const failureNote = isKnownFailure ? ' (Note: This component is marked as a known failure but still has non-hydration errors)' : ''
+      throw new Error(`Errors were logged during the tests${failureNote}:\n  - ${relevantErrors.join('\n  - ')}`)
     }
   });
 }
