@@ -46,6 +46,7 @@ const testComponents = [
   'transform-scoped-to-shadow',
   'transform-tag-test',
   'style-deduplication-scoped',
+  "style-no-deduplication-scoped",
   // individual component tests
   'my-button',
   'my-checkbox',
