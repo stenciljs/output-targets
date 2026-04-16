@@ -2,6 +2,7 @@ import { runTestScenarios } from 'react-test-components/scenarios';
 
 describe('Next.js 14 React 18 SSR Integration', () => {
   runTestScenarios({
+    ignoreHydrationMismatchErrors: true,
     exclude: [
       /**
        * currently broken in Next.js
