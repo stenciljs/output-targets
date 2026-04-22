@@ -13,6 +13,7 @@ import {
   MyComplexProps,
   MyComplexPropsScoped,
   MyTransformTest,
+  MyCheckbox,
   MyRadio,
 } from 'component-library-react';
 import { InputShadow, InputScoped } from './Input';
@@ -38,6 +39,7 @@ const testComponents = [
   'nested-shadow',
   'complex-props-shadow',
   'input-shadow',
+  'checkbox-shadow',
   // transformed tests
   'transform-scoped-to-shadow',
   'transform-tag-test',
@@ -125,6 +127,9 @@ const TestComponent = ({ name }: TestComponentProps) => {
   }
   if (name === 'input-shadow') {
     return <InputShadow />;
+  }
+  if (name === 'checkbox-shadow') {
+    return <MyCheckbox>Checkbox Label</MyCheckbox>;
   }
   if (name === 'transform-tag-test') {
     return <MyTransformTest message="Tag transformation test: should render as v1-my-transform-test" />;

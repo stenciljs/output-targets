@@ -86,5 +86,30 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
         'Shadow Change Event: Hello World!',
       ].join('\n'))
     })
+  },
+  'checkbox-shadow': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('checkbox-shadow')
+      expect(html).toMatchSnapshot()
+    })
+
+    it('should have correctly hydrated component', async () => {
+      await browser.url('/checkbox-shadow')
+      await expect($('my-checkbox')).toBePresent()
+    })
+
+    it('should focus the inner input when setFocus is called', async () => {
+      await browser.url('/checkbox-shadow')
+      await browser.execute((el: any) => el.setFocus(), await $('my-checkbox'))
+      const isFocused = await browser.execute(() => {
+        const el = document.querySelector('my-checkbox') as any
+        return el?.shadowRoot?.activeElement?.tagName.toLowerCase() === 'input'
+      })
+      expect(isFocused).toBe(true)
+    })
   }
 }
