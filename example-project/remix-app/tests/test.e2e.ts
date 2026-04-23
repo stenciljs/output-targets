@@ -8,6 +8,7 @@ describe('Remix SSR Integration', () => {
       /**
        * Known issue: updating a prop does not trigger a rerender.
        */
-      'single-no-child-shadow'],
+      'single-no-child-shadow'
+    ],
   });
 });
