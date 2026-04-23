@@ -32,7 +32,7 @@ describe('createStencilReactComponents', () => {
     );
     expect(result).toContain(`export type MyComponentEvents = NonNullable<unknown>;`);
     expect(result)
-      .toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
+      .toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, JSX.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, JSX.MyComponent>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -264,7 +264,7 @@ describe('createStencilReactComponents', () => {
     expect(result).toContain(`tagName: 'my-component',
     properties: { value: 'value' },
     hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
-    clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
+    clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, JSX.MyComponent>,
     serializeShadowRoot`);
   });
 

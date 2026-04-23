@@ -5,37 +5,39 @@ import { createComponent as createComponentWrapper } from '@lit/react';
 type EventNames = Record<string, EventName | string>;
 
 // Type that's compatible with both React 18 and 19
-type StencilProps<I extends HTMLElement, E extends EventNames, C> = Omit<React.HTMLAttributes<I>, keyof E> &
-  Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
-  Partial<C> &
-  React.RefAttributes<I>;
+type StencilProps<Element extends HTMLElement, Events extends EventNames, Props> = Omit<
+  React.HTMLAttributes<Element>,
+  keyof Events
+> &
+  Partial<{ [K in keyof Events]: Events[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
+  Props &
+  React.RefAttributes<Element>;
 
 export type StencilReactComponent<
-  I extends HTMLElement,
-  E extends EventNames = {},
-  C = Omit<I, keyof HTMLElement>,
-> = React.FunctionComponent<StencilProps<I, E, C>>;
+  Element extends HTMLElement,
+  Events extends EventNames = {},
+  Props = {},
+> = React.FunctionComponent<StencilProps<Element, Events, Props>>;
 
 /**
  * Defines a custom element and creates a React component.
  * @public
  */
-export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C = Omit<I, keyof HTMLElement>>({
+export const createComponent = <Element extends HTMLElement, Events extends EventNames = {}, Props = {}>({
   defineCustomElement,
   tagName,
   transformTag,
   ...options
-}: Options<I, E> & {
+}: Options<Element, Events> & {
   defineCustomElement: () => void;
   transformTag?: (tagName: string) => string;
-}): StencilReactComponent<I, E, C> => {
+}): StencilReactComponent<Element, Events, Props> => {
   if (typeof defineCustomElement !== 'undefined') {
     defineCustomElement();
   }
   const finalTagName = transformTag ? transformTag(tagName) : tagName;
-  return createComponentWrapper<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
-    I,
-    E,
-    C
-  >;
+  return createComponentWrapper<Element, Events>({
+    ...options,
+    tagName: finalTagName,
+  }) as unknown as StencilReactComponent<Element, Events, Props>;
 };
