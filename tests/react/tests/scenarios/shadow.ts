@@ -108,7 +108,7 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       await expect($('my-checkbox')).toBePresent()
     })
 
-    it('should focus the inner input when setFocus is called', async () => {
+    it('should focus the inner input when setFocus is called', async function () {
       if (os.platform() === 'win32') {
         return this.skip()
       }
