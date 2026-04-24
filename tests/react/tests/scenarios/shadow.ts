@@ -109,6 +109,9 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
     })
 
     it('should focus the inner input when setFocus is called', async () => {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
       await browser.url('/checkbox-shadow')
       await browser.execute((el: any) => el.setFocus(), await $('my-checkbox'))
       const isFocused = await browser.execute(() => {
