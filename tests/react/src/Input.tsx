@@ -15,7 +15,7 @@ export function InputShadow() {
         /**
          * Test that we can use a property shared between MyInput and
          * HTMLElement that's absent from React.HTMLAttributes
-         */
+         */ 
         autofocus={true}
       />
       <div className="inputResult">
