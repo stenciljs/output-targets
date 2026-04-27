@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.1...@stencil/react-output-target@1.5.2) (2026-04-27)
+
+
+### :bug: Bug Fix
+
+* **react:** revert 1.5.1 (reflect required props in component type when used in TSX) ([#794](https://github.com/stenciljs/output-targets/issues/794)) ([5014701](https://github.com/stenciljs/output-targets/commit/50147011e1b8d481711c81d238a2eba3e1a252c2))
+
 ## [1.5.1](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.0...@stencil/react-output-target@1.5.1) (2026-04-23)
 
 
