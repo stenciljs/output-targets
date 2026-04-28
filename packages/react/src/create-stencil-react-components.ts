@@ -204,7 +204,7 @@ import type { Components } from "${stencilPackageName}/${customElementsDir}";
       .filter((prop) => Boolean(prop.attribute))
       .map((e) => `${e.name}: '${e.attribute}'`)
       .join(',\n')}},
-    hydrateModule: import('${hydrateModule}') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('${hydrateModule}') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.${reactTagName} as StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}>,
     serializeShadowRoot${getTagTransformerParam}
   })`;
