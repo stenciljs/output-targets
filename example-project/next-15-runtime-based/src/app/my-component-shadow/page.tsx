@@ -3,7 +3,7 @@ import { TestStage } from 'react-test-components/next';
 export default function MyComponentPage() {
   return (
     <div>
-      <TestStage name="my-component" />
+      <TestStage name="my-component-shadow" />
     </div>
   );
 }

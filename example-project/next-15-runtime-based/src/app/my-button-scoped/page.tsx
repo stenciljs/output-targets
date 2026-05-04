@@ -1,9 +1,9 @@
 import { TestStage } from 'react-test-components/next';
 
-export default function MyPopoverPage() {
+export default function MyButtonScopedPage() {
   return (
     <div>
-      <TestStage name="my-popover" />
+      <TestStage name="my-button-scoped" />
     </div>
   );
 }

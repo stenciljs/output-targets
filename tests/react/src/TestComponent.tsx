@@ -13,6 +13,9 @@ import {
   MyComplexProps,
   MyComplexPropsScoped,
   MyTransformTest,
+  MyCheckbox,
+  MyRange,
+  MyToggle,
   MyRadio,
 } from 'component-library-react';
 import { InputShadow, InputScoped } from './Input';
@@ -41,6 +44,15 @@ const testComponents = [
   // transformed tests
   'transform-scoped-to-shadow',
   'transform-tag-test',
+  // individual component tests
+  'my-button-scoped',
+  'my-button-shadow',
+  'my-checkbox-shadow',
+  'my-component-shadow',
+  'my-counter-shadow',
+  'my-list-shadow',
+  'my-range-shadow',
+  'my-toggle-shadow',
 ] as const;
 export type TestComponent = (typeof testComponents)[number];
 export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
@@ -165,6 +177,40 @@ const TestComponent = ({ name }: TestComponentProps) => {
       </>
     );
   }
+  if (name === 'my-button-scoped') {
+      return <MyButtonScoped>Click Me</MyButtonScoped>;
+    }
+    if (name === 'my-button-shadow') {
+      return <MyButton>Click Me</MyButton>;
+    }
+    if (name === 'my-checkbox-shadow') {
+      return <MyCheckbox>Checkbox Label</MyCheckbox>;
+    }
+    if (name === 'my-component-shadow') {
+      return <MyComponent first="John" middleName="William" last="Doe" />;
+    }
+    if (name === 'my-counter-shadow') {
+      return <MyCounter startValue={10} />;
+    }
+    if (name === 'my-list-shadow') {
+      return (
+        <MyList>
+          <MyListItem>Item 1 Shadow</MyListItem>
+          <MyListItem>Item 2 Shadow</MyListItem>
+          <MyListItem>Item 3 Shadow</MyListItem>
+        </MyList>
+      );
+    }
+    if (name === 'my-range-shadow') {
+      return (
+        <MyRange name="test-range" min={0} max={100} value={50}>
+          Range Label
+        </MyRange>
+      );
+    }
+    if (name === 'my-toggle-shadow') {
+      return <MyToggle>Toggle Content</MyToggle>;
+    }
 
   return (
     <div>

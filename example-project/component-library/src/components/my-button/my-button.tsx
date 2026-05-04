@@ -17,7 +17,7 @@ import { AnchorInterface, ButtonInterface } from '../element-interface';
   styleUrl: 'my-button.css',
   shadow: true,
 })
-export class Button implements ComponentInterface, AnchorInterface, ButtonInterface {
+export class MyButton implements ComponentInterface, AnchorInterface, ButtonInterface {
   private inItem = false;
   private inListHeader = false;
   private inToolbar = false;

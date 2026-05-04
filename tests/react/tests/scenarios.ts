@@ -37,7 +37,7 @@ export const runTestScenarios = ({ only, exclude, ...opts }: TestScenarioOptions
    * track all errors that are logged during the tests and assert
    * that no errors were logged
    */
-  assertClientSideErrors(!!opts.ignoreHydrationMismatchErrors);
+  assertClientSideErrors(!!opts.ignoreHydrationMismatchErrors)
 
   scenarions.forEach(([name, test]) => {
     describe(name, () => {

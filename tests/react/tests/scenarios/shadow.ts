@@ -86,5 +86,47 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
         'Shadow Change Event: Hello World!',
       ].join('\n'))
     })
-  }
+  },
+  'my-button-shadow': () => {
+    it('should not have hydration mismatch errors', async () => {
+      await browser.url('/my-button-shadow')
+      await expect($('my-button')).toBePresent()
+    })
+  },
+  'my-checkbox-shadow': () => {
+    it('should not have hydration mismatch errors', async () => {
+      await browser.url('/my-checkbox-shadow')
+      await expect($('my-checkbox')).toBePresent()
+    })
+  },
+  'my-component-shadow': () => {
+    it('should not have hydration mismatch errors', async () => {
+      await browser.url('/my-component-shadow')
+      await expect($('my-component')).toBePresent()
+    })
+  },
+  'my-counter-shadow': () => {
+    it('should not have hydration mismatch errors', async () => {
+      await browser.url('/my-counter-shadow')
+      await expect($('my-counter')).toBePresent()
+    })
+  },
+  'my-list-shadow': () => {
+    it('should not have hydration mismatch errors', async () => {
+      await browser.url('/my-list-shadow')
+      await expect($('my-list')).toBePresent()
+    })
+  },
+  'my-range-shadow': () => {
+    it('should not have hydration mismatch errors', async () => {
+      await browser.url('/my-range-shadow')
+      await expect($('my-range')).toBePresent()
+    })
+  },
+  'my-toggle-shadow': () => {
+    it('should not have hydration mismatch errors', async () => {
+      await browser.url('/my-toggle-shadow')
+      await expect($('my-toggle')).toBePresent()
+    })
+  },
 }

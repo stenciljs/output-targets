@@ -16,9 +16,6 @@ import {
   MyCheckbox,
   MyRange,
   MyToggle,
-  MyToggleContent,
-  MyPopover,
-  MyRadioGroup,
   MyRadio,
 } from 'component-library-react/next';
 import { InputShadow, InputScoped } from './Input';
@@ -48,16 +45,14 @@ const testComponents = [
   'style-deduplication-scoped',
   'style-no-deduplication-scoped',
   // individual component tests
-  'my-button',
-  'my-checkbox',
-  'my-component',
-  'my-counter',
-  'my-list',
-  'my-popover',
-  'my-radio-group',
-  'my-range',
-  'my-toggle',
-  'my-toggle-content',
+  'my-button-scoped',
+  'my-button-shadow',
+  'my-checkbox-shadow',
+  'my-component-shadow',
+  'my-counter-shadow',
+  'my-list-shadow',
+  'my-range-shadow',
+  'my-toggle-shadow',
 ] as const;
 export type TestComponent = (typeof testComponents)[number];
 export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
@@ -183,19 +178,22 @@ const TestComponent = ({ name }: TestComponentProps) => {
       </>
     );
   }
-  if (name === 'my-button') {
+  if (name === 'my-button-scoped') {
+    return <MyButtonScoped>Click Me</MyButtonScoped>;
+  }
+  if (name === 'my-button-shadow') {
     return <MyButton>Click Me</MyButton>;
   }
-  if (name === 'my-checkbox') {
+  if (name === 'my-checkbox-shadow') {
     return <MyCheckbox>Checkbox Label</MyCheckbox>;
   }
-  if (name === 'my-component') {
+  if (name === 'my-component-shadow') {
     return <MyComponent first="John" middleName="William" last="Doe" />;
   }
-  if (name === 'my-counter') {
+  if (name === 'my-counter-shadow') {
     return <MyCounter startValue={10} />;
   }
-  if (name === 'my-list') {
+  if (name === 'my-list-shadow') {
     return (
       <MyList>
         <MyListItem>Item 1 Shadow</MyListItem>
@@ -204,30 +202,15 @@ const TestComponent = ({ name }: TestComponentProps) => {
       </MyList>
     );
   }
-  if (name === 'my-popover') {
-    return <MyPopover showBackdrop={true} />;
-  }
-  if (name === 'my-radio-group') {
-    return (
-      <MyRadioGroup name="test-radio" value="option1">
-        <MyRadio value="option1">Option 1</MyRadio>
-        <MyRadio value="option2">Option 2</MyRadio>
-        <MyRadio value="option3">Option 3</MyRadio>
-      </MyRadioGroup>
-    );
-  }
-  if (name === 'my-range') {
+  if (name === 'my-range-shadow') {
     return (
       <MyRange name="test-range" min={0} max={100} value={50}>
         Range Label
       </MyRange>
     );
   }
-  if (name === 'my-toggle') {
+  if (name === 'my-toggle-shadow') {
     return <MyToggle>Toggle Content</MyToggle>;
-  }
-  if (name === 'my-toggle-content') {
-    return <MyToggleContent>Toggle Content</MyToggleContent>;
   }
 
   return (

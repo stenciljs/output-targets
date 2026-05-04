@@ -1,9 +1,9 @@
 import { TestStage } from 'react-test-components/next';
 
-export default function MyRangePage() {
+export default function MyListPage() {
   return (
     <div>
-      <TestStage name="my-range" />
+      <TestStage name="my-list-shadow" />
     </div>
   );
 }

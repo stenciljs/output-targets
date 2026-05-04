@@ -38,7 +38,7 @@ export interface RangeChangeEventDetail {
   tag: 'my-range',
   shadow: true,
 })
-export class Range implements ComponentInterface {
+export class MyRange implements ComponentInterface {
   private noUpdate = false;
   private hasFocus = false;
 

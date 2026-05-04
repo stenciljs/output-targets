@@ -9,7 +9,7 @@ export interface RadioGroupChangeEventDetail<T = any> {
 @Component({
   tag: 'my-radio-group',
 })
-export class RadioGroup implements ComponentInterface {
+export class MyRadioGroup implements ComponentInterface {
   private inputId = `ion-rg-${radioGroupIds++}`;
   private labelId = `${this.inputId}-lbl`;
   private label?: HTMLLabelElement | null;

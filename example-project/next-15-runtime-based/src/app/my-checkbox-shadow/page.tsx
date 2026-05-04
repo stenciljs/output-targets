@@ -1,9 +1,9 @@
 import { TestStage } from 'react-test-components/next';
 
-export default function MyCounterPage() {
+export default function MyCheckboxPage() {
   return (
     <div>
-      <TestStage name="my-counter" />
+      <TestStage name="my-checkbox-shadow" />
     </div>
   );
 }

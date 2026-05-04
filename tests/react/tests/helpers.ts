@@ -120,11 +120,6 @@ export function assertClientSideErrors (ignoreHydrationMismatchErrors: boolean) 
    * Verify that no errors were logged during the tests
    */
   afterEach(() => {
-    /**
-     * Filter errors based on whether this is a known failure
-     * For known failures, we ignore hydration errors
-     * For other components, we check for hydration errors
-     */
     const relevantErrors = errors.filter((error) => {
       const errorLower = error.toLowerCase();
       const isHydrationError = (
@@ -135,12 +130,11 @@ export function assertClientSideErrors (ignoreHydrationMismatchErrors: boolean) 
         error.includes('error node')
       );
       
-      // If it's a known failure, ignore hydration errors for this component
       if (ignoreHydrationMismatchErrors && isHydrationError) {
         return false;
       }
       
-      // Always filter out non-hydration errors that we don't care about
+      // Filter out non-hydration errors that we don't care about
       if (!isHydrationError) {
         // Filter out WebdriverIO related socket errors
         if (

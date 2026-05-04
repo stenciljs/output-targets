@@ -1,9 +1,9 @@
 import { TestStage } from 'react-test-components/next';
 
-export default function MyRadioGroupPage() {
+export default function MyButtonScopedPage() {
   return (
     <div>
-      <TestStage name="my-radio-group" />
+      <TestStage name="my-button-shadow" />
     </div>
   );
 }
