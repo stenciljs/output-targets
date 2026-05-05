@@ -29,7 +29,7 @@ interface TestScenarioOptions {
 }
 
 export const runTestScenarios = ({ only, exclude, ...opts }: TestScenarioOptions = {}) => {
-  const scenarions = (Object.entries(testScenarios) as [TestComponent, () => void][])
+  const scenarios = (Object.entries(testScenarios) as [TestComponent, () => void][])
     .filter(([key]) => !only || only.includes(key))
     .filter(([key]) => !exclude || !exclude.includes(key))
 
@@ -39,16 +39,7 @@ export const runTestScenarios = ({ only, exclude, ...opts }: TestScenarioOptions
    */
   assertClientSideErrors(!!opts.ignoreHydrationMismatchErrors)
 
-  scenarions.forEach(([name, test]) => {
-    describe(name, () => {
-      // Set the current test component so assertClientSideErrors can identify known failures
-      // We set it in beforeEach and keep it set so afterEach hooks can access it
-      beforeEach(() => {
-        ;(global as any).__currentTestComponent = name
-      })
-      test()
-      // Note: We don't clear __currentTestComponent here because the afterEach
-      // hook in helpers.ts needs to access it, and hooks run in reverse order
-    })
+  scenarios.forEach(([name, test]) => {
+    describe(name, test)
   })
 }
