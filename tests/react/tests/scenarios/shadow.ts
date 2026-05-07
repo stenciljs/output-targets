@@ -26,12 +26,6 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       await browser.url('/single-no-child-scoped')
       await expect($('my-component-scoped')).toHaveStyle({ color: 'rgba(0,128,0,1)' })
     })
-
-    it('should update rendered text when prop changes', async () => {
-      await browser.url('/single-no-child-shadow')
-      await browser.execute((el: any) => { el.middleName = 'Test'; }, await $('my-component'))
-      await expect($('my-component').$('div')).toHaveText("Hello, World! I'm John Test Doe")
-    })
   },
   'single-children-shadow': () => {
     it('should correctly server side render', async function () {
@@ -81,6 +75,13 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
         'this.grault: true',
         'this.waldo: true',
       ].join('\n'))
+    })
+  },
+  'prop-update-shadow': () => {
+    it('should update rendered text when prop changes', async () => {
+      await browser.url('/single-no-child-shadow')
+      await browser.execute((el: any) => { el.middleName = 'Test'; }, await $('my-component'))
+      await expect($('my-component').$('div')).toHaveText("Hello, World! I'm John Test Doe")
     })
   },
   'input-shadow': () => {

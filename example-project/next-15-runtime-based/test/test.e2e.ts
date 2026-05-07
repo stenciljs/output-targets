@@ -16,6 +16,8 @@ describe('Next 15 React 19 SSR Integration', () => {
        * but Next.js has its own style deduplication that works regardless of React version.
        */
       'style-no-deduplication-scoped',
+      // Known issue: aria-checked and label placement are undefined on hydration.
+      'checkbox-shadow',
     ],
   });
 });

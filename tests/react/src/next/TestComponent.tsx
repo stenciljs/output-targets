@@ -36,6 +36,7 @@ const testComponents = [
   'single-children-shadow',
   'nested-shadow',
   'complex-props-shadow',
+  'prop-update-shadow',
   'input-shadow',
   'checkbox-shadow',
   // transformed tests
@@ -120,6 +121,9 @@ const TestComponent = ({ name }: TestComponentProps) => {
         waldo={null}
       />
     );
+  }
+  if (name === 'prop-update-shadow') {
+    return <MyComponent first="John" middleName="William" last="Doe" />;
   }
   if (name === 'input-scoped') {
     return <InputScoped />;
