@@ -33,6 +33,9 @@ const testComponents = [
   'nested-scoped',
   'complex-props-scoped',
   'input-scoped',
+  // style deduplication tests
+  'style-deduplication-scoped',
+  'style-no-deduplication-scoped',
   // shadow tests
   'single-no-child-shadow',
   'single-children-shadow',
@@ -42,8 +45,6 @@ const testComponents = [
   // transformed tests
   'transform-scoped-to-shadow',
   'transform-tag-test',
-  'style-deduplication-scoped',
-  'style-no-deduplication-scoped',
   // individual component tests
   'my-button-scoped',
   'my-button-shadow',
@@ -58,11 +59,11 @@ export type TestComponent = (typeof testComponents)[number];
 export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
 export type ScopedComponents = Exclude<
   Extract<TestComponent, `${string}scoped`>,
-  'transform-scoped-to-shadow' | 'style-deduplication-scoped'
+  'transform-scoped-to-shadow' | 'style-deduplication-scoped' | 'style-no-deduplication-scoped'
 >;
 export type TransformedComponents = Extract<
   TestComponent,
-  'transform-scoped-to-shadow' | 'transform-tag-test' | 'style-deduplication-scoped'
+  'transform-scoped-to-shadow' | 'transform-tag-test' | 'style-deduplication-scoped' | 'style-no-deduplication-scoped'
 >;
 interface TestComponentProps {
   name: TestComponent;
