@@ -93,7 +93,7 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
     })
   },
   'my-button-scoped': () => {
-    it('should not have hydration mismatch errors', async () => {
+    it('should render without errors', async () => {
       await browser.url('/my-button-scoped')
       await expect($('my-button-scoped')).toBePresent()
     })

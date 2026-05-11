@@ -143,11 +143,8 @@ export function assertClientSideErrors (ignoreHydrationMismatchErrors: boolean) 
         ) {
           return false;
         }
-        // Keep other non-hydration errors
-        return true;
       }
       
-      // For hydration errors on non-known-failures, we want to catch them
       return true;
     });
     
