@@ -178,39 +178,39 @@ const TestComponent = ({ name }: TestComponentProps) => {
     );
   }
   if (name === 'my-button-scoped') {
-      return <MyButtonScoped>Click Me</MyButtonScoped>;
-    }
-    if (name === 'my-button-shadow') {
-      return <MyButton>Click Me</MyButton>;
-    }
-    if (name === 'my-checkbox-shadow') {
-      return <MyCheckbox>Checkbox Label</MyCheckbox>;
-    }
-    if (name === 'my-component-shadow') {
-      return <MyComponent first="John" middleName="William" last="Doe" />;
-    }
-    if (name === 'my-counter-shadow') {
-      return <MyCounter startValue={10} />;
-    }
-    if (name === 'my-list-shadow') {
-      return (
-        <MyList>
-          <MyListItem>Item 1 Shadow</MyListItem>
-          <MyListItem>Item 2 Shadow</MyListItem>
-          <MyListItem>Item 3 Shadow</MyListItem>
-        </MyList>
-      );
-    }
-    if (name === 'my-range-shadow') {
-      return (
-        <MyRange name="test-range" min={0} max={100} value={50}>
-          Range Label
-        </MyRange>
-      );
-    }
-    if (name === 'my-toggle-shadow') {
-      return <MyToggle>Toggle Content</MyToggle>;
-    }
+    return <MyButtonScoped>Click Me</MyButtonScoped>;
+  }
+  if (name === 'my-button-shadow') {
+    return <MyButton>Click Me</MyButton>;
+  }
+  if (name === 'my-checkbox-shadow') {
+    return <MyCheckbox>Checkbox Label</MyCheckbox>;
+  }
+  if (name === 'my-component-shadow') {
+    return <MyComponent first="John" middleName="William" last="Doe" />;
+  }
+  if (name === 'my-counter-shadow') {
+    return <MyCounter startValue={10} />;
+  }
+  if (name === 'my-list-shadow') {
+    return (
+      <MyList>
+        <MyListItem>Item 1 Shadow</MyListItem>
+        <MyListItem>Item 2 Shadow</MyListItem>
+        <MyListItem>Item 3 Shadow</MyListItem>
+      </MyList>
+    );
+  }
+  if (name === 'my-range-shadow') {
+    return (
+      <MyRange name="test-range" min={0} max={100} value={50}>
+        Range Label
+      </MyRange>
+    );
+  }
+  if (name === 'my-toggle-shadow') {
+    return <MyToggle>Toggle Content</MyToggle>;
+  }
 
   return (
     <div>
