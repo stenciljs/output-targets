@@ -263,7 +263,7 @@ describe('createStencilReactComponents', () => {
     );
     expect(result).toContain(`tagName: 'my-component',
     properties: { value: 'value' },
-    hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('my-package/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
     serializeShadowRoot`);
   });

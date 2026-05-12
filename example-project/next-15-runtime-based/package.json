@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "start": "next dev -p 3002",
+    "dev": "next dev -p 3002",
+    "start": "next start -p 3001",
     "lint": "next lint",
     "prettier": "prettier --write --print-width 80 \"*.mjs\" \"*.json\" \"src/**/*.tsx\" \"*.ts\"",
     "test": "wdio run ./wdio.conf.ts"
