@@ -135,8 +135,8 @@ const TestComponent = ({ name }: TestComponentProps) => {
     );
   }
   if (name === 'prop-update-shadow') {
-      return <MyComponent first="John" middleName="William" last="Doe" />;
-    }
+    return <MyComponent first="John" middleName="William" last="Doe" />;
+  }
   if (name === 'input-scoped') {
     return <InputScoped />;
   }
