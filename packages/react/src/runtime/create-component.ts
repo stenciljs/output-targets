@@ -5,10 +5,7 @@ import { createComponent as createComponentWrapper } from '@lit/react';
 type EventNames = Record<string, EventName | string>;
 
 // Type that's compatible with both React 18 and 19
-type StencilProps<I extends HTMLElement, E extends EventNames, C> = Omit<
-  React.HTMLAttributes<I>,
-  keyof E
-> &
+type StencilProps<I extends HTMLElement, E extends EventNames, C> = Omit<React.HTMLAttributes<I>, keyof E> &
   Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
   Partial<C> &
   React.RefAttributes<I>;

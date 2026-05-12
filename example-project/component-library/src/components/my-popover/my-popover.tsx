@@ -11,7 +11,7 @@ import { eventMethod } from '../helpers';
   tag: 'my-popover',
   scoped: true,
 })
-export class Popover implements ComponentInterface, OverlayInterface {
+export class MyPopover implements ComponentInterface, OverlayInterface {
   presented = false;
 
   overlayIndex = 0;
