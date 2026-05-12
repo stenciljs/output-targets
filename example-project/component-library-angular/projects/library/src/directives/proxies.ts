@@ -204,7 +204,7 @@ export declare interface MyComplexPropsScoped extends Components.MyComplexPropsS
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: [{ name: 'first', required: true }, 'last', 'middleName'],
+  inputs: ['first', 'last', 'middleName'],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;

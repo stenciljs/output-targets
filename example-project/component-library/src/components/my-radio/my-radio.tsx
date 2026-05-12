@@ -16,7 +16,7 @@ import { createColorClasses, isOptionSelected } from '../helpers';
   styleUrl: 'my-radio.css',
   shadow: true,
 })
-export class Radio implements ComponentInterface {
+export class MyRadio implements ComponentInterface {
   private inputId = `ion-rb-${radioButtonIds++}`;
   private radioGroup: HTMLMyRadioGroupElement | null = null;
 

@@ -91,5 +91,11 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
         'Scoped Change Event: Hello World!',
       ].join('\n'))
     })
-  }
+  },
+  'my-button-scoped': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-button-scoped')
+      await expect($('my-button-scoped')).toBePresent()
+    })
+  },
 }

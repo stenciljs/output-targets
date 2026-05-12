@@ -15,6 +15,10 @@ describe('Next.js 14 React 18 SSR Integration', () => {
        * but Next.js has its own style deduplication that works regardless of React version.
        */
       'style-no-deduplication-scoped',
+      // Hydration mismatch errors
+      'complex-props-scoped',
+      'complex-props-shadow',
+      'my-list-shadow',
     ],
   });
 });

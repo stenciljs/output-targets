@@ -121,5 +121,47 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       })
       expect(isFocused).toBe(true)
     })
-  }
+  },
+  'my-button-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-button-shadow')
+      await expect($('my-button')).toBePresent()
+    })
+  },
+  'my-checkbox-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-checkbox-shadow')
+      await expect($('my-checkbox')).toBePresent()
+    })
+  },
+  'my-component-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-component-shadow')
+      await expect($('my-component')).toBePresent()
+    })
+  },
+  'my-counter-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-counter-shadow')
+      await expect($('my-counter')).toBePresent()
+    })
+  },
+  'my-list-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-list-shadow')
+      await expect($('my-list')).toBePresent()
+    })
+  },
+  'my-range-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-range-shadow')
+      await expect($('my-range')).toBePresent()
+    })
+  },
+  'my-toggle-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-toggle-shadow')
+      await expect($('my-toggle')).toBePresent()
+    })
+  },
 }

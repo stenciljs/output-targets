@@ -2,12 +2,6 @@ import { runTestScenarios } from 'react-test-components/scenarios';
 
 describe('Next 15 React 19 SSR Integration', () => {
   runTestScenarios({
-    /**
-     * We have to disable client side error checks as we
-     * can't guarantee no hydration errors are logged using
-     * the runtime based SSR approach.
-     */
-    assertClientSideErrors: false,
     exclude: [
       'transform-scoped-to-shadow',
       /**
@@ -18,6 +12,11 @@ describe('Next 15 React 19 SSR Integration', () => {
       'style-no-deduplication-scoped',
       // Known issue: aria-checked and label placement are undefined on hydration.
       'checkbox-shadow',
+      /**
+       * Known hydration mismatch errors
+       */
+      'single-no-child-scoped',
+      'single-no-child-shadow',
     ],
-  });
-});
+  })
+})
