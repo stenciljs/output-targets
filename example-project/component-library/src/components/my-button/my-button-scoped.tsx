@@ -17,7 +17,7 @@ import { AnchorInterface, ButtonInterface } from '../element-interface';
   styleUrl: 'my-button.css',
   scoped: true,
 })
-export class ButtonScoped implements ComponentInterface, AnchorInterface, ButtonInterface {
+export class MyButtonScoped implements ComponentInterface, AnchorInterface, ButtonInterface {
   private inItem = false;
   private inListHeader = false;
   private inToolbar = false;

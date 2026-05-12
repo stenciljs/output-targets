@@ -29,7 +29,7 @@ export interface CheckboxChangeNestedEventDetail<T = any> {
   styleUrl: 'checkbox.md.scss',
   shadow: true,
 })
-export class Checkbox implements ComponentInterface {
+export class MyCheckbox implements ComponentInterface {
   private inputId = `ion-cb-${checkboxIds++}`;
   private focusEl?: HTMLElement;
   private inheritedAttributes: Record<string, string> = {};

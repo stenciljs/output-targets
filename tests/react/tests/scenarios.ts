@@ -22,15 +22,14 @@ interface TestScenarioOptions {
    */
   exclude?: TestComponent[]
   /**
-   * If true, the test will assert that no client side errors
-   * e.g. hydration errors were logged
-   * @default true
+   * If false or unspecified, the test will assert that no hydration errors were logged
+   * @default false
    */
-  assertClientSideErrors?: boolean
+  ignoreHydrationMismatchErrors?: boolean
 }
 
 export const runTestScenarios = ({ only, exclude, ...opts }: TestScenarioOptions = {}) => {
-  const scenarions = (Object.entries(testScenarios) as [TestComponent, () => void][])
+  const scenarios = (Object.entries(testScenarios) as [TestComponent, () => void][])
     .filter(([key]) => !only || only.includes(key))
     .filter(([key]) => !exclude || !exclude.includes(key))
 
@@ -38,11 +37,9 @@ export const runTestScenarios = ({ only, exclude, ...opts }: TestScenarioOptions
    * track all errors that are logged during the tests and assert
    * that no errors were logged
    */
-  if (typeof opts.assertClientSideErrors !== 'boolean' || opts.assertClientSideErrors) {
-    assertClientSideErrors()
-  }
+  assertClientSideErrors(!!opts.ignoreHydrationMismatchErrors)
 
-  scenarions.forEach(([name, test]) => {
+  scenarios.forEach(([name, test]) => {
     describe(name, test)
   })
 }
