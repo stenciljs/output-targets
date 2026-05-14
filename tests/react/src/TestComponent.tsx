@@ -40,7 +40,9 @@ const testComponents = [
   'single-children-shadow',
   'nested-shadow',
   'complex-props-shadow',
+  'prop-update-shadow',
   'input-shadow',
+  'checkbox-shadow',
   // transformed tests
   'transform-scoped-to-shadow',
   'transform-tag-test',
@@ -132,11 +134,17 @@ const TestComponent = ({ name }: TestComponentProps) => {
       />
     );
   }
+  if (name === 'prop-update-shadow') {
+    return <MyComponent first="John" middleName="William" last="Doe" />;
+  }
   if (name === 'input-scoped') {
     return <InputScoped />;
   }
   if (name === 'input-shadow') {
     return <InputShadow />;
+  }
+  if (name === 'checkbox-shadow') {
+    return <MyCheckbox>Checkbox Label</MyCheckbox>;
   }
   if (name === 'transform-tag-test') {
     return <MyTransformTest message="Tag transformation test: should render as v1-my-transform-test" />;
