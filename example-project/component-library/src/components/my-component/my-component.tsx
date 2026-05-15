@@ -21,6 +21,8 @@ export class MyComponent {
    */
   @Prop() last: string;
 
+  @Prop() kidsNames: string[];
+
   @Event() myCustomEvent: EventEmitter<void>;
 
   @Listen('click')

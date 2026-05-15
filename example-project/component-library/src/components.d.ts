@@ -248,6 +248,7 @@ export namespace Components {
           * The first name
          */
         "first": string;
+        "kidsNames": string[];
         /**
           * The last name
          */
@@ -1360,6 +1361,7 @@ declare namespace LocalJSX {
           * The first name
          */
         "first"?: string;
+        "kidsNames"?: string[];
         /**
           * The last name
          */

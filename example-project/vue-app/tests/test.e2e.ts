@@ -45,6 +45,18 @@ describe('Stencil Vue Integration', () => {
         await expect($('my-component')).toHaveText('Hello, World! I\'m John Test Doe');
       });
 
+      it('should re-render when a reactive Vue prop binding changes', async () => {
+        await browser.url(scenario.path);
+        await expect($('my-component')).toHaveText('Hello, World! I\'m John Sir Doe');
+        await $('[data-testid="change-middle-name-btn"]').click();
+        await expect($('my-component')).toHaveText('Hello, World! I\'m John Test Doe');
+      });
+
+      it('should bind array props to the underlying element as a property', async () => {
+        const kidsNames = await browser.execute((el: any) => el.kidsNames, await $('my-component'));
+        await expect(kidsNames).toEqual(['John', 'Jane']);
+      });
+
       it('should render radio group value correctly', async () => {
         const radioBtns = $$('my-radio');
         const radioGroup = $('[data-testid="radio-group-value"]');

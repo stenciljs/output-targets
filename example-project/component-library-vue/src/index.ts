@@ -194,6 +194,7 @@ export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ g
   'first',
   'middleName',
   'last',
+  'kidsNames',
   'myCustomEvent'
 ], [
   'myCustomEvent'
