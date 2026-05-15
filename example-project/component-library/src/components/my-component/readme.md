@@ -14,6 +14,13 @@
 | `middleName` | `middle-name` | The middle name (using kebab case name) | `string` | `undefined` |
 
 
+## Events
+
+| Event           | Description | Type                |
+| --------------- | ----------- | ------------------- |
+| `myCustomEvent` |             | `CustomEvent<void>` |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

@@ -15,7 +15,7 @@ describe('Stencil Vue Integration', () => {
     describe(scenario.title, () => {
       before(() => browser.url(scenario.path));
 
-      it('should allow to interact with input element', async () => {
+      it('should allow interacting with input element', async () => {
         await $('my-input').$('input').setValue('Hello World');
         await expect(await $$('.inputResult p').map((p) => p.getText())).toEqual([
           'Input v-model: Hello World',
@@ -23,7 +23,7 @@ describe('Stencil Vue Integration', () => {
         ]);
       });
 
-      it('should allow to interact with checkbox element with custom v-model path', async () => {
+      it('should allow interacting with checkbox element with custom v-model path', async () => {
         await $('my-checkbox').click();
         await expect(await $$('.inputResultCheckbox p').map((p) => p.getText())).toEqual([
           'Input v-model: true',
@@ -31,13 +31,18 @@ describe('Stencil Vue Integration', () => {
         ]);
       });
 
-      it.skip('should listen to custom events', async () => {
+      it('should listen to custom events', async () => {
         await $('my-component').$('div').click();
         await expect(await $('[data-testid="mycomponent-click"]').getText()).toEqual('MyComponent was clicked');
       });
 
       it('should render all properties correctly', async () => {
         await expect($('my-component')).toHaveText('Hello, World! I\'m John Sir Doe');
+      });
+
+      it('should re-render after updating a property', async () => {
+        await browser.execute((el: any) => { el.middleName = 'Test'; }, await $('my-component'))
+        await expect($('my-component')).toHaveText('Hello, World! I\'m John Test Doe');
       });
 
       it('should render radio group value correctly', async () => {
