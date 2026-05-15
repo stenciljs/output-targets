@@ -68,6 +68,28 @@ describe('Stencil Vue Integration', () => {
         const message = await transformedElement.getText();
         await expect(message).toContain('This component\'s tag should be transformed');
       });
+
+      it('should preserve hydrated and static classes when toggling a dynamic :class binding', async () => {
+        const target = $('.hydrated-test my-component');
+        const toggleBtn = $('[data-testid="toggle-class-btn"]');
+        const status = $('[data-testid="class-status"] strong');
+
+        await expect(target).toHaveElementClass('hydrated');
+        await expect(target).toHaveElementClass('static-class');
+        await expect(target).not.toHaveElementClass('highlighted');
+
+        await toggleBtn.click();
+        await expect(status).toHaveText('true');
+        await expect(target).toHaveElementClass('highlighted');
+        await expect(target).toHaveElementClass('hydrated');
+        await expect(target).toHaveElementClass('static-class');
+
+        await toggleBtn.click();
+        await expect(status).toHaveText('false');
+        await expect(target).not.toHaveElementClass('highlighted');
+        await expect(target).toHaveElementClass('hydrated');
+        await expect(target).toHaveElementClass('static-class');
+      });
     })
   })
 });

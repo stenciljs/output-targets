@@ -35,6 +35,7 @@
   <p data-testid="transform-test-info">
     Check the DOM: the tag should be &lt;v1-my-transform-test&gt; instead of &lt;my-transform-test&gt;
   </p>
+  <HydratedClassTest />
 </template>
 
 <script lang="ts">
@@ -44,6 +45,7 @@ import HelloWorld from '../components/HelloWorld.vue'
 import Input from '../components/Input.vue'
 // @ts-ignore
 import Checkbox from '../components/Checkbox.vue'
+import HydratedClassTest from '../components/HydratedClassTest.vue';
 import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup, MyTransformTest } from 'component-library-vue'
 
 
@@ -59,6 +61,7 @@ export default defineComponent({
     MyRadio,
     MyRadioGroup,
     MyTransformTest,
+    HydratedClassTest
   },
   setup() {
     const input = ref('')
