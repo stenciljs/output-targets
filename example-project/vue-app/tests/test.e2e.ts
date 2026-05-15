@@ -1,5 +1,6 @@
 /// <reference types="@wdio/globals/types" />
 /// <reference types="@wdio/mocha-framework" />
+import os from 'node:os';
 import { expect, $, $$, browser } from '@wdio/globals';
 
 const scenarios = [{
@@ -65,6 +66,16 @@ describe('Stencil Vue Integration', () => {
         await expect(await radioGroup.getText()).toEqual('Radio Group Value: option2');
         await radioBtns[2].click();
         await expect(await radioGroup.getText()).toEqual('Radio Group Value: option3');
+      });
+
+      it('should focus the inner input when setFocus is called', async function () {
+        await browser.url(scenario.path);
+        await browser.execute((el: any) => el.setFocus(), await $('my-checkbox'));
+        const isFocused = await browser.execute(() => {
+          const el = document.querySelector('my-checkbox') as any;
+          return el?.shadowRoot?.activeElement?.tagName.toLowerCase() === 'input';
+        });
+        expect(isFocused).toBe(true);
       });
 
       it('should transform tag names correctly', async () => {
