@@ -106,7 +106,7 @@ Check out our [example project](https://github.com/stenciljs/output-targets/blob
 - [`next-15-runtime-based`](https://github.com/stenciljs/output-targets/blob/main/example-project/next-15-runtime-based) - A Next.js v15 application using React v19 that uses a runtime based approach for SSR
 - [`nuxt-app`](https://github.com/stenciljs/output-targets/blob/main/example-project/nuxt-app) - A Nuxt application that consumes the Stencil components from the `component-library-vue` project
 - [`vue-app`](https://github.com/stenciljs/output-targets/blob/main/example-project/vue-app) - A Vue + Vite example application that consumes the Stencil components from the `component-library-vue` project
-- [`vue-app-broken`](https://github.com/stenciljs/output-targets/blob/main/example-project/vue-app-broken) - A Vue + Vite example application with invalid type use for testing purposes, ensuring Vue component properties types are propagated correctly
+- [`vue-type-test`](https://github.com/stenciljs/output-targets/blob/main/example-project/vue-type-test) - A Vue + Vite example application with invalid type use for testing purposes, ensuring Vue component properties types are propagated correctly
 
 Detailed information for each output target can be found in each package's README.
 
