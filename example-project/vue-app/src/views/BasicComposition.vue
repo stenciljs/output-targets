@@ -12,10 +12,11 @@
     @myCustomEvent="handleCustomEvent"
     :kidsNames="kidsNames"
     first="John"
-    middleName="Sir"
+    :middleName="middleName"
     last="Doe"
   />
   <p data-testid="mycomponent-click" v-show="isClicked">MyComponent was clicked</p>
+  <button data-testid="change-middle-name-btn" @click="middleName = 'Test'">Change Middle Name</button>
   <Input />
   <Checkbox />
   <MyCheckbox @ionChange="console.log">Checkbox!!!</MyCheckbox>
@@ -35,6 +36,7 @@
   <p data-testid="transform-test-info">
     Check the DOM: the tag should be &lt;v1-my-transform-test&gt; instead of &lt;my-transform-test&gt;
   </p>
+  <HydratedClassTest />
 </template>
 
 <script lang="ts">
@@ -44,6 +46,7 @@ import HelloWorld from '../components/HelloWorld.vue'
 import Input from '../components/Input.vue'
 // @ts-ignore
 import Checkbox from '../components/Checkbox.vue'
+import HydratedClassTest from '../components/HydratedClassTest.vue';
 import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup, MyTransformTest } from 'component-library-vue'
 
 
@@ -59,10 +62,12 @@ export default defineComponent({
     MyRadio,
     MyRadioGroup,
     MyTransformTest,
+    HydratedClassTest
   },
   setup() {
     const input = ref('')
     const isClicked = ref(false)
+    const middleName = ref("Sir");
 
     const handleCustomEvent = () => {
       isClicked.value = true
@@ -74,6 +79,7 @@ export default defineComponent({
     return {
       input,
       isClicked,
+      middleName,
       handleCustomEvent,
       kidsNames,
       radioGroupValue,

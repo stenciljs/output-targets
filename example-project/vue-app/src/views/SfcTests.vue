@@ -11,6 +11,7 @@ import { ref } from 'vue'
 
 const input = ref('');
 const isClicked = ref(false)
+const middleName = ref('Sir')
 const handleCustomEvent = () => {
   isClicked.value = true
 }
@@ -33,10 +34,11 @@ const radioGroupValue = ref('option1')
     @myCustomEvent="handleCustomEvent"
     :kidsNames="kidsNames"
     first="John"
-    middleName="Sir"
+    :middleName="middleName"
     last="Doe"
   />
   <p data-testid="mycomponent-click" v-show="isClicked">MyComponent was clicked</p>
+  <button data-testid="change-middle-name-btn" @click="middleName = 'Test'">Change Middle Name</button>
   <Input />
   <Checkbox />
   <MyCheckbox @ionChange="console.log">Checkbox!!!</MyCheckbox>
