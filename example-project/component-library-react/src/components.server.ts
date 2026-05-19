@@ -63,7 +63,7 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents, Co
         target: 'target',
         type: 'type'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyButton as StencilReactComponent<MyButtonElement, MyButtonEvents, Components.MyButton>,
     serializeShadowRoot,
     getTagTransformer
@@ -91,7 +91,7 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
         target: 'target',
         type: 'type'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyButtonScoped as StencilReactComponent<MyButtonScopedElement, MyButtonScopedEvents, Components.MyButtonScoped>,
     serializeShadowRoot,
     getTagTransformer
@@ -117,7 +117,7 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
         justify: 'justify',
         alignment: 'alignment'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyCheckbox as StencilReactComponent<MyCheckboxElement, MyCheckboxEvents, Components.MyCheckbox>,
     serializeShadowRoot,
     getTagTransformer
@@ -128,7 +128,7 @@ export type MyComplexPropsEvents = NonNullable<unknown>;
 export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps> = /*@__PURE__*/ createComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps>({
     tagName: 'my-complex-props',
     properties: { grault: 'grault' },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyComplexProps as StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps>,
     serializeShadowRoot,
     getTagTransformer
@@ -139,7 +139,7 @@ export type MyComplexPropsScopedEvents = NonNullable<unknown>;
 export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped> = /*@__PURE__*/ createComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped>({
     tagName: 'my-complex-props-scoped',
     properties: { grault: 'grault' },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyComplexPropsScoped as StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped>,
     serializeShadowRoot,
     getTagTransformer
@@ -154,7 +154,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
         middleName: 'middle-name',
         last: 'last'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
     serializeShadowRoot,
     getTagTransformer
@@ -165,7 +165,7 @@ export type MyComponentDelegatesFocusEvents = NonNullable<unknown>;
 export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus> = /*@__PURE__*/ createComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>({
     tagName: 'my-component-delegates-focus',
     properties: {},
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyComponentDelegatesFocus as StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>,
     serializeShadowRoot,
     getTagTransformer
@@ -180,7 +180,7 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
         middleName: 'middle-name',
         last: 'last'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyComponentScoped as StencilReactComponent<MyComponentScopedElement, MyComponentScopedEvents, Components.MyComponentScoped>,
     serializeShadowRoot,
     getTagTransformer
@@ -191,7 +191,7 @@ export type MyCounterEvents = { onCount: EventName<MyCounterCustomEvent<number>>
 export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents, Components.MyCounter> = /*@__PURE__*/ createComponent<MyCounterElement, MyCounterEvents, Components.MyCounter>({
     tagName: 'my-counter',
     properties: { startValue: 'start-value' },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyCounter as StencilReactComponent<MyCounterElement, MyCounterEvents, Components.MyCounter>,
     serializeShadowRoot,
     getTagTransformer
@@ -234,7 +234,7 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents, Compo
         type: 'type',
         value: 'value'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyInput as StencilReactComponent<MyInputElement, MyInputEvents, Components.MyInput>,
     serializeShadowRoot,
     getTagTransformer
@@ -277,7 +277,7 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
         type: 'type',
         value: 'value'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyInputScoped as StencilReactComponent<MyInputScopedElement, MyInputScopedEvents, Components.MyInputScoped>,
     serializeShadowRoot,
     getTagTransformer
@@ -288,7 +288,7 @@ export type MyListEvents = NonNullable<unknown>;
 export const MyList: StencilReactComponent<MyListElement, MyListEvents, Components.MyList> = /*@__PURE__*/ createComponent<MyListElement, MyListEvents, Components.MyList>({
     tagName: 'my-list',
     properties: {},
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyList as StencilReactComponent<MyListElement, MyListEvents, Components.MyList>,
     serializeShadowRoot,
     getTagTransformer
@@ -299,7 +299,7 @@ export type MyListItemEvents = NonNullable<unknown>;
 export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEvents, Components.MyListItem> = /*@__PURE__*/ createComponent<MyListItemElement, MyListItemEvents, Components.MyListItem>({
     tagName: 'my-list-item',
     properties: {},
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyListItem as StencilReactComponent<MyListItemElement, MyListItemEvents, Components.MyListItem>,
     serializeShadowRoot,
     getTagTransformer
@@ -310,7 +310,7 @@ export type MyListItemScopedEvents = NonNullable<unknown>;
 export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped> = /*@__PURE__*/ createComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped>({
     tagName: 'my-list-item-scoped',
     properties: {},
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyListItemScoped as StencilReactComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped>,
     serializeShadowRoot,
     getTagTransformer
@@ -321,7 +321,7 @@ export type MyListScopedEvents = NonNullable<unknown>;
 export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped> = /*@__PURE__*/ createComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped>({
     tagName: 'my-list-scoped',
     properties: {},
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyListScoped as StencilReactComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped>,
     serializeShadowRoot,
     getTagTransformer
@@ -346,7 +346,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents,
         translucent: 'translucent',
         animated: 'animated'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyPopover as StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover>,
     serializeShadowRoot,
     getTagTransformer
@@ -368,7 +368,7 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents, Compo
         justify: 'justify',
         alignment: 'alignment'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyRadio as StencilReactComponent<MyRadioElement, MyRadioEvents, Components.MyRadio>,
     serializeShadowRoot,
     getTagTransformer
@@ -384,7 +384,7 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
         name: 'name',
         value: 'value'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyRadioGroup as StencilReactComponent<MyRadioGroupElement, MyRadioGroupEvents, Components.MyRadioGroup>,
     serializeShadowRoot,
     getTagTransformer
@@ -412,7 +412,7 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents, Compo
         disabled: 'disabled',
         value: 'value'
     },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyRange as StencilReactComponent<MyRangeElement, MyRangeEvents, Components.MyRange>,
     serializeShadowRoot,
     getTagTransformer
@@ -423,7 +423,7 @@ export type MyToggleEvents = NonNullable<unknown>;
 export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents, Components.MyToggle> = /*@__PURE__*/ createComponent<MyToggleElement, MyToggleEvents, Components.MyToggle>({
     tagName: 'my-toggle',
     properties: {},
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyToggle as StencilReactComponent<MyToggleElement, MyToggleEvents, Components.MyToggle>,
     serializeShadowRoot,
     getTagTransformer
@@ -434,7 +434,7 @@ export type MyToggleContentEvents = NonNullable<unknown>;
 export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent> = /*@__PURE__*/ createComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent>({
     tagName: 'my-toggle-content',
     properties: { visible: 'visible' },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyToggleContent as StencilReactComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent>,
     serializeShadowRoot,
     getTagTransformer
@@ -445,7 +445,7 @@ export type MyTransformTestEvents = NonNullable<unknown>;
 export const MyTransformTest: StencilReactComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest> = /*@__PURE__*/ createComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest>({
     tagName: 'my-transform-test',
     properties: { message: 'message' },
-    hydrateModule: import('component-library/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyTransformTest as StencilReactComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest>,
     serializeShadowRoot,
     getTagTransformer

@@ -1,9 +1,9 @@
 import { TestStage } from "react-test-components";
 
-export default function InputScoped() {
+export default function CheckboxShadow() {
   return (
     <div>
-      <TestStage name="input-scoped" />
+      <TestStage name="checkbox-shadow" />
     </div>
   );
 }

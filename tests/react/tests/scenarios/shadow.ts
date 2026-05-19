@@ -77,6 +77,13 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       ].join('\n'))
     })
   },
+  'prop-update-shadow': () => {
+    it('should update rendered text when prop changes', async () => {
+      await browser.url('/single-no-child-shadow')
+      await browser.execute((el: any) => { el.middleName = 'Test'; }, await $('my-component'))
+      await expect($('my-component').$('div')).toHaveText("Hello, World! I'm John Test Doe")
+    })
+  },
   'input-shadow': () => {
     it('should support React state handler as component parameter', async () => {
       await browser.url('/input-shadow')
@@ -86,5 +93,75 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
         'Shadow Change Event: Hello World!',
       ].join('\n'))
     })
-  }
+  },
+  'checkbox-shadow': () => {
+    it('should correctly server side render', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+
+      const html = await fetchSourceCode('checkbox-shadow')
+      expect(html).toMatchSnapshot()
+    })
+
+    it('should have correctly hydrated component', async () => {
+      await browser.url('/checkbox-shadow')
+      await expect($('my-checkbox')).toBePresent()
+    })
+
+    it('should focus the inner input when setFocus is called', async function () {
+      if (os.platform() === 'win32') {
+        return this.skip()
+      }
+      await browser.url('/checkbox-shadow')
+      await browser.execute((el: any) => el.setFocus(), await $('my-checkbox'))
+      const isFocused = await browser.execute(() => {
+        const el = document.querySelector('my-checkbox') as any
+        return el?.shadowRoot?.activeElement?.tagName.toLowerCase() === 'input'
+      })
+      expect(isFocused).toBe(true)
+    })
+  },
+  'my-button-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-button-shadow')
+      await expect($('my-button')).toBePresent()
+    })
+  },
+  'my-checkbox-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-checkbox-shadow')
+      await expect($('my-checkbox')).toBePresent()
+    })
+  },
+  'my-component-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-component-shadow')
+      await expect($('my-component')).toBePresent()
+    })
+  },
+  'my-counter-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-counter-shadow')
+      await expect($('my-counter')).toBePresent()
+    })
+  },
+  'my-list-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-list-shadow')
+      await expect($('my-list')).toBePresent()
+    })
+  },
+  'my-range-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-range-shadow')
+      await expect($('my-range')).toBePresent()
+    })
+  },
+  'my-toggle-shadow': () => {
+    it('should render without errors', async () => {
+      await browser.url('/my-toggle-shadow')
+      await expect($('my-toggle')).toBePresent()
+    })
+  },
 }

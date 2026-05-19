@@ -283,7 +283,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
       .toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
     tagName: 'my-component',
     properties: { hasMaxLength: 'max-length' },
-    hydrateModule: import('my-package/hydrate') as Promise<HydrateModule>,
+    hydrateModule: typeof window === 'undefined' ? (import('my-package/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
     serializeShadowRoot
 });

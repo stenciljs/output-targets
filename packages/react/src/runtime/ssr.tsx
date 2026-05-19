@@ -457,7 +457,7 @@ type CreateComponentForSSROptions<
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,
 > = Omit<CreateComponentForServerSideRenderingOptions, 'renderToString' | 'serializeProperty' | 'transformTag'> & {
-  hydrateModule: Promise<HydrateModule>;
+  hydrateModule: Promise<HydrateModule> | undefined;
   transformTag?: (tag: string) => string;
   getTagTransformer?: () => ((tag: string) => string) | undefined;
   clientModule?: StencilReactComponent<I, E, C>;
@@ -498,6 +498,12 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
    * bundling them in the runtime and serving them in the browser.
    */
   return (async (props: WebComponentProps<I>) => {
+    if (!options.hydrateModule) {
+      throw new Error(
+        '`hydrateModule` is required when rendering a Stencil component on the server. ' +
+          'This indicates a misconfiguration of the Stencil React output target.'
+      );
+    }
     let firstTime = false;
     if (!hydrateModuleCache) {
       hydrateModuleCache = await options.hydrateModule;

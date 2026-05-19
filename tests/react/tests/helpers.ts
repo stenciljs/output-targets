@@ -87,13 +87,17 @@ export async function fetchFullPageHtml(scenario: TestComponent, retries = 3) {
 /**
  * This is a helper function that is used to assert that no client side errors
  * were logged during the tests.
+ * 
+ * @param ignoreHydrationMismatchErrors - whether to skip errors when
+ * client-rendered HTML does not match server-rendered HTML.
  */
-export function assertClientSideErrors() {
+export function assertClientSideErrors (ignoreHydrationMismatchErrors: boolean) {
   /**
    * track all errors that are logged during the tests
    */
   const errors: string[] = [];
   let removeLogHandler: undefined | (() => void);
+  
   beforeEach(async () => {
     errors.length = 0;
 
@@ -116,24 +120,36 @@ export function assertClientSideErrors() {
    * Verify that no errors were logged during the tests
    */
   afterEach(() => {
-    /**
-     * TODO: include all errors once we have fixed the hydration issues
-     */
-    const nonHydrationErrors = errors.filter(
-      (error) =>
-        !error.toLowerCase().includes('hydration') &&
-        !error.includes('hydrating') &&
-        !error.includes('Expected server HTML to contain a matching') &&
-        !error.includes('Did not expect server HTML to contain') &&
-        !error.includes('error node') &&
-        /**
-         * WebdriverIO related socket errors that only appeared in CI on MacOS
-         */
-        !error.includes('failed to connect to websocket') &&
-        !error.includes('WebSocket closed without opened.')
-    );
-    if (nonHydrationErrors.length > 0) {
-      throw new Error(`Errors were logged during the tests:\n  - ${nonHydrationErrors.join('\n  - ')}`);
+    const relevantErrors = errors.filter((error) => {
+      const errorLower = error.toLowerCase();
+      const isHydrationError = (
+        errorLower.includes('hydration') ||
+        errorLower.includes('hydrating') ||
+        error.includes('Expected server HTML to contain a matching') ||
+        error.includes('Did not expect server HTML to contain') ||
+        error.includes('error node')
+      );
+      
+      if (ignoreHydrationMismatchErrors && isHydrationError) {
+        return false;
+      }
+      
+      // Filter out non-hydration errors that we don't care about
+      if (!isHydrationError) {
+        // Filter out WebdriverIO related socket errors
+        if (
+          error.includes('failed to connect to websocket') ||
+          error.includes('WebSocket closed without opened.')
+        ) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+    
+    if (relevantErrors.length > 0) {
+      throw new Error(`Errors were logged during the tests:\n  - ${relevantErrors.join('\n  - ')}`);
     }
   });
 }

@@ -1,9 +1,9 @@
 import { TestStage } from 'react-test-components/next';
 
-export default function NestedScoped() {
+export default function CheckboxShadow() {
   return (
     <div>
-      <TestStage name="nested-scoped" />
+      <TestStage name="checkbox-shadow" />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import { TestStage } from 'react-test-components';
 
-export default function NestedShadow() {
+export default function CheckboxShadow() {
   return (
     <div>
-      <TestStage name="nested-shadow" />
+      <TestStage name="checkbox-shadow" />
     </div>
   );
 }
