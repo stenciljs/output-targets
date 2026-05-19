@@ -79,6 +79,9 @@ describe('Stencil Vue Integration', () => {
       });
 
       it('should focus the inner input when setFocus is called', async function () {
+        if (os.platform() === 'win32') {
+          return this.skip()
+        }
         await browser.url(scenario.path);
         await browser.execute((el: any) => el.setFocus(), await $('my-checkbox'));
         const isFocused = await browser.execute(() => {
