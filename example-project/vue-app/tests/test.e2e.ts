@@ -68,6 +68,16 @@ describe('Stencil Vue Integration', () => {
         await expect(await radioGroup.getText()).toEqual('Radio Group Value: option3');
       });
 
+      it('should reflect my-radio-group value prop', async () => {
+        await browser.url(scenario.path);
+        const radioBtns = $$('my-radio');
+        const radioGroup = $('my-radio-group');
+
+        await expect(radioGroup).toHaveAttribute('value', 'option1');
+        await radioBtns[1].click();
+        await expect(radioGroup).toHaveAttribute('value', 'option2');
+      });
+
       it('should focus the inner input when setFocus is called', async function () {
         await browser.url(scenario.path);
         await browser.execute((el: any) => el.setFocus(), await $('my-checkbox'));
