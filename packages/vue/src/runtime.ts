@@ -173,6 +173,15 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
         const { routerLink } = props;
         if (routerLink === EMPTY_PROP) return;
 
+        /**
+         * Allow modifier key clicks (ctrl/cmd/shift) to open the link in a
+         * new tab/window without triggering SPA navigation on the current page.
+         */
+        const mouseEv = ev as MouseEvent;
+        if (mouseEv.metaKey || mouseEv.ctrlKey || mouseEv.shiftKey) {
+          return;
+        }
+
         if (navManager !== undefined) {
           /**
            * This prevents the browser from

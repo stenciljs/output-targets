@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineContainer } from './runtime';
 import { defineComponent, h, ref } from 'vue';
@@ -137,6 +137,59 @@ describe('defineContainer', () => {
       expect(myComponentEl.classList.contains('static')).toBe(true);
       expect(myComponentEl.classList.contains('dynamic')).toBe(false);
       expect(myComponentEl.classList.contains('hydrated')).toBe(true);
+    });
+  });
+
+  describe('routerLink modifier key clicks (issue FW-7149)', () => {
+    const mountWithRouter = (routerLink: string | undefined) => {
+      const navigate = vi.fn();
+      const MyComponent = defineContainer('my-component', undefined as any, ['routerLink']);
+
+      const wrapper = mount(MyComponent, {
+        props: { routerLink } as any,
+        global: {
+          provide: {
+            navManager: { navigate },
+          },
+        },
+      });
+      return { wrapper, navigate };
+    };
+
+    it('should preventDefault and navigate on a normal click', () => {
+      const { wrapper, navigate } = mountWithRouter('/target');
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      wrapper.find('my-component').element.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(true);
+      expect(navigate).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not preventDefault or navigate on meta+click', () => {
+      const { wrapper, navigate } = mountWithRouter('/target');
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true, metaKey: true });
+      wrapper.find('my-component').element.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(navigate).not.toHaveBeenCalled();
+    });
+
+    it('should not preventDefault or navigate on ctrl+click', () => {
+      const { wrapper, navigate } = mountWithRouter('/target');
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true });
+      wrapper.find('my-component').element.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(navigate).not.toHaveBeenCalled();
+    });
+
+    it('should not preventDefault or navigate on shift+click', () => {
+      const { wrapper, navigate } = mountWithRouter('/target');
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true, shiftKey: true });
+      wrapper.find('my-component').element.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(navigate).not.toHaveBeenCalled();
     });
   });
 });
