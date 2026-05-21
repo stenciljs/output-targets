@@ -197,17 +197,19 @@ export declare interface MyComplexPropsScoped extends Components.MyComplexPropsS
 
 @ProxyCmp({
   defineCustomElementFn: defineMyComponent,
-  inputs: ['first', 'last', 'middleName']
+  inputs: ['first', 'kidsNames', 'last', 'middleName']
 })
 @Component({
   selector: 'my-component',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['first', 'last', 'middleName'],
+  inputs: ['first', 'kidsNames', 'last', 'middleName'],
+  outputs: ['myCustomEvent'],
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
+  @Output() myCustomEvent = new EventEmitter<CustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -215,7 +217,10 @@ export class MyComponent {
 }
 
 
-export declare interface MyComponent extends Components.MyComponent {}
+export declare interface MyComponent extends Components.MyComponent {
+
+  myCustomEvent: EventEmitter<CustomEvent<void>>;
+}
 
 
 @ProxyCmp({

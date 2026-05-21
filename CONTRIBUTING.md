@@ -146,7 +146,7 @@ This project is structured as a monorepo with the following organization:
 │   ├── next-15-runtime-based/         # Next.js 15 with runtime-based SSR approach
 │   ├── nuxt-app/                      # Nuxt application (Vue SSR testing)
 │   ├── vue-app/                       # Vue + Vite example application
-│   ├── vue-app-broken/                # Vue app with invalid types (for testing)
+│   ├── vue-type-test/                 # Vue app with invalid types (for testing)
 │   ├── react-app/                     # React + Vite example application
 │   ├── remix-app/                     # Remix application example
 │   └── ng-app/                        # Angular CLI application example
