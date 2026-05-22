@@ -193,14 +193,19 @@ export const MyComplexPropsScoped: StencilVueComponent<JSX.MyComplexPropsScoped>
 export const MyComponent: StencilVueComponent<JSX.MyComponent> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyComponent>('my-component', defineMyComponent, [
   'first',
   'middleName',
-  'last'
-], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyComponent>({
+  'last',
+  'kidsNames',
+  'myCustomEvent'
+], [
+  'myCustomEvent'
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyComponent>({
   tagName: 'my-component',
   hydrateModule: import('component-library/hydrate'),
   props: {
     'first': [String, "first"],
     'middleName': [String, "middle-name"],
-    'last': [String, "last"]
+    'last': [String, "last"],
+    'onMyCustomEvent': [Function]
   },
   getTagTransformer: getTagTransformer
 });

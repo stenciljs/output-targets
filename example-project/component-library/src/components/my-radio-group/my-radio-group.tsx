@@ -37,7 +37,7 @@ export class MyRadioGroup implements ComponentInterface {
   /**
    * the value of the radio group.
    */
-  @Prop({ mutable: true }) value?: any | null;
+  @Prop({ mutable: true, reflect: true }) value?: any | null;
 
   @Watch('value')
   valueChanged(value: any | undefined) {

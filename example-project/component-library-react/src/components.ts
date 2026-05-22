@@ -12,7 +12,7 @@ import { createComponent } from '@stencil/react-output-target/runtime';
 import React from 'react';
 import { transformTag } from './tag-transformer.js';
 
-import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 import type { Components } from "component-library/components";
 import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from "component-library/components/my-button-scoped.js";
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from "component-library/components/my-button.js";
@@ -119,14 +119,14 @@ export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedEle
     transformTag
 });
 
-export type MyComponentEvents = NonNullable<unknown>;
+export type MyComponentEvents = { onMyCustomEvent: EventName<MyComponentCustomEvent<void>> };
 
 export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
     tagName: 'my-component',
     elementClass: MyComponentElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
-    events: {} as MyComponentEvents,
+    events: { onMyCustomEvent: 'myCustomEvent' } as MyComponentEvents,
     defineCustomElement: defineMyComponent,
     transformTag
 });
