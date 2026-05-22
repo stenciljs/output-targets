@@ -107,11 +107,7 @@ export const createAngularComponentDefinition = (
     proxyCmpOptions.push(`\n  methods: [${formattedMethods}]`);
   }
 
-  let standaloneOption = '';
-
-  if (!standalone) {
-    standaloneOption = `\n  standalone: false`;
-  }
+  const standaloneOption = `\n  standalone: ${standalone ? 'true' : 'false'}`;
 
   const propertyDeclarations = inlineComponentProps.map((m) =>
     createPropertyDeclaration(m, `Components.${tagNameAsPascal}['${m.name}']`, true)
