@@ -621,7 +621,12 @@ export function mergeImports(imports: ParsedStaticImport[]): ParsedStaticImport[
         parts.push(`{ ${namedList} }`);
       }
 
-      parts.push(` from "${imp.specifier}";\n`);
+      const isSideEffectImport = parts.length === 1;
+      if (!isSideEffectImport) {
+        parts.push(' from ');
+      }
+
+      parts.push(`"${imp.specifier}";\n`);
 
       const code = parts.join('');
       return {
