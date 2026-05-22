@@ -47,6 +47,18 @@ export const importDeclarations: ParsedStaticImport[] = [
         defaultImport: undefined,
         namespacedImport: undefined,
         namedImports: { useState: 'useState' }
+    },
+    {
+        type: 'static',
+        // @ts-ignore see: https://github.com/unjs/mlly/issues/349
+        imports: undefined,
+        specifier: './styles.css',
+        code: 'import "./styles.css";\n',
+        start: 1404,
+        end: 1427,
+        defaultImport: undefined,
+        namespacedImport: undefined,
+        namedImports: {}
     }
 ]
 
@@ -54,6 +66,8 @@ describe('mergeImports', () => {
     it('should merge imports', () => {
         expect(mergeImports(importDeclarations).map((imp) => imp.code).join('\n')).toMatchInlineSnapshot(`
           "import { Fragment, Fragment as _Fragment, jsx, jsx as _jsx, jsxs, jsxs as _jsxs } from "react/jsx-runtime";
+
+          import "./styles.css";
 
           import dynamic from "next/dynamic";
 
