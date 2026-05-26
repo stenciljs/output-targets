@@ -1,4 +1,4 @@
-import { Component, Prop, h, Event, EventEmitter, State } from '@stencil/core';
+import { Component, Prop, h, Event, EventEmitter, State, Watch } from '@stencil/core';
 
 @Component({
   tag: 'my-counter',
@@ -12,6 +12,11 @@ export class MyCounter {
    * The start value
    */
   @Prop() startValue: number;
+
+  @Watch('startValue', {immediate: true})
+  watchStartValue(newValue: number) {
+    this.startValue = this.countValue = newValue;
+  }
 
   /**
    * Emitted when the count changes

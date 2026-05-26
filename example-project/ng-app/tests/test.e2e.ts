@@ -9,16 +9,17 @@ describe('Stencil Angular Integration', () => {
     await expect($('my-component')).toHaveText("Hello, World! I'm not a framework");
   });
 
-  // it('should allow interaction with counter', async () => {
-  //   const counter = $('my-counter');
-  //   await expect(counter.$('span')).toHaveText('2277');
+  it('should allow interaction with counter', async () => {
+    const counter = $('my-counter');
+    await expect(counter.$('span')).toHaveText('2277');
 
-  //   const [minusButton, plusButton] = await counter.$$('button') as unknown as WebdriverIO.Element[];
-  //   await plusButton.click();
-  //   await expect(counter.$('span')).toHaveText('2278');
-  //   await minusButton.click();
-  //   await expect(counter.$('span')).toHaveText('2277');
-  // });
+    const [minusButton, plusButton] = await counter.$$('button') as unknown as WebdriverIO.Element[];
+    await plusButton.click();
+    await plusButton.click();
+    await expect(counter.$('span')).toHaveText('2279');
+    await minusButton.click();
+    await expect(counter.$('span')).toHaveText('2278');
+  });
 
   it('should transform tag names correctly', async () => {
     // The my-transform-test component should be transformed to v1-my-transform-test
