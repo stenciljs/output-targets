@@ -350,4 +350,68 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     expect(code).not.toContain('createComponent<MyComponentAElement, MyComponentAEvents, Components.MyComponentA>({');
     expect(code).toContain('createComponent<MyComponentBElement, MyComponentBEvents, Components.MyComponentB>({');
   });
+
+  it('should generate a server barrel when esModules: true and hydrateModule are both set', async () => {
+    const project = new Project({ useInMemoryFileSystem: true });
+    const sourceFiles = await createComponentWrappers({
+      components: [
+        {
+          tagName: 'my-component-a',
+          componentClassName: 'MyComponentA',
+          properties: [],
+          events: [],
+        } as any,
+        {
+          tagName: 'my-component-b',
+          componentClassName: 'MyComponentB',
+          properties: [],
+          events: [],
+        } as any,
+      ],
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/custom-elements',
+      outDir: 'dist/my-output-path',
+      esModules: true,
+      hydrateModule: 'my-package/hydrate',
+      excludeServerSideRenderingFor: ['my-component-a'],
+      project,
+    });
+
+    /**
+     * Find the generated barrels and per-component server files by file path
+     * since the order of `sourceFiles` mixes the in-memory ts-morph results
+     * (barrels) with the on-disk `createComponentFile` outputs.
+     */
+    const byPath = new Map(sourceFiles.map((f) => [f.getFilePath(), f]));
+
+    const clientBarrel = [...byPath.keys()].find((p) => p.endsWith('/components.ts'));
+    const serverBarrel = [...byPath.keys()].find((p) => p.endsWith('/components.server.ts'));
+    const serverPerComponentA = [...byPath.keys()].find((p) => p.endsWith('/my-component-a.server.ts'));
+    const serverPerComponentB = [...byPath.keys()].find((p) => p.endsWith('/my-component-b.server.ts'));
+
+    expect(clientBarrel).toBeDefined();
+    expect(serverBarrel).toBeDefined();
+
+    /**
+     * Per-component server file for the non-excluded component is still produced.
+     * The excluded component's per-component server file ends up empty (filtered
+     * to zero exports) — which matches the existing `createComponentFile` behavior
+     * — so we don't assert on its absence here, only that the included one exists.
+     */
+    expect(serverPerComponentB).toBeDefined();
+
+    const serverBarrelText = byPath.get(serverBarrel!)!.getFullText();
+    expect(serverBarrelText).toContain(
+      'import { type SerializeShadowRootOptions } from "@stencil/react-output-target/ssr";'
+    );
+    expect(serverBarrelText).toContain(
+      'export const serializeShadowRoot: SerializeShadowRootOptions = { default: "declarative-shadow-dom" };'
+    );
+    expect(serverBarrelText).toContain('export { MyComponentB } from "./my-component-b.server.js";');
+    expect(serverBarrelText).not.toContain('my-component-a.server.js');
+    expect(serverBarrelText).not.toContain('MyComponentA');
+
+    // Sanity check: the excluded per-component path is not silently used.
+    expect(serverPerComponentA).toBeDefined(); // still emitted, but with no exports
+  });
 });
