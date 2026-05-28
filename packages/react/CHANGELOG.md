@@ -1,4 +1,4 @@
-## [1.5.2](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.1...@stencil/react-output-target@1.5.2) (2026-05-28)
+## [1.5.3](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.1...@stencil/react-output-target@1.5.2) (2026-05-28)
 
 
 ### :bug: Bug Fix
