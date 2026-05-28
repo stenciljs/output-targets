@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/stenciljs/output-targets/compare/@stencil/ssr@0.3.1...@stencil/ssr@0.3.2) (2026-05-28)
+
+
+### :bug: Bug Fix
+
+* **ssr:** updates import merging to account for side effect imports ([#803](https://github.com/stenciljs/output-targets/issues/803)) ([dc51393](https://github.com/stenciljs/output-targets/commit/dc513932b77db7dc74c2e308b899c70f8c9727e0))
+
 ## [0.3.1](https://github.com/stenciljs/output-targets/compare/@stencil/ssr@0.3.0...@stencil/ssr@0.3.1) (2026-04-09)
 
 
