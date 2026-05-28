@@ -1,3 +1,11 @@
+## [0.13.2](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.13.1...@stencil/vue-output-target@0.13.2) (2026-05-28)
+
+
+### :bug: Bug Fix
+
+* **vue:** allow modifier key clicks on routerLink to open in new tab ([#801](https://github.com/stenciljs/output-targets/issues/801)) ([40c5a2d](https://github.com/stenciljs/output-targets/commit/40c5a2da0d4175aba2a30e11a0a5e26521810cfb))
+
+
 ## [0.13.1](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.13.0...@stencil/vue-output-target@0.13.1) (2026-02-21)
 
 
