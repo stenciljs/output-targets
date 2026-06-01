@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { MyComponent, MyCounter, MyToggle, MyTransformTest } from 'component-library-angular';
+import { FormsModule } from '@angular/forms';
+import { MyComponent, MyCounter, MyToggle, MyTransformTest, MyRadio, MyRadioGroup, SelectValueAccessor } from 'component-library-angular';
 import { ButtonTests } from './button-tests/button-tests';
 import { CheckboxTests } from './checkbox-tests/checkbox-tests';
 import { ComplexPropsTests } from './complex-props-tests/complex-props-tests';
 import { InputFormTests } from './input-form-tests/input-form-tests';
-import { RadioGroupTests } from './radio-group-tests/radio-group-tests';
 import { RangeTests } from './range-tests/range-tests';
 
 @Component({
@@ -15,14 +15,19 @@ import { RangeTests } from './range-tests/range-tests';
     MyCounter,
     MyToggle,
     MyTransformTest,
+    MyRadio,
+    MyRadioGroup,
     CheckboxTests,
     InputFormTests,
     ButtonTests,
     ComplexPropsTests,
-    RadioGroupTests,
     RangeTests,
+    FormsModule,
+    SelectValueAccessor
   ],
   templateUrl: './component-tests.html',
   styles: ``,
 })
-export class ComponentTests {}
+export class ComponentTests {
+  selectedColor = 'Red';
+}

@@ -10,6 +10,15 @@ describe('Stencil Angular Integration', () => {
     await expect($('my-component')).toHaveText("Hello, World! I'm not a framework");
   });
 
+  it('should reflect my-radio-group value prop', async () => {
+    const radioBtns = $$('my-radio');
+    const radioGroup = $('my-radio-group');
+
+    await expect(radioGroup).toHaveAttribute('value', 'Red');
+    await radioBtns[1].click();
+    await expect(radioGroup).toHaveAttribute('value', 'Green');
+  });
+
   it('should allow interaction with counter', async () => {
     const counter = $('my-counter');
     await expect(counter.$('span')).toHaveText('2277');
