@@ -2,7 +2,11 @@
   <app-button-tests></app-button-tests>
   <app-checkbox-tests></app-checkbox-tests>
   <app-complex-props-tests></app-complex-props-tests>
-  <my-component first="not" middleName="a" last="framework"></my-component>
+  <my-component first="John" [middleName]="middleName" last="Doe" (myCustomEvent)="onMyCustomEvent()"></my-component>
+  @if (myCustomEventFired) {
+    <div data-testid="my-custom-event-fired">myCustomEvent fired!</div>
+  }
+  <button data-testid="change-middle-name" (click)="changeMiddleName()">Change middle name</button>
   <div>
     <my-counter [startValue]="2277"></my-counter>
     start value not working

@@ -30,4 +30,14 @@ import { RangeTests } from './range-tests/range-tests';
 })
 export class ComponentTests {
   selectedColor = 'Red';
+  myCustomEventFired = false;
+  middleName = 'William';
+
+  onMyCustomEvent() {
+    this.myCustomEventFired = true;
+  }
+
+  changeMiddleName() {
+    this.middleName = 'Test';
+  }
 }

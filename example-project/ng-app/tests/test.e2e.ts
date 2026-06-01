@@ -7,7 +7,22 @@ describe('Stencil Angular Integration', () => {
   before(() => browser.url('/'));
 
   it('should render component with props', async () => {
-    await expect($('my-component')).toHaveText("Hello, World! I'm not a framework");
+    await expect($('my-component')).toHaveText("Hello, World! I'm John William Doe");
+  });
+
+  it('should show a div when my-component fires myCustomEvent', async () => {
+    const firedDiv = $('[data-testid="my-custom-event-fired"]');
+    await expect(firedDiv).not.toExist();
+    await $('my-component').click();
+    await expect(firedDiv).toExist();
+    await expect(firedDiv).toHaveText('myCustomEvent fired!');
+  });
+
+  it('should rerender my-component when the middleName prop changes', async () => {
+    const myComponent = $('my-component');
+    await expect(myComponent).toHaveText("Hello, World! I'm John William Doe");
+    await $('[data-testid="change-middle-name"]').click();
+    await expect(myComponent).toHaveText("Hello, World! I'm John Test Doe");
   });
 
   it('should reflect my-radio-group value prop', async () => {
@@ -42,6 +57,12 @@ describe('Stencil Angular Integration', () => {
       return el?.shadowRoot?.activeElement?.tagName.toLowerCase() === 'input';
     });
     expect(isFocused).toBe(true);
+  });
+
+  it('should render the firstname form control value', async () => {
+    const firstnameInput = $('my-input[formControlName="firstname"]').$('input.native-input');
+    await firstnameInput.setValue('John');
+    await expect($('app-input-form-tests')).toHaveText(expect.stringContaining('"firstname": "John"'));
   });
 
   it('should transform tag names correctly', async () => {
