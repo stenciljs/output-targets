@@ -117,6 +117,25 @@ export const createComponentWrappers = async ({
     }
     const componentsSource = await createEsModulesComponentsFile({ components: filteredComponents, project, outDir });
     sourceFiles.push(componentsSource);
+
+    /**
+     * Server barrel — mirrors the client barrel but points at `*.server.js` and
+     * exposes a single shared `serializeShadowRoot` so SSR consumers can
+     * tree-shake per-component imports.
+     */
+    if (hydrateModule) {
+      const serverComponentsSource = await createEsModulesComponentsFile({
+        components: filteredComponents.filter(
+          (c) => !excludeServerSideRenderingFor || !excludeServerSideRenderingFor.includes(c.tagName)
+        ),
+        project,
+        outDir,
+        filename: 'components.server.ts',
+        componentSuffix: '.server',
+        serializeShadowRoot,
+      });
+      sourceFiles.push(serverComponentsSource);
+    }
   } else {
     createComponentFile(filteredComponents);
   }
