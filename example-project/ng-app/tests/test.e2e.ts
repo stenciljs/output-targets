@@ -65,6 +65,19 @@ describe('Stencil Angular Integration', () => {
     await expect($('app-input-form-tests')).toHaveText(expect.stringContaining('"firstname": "John"'));
   });
 
+  it('should update the range value when the min is increased', async () => {
+    const rangeTests = $('app-range-tests');
+    await expect(rangeTests).toHaveText(expect.stringContaining('Range value: 0'));
+
+    // The first my-counter inside app-range-tests controls the range's min value.
+    const minCounter = rangeTests.$('my-counter');
+    const [, plusButton] = (await minCounter.$$('button')) as unknown as WebdriverIO.Element[];
+    await plusButton.click();
+
+    // Increasing min above the current value clamps the range value up to match.
+    await expect(rangeTests).toHaveText(expect.stringContaining('Range value: 1'));
+  });
+
   it('should transform tag names correctly', async () => {
     // The my-transform-test component should be transformed to v1-my-transform-test
     const transformedElement = $('v1-my-transform-test');
