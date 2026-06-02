@@ -136,12 +136,16 @@ const isLazyExoticComponent = (value: unknown): value is LazyComponent<any, any>
  * natively (forwardRef or memo). These must NOT be called directly as their render
  * functions use hooks, which are illegal outside of React's renderer.
  *
- * - React.forwardRef → { $$typeof, render }
- * - React.memo       → { $$typeof, type, compare }
+ * - React.forwardRef → { $$typeof: Symbol(react.forward_ref), render }
+ * - React.memo       → { $$typeof: Symbol(react.memo), type, compare }
+ *
+ * We require $$typeof to be present to avoid false-positives on plain objects
+ * that happen to have a 'render' or 'type' key.
  */
 const isNativelyRenderedExotic = (value: unknown): boolean =>
   !!value &&
   typeof value === 'object' &&
+  '$$typeof' in value &&
   ('render' in value || ('type' in value && 'compare' in value));
 
 /**
