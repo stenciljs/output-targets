@@ -156,8 +156,81 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
     expect(capturedRenderToStringArgs).toHaveLength(1);
   });
 
-  it('should handle mixed prop types correctly', async () => {
+  it('should serialize children that are React.forwardRef components without throwing', async () => {
+    // React.forwardRef components (e.g. those created by @lit/react) use hooks internally.
+    // resolveComponentTypes must NOT call their render() directly — that violates hook rules.
+    // They should be returned as-is for react-dom/server to handle natively.
+    const ForwardRefChild = React.forwardRef<HTMLElement, { slot?: string }>((_props, _ref) =>
+      React.createElement('cosmos-icon-video', {})
+    );
     const options: CreateComponentForSSROptions<HTMLElement> = {
+      tagName: 'test-component',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    };
+    const Component = createComponent(options);
+    await expect(Component({ children: React.createElement(ForwardRefChild, { slot: 'icon' }) })).resolves.toBeDefined();
+  });
+
+  it('should serialize children that are React.memo components without throwing', async () => {
+    // React.memo wraps a component in { $$typeof, type, compare }. The 'type' property
+    // would trigger the bottom recursive unwrap in resolveType, calling the inner function
+    // with hooks directly. The exotic guard must prevent this.
+    const MemoChild = React.memo((_props: { slot?: string }) =>
+      React.createElement('cosmos-icon-arrow', {})
+    );
+    const options: CreateComponentForSSROptions<HTMLElement> = {
+      tagName: 'test-component',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    };
+    const Component = createComponent(options);
+    await expect(Component({ children: React.createElement(MemoChild, { slot: 'icon' }) })).resolves.toBeDefined();
+  });
+
+  it('should serialize a nested Stencil SSR component as a slot child without throwing', async () => {
+    // When a Stencil SSR async component is used as a child (e.g. in a named slot),
+    // resolveComponentTypes must return the already-rendered element as-is, not try
+    // to use it as a `type` — which would cause renderToString to fail with
+    // "Objects are not valid as a React child".
+    const { renderToString } = await import('react-dom/server');
+    const realRenderToString = (await vi.importActual<typeof import('react-dom/server')>('react-dom/server')).renderToString;
+
+    // Parent component
+    const parentOptions: CreateComponentForSSROptions<HTMLElement> = {
+      tagName: 'my-button',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    };
+    const ParentComponent = createComponent(parentOptions);
+
+    // Child Stencil SSR component (async function)
+    const childOptions: CreateComponentForSSROptions<HTMLElement> = {
+      tagName: 'my-component',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    };
+    const ChildComponent = createComponent(childOptions);
+
+    // Use the real renderToString for children so the async issue would surface
+    vi.mocked(renderToString).mockImplementationOnce((element) => {
+      try {
+        return realRenderToString(element as React.ReactElement);
+      } catch {
+        // If the old (broken) code ran, it would produce "Objects are not valid as a React child"
+        // We re-throw so the test catches it
+        throw new Error('renderToString failed on nested Stencil SSR child');
+      }
+    });
+
+    await expect(
+      ParentComponent({
+        children: React.createElement(ChildComponent as any, { slot: 'start', first: 'Icon', last: 'Test' }),
+      })
+    ).resolves.toBeDefined();
+  });
+
+  it('should handle mixed prop types correctly', async () => {    const options: CreateComponentForSSROptions<HTMLElement> = {
       tagName: 'test-component',
       properties: {},
       hydrateModule: Promise.resolve(mockHydrateModule),
