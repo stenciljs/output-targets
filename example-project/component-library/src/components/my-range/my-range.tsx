@@ -219,8 +219,7 @@ export class MyRange implements ComponentInterface {
 
     // Decide which knob to move based on which one is closest to the press.
     const ratio = this.ratioFromPointer(ev.clientX);
-    this.pressedKnob =
-      !this.dualKnobs || Math.abs(this.ratioA - ratio) <= Math.abs(this.ratioB - ratio) ? 'A' : 'B';
+    this.pressedKnob = !this.dualKnobs || Math.abs(this.ratioA - ratio) <= Math.abs(this.ratioB - ratio) ? 'A' : 'B';
 
     this.update(ratio);
   };

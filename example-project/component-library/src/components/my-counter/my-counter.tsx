@@ -13,7 +13,7 @@ export class MyCounter {
    */
   @Prop() startValue: number;
 
-  @Watch('startValue', {immediate: true})
+  @Watch('startValue', { immediate: true })
   watchStartValue(newValue: number) {
     this.startValue = this.countValue = newValue;
   }
