@@ -11,6 +11,7 @@ import { MyCounter, MyRange, SelectValueAccessor } from 'component-library-angul
 })
 export class RangeTests {
   rangeValue: number = 0;
+  dualRangeValue: { lower: number; upper: number } = { lower: 20, upper: 80 };
   min: number = 0;
   max: number = 100;
 }

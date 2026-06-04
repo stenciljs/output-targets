@@ -83,9 +83,7 @@ export class MyRange implements ComponentInterface {
   @Prop() min = 0;
   @Watch('min')
   protected minChanged() {
-    if (!this.noUpdate) {
-      this.updateRatio();
-    }
+    this.updateRatio();
   }
 
   /**
@@ -94,9 +92,7 @@ export class MyRange implements ComponentInterface {
   @Prop() max = 100;
   @Watch('max')
   protected maxChanged() {
-    if (!this.noUpdate) {
-      this.updateRatio();
-    }
+    this.updateRatio();
   }
 
   /**
@@ -135,7 +131,7 @@ export class MyRange implements ComponentInterface {
    * the value of the range.
    */
   @Prop({ mutable: true }) value: RangeValue = 0;
-  @Watch('value')
+  @Watch('value', { immediate: true })
   protected valueChanged() {
     if (!this.noUpdate) {
       this.updateRatio();
@@ -321,7 +317,10 @@ export class MyRange implements ComponentInterface {
 
     value = this.ensureValueInBounds(value);
 
+    this.noUpdate = true;
     this.value = value;
+    this.noUpdate = false;
+
     this.myChange.emit({ value });
   }
 

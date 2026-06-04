@@ -9,3 +9,12 @@
 
 <my-range [min]="min" [max]="max" [(ngModel)]="rangeValue"></my-range>
 <div>Range value: {{ rangeValue }}</div>
+
+<my-range
+  [min]="min"
+  [max]="max"
+  [dualKnobs]="true"
+  [(ngModel)]="dualRangeValue"
+></my-range>
+<div>Lower value: {{ dualRangeValue.lower }}</div>
+<div>Upper value: {{ dualRangeValue.upper }}</div>
