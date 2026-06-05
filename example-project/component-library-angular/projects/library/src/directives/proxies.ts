@@ -42,8 +42,8 @@ import { defineCustomElement as defineMyTransformTest } from 'component-library/
 })
 export class MyButton {
   protected el: HTMLMyButtonElement;
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
+  @Output() myFocus = new EventEmitter<MyButtonCustomEvent<void>>();
+  @Output() myBlur = new EventEmitter<MyButtonCustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -51,15 +51,17 @@ export class MyButton {
 }
 
 
+import type { MyButtonCustomEvent } from 'component-library/components';
+
 export declare interface MyButton extends Components.MyButton {
   /**
    * Emitted when the button has focus.
    */
-  myFocus: EventEmitter<CustomEvent<void>>;
+  myFocus: EventEmitter<MyButtonCustomEvent<void>>;
   /**
    * Emitted when the button loses focus.
    */
-  myBlur: EventEmitter<CustomEvent<void>>;
+  myBlur: EventEmitter<MyButtonCustomEvent<void>>;
 }
 
 
@@ -77,8 +79,8 @@ export declare interface MyButton extends Components.MyButton {
 })
 export class MyButtonScoped {
   protected el: HTMLMyButtonScopedElement;
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
+  @Output() myFocus = new EventEmitter<MyButtonScopedCustomEvent<void>>();
+  @Output() myBlur = new EventEmitter<MyButtonScopedCustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -86,15 +88,17 @@ export class MyButtonScoped {
 }
 
 
+import type { MyButtonScopedCustomEvent } from 'component-library/components';
+
 export declare interface MyButtonScoped extends Components.MyButtonScoped {
   /**
    * Emitted when the button has focus.
    */
-  myFocus: EventEmitter<CustomEvent<void>>;
+  myFocus: EventEmitter<MyButtonScopedCustomEvent<void>>;
   /**
    * Emitted when the button loses focus.
    */
-  myBlur: EventEmitter<CustomEvent<void>>;
+  myBlur: EventEmitter<MyButtonScopedCustomEvent<void>>;
 }
 
 
@@ -112,10 +116,10 @@ export declare interface MyButtonScoped extends Components.MyButtonScoped {
 })
 export class MyCheckbox {
   protected el: HTMLMyCheckboxElement;
-  @Output() ionChange = new EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeEventDetail>>();
-  @Output() ionChangeNested = new EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeNestedEventDetail>>();
-  @Output() ionFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() ionBlur = new EventEmitter<CustomEvent<void>>();
+  @Output() ionChange = new EventEmitter<MyCheckboxCustomEvent<IMyCheckboxCheckboxChangeEventDetail>>();
+  @Output() ionChangeNested = new EventEmitter<MyCheckboxCustomEvent<IMyCheckboxCheckboxChangeNestedEventDetail>>();
+  @Output() ionFocus = new EventEmitter<MyCheckboxCustomEvent<void>>();
+  @Output() ionBlur = new EventEmitter<MyCheckboxCustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -123,6 +127,7 @@ export class MyCheckbox {
 }
 
 
+import type { MyCheckboxCustomEvent } from 'component-library/components';
 import type { CheckboxChangeEventDetail as IMyCheckboxCheckboxChangeEventDetail } from 'component-library/components';
 import type { CheckboxChangeNestedEventDetail as IMyCheckboxCheckboxChangeNestedEventDetail } from 'component-library/components';
 
@@ -132,20 +137,20 @@ export declare interface MyCheckbox extends Components.MyCheckbox {
 
 This event will not emit when programmatically setting the `checked` property.
    */
-  ionChange: EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeEventDetail>>;
+  ionChange: EventEmitter<MyCheckboxCustomEvent<IMyCheckboxCheckboxChangeEventDetail>>;
   /**
    * Same as `ionChange`, but with a nested object for the value.
 For demonstration purposes to be able to test ways to handle more complex events.
    */
-  ionChangeNested: EventEmitter<CustomEvent<IMyCheckboxCheckboxChangeNestedEventDetail>>;
+  ionChangeNested: EventEmitter<MyCheckboxCustomEvent<IMyCheckboxCheckboxChangeNestedEventDetail>>;
   /**
    * Emitted when the checkbox has focus.
    */
-  ionFocus: EventEmitter<CustomEvent<void>>;
+  ionFocus: EventEmitter<MyCheckboxCustomEvent<void>>;
   /**
    * Emitted when the checkbox loses focus.
    */
-  ionBlur: EventEmitter<CustomEvent<void>>;
+  ionBlur: EventEmitter<MyCheckboxCustomEvent<void>>;
 }
 
 
@@ -209,7 +214,7 @@ export declare interface MyComplexPropsScoped extends Components.MyComplexPropsS
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
-  @Output() myCustomEvent = new EventEmitter<CustomEvent<void>>();
+  @Output() myCustomEvent = new EventEmitter<MyComponentCustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -217,9 +222,11 @@ export class MyComponent {
 }
 
 
+import type { MyComponentCustomEvent } from 'component-library/components';
+
 export declare interface MyComponent extends Components.MyComponent {
 
-  myCustomEvent: EventEmitter<CustomEvent<void>>;
+  myCustomEvent: EventEmitter<MyComponentCustomEvent<void>>;
 }
 
 
@@ -259,7 +266,7 @@ export declare interface MyComponentDelegatesFocus extends Components.MyComponen
 })
 export class MyComponentScoped {
   protected el: HTMLMyComponentScopedElement;
-  @Output() myCustomEvent = new EventEmitter<CustomEvent<IMyComponentScopedIMyComponent.someVar>>();
+  @Output() myCustomEvent = new EventEmitter<MyComponentScopedCustomEvent<IMyComponentScopedIMyComponent.someVar>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -267,13 +274,14 @@ export class MyComponentScoped {
 }
 
 
+import type { MyComponentScopedCustomEvent } from 'component-library/components';
 import type { IMyComponent as IMyComponentScopedIMyComponent } from 'component-library/components';
 
 export declare interface MyComponentScoped extends Components.MyComponentScoped {
   /**
    * Testing an event without value
    */
-  myCustomEvent: EventEmitter<CustomEvent<IMyComponentScopedIMyComponent.someVar>>;
+  myCustomEvent: EventEmitter<MyComponentScopedCustomEvent<IMyComponentScopedIMyComponent.someVar>>;
 }
 
 
@@ -291,7 +299,7 @@ export declare interface MyComponentScoped extends Components.MyComponentScoped 
 })
 export class MyCounter {
   protected el: HTMLMyCounterElement;
-  @Output() count = new EventEmitter<CustomEvent<number>>();
+  @Output() count = new EventEmitter<MyCounterCustomEvent<number>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -299,11 +307,13 @@ export class MyCounter {
 }
 
 
+import type { MyCounterCustomEvent } from 'component-library/components';
+
 export declare interface MyCounter extends Components.MyCounter {
   /**
    * Emitted when the count changes
    */
-  count: EventEmitter<CustomEvent<number>>;
+  count: EventEmitter<MyCounterCustomEvent<number>>;
 }
 
 
@@ -322,10 +332,10 @@ export declare interface MyCounter extends Components.MyCounter {
 })
 export class MyInput {
   protected el: HTMLMyInputElement;
-  @Output() myInput = new EventEmitter<CustomEvent<KeyboardEvent>>();
-  @Output() myChange = new EventEmitter<CustomEvent<IMyInputInputChangeEventDetail>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
+  @Output() myInput = new EventEmitter<MyInputCustomEvent<KeyboardEvent>>();
+  @Output() myChange = new EventEmitter<MyInputCustomEvent<IMyInputInputChangeEventDetail>>();
+  @Output() myBlur = new EventEmitter<MyInputCustomEvent<void>>();
+  @Output() myFocus = new EventEmitter<MyInputCustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -333,25 +343,26 @@ export class MyInput {
 }
 
 
+import type { MyInputCustomEvent } from 'component-library/components';
 import type { InputChangeEventDetail as IMyInputInputChangeEventDetail } from 'component-library/components';
 
 export declare interface MyInput extends Components.MyInput {
   /**
    * Emitted when a keyboard input occurred.
    */
-  myInput: EventEmitter<CustomEvent<KeyboardEvent>>;
+  myInput: EventEmitter<MyInputCustomEvent<KeyboardEvent>>;
   /**
    * Emitted when the value has changed.
    */
-  myChange: EventEmitter<CustomEvent<IMyInputInputChangeEventDetail>>;
+  myChange: EventEmitter<MyInputCustomEvent<IMyInputInputChangeEventDetail>>;
   /**
    * Emitted when the input loses focus.
    */
-  myBlur: EventEmitter<CustomEvent<void>>;
+  myBlur: EventEmitter<MyInputCustomEvent<void>>;
   /**
    * Emitted when the input has focus.
    */
-  myFocus: EventEmitter<CustomEvent<void>>;
+  myFocus: EventEmitter<MyInputCustomEvent<void>>;
 }
 
 
@@ -370,10 +381,10 @@ export declare interface MyInput extends Components.MyInput {
 })
 export class MyInputScoped {
   protected el: HTMLMyInputScopedElement;
-  @Output() myInput = new EventEmitter<CustomEvent<KeyboardEvent>>();
-  @Output() myChange = new EventEmitter<CustomEvent<IMyInputScopedInputChangeEventDetail>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
+  @Output() myInput = new EventEmitter<MyInputScopedCustomEvent<KeyboardEvent>>();
+  @Output() myChange = new EventEmitter<MyInputScopedCustomEvent<IMyInputScopedInputChangeEventDetail>>();
+  @Output() myBlur = new EventEmitter<MyInputScopedCustomEvent<void>>();
+  @Output() myFocus = new EventEmitter<MyInputScopedCustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -381,25 +392,26 @@ export class MyInputScoped {
 }
 
 
+import type { MyInputScopedCustomEvent } from 'component-library/components';
 import type { InputChangeEventDetail as IMyInputScopedInputChangeEventDetail } from 'component-library/components';
 
 export declare interface MyInputScoped extends Components.MyInputScoped {
   /**
    * Emitted when a keyboard input occurred.
    */
-  myInput: EventEmitter<CustomEvent<KeyboardEvent>>;
+  myInput: EventEmitter<MyInputScopedCustomEvent<KeyboardEvent>>;
   /**
    * Emitted when the value has changed.
    */
-  myChange: EventEmitter<CustomEvent<IMyInputScopedInputChangeEventDetail>>;
+  myChange: EventEmitter<MyInputScopedCustomEvent<IMyInputScopedInputChangeEventDetail>>;
   /**
    * Emitted when the input loses focus.
    */
-  myBlur: EventEmitter<CustomEvent<void>>;
+  myBlur: EventEmitter<MyInputScopedCustomEvent<void>>;
   /**
    * Emitted when the input has focus.
    */
-  myFocus: EventEmitter<CustomEvent<void>>;
+  myFocus: EventEmitter<MyInputScopedCustomEvent<void>>;
 }
 
 
@@ -506,10 +518,10 @@ export declare interface MyListScoped extends Components.MyListScoped {}
 })
 export class MyPopover {
   protected el: HTMLMyPopoverElement;
-  @Output() myPopoverDidPresent = new EventEmitter<CustomEvent<void>>();
-  @Output() myPopoverWillPresent = new EventEmitter<CustomEvent<void>>();
-  @Output() myPopoverWillDismiss = new EventEmitter<CustomEvent<IMyPopoverOverlayEventDetail>>();
-  @Output() myPopoverDidDismiss = new EventEmitter<CustomEvent<IMyPopoverOverlayEventDetail>>();
+  @Output() myPopoverDidPresent = new EventEmitter<MyPopoverCustomEvent<void>>();
+  @Output() myPopoverWillPresent = new EventEmitter<MyPopoverCustomEvent<void>>();
+  @Output() myPopoverWillDismiss = new EventEmitter<MyPopoverCustomEvent<IMyPopoverOverlayEventDetail>>();
+  @Output() myPopoverDidDismiss = new EventEmitter<MyPopoverCustomEvent<IMyPopoverOverlayEventDetail>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -517,25 +529,26 @@ export class MyPopover {
 }
 
 
+import type { MyPopoverCustomEvent } from 'component-library/components';
 import type { OverlayEventDetail as IMyPopoverOverlayEventDetail } from 'component-library/components';
 
 export declare interface MyPopover extends Components.MyPopover {
   /**
    * Emitted after the popover has presented.
    */
-  myPopoverDidPresent: EventEmitter<CustomEvent<void>>;
+  myPopoverDidPresent: EventEmitter<MyPopoverCustomEvent<void>>;
   /**
    * Emitted before the popover has presented.
    */
-  myPopoverWillPresent: EventEmitter<CustomEvent<void>>;
+  myPopoverWillPresent: EventEmitter<MyPopoverCustomEvent<void>>;
   /**
    * Emitted before the popover has dismissed.
    */
-  myPopoverWillDismiss: EventEmitter<CustomEvent<IMyPopoverOverlayEventDetail>>;
+  myPopoverWillDismiss: EventEmitter<MyPopoverCustomEvent<IMyPopoverOverlayEventDetail>>;
   /**
    * Emitted after the popover has dismissed.
    */
-  myPopoverDidDismiss: EventEmitter<CustomEvent<IMyPopoverOverlayEventDetail>>;
+  myPopoverDidDismiss: EventEmitter<MyPopoverCustomEvent<IMyPopoverOverlayEventDetail>>;
 }
 
 
@@ -553,8 +566,8 @@ export declare interface MyPopover extends Components.MyPopover {
 })
 export class MyRadio {
   protected el: HTMLMyRadioElement;
-  @Output() ionFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() ionBlur = new EventEmitter<CustomEvent<void>>();
+  @Output() ionFocus = new EventEmitter<MyRadioCustomEvent<void>>();
+  @Output() ionBlur = new EventEmitter<MyRadioCustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -562,15 +575,17 @@ export class MyRadio {
 }
 
 
+import type { MyRadioCustomEvent } from 'component-library/components';
+
 export declare interface MyRadio extends Components.MyRadio {
   /**
    * Emitted when the radio button has focus.
    */
-  ionFocus: EventEmitter<CustomEvent<void>>;
+  ionFocus: EventEmitter<MyRadioCustomEvent<void>>;
   /**
    * Emitted when the radio button loses focus.
    */
-  ionBlur: EventEmitter<CustomEvent<void>>;
+  ionBlur: EventEmitter<MyRadioCustomEvent<void>>;
 }
 
 
@@ -588,7 +603,7 @@ export declare interface MyRadio extends Components.MyRadio {
 })
 export class MyRadioGroup {
   protected el: HTMLMyRadioGroupElement;
-  @Output() myChange = new EventEmitter<CustomEvent<IMyRadioGroupRadioGroupChangeEventDetail>>();
+  @Output() myChange = new EventEmitter<MyRadioGroupCustomEvent<IMyRadioGroupRadioGroupChangeEventDetail>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -596,6 +611,7 @@ export class MyRadioGroup {
 }
 
 
+import type { MyRadioGroupCustomEvent } from 'component-library/components';
 import type { RadioGroupChangeEventDetail as IMyRadioGroupRadioGroupChangeEventDetail } from 'component-library/components';
 
 export declare interface MyRadioGroup extends Components.MyRadioGroup {
@@ -604,7 +620,7 @@ export declare interface MyRadioGroup extends Components.MyRadioGroup {
 
 This event will not emit when programmatically setting the `value` property.
    */
-  myChange: EventEmitter<CustomEvent<IMyRadioGroupRadioGroupChangeEventDetail>>;
+  myChange: EventEmitter<MyRadioGroupCustomEvent<IMyRadioGroupRadioGroupChangeEventDetail>>;
 }
 
 
@@ -622,9 +638,9 @@ This event will not emit when programmatically setting the `value` property.
 })
 export class MyRange {
   protected el: HTMLMyRangeElement;
-  @Output() myChange = new EventEmitter<CustomEvent<IMyRangeRangeChangeEventDetail>>();
-  @Output() myFocus = new EventEmitter<CustomEvent<void>>();
-  @Output() myBlur = new EventEmitter<CustomEvent<void>>();
+  @Output() myChange = new EventEmitter<MyRangeCustomEvent<IMyRangeRangeChangeEventDetail>>();
+  @Output() myFocus = new EventEmitter<MyRangeCustomEvent<void>>();
+  @Output() myBlur = new EventEmitter<MyRangeCustomEvent<void>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -632,21 +648,22 @@ export class MyRange {
 }
 
 
+import type { MyRangeCustomEvent } from 'component-library/components';
 import type { RangeChangeEventDetail as IMyRangeRangeChangeEventDetail } from 'component-library/components';
 
 export declare interface MyRange extends Components.MyRange {
   /**
    * Emitted when the value property has changed.
    */
-  myChange: EventEmitter<CustomEvent<IMyRangeRangeChangeEventDetail>>;
+  myChange: EventEmitter<MyRangeCustomEvent<IMyRangeRangeChangeEventDetail>>;
   /**
    * Emitted when the range has focus.
    */
-  myFocus: EventEmitter<CustomEvent<void>>;
+  myFocus: EventEmitter<MyRangeCustomEvent<void>>;
   /**
    * Emitted when the range loses focus.
    */
-  myBlur: EventEmitter<CustomEvent<void>>;
+  myBlur: EventEmitter<MyRangeCustomEvent<void>>;
 }
 
 

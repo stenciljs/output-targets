@@ -56,9 +56,32 @@ describe('createComponentEventTypeImports()', () => {
       });
 
       expect(imports).toEqual(
-        `import type { MyEvent as IMyComponentMyEvent } from '@ionic/core';
+        `import type { MyComponentCustomEvent } from '@ionic/core';
+import type { MyEvent as IMyComponentMyEvent } from '@ionic/core';
 import type { MyOtherEvent as IMyComponentMyOtherEvent } from '@ionic/core';`
       );
+    });
+
+    it('imports the per-component CustomEvent type once, before the detail types', () => {
+      const imports = createComponentEventTypeImports('MyComponent', testEvents, {
+        componentCorePackage: '@ionic/core',
+        outputType: 'component',
+      });
+
+      const lines = imports.split('\n');
+      // The per-component CustomEvent import is first so the event declarations can reference it.
+      expect(lines[0]).toEqual(`import type { MyComponentCustomEvent } from '@ionic/core';`);
+      // Only a single per-component CustomEvent import regardless of how many events exist.
+      expect(lines.filter((line) => line.includes('MyComponentCustomEvent')).length).toEqual(1);
+    });
+
+    it('does not import the per-component CustomEvent type when there are no events', () => {
+      const imports = createComponentEventTypeImports('MyComponent', [], {
+        componentCorePackage: '@ionic/core',
+        outputType: 'component',
+      });
+
+      expect(imports).toEqual('');
     });
   });
 
@@ -78,11 +101,13 @@ import type { MyOtherEvent as IMyComponentMyOtherEvent } from '@ionic/core';`
         });
 
         expect(scamImports).toEqual(
-          `import type { MyEvent as IMyComponentMyEvent } from '@ionic/core/custom-elements';
+          `import type { MyComponentCustomEvent } from '@ionic/core/custom-elements';
+import type { MyEvent as IMyComponentMyEvent } from '@ionic/core/custom-elements';
 import type { MyOtherEvent as IMyComponentMyOtherEvent } from '@ionic/core/custom-elements';`
         );
         expect(standaloneImports).toEqual(
-          `import type { MyEvent as IMyComponentMyEvent } from '@ionic/core/custom-elements';
+          `import type { MyComponentCustomEvent } from '@ionic/core/custom-elements';
+import type { MyEvent as IMyComponentMyEvent } from '@ionic/core/custom-elements';
 import type { MyOtherEvent as IMyComponentMyOtherEvent } from '@ionic/core/custom-elements';`
         );
       });
