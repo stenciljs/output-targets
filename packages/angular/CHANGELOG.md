@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.3.1...@stencil/angular-output-target@1.3.2) (2026-06-05)
+
+
+### :bug: Bug Fix
+
+* **angular:** use per-component CustomEvent type for event outputs ([#814](https://github.com/stenciljs/output-targets/issues/814)) ([e049774](https://github.com/stenciljs/output-targets/commit/e0497746ed3b187374596915fa3d05001d11435d))
+
 ## [1.3.1](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.3.0...@stencil/angular-output-target@1.3.1) (2026-04-09)
 
 

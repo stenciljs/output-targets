@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.2...@stencil/react-output-target@1.5.3) (2026-06-05)
+
+
+### :bug: Bug Fix
+
+* **react:** emit components.server.ts barrel when esModules + hydrateModule are set ([#805](https://github.com/stenciljs/output-targets/issues/805)) ([e9a4802](https://github.com/stenciljs/output-targets/commit/e9a4802325dd75decbe07a5bbff9756398f44f46))
+
 ## [1.5.3](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.1...@stencil/react-output-target@1.5.2) (2026-05-28)
 
 
