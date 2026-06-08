@@ -83,6 +83,7 @@ describe('Stencil Vue Integration', () => {
           return this.skip()
         }
         await browser.url(scenario.path);
+        await browser.execute(async () => await customElements.whenDefined('my-checkbox'));
         await browser.execute((el: any) => el.setFocus(), await $('my-checkbox'));
         const isFocused = await browser.execute(() => {
           const el = document.querySelector('my-checkbox') as any;

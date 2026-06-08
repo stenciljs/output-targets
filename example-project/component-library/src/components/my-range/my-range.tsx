@@ -36,6 +36,7 @@ export interface RangeChangeEventDetail {
  */
 @Component({
   tag: 'my-range',
+  styleUrl: 'my-range.css',
   shadow: true,
 })
 export class MyRange implements ComponentInterface {
@@ -82,9 +83,7 @@ export class MyRange implements ComponentInterface {
   @Prop() min = 0;
   @Watch('min')
   protected minChanged() {
-    if (!this.noUpdate) {
-      this.updateRatio();
-    }
+    this.updateRatio();
   }
 
   /**
@@ -93,9 +92,7 @@ export class MyRange implements ComponentInterface {
   @Prop() max = 100;
   @Watch('max')
   protected maxChanged() {
-    if (!this.noUpdate) {
-      this.updateRatio();
-    }
+    this.updateRatio();
   }
 
   /**
@@ -134,15 +131,11 @@ export class MyRange implements ComponentInterface {
    * the value of the range.
    */
   @Prop({ mutable: true }) value: RangeValue = 0;
-  @Watch('value')
-  protected valueChanged(value: RangeValue) {
+  @Watch('value', { immediate: true })
+  protected valueChanged() {
     if (!this.noUpdate) {
       this.updateRatio();
     }
-
-    value = this.ensureValueInBounds(value);
-
-    this.myChange.emit({ value });
   }
 
   private clampBounds = (value: any): number => {
@@ -202,6 +195,69 @@ export class MyRange implements ComponentInterface {
     this.updateValue();
   };
 
+  private rangeSlider?: HTMLElement;
+  private rect!: DOMRect;
+
+  private onStart = (ev: PointerEvent) => {
+    if (this.disabled) {
+      return;
+    }
+
+    const rangeSlider = this.rangeSlider;
+    if (!rangeSlider) {
+      return;
+    }
+
+    // Capture the pointer so move/up events keep firing even if the
+    // pointer leaves the slider while dragging.
+    rangeSlider.setPointerCapture(ev.pointerId);
+    this.rect = rangeSlider.getBoundingClientRect();
+
+    // Decide which knob to move based on which one is closest to the press.
+    const ratio = this.ratioFromPointer(ev.clientX);
+    this.pressedKnob = !this.dualKnobs || Math.abs(this.ratioA - ratio) <= Math.abs(this.ratioB - ratio) ? 'A' : 'B';
+
+    this.update(ratio);
+  };
+
+  private onMove = (ev: PointerEvent) => {
+    if (this.pressedKnob === undefined) {
+      return;
+    }
+    this.update(this.ratioFromPointer(ev.clientX));
+  };
+
+  private onEnd = (ev: PointerEvent) => {
+    if (this.pressedKnob === undefined) {
+      return;
+    }
+    this.update(this.ratioFromPointer(ev.clientX));
+    this.rangeSlider?.releasePointerCapture(ev.pointerId);
+    this.pressedKnob = undefined;
+  };
+
+  private ratioFromPointer(clientX: number): number {
+    const rect = this.rect;
+    let ratio = clamp(0, (clientX - rect.left) / rect.width, 1);
+    if (document.dir === 'rtl') {
+      ratio = 1 - ratio;
+    }
+    // Snap the ratio to the nearest step when snaps are enabled.
+    if (this.snaps) {
+      ratio = valueToRatio(ratioToValue(ratio, this.min, this.max, this.step), this.min, this.max);
+    }
+    return ratio;
+  }
+
+  private update(ratio: number) {
+    if (this.pressedKnob === 'B') {
+      this.ratioB = ratio;
+    } else {
+      this.ratioA = ratio;
+    }
+    this.updateValue();
+  }
+
   private getValue(): RangeValue {
     const value = this.value || 0;
     if (this.dualKnobs) {
@@ -250,7 +306,7 @@ export class MyRange implements ComponentInterface {
   }
 
   private updateRatio() {
-    const value = this.getValue() as any;
+    let value = this.getValue() as any;
     const { min, max } = this;
     if (this.dualKnobs) {
       this.ratioA = valueToRatio(value.lower, min, max);
@@ -258,6 +314,14 @@ export class MyRange implements ComponentInterface {
     } else {
       this.ratioA = valueToRatio(value, min, max);
     }
+
+    value = this.ensureValueInBounds(value);
+
+    this.noUpdate = true;
+    this.value = value;
+    this.noUpdate = false;
+
+    this.myChange.emit({ value });
   }
 
   private updateValue() {
@@ -272,6 +336,8 @@ export class MyRange implements ComponentInterface {
         };
 
     this.noUpdate = false;
+
+    this.myChange.emit({ value: this.value });
   }
 
   private onBlur = () => {
@@ -341,7 +407,14 @@ export class MyRange implements ComponentInterface {
         }}
       >
         <slot name="start"></slot>
-        <div class="range-slider">
+        <div
+          class="range-slider"
+          ref={(rangeEl) => (this.rangeSlider = rangeEl)}
+          onPointerDown={this.onStart}
+          onPointerMove={this.onMove}
+          onPointerUp={this.onEnd}
+          onPointerCancel={this.onEnd}
+        >
           {ticks.map((tick) => (
             <div
               style={tickStyle(tick)}

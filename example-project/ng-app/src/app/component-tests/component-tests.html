@@ -2,14 +2,22 @@
   <app-button-tests></app-button-tests>
   <app-checkbox-tests></app-checkbox-tests>
   <app-complex-props-tests></app-complex-props-tests>
-  <my-component first="not" middleName="a" last="framework"></my-component>
+  <my-component first="John" [middleName]="middleName" last="Doe" (myCustomEvent)="onMyCustomEvent()"></my-component>
+  @if (myCustomEventFired) {
+    <div data-testid="my-custom-event-fired">myCustomEvent fired!</div>
+  }
+  <button data-testid="change-middle-name" (click)="changeMiddleName()">Change middle name</button>
   <div>
     <my-counter [startValue]="2277"></my-counter>
-    start value not working
   </div>
   <app-input-form-tests></app-input-form-tests>
 
-  <app-radio-group-tests></app-radio-group-tests>
+  <my-radio-group [(ngModel)]="selectedColor">
+      <my-radio value="Red">Red</my-radio>
+      <my-radio value="Green">Green</my-radio>
+      <my-radio value="Blue">Blue</my-radio>
+  </my-radio-group>
+  Selected: {{ selectedColor }}
 
   <app-range-tests></app-range-tests>
 

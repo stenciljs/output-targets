@@ -1,14 +1,17 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MyRange, SelectValueAccessor } from 'component-library-angular';
+import { MyCounter, MyRange, SelectValueAccessor } from 'component-library-angular';
 
 @Component({
   selector: 'app-range-tests',
   standalone: true,
-  imports: [MyRange, SelectValueAccessor, FormsModule],
+  imports: [MyCounter, MyRange, SelectValueAccessor, FormsModule],
   templateUrl: './range-tests.html',
   styles: ``,
 })
 export class RangeTests {
-  testText: any;
+  rangeValue: number = 0;
+  dualRangeValue: { lower: number; upper: number } = { lower: 20, upper: 80 };
+  min: number = 0;
+  max: number = 100;
 }
