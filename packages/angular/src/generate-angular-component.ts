@@ -121,7 +121,7 @@ export const createAngularComponentDefinition = (
     .filter((event) => !event.internal)
     .map((event) => {
       const camelCaseOutput = event.name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-      const outputType = `EventEmitter<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
+      const outputType = `EventEmitter<${tagNameAsPascal}CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
       return `@Output() ${camelCaseOutput} = new ${outputType}();`;
     });
 
@@ -201,8 +201,8 @@ const formatOutputType = (componentClassName: string, event: ComponentCompilerEv
             .replace(new RegExp(`([^\\w])${src}([^\\w])`, 'g'), (_, p1, p2) => {
               /**
                * Replaces a complex type reference within a generic type.
-               * For example, remapping a type like `EventEmitter<CustomEvent<MyEvent<T>>>` to
-               * `EventEmitter<CustomEvent<IMyComponentMyEvent<IMyComponentT>>>`.
+               * For example, remapping a type like `EventEmitter<MyComponentCustomEvent<MyEvent<T>>>` to
+               * `EventEmitter<MyComponentCustomEvent<IMyComponentMyEvent<IMyComponentT>>>`.
                */
               return [p1, prefixedTypeName, p2].join('');
             })
@@ -259,7 +259,10 @@ export const createComponentTypeDefinition = (
     outputType,
   });
   const eventTypes = publicEvents.map((event) =>
-    createPropertyDeclaration(event, `EventEmitter<CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`)
+    createPropertyDeclaration(
+      event,
+      `EventEmitter<${tagNameAsPascal}CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`
+    )
   );
   const interfaceDeclaration = `export declare interface ${tagNameAsPascal} extends Components.${tagNameAsPascal} {`;
 

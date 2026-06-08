@@ -114,8 +114,8 @@ export class MyComponent {
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
-  @Output() myOutput = new EventEmitter<CustomEvent<any>>();
-  @Output() myOtherOutput = new EventEmitter<CustomEvent<any>>();
+  @Output() myOutput = new EventEmitter<MyComponentCustomEvent<any>>();
+  @Output() myOtherOutput = new EventEmitter<MyComponentCustomEvent<any>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -248,8 +248,8 @@ export class MyComponent {
 })
 export class MyComponent {
   protected el: HTMLMyComponentElement;
-  @Output() myOutput = new EventEmitter<CustomEvent<any>>();
-  @Output() myOtherOutput = new EventEmitter<CustomEvent<any>>();
+  @Output() myOutput = new EventEmitter<MyComponentCustomEvent<any>>();
+  @Output() myOtherOutput = new EventEmitter<MyComponentCustomEvent<any>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -470,7 +470,8 @@ describe('createComponentTypeDefinition()', () => {
       const definition = createComponentTypeDefinition('component', 'MyComponent', testEvents, '@ionic/core');
 
       expect(definition).toEqual(
-        `import type { MyEvent as IMyComponentMyEvent } from '@ionic/core';
+        `import type { MyComponentCustomEvent } from '@ionic/core';
+import type { MyEvent as IMyComponentMyEvent } from '@ionic/core';
 import type { MyOtherEvent as IMyComponentMyOtherEvent } from '@ionic/core';
 import type { MyDoclessEvent as IMyComponentMyDoclessEvent } from '@ionic/core';
 import type { MyKebabEvent as IMyComponentMyKebabEvent } from '@ionic/core';
@@ -481,25 +482,25 @@ export declare interface MyComponent extends Components.MyComponent {
   /**
    * This is an example event. @Foo Bar
    */
-  myEvent: EventEmitter<CustomEvent<IMyComponentMyEvent>>;
+  myEvent: EventEmitter<MyComponentCustomEvent<IMyComponentMyEvent>>;
   /**
    * This is the other event.
    */
-  myOtherEvent: EventEmitter<CustomEvent<IMyComponentMyOtherEvent>>;
+  myOtherEvent: EventEmitter<MyComponentCustomEvent<IMyComponentMyOtherEvent>>;
 
-  myDoclessEvent: EventEmitter<CustomEvent<IMyComponentMyDoclessEvent>>;
+  myDoclessEvent: EventEmitter<MyComponentCustomEvent<IMyComponentMyDoclessEvent>>;
 
-  'my-kebab-event': EventEmitter<CustomEvent<IMyComponentMyKebabEvent>>;
+  'my-kebab-event': EventEmitter<MyComponentCustomEvent<IMyComponentMyKebabEvent>>;
 
-  'my/slash/event': EventEmitter<CustomEvent<IMyComponentMySlashEvent>>;
+  'my/slash/event': EventEmitter<MyComponentCustomEvent<IMyComponentMySlashEvent>>;
   /**
    * Testing an event type with a dot signature
    */
-  myCustomEvent: EventEmitter<CustomEvent<IMyComponentIMyComponent.someVar>>;
+  myCustomEvent: EventEmitter<MyComponentCustomEvent<IMyComponentIMyComponent.someVar>>;
   /**
    * Testing with nested namespaces
    */
-  myCustomNestedEvent: EventEmitter<CustomEvent<IMyComponentIMyComponent.SomeMoreComplexType.SubType>>;
+  myCustomNestedEvent: EventEmitter<MyComponentCustomEvent<IMyComponentIMyComponent.SomeMoreComplexType.SubType>>;
 }`
       );
     });
@@ -538,13 +539,14 @@ export declare interface MyComponent extends Components.MyComponent {
       );
 
       expect(definition).toEqual(
-        `import type { ITreeNode as IExampleInputITreeNode } from '@example/stencil-lib';
+        `import type { ExampleInputCustomEvent } from '@example/stencil-lib';
+import type { ITreeNode as IExampleInputITreeNode } from '@example/stencil-lib';
 
 export declare interface ExampleInput extends Components.ExampleInput {
   /**
    * Emitted when the input receives focus
    */
-  exampleFocus: EventEmitter<CustomEvent<IExampleInputITreeNode | IExampleInputITreeNode[]>>;
+  exampleFocus: EventEmitter<ExampleInputCustomEvent<IExampleInputITreeNode | IExampleInputITreeNode[]>>;
 }`
       );
     });
@@ -582,11 +584,13 @@ export declare interface ExampleInput extends Components.ExampleInput {
       );
 
       expect(definition).toEqual(
-        `export declare interface ExampleInput extends Components.ExampleInput {
+        `import type { ExampleInputCustomEvent } from '@example/stencil-lib';
+
+export declare interface ExampleInput extends Components.ExampleInput {
   /**
    * Emitted when the input receives focus
    */
-  exampleFocus: EventEmitter<CustomEvent<{ field: {}; field2: {}; errorField: {}; }>>;
+  exampleFocus: EventEmitter<ExampleInputCustomEvent<{ field: {}; field2: {}; errorField: {}; }>>;
 }`
       );
     });
@@ -655,15 +659,16 @@ export declare interface ExampleInput extends Components.ExampleInput {
       );
 
       expect(definition).toEqual(
-        `import type { MyEvent as IMyComponentMyEvent } from '@ionic/core';
+        `import type { MyComponentCustomEvent } from '@ionic/core';
+import type { MyEvent as IMyComponentMyEvent } from '@ionic/core';
 import type { Currency as IMyComponentCurrency } from '@ionic/core';
 import type { Side as IMyComponentSide } from '@ionic/core';
 
 export declare interface MyComponent extends Components.MyComponent {
 
-  myChange: EventEmitter<CustomEvent<IMyComponentMyEvent<IMyComponentCurrency>>>;
+  myChange: EventEmitter<MyComponentCustomEvent<IMyComponentMyEvent<IMyComponentCurrency>>>;
 
-  mySwipe: EventEmitter<CustomEvent<{ side: IMyComponentSide }>>;
+  mySwipe: EventEmitter<MyComponentCustomEvent<{ side: IMyComponentSide }>>;
 }`
       );
     });
@@ -681,7 +686,8 @@ export declare interface MyComponent extends Components.MyComponent {
         );
 
         expect(definition).toEqual(
-          `import type { MyEvent as IMyComponentMyEvent } from '@ionic/core/custom-elements';
+          `import type { MyComponentCustomEvent } from '@ionic/core/custom-elements';
+import type { MyEvent as IMyComponentMyEvent } from '@ionic/core/custom-elements';
 import type { MyOtherEvent as IMyComponentMyOtherEvent } from '@ionic/core/custom-elements';
 import type { MyDoclessEvent as IMyComponentMyDoclessEvent } from '@ionic/core/custom-elements';
 import type { MyKebabEvent as IMyComponentMyKebabEvent } from '@ionic/core/custom-elements';
@@ -692,28 +698,103 @@ export declare interface MyComponent extends Components.MyComponent {
   /**
    * This is an example event. @Foo Bar
    */
-  myEvent: EventEmitter<CustomEvent<IMyComponentMyEvent>>;
+  myEvent: EventEmitter<MyComponentCustomEvent<IMyComponentMyEvent>>;
   /**
    * This is the other event.
    */
-  myOtherEvent: EventEmitter<CustomEvent<IMyComponentMyOtherEvent>>;
+  myOtherEvent: EventEmitter<MyComponentCustomEvent<IMyComponentMyOtherEvent>>;
 
-  myDoclessEvent: EventEmitter<CustomEvent<IMyComponentMyDoclessEvent>>;
+  myDoclessEvent: EventEmitter<MyComponentCustomEvent<IMyComponentMyDoclessEvent>>;
 
-  'my-kebab-event': EventEmitter<CustomEvent<IMyComponentMyKebabEvent>>;
+  'my-kebab-event': EventEmitter<MyComponentCustomEvent<IMyComponentMyKebabEvent>>;
 
-  'my/slash/event': EventEmitter<CustomEvent<IMyComponentMySlashEvent>>;
+  'my/slash/event': EventEmitter<MyComponentCustomEvent<IMyComponentMySlashEvent>>;
   /**
    * Testing an event type with a dot signature
    */
-  myCustomEvent: EventEmitter<CustomEvent<IMyComponentIMyComponent.someVar>>;
+  myCustomEvent: EventEmitter<MyComponentCustomEvent<IMyComponentIMyComponent.someVar>>;
   /**
    * Testing with nested namespaces
    */
-  myCustomNestedEvent: EventEmitter<CustomEvent<IMyComponentIMyComponent.SomeMoreComplexType.SubType>>;
+  myCustomNestedEvent: EventEmitter<MyComponentCustomEvent<IMyComponentIMyComponent.SomeMoreComplexType.SubType>>;
 }`
         );
       });
+    });
+  });
+
+  /**
+   * Regression coverage for typing every event with the per-component
+   * `${Component}CustomEvent` type instead of the generic `CustomEvent`.
+   *
+   * The generic `CustomEvent<T>` has `target: EventTarget | null`, so a handler
+   * declared with the narrow `MyComponentCustomEvent` (whose `target` is the
+   * concrete element) is not assignable under Angular strict template type
+   * checking. Stencil generates the per-component type and narrows `target` to
+   * the element, so the proxy must reference it for `$event.target` to type to
+   * the element without a cast.
+   *
+   * Mirrors the React output target fix in
+   * https://github.com/stenciljs/output-targets/pull/716 (issue #531).
+   */
+  describe('per-component CustomEvent type (narrow event target)', () => {
+    const primitiveEvent: any = {
+      name: 'myToggle',
+      method: 'myToggle',
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+      docs: { text: '', tags: [] },
+      // No type references: the detail is a primitive (`void`), which is the
+      // case the React target used to fall back to the generic `CustomEvent` for.
+      complexType: { original: 'void', resolved: 'void', references: {} },
+      internal: false,
+    };
+
+    it('uses the per-component type for events with a primitive detail and no references', () => {
+      const definition = createComponentTypeDefinition('component', 'MyComponent', [primitiveEvent], '@ionic/core');
+
+      expect(definition).toEqual(
+        `import type { MyComponentCustomEvent } from '@ionic/core';
+
+export declare interface MyComponent extends Components.MyComponent {
+
+  myToggle: EventEmitter<MyComponentCustomEvent<void>>;
+}`
+      );
+    });
+
+    it('uses the same per-component type on the class @Output and the interface', () => {
+      const classDefinition = createAngularComponentDefinition(
+        'my-component',
+        [],
+        [],
+        false,
+        false,
+        [],
+        [primitiveEvent]
+      );
+      const typeDefinition = createComponentTypeDefinition('component', 'MyComponent', [primitiveEvent], '@ionic/core');
+
+      // The runtime proxy and the type definition must agree on the emitter type.
+      expect(classDefinition).toContain('@Output() myToggle = new EventEmitter<MyComponentCustomEvent<void>>();');
+      expect(typeDefinition).toContain('myToggle: EventEmitter<MyComponentCustomEvent<void>>;');
+    });
+
+    it('derives the CustomEvent type name from the tag name as PascalCase', () => {
+      const classDefinition = createAngularComponentDefinition(
+        'my-multi-word-tag',
+        [],
+        [],
+        false,
+        false,
+        [],
+        [primitiveEvent]
+      );
+
+      // Same PascalCase derivation as the HTML${Pascal}Element reference.
+      expect(classDefinition).toContain('protected el: HTMLMyMultiWordTagElement;');
+      expect(classDefinition).toContain('new EventEmitter<MyMultiWordTagCustomEvent<void>>();');
     });
   });
 });
