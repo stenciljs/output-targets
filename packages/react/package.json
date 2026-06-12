@@ -43,7 +43,8 @@
     "version": "pnpm run build",
     "prettier": "prettier \"./src/**/*.{html,ts,tsx,js,jsx}\" --write",
     "release": "np",
-    "test": "vitest run",
+    "test": "vitest run && pnpm run test.types",
+    "test.types": "tsc -p tsconfig.type-tests.json",
     "test.watch": "vitest --watch",
     "coverage": "vitest run --coverage"
   },
