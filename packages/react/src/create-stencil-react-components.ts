@@ -177,7 +177,7 @@ import type { Components } from "${stencilPackageName}/${customElementsDir}";
 
     const componentEventNamesType = `${reactTagName}Events`;
 
-    const requiredProps = component.properties.filter((p) => p.required).map((p) => `'${p.name}'`);
+    const requiredProps = component.properties.filter((p) => p.required && !p.internal).map((p) => `'${p.name}'`);
     const requiredGeneric = requiredProps.length > 0 ? `, ${requiredProps.join(' | ')}` : '';
 
     sourceFile.addTypeAlias({
