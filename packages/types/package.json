@@ -18,11 +18,18 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
+  "stencil": {
+    "wizard": "./dist/wizard.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./wizard": {
+      "types": "./dist/wizard.d.ts",
+      "import": "./dist/wizard.js"
     }
   },
   "scripts": {
@@ -41,9 +48,13 @@
     "url": "git+https://github.com/stenciljs/output-targets.git"
   },
   "peerDependencies": {
-    "@stencil/core": ">=3 || >= 4.0.0-beta.0 || >= 4.0.0"
+    "@stencil/core": ">=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0"
+  },
+  "dependencies": {
+    "ts-morph": "^28.0.0"
   },
   "devDependencies": {
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0",
     "@stencil/core": "4.41.0",
     "@types/node": "^20.14.12",
     "typescript": "^5.4.4",
