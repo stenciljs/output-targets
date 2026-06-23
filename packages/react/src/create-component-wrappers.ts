@@ -12,6 +12,7 @@ export const createComponentWrappers = async ({
   outDir,
   esModules,
   customElementsDir,
+  componentsTypesDir,
   excludeComponents,
   project,
   hydrateModule,
@@ -23,6 +24,7 @@ export const createComponentWrappers = async ({
   stencilPackageName: string;
   components: ComponentCompilerMeta[];
   customElementsDir: string;
+  componentsTypesDir: string;
   outDir: string;
   esModules?: boolean;
   excludeComponents?: string[];
@@ -76,6 +78,7 @@ export const createComponentWrappers = async ({
       components,
       stencilPackageName,
       customElementsDir,
+      componentsTypesDir,
       transformTag,
     });
     fileContents[outputPath] = stencilReactComponent;
@@ -99,6 +102,7 @@ export const createComponentWrappers = async ({
         ),
         stencilPackageName,
         customElementsDir,
+        componentsTypesDir,
         hydrateModule,
         clientModule,
         serializeShadowRoot,

@@ -13,6 +13,7 @@ export const createStencilReactComponents = ({
   components,
   stencilPackageName,
   customElementsDir,
+  componentsTypesDir,
   hydrateModule,
   clientModule,
   serializeShadowRoot,
@@ -21,6 +22,7 @@ export const createStencilReactComponents = ({
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
   customElementsDir: string;
+  componentsTypesDir: string;
   hydrateModule?: string;
   clientModule?: string;
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
@@ -57,7 +59,7 @@ import React from 'react';
 ${createComponentImport}
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 ${transformTagImport}
-import type { Components } from "${stencilPackageName}/${customElementsDir}";
+import type { Components } from "${stencilPackageName}/${componentsTypesDir}";
   `
   );
 
