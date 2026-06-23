@@ -179,6 +179,9 @@ import type { Components } from "${stencilPackageName}/${componentsTypesDir}";
 
     const componentEventNamesType = `${reactTagName}Events`;
 
+    const requiredProps = component.properties.filter((p) => p.required && !p.internal).map((p) => `'${p.name}'`);
+    const requiredGeneric = requiredProps.length > 0 ? `, ${requiredProps.join(' | ')}` : '';
+
     sourceFile.addTypeAlias({
       isExported: true,
       name: componentEventNamesType,
@@ -186,7 +189,7 @@ import type { Components } from "${stencilPackageName}/${componentsTypesDir}";
     });
 
     const transformTagParam = transformTag ? ',\n    transformTag' : '';
-    const clientComponentCall = `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}>({
+    const clientComponentCall = `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>({
     tagName: '${tagName}',
     elementClass: ${componentElement},
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
@@ -196,7 +199,7 @@ import type { Components } from "${stencilPackageName}/${componentsTypesDir}";
   })`;
 
     const getTagTransformerParam = transformTag ? ',\n    getTagTransformer' : '';
-    const serverComponentCall = `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}>({
+    const serverComponentCall = `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>({
     tagName: '${tagName}',
     properties: {${component.properties
       /**
@@ -207,7 +210,7 @@ import type { Components } from "${stencilPackageName}/${componentsTypesDir}";
       .map((e) => `${e.name}: '${e.attribute}'`)
       .join(',\n')}},
     hydrateModule: typeof window === 'undefined' ? (import('${hydrateModule}') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.${reactTagName} as StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}>,
+    clientModule: clientComponents.${reactTagName} as StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>,
     serializeShadowRoot${getTagTransformerParam}
   })`;
 
@@ -217,7 +220,7 @@ import type { Components } from "${stencilPackageName}/${componentsTypesDir}";
       declarations: [
         {
           name: reactTagName,
-          type: `StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}>`,
+          type: `StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>`,
           initializer: hydrateModule ? serverComponentCall : clientComponentCall,
         },
       ],

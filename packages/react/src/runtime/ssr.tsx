@@ -462,11 +462,12 @@ type CreateComponentForSSROptions<
   I extends HTMLElement,
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,
+  R extends keyof C = never,
 > = Omit<CreateComponentForServerSideRenderingOptions, 'renderToString' | 'transformTag'> & {
   hydrateModule: Promise<HydrateModule> | undefined;
   transformTag?: (tag: string) => string;
   getTagTransformer?: () => ((tag: string) => string) | undefined;
-  clientModule?: StencilReactComponent<I, E, C>;
+  clientModule?: StencilReactComponent<I, E, C, R>;
 };
 
 let hydrateModuleCache: HydrateModule | null = null;
@@ -475,9 +476,14 @@ let hydrateModuleCache: HydrateModule | null = null;
  * Defines a custom element and creates a React component for server side rendering.
  * @public
  */
-export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C = Omit<I, keyof HTMLElement>>(
-  options: CreateComponentForSSROptions<I, E, C>
-): StencilReactComponent<I, E, C> => {
+export const createComponent = <
+  I extends HTMLElement,
+  E extends EventNames = {},
+  C = Omit<I, keyof HTMLElement>,
+  R extends keyof C = never,
+>(
+  options: CreateComponentForSSROptions<I, E, C, R>
+): StencilReactComponent<I, E, C, R> => {
   /**
    * If we are running in the browser, we can use the `clientModule` function
    * to create a React component that can be used in the browser. This allows to import
@@ -489,10 +495,10 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
     }
     // Fallback to createComponentWrapper if clientModule not provided (backward compatibility)
     if (createComponentWrapper) {
-      return createComponentWrapper<I, E, C>({
+      return createComponentWrapper<I, E, C, R>({
         tagName: options.tagName,
         properties: options.properties,
-      } as any) as unknown as StencilReactComponent<I, E, C>;
+      } as any) as unknown as StencilReactComponent<I, E, C, R>;
     }
   }
 
@@ -529,5 +535,5 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
       renderToString: resolvedHydrateModule.renderToString,
       ...options,
     })(props as any);
-  }) as unknown as StencilReactComponent<I, E, C>;
+  }) as unknown as StencilReactComponent<I, E, C, R>;
 };
