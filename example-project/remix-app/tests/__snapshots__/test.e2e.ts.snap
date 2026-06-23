@@ -64,12 +64,12 @@ exports[`complex-props-shadow > should correctly server side render complex prop
 "
 <div id="complex-props-shadow">
   <my-complex-props
-    baz="[object Map]"
     class="hydrated sc-my-complex-props-h"
-    foo="[object Object]"
     grault="Infinity"
-    quux="[object Set]"
     s-id="x"
+    foo="[object Object]"
+    baz="[object Map]"
+    quux="[object Set]"
   >
     <template shadowrootmode="open">
       <ul
