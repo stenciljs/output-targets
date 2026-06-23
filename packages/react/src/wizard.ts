@@ -200,7 +200,7 @@ export const wizard = {
       }
 
       // Derive the stencil.config-relative outDir from the wrapper location
-      const outDir = relative(config.rootDir, join(wrapperDir, 'src'));
+      const outDir = relative(config.rootDir, join(wrapperDir, 'src')).replace(/\\/g, '/');
 
       // SSR
       const enableSsr = await confirm({ message: 'Enable server-side rendering (SSR)?', initialValue: false });
@@ -229,7 +229,9 @@ export const wizard = {
         const s = spinner();
         s.start(`Scaffolding wrapper package at ${relative(workspaceRoot ?? config.rootDir, wrapperDir)}`);
         try {
-          const corePkgVersion = workspaceRoot ? 'workspace:*' : `file:${relative(wrapperDir, config.rootDir)}`;
+          const corePkgVersion = workspaceRoot
+            ? 'workspace:*'
+            : `file:${relative(wrapperDir, config.rootDir).replace(/\\/g, '/')}`;
           await scaffoldWrapperPackage(wrapperDir, wrapperPackageName, config.fsNamespace, corePkgVersion);
           s.stop('Wrapper package scaffolded');
         } catch (e) {

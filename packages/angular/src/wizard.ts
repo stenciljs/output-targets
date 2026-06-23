@@ -300,10 +300,13 @@ export const wizard = {
       const selectedOutputType = outputType as 'standalone' | 'component' | 'scam';
 
       // Derive stencil.config-relative paths from the wrapper location
-      const directivesProxyFile = relative(config.rootDir, join(wrapperDir, 'src', 'lib', 'directives.ts'));
+      const directivesProxyFile = relative(config.rootDir, join(wrapperDir, 'src', 'lib', 'directives.ts')).replace(
+        /\\/g,
+        '/'
+      );
       const directivesArrayFile =
         selectedOutputType === 'component'
-          ? relative(config.rootDir, join(wrapperDir, 'src', 'lib', 'directives.array.ts'))
+          ? relative(config.rootDir, join(wrapperDir, 'src', 'lib', 'directives.array.ts')).replace(/\\/g, '/')
           : undefined;
 
       const componentCorePackage = config.fsNamespace;

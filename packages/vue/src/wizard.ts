@@ -209,7 +209,7 @@ export const wizard = {
       }
 
       // proxiesFile is the single file stencil writes all Vue wrappers into
-      const proxiesFile = relative(config.rootDir, join(wrapperDir, 'src', 'components.ts'));
+      const proxiesFile = relative(config.rootDir, join(wrapperDir, 'src', 'components.ts')).replace(/\\/g, '/');
 
       // Scaffold wrapper package if the directory doesn't exist yet
       const shouldScaffold = !(await pathExists(wrapperDir));
@@ -217,7 +217,9 @@ export const wizard = {
         const s = spinner();
         s.start(`Scaffolding wrapper package at ${relative(workspaceRoot ?? config.rootDir, wrapperDir)}`);
         try {
-          const corePkgVersion = workspaceRoot ? 'workspace:*' : `file:${relative(wrapperDir, config.rootDir)}`;
+          const corePkgVersion = workspaceRoot
+            ? 'workspace:*'
+            : `file:${relative(wrapperDir, config.rootDir).replace(/\\/g, '/')}`;
           await scaffoldWrapperPackage(wrapperDir, `${config.fsNamespace}-vue`, config.fsNamespace, corePkgVersion);
           s.stop('Wrapper package scaffolded');
         } catch (e) {
