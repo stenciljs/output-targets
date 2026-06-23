@@ -36,8 +36,11 @@ function amendStencilConfig(configPath: string, targetCode: string, enableSsr: b
   const existing = arr.getText();
   const alreadyAdded = existing.includes('reactOutputTarget(');
 
-  // Collect existing elements as trimmed strings
-  const elements = arr.getElements().map((e) => e.getText().trim());
+  // Filter out any existing reactOutputTarget call so it can be replaced cleanly
+  const elements = arr
+    .getElements()
+    .map((e) => e.getText().trim())
+    .filter((e) => !e.includes('reactOutputTarget('));
 
   const hasStandalone =
     existing.includes("type: 'standalone'") ||
@@ -55,7 +58,7 @@ function amendStencilConfig(configPath: string, targetCode: string, enableSsr: b
     if (!hasSSR) elements.push("{ type: 'ssr' }");
   }
 
-  if (!alreadyAdded) elements.push(targetCode);
+  elements.push(targetCode);
 
   // Replace the entire initializer as an explicitly multiline array so
   // formatText() sees a fresh structure and formats all elements consistently.
@@ -266,7 +269,7 @@ export const wizard = {
       // Install React peer deps in the wrapper package
       if (shouldScaffold && (await pathExists(wrapperDir))) {
         log.info('Installing React peer dependencies in wrapper package...');
-        await nypm.addDependency(['@stencil/react-output-target'], { cwd: wrapperDir });
+        await nypm.addDependency(['@stencil/react-output-target'], { cwd: wrapperDir, dev: true });
         await nypm.addDependency(['react', 'react-dom', '@types/react', '@types/react-dom', 'typescript'], {
           cwd: wrapperDir,
           dev: true,

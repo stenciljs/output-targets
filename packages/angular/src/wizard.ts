@@ -39,7 +39,11 @@ function amendStencilConfig(configPath: string, targetCode: string): boolean {
   const existing = arr.getText();
   const alreadyAdded = existing.includes('angularOutputTarget(');
 
-  const elements = arr.getElements().map((e) => e.getText().trim());
+  // Filter out any existing angularOutputTarget call so it can be replaced cleanly
+  const elements = arr
+    .getElements()
+    .map((e) => e.getText().trim())
+    .filter((e) => !e.includes('angularOutputTarget('));
 
   const hasStandalone =
     existing.includes("type: 'standalone'") ||
@@ -48,7 +52,7 @@ function amendStencilConfig(configPath: string, targetCode: string): boolean {
     existing.includes('type: "dist-custom-elements"');
   if (!hasStandalone) elements.push("{ type: 'standalone' }");
 
-  if (!alreadyAdded) elements.push(targetCode);
+  elements.push(targetCode);
 
   prop.setInitializer(`[\n${elements.map((e) => `  ${e}`).join(',\n')},\n]`);
   src.formatText();
@@ -340,10 +344,16 @@ export const wizard = {
         // non-fatal — user can run `pnpm approve-builds` manually
       }
 
+      // Derive customElementsDir from an existing standalone target, or use the v5 default
+      const standaloneTarget = (config.outputTargets as any[] | undefined)?.find((o: any) => o.type === 'standalone');
+      const customElementsDir = standaloneTarget?.dir
+        ? relative(config.rootDir, standaloneTarget.dir as string).replace(/\\/g, '/')
+        : 'dist/standalone';
+
       // Build target config
       const lines = [
         `componentCorePackage: '${componentCorePackage}'`,
-        `customElementsDir: 'dist/standalone'`,
+        `customElementsDir: '${customElementsDir}'`,
         `directivesProxyFile: '${directivesProxyFile}'`,
         ...(directivesArrayFile ? [`directivesArrayFile: '${directivesArrayFile}'`] : []),
         ...(selectedOutputType !== 'standalone' ? [`outputType: '${selectedOutputType}'`] : []),

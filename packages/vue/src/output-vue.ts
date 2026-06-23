@@ -1,24 +1,8 @@
 import path from 'path';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import type { OutputTargetVue, PackageJSON } from './types';
 import type { CompilerCtx, ComponentCompilerMeta, Config, OutputTargetDist } from '@stencil/core/internal';
 import { createComponentDefinition } from './generate-vue-component';
 import { normalizePath, readPackageJson, relativeImport, sortBy, dashToPascalCase } from './utils';
-
-function getStencilMajorVersion(): number {
-  try {
-    let pkgPath: string;
-    if (typeof require !== 'undefined') {
-      pkgPath = require.resolve('@stencil/core/package.json');
-    } else {
-      pkgPath = join(process.cwd(), 'node_modules/@stencil/core/package.json');
-    }
-    return parseInt(JSON.parse(readFileSync(pkgPath, 'utf-8')).version.split('.')[0], 10);
-  } catch {
-    return 4;
-  }
-}
 
 export async function vueProxyOutput(
   config: Config,
@@ -229,7 +213,8 @@ export function getPathToCorePackageLoader(config: Config, outputTarget: OutputT
     }
   }
 
-  const defaultLoaderDir = getStencilMajorVersion() >= 5 ? DEFAULT_LOADER_DIR_V5 : DEFAULT_LOADER_DIR_V4;
+  const isV5 = config.outputTargets?.some((o: any) => ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type));
+  const defaultLoaderDir = isV5 ? DEFAULT_LOADER_DIR_V5 : DEFAULT_LOADER_DIR_V4;
   return normalizePath(path.join(basePkg, defaultLoaderDir));
 }
 
