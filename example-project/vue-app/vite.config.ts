@@ -1,5 +1,8 @@
+import { createRequire } from 'module'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+
+const require = createRequire(import.meta.url)
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,7 +14,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      stream: 'stream-browserify',
+      stream: require.resolve('stream-browserify'),
     },
   },
   define: {
