@@ -11,6 +11,7 @@
     "build.react": "pnpm --filter @stencil/react-output-target run build",
     "build.types": "pnpm --filter @stencil/types-output-target run build",
     "build.vue": "pnpm --filter @stencil/vue-output-target run build",
+    "build.packages": "pnpm --filter \"./packages/*\" run build",
     "build.example.angular": "pnpm --filter component-library-angular run build",
     "build.example.core": "pnpm --filter component-library run build",
     "build.example.react": "pnpm --filter component-library-react run build",
