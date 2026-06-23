@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "noUnusedLocals": false,
+    "declaration": false,
+    "emitDeclarationOnly": false,
+    "declarationDir": null
+  },
+  "include": ["src", "type-tests"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx"]
+}
