@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { ComponentCompilerEventComplexType, ComponentCompilerMeta } from '@stencil/core/internal';
+import { ComponentCompilerEventComplexType, ComponentCompilerMeta, Config } from '@stencil/core/internal';
 import { generateProxies, generateComponentProxy, generateBarrelFile } from '../src/output-angular';
 import { PackageJSON, OutputTargetAngular } from '../src/types';
+
+const emptyConfig: Config = { outputTargets: [] } as unknown as Config;
 
 describe('generateProxies', () => {
   const components: ComponentCompilerMeta[] = [];
@@ -17,7 +19,7 @@ describe('generateProxies', () => {
       outputType: 'component',
     };
 
-    const finalText = generateProxies(components, pkgData, outputTarget, rootDir);
+    const finalText = generateProxies(components, pkgData, outputTarget, rootDir, emptyConfig);
     expect(finalText.includes(`import { Components } from '../../angular/dist/types/components';`)).toBeFalsy();
     expect(finalText.includes(`import { Components } from 'component-library';`)).toBeTruthy();
   });
@@ -27,7 +29,7 @@ describe('generateProxies', () => {
       directivesProxyFile: '../component-library-angular/src/proxies.ts',
     } as OutputTargetAngular;
 
-    const finalText = generateProxies(components, pkgData, outputTarget, rootDir);
+    const finalText = generateProxies(components, pkgData, outputTarget, rootDir, emptyConfig);
     expect(finalText).not.toContain(`import { Components } from 'component-library';`);
     expect(finalText).toContain(`import { Components } from '../../angular/dist/types/components';`);
   });
@@ -59,7 +61,7 @@ describe('generateProxies', () => {
       },
     ] as unknown as ComponentCompilerMeta[];
 
-    const finalText = generateProxies(components, pkgData, outputTarget, rootDir);
+    const finalText = generateProxies(components, pkgData, outputTarget, rootDir, emptyConfig);
     expect(
       finalText.includes(
         `import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, NgZone } from '@angular/core';`
@@ -100,7 +102,7 @@ describe('generateProxies', () => {
       },
     ] as unknown as ComponentCompilerMeta[];
 
-    const finalText = generateProxies(components, pkgData, outputTarget, rootDir);
+    const finalText = generateProxies(components, pkgData, outputTarget, rootDir, emptyConfig);
     expect(
       finalText.includes(
         `import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, NgZone } from '@angular/core';`
@@ -126,7 +128,7 @@ describe('generateProxies', () => {
         methods: [],
       } as unknown as ComponentCompilerMeta);
 
-      const finalText = generateProxies(components, pkgData, outputTarget, rootDir);
+      const finalText = generateProxies(components, pkgData, outputTarget, rootDir, emptyConfig);
 
       expect(finalText.includes('export class MyComponentModule')).toBeTruthy();
     });
@@ -149,7 +151,7 @@ describe('generateProxies', () => {
         methods: [],
       } as unknown as ComponentCompilerMeta);
 
-      const finalText = generateProxies(components, pkgData, outputTarget, rootDir);
+      const finalText = generateProxies(components, pkgData, outputTarget, rootDir, emptyConfig);
 
       expect(finalText.includes('export class MyComponentModule')).toBeFalsy();
     });
@@ -178,7 +180,7 @@ describe('generateComponentProxy', () => {
       customElementsDir: 'components',
     };
 
-    const result = generateComponentProxy(component, pkgData, outputTarget, rootDir);
+    const result = generateComponentProxy(component, pkgData, outputTarget, rootDir, emptyConfig);
 
     expect(result).toContain("import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';");
     expect(result).toContain("import type { Components } from 'component-library/components';");
@@ -201,7 +203,7 @@ describe('generateComponentProxy', () => {
       customElementsDir: 'components',
     };
 
-    const result = generateComponentProxy(component, pkgData, outputTarget, rootDir);
+    const result = generateComponentProxy(component, pkgData, outputTarget, rootDir, emptyConfig);
 
     expect(result).toContain('export class MyButtonModule');
     expect(result).toContain('NgModule');

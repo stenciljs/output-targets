@@ -1,6 +1,9 @@
 import { EOL } from 'os';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { OutputTargetAngular, OutputType, ValueAccessorTypes } from './types';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import type { CompilerCtx, ComponentCompilerMeta, Config } from '@stencil/core/internal';
 import { OutputTypes } from './utils';
 

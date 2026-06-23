@@ -1,0 +1,387 @@
+import type { StencilWizardPlugin, WizardContext } from '@stencil/cli';
+import { Project, SyntaxKind } from 'ts-morph';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { join, relative, dirname } from 'node:path';
+
+// ---------------------------------------------------------------------------
+// ts-morph helpers
+// ---------------------------------------------------------------------------
+
+function amendStencilConfig(configPath: string, targetCode: string): boolean {
+  const project = new Project({ skipAddingFilesFromTsConfig: true });
+  const src = project.addSourceFileAtPath(configPath);
+
+  if (!src.getImportDeclaration('@stencil/angular-output-target')) {
+    src.addImportDeclaration({
+      moduleSpecifier: '@stencil/angular-output-target',
+      namedImports: ['angularOutputTarget'],
+    });
+  }
+
+  const existingProp = src
+    .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
+    .find((p) => p.getName() === 'outputTargets');
+
+  if (!existingProp) {
+    const configObj =
+      src.getVariableDeclaration('config')?.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression) ??
+      src
+        .getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression)
+        .find((obj) => obj.getProperty('namespace') !== undefined);
+    if (!configObj) throw new Error('Could not find Stencil config object in stencil.config.ts');
+    configObj.addPropertyAssignment({ name: 'outputTargets', initializer: '[]' });
+  }
+
+  const prop = src.getDescendantsOfKind(SyntaxKind.PropertyAssignment).find((p) => p.getName() === 'outputTargets')!;
+  const arr = prop.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression);
+  if (!arr) throw new Error('outputTargets is not an array literal in stencil.config.ts');
+
+  const existing = arr.getText();
+  const alreadyAdded = existing.includes('angularOutputTarget(');
+
+  const elements = arr.getElements().map((e) => e.getText().trim());
+
+  const hasStandalone =
+    existing.includes("type: 'standalone'") ||
+    existing.includes('type: "standalone"') ||
+    existing.includes("type: 'dist-custom-elements'") ||
+    existing.includes('type: "dist-custom-elements"');
+  if (!hasStandalone) elements.push("{ type: 'standalone' }");
+
+  if (!alreadyAdded) elements.push(targetCode);
+
+  prop.setInitializer(`[\n${elements.map((e) => `  ${e}`).join(',\n')},\n]`);
+  src.formatText();
+  src.saveSync();
+
+  return !alreadyAdded;
+}
+
+// ---------------------------------------------------------------------------
+// pnpm build approval
+// ---------------------------------------------------------------------------
+
+async function allowPnpmBuild(pkg: string, rootDir: string, workspaceRoot: string | undefined): Promise<void> {
+  const base = workspaceRoot ?? rootDir;
+  const workspaceYaml = join(base, 'pnpm-workspace.yaml');
+
+  if (await pathExists(workspaceYaml)) {
+    let content = await readFile(workspaceYaml, 'utf8');
+
+    // onlyBuiltDependencies (list form)
+    if (!content.includes(`- '${pkg}'`) && !content.includes(`- "${pkg}"`) && !content.includes(`- ${pkg}\n`)) {
+      if (content.includes('onlyBuiltDependencies:')) {
+        content = content.replace(/^(onlyBuiltDependencies:[ \t]*\n)/m, `$1  - ${pkg}\n`);
+      } else {
+        content += `\nonlyBuiltDependencies:\n  - ${pkg}\n`;
+      }
+    }
+
+    // allowBuilds (map form, pnpm 11+)
+    if (!content.includes(`${pkg}: true`)) {
+      if (content.includes('allowBuilds:')) {
+        content = content.replace(/^(allowBuilds:[ \t]*\n)/m, `$1  ${pkg}: true\n`);
+      } else {
+        content += `\nallowBuilds:\n  ${pkg}: true\n`;
+      }
+    }
+
+    await writeFile(workspaceYaml, content, 'utf8');
+    return;
+  }
+
+  // Non-workspace: amend root package.json pnpm field
+  const rootPkgPath = join(base, 'package.json');
+  try {
+    const rootPkg = JSON.parse(await readFile(rootPkgPath, 'utf8'));
+    const existingList: string[] = rootPkg?.pnpm?.onlyBuiltDependencies ?? [];
+    const existingMap: Record<string, boolean> = rootPkg?.pnpm?.allowBuilds ?? {};
+    rootPkg.pnpm = {
+      ...rootPkg.pnpm,
+      onlyBuiltDependencies: existingList.includes(pkg) ? existingList : [...existingList, pkg],
+      allowBuilds: { ...existingMap, [pkg]: true },
+    };
+    await writeFile(rootPkgPath, JSON.stringify(rootPkg, null, 2) + '\n', 'utf8');
+  } catch {
+    // no root package.json — nothing to amend
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Wrapper package scaffolding
+// ---------------------------------------------------------------------------
+
+async function pathExists(p: string): Promise<boolean> {
+  try {
+    await access(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function toPascalCase(s: string): string {
+  return s
+    .split(/[-_]/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
+async function scaffoldWrapperPackage(
+  wrapperDir: string,
+  packageName: string,
+  corePackageName: string,
+  corePkgVersion: string,
+  namespace: string,
+  outputType: 'standalone' | 'component' | 'scam'
+): Promise<void> {
+  const libDir = join(wrapperDir, 'src', 'lib');
+  await mkdir(libDir, { recursive: true });
+
+  const className = toPascalCase(namespace);
+
+  const pkgJson = {
+    name: packageName,
+    version: '0.0.1',
+    scripts: { build: 'ng-packagr -p ng-package.json' },
+    peerDependencies: {
+      '@angular/common': '>=19',
+      '@angular/core': '>=19',
+    },
+    dependencies: { [corePackageName]: corePkgVersion },
+    devDependencies: {
+      '@angular/common': '>=19',
+      '@angular/core': '>=19',
+      '@angular/compiler': '>=19',
+      '@angular/compiler-cli': '>=19',
+      'ng-packagr': '>=19',
+      rxjs: '>=6',
+      tslib: '>=2',
+      typescript: '>=4 <7',
+    },
+  };
+
+  const ngPackage = {
+    lib: { entryFile: 'src/index.ts' },
+    deleteDestPath: false,
+    allowedNonPeerDependencies: [corePackageName],
+  };
+
+  const tsConfig = {
+    compilerOptions: {
+      target: 'ES2022',
+      module: 'ES2022',
+      moduleResolution: 'bundler',
+      experimentalDecorators: true,
+      strict: true,
+      skipLibCheck: true,
+    },
+    include: ['src/**/*.ts'],
+  };
+
+  const tsConfigLib = {
+    extends: './tsconfig.json',
+    compilerOptions: { declaration: false, inlineSources: true },
+    angularCompilerOptions: { compilationMode: 'partial' },
+  };
+
+  // NgModule file — only needed for 'component' outputType
+  let ngModuleTs: string | undefined;
+  if (outputType === 'component') {
+    ngModuleTs =
+      `import { NgModule } from '@angular/core';\n` +
+      `import { DIRECTIVES } from './directives.array';\n\n` +
+      `@NgModule({\n` +
+      `  declarations: [...DIRECTIVES],\n` +
+      `  exports: [...DIRECTIVES],\n` +
+      `})\n` +
+      `export class ${className}Module {}\n`;
+  }
+
+  // src/index.ts — public API surface
+  // directives.ts (the directivesProxyFile) sits at src/lib/directives.ts
+  let indexTs = `// Public API — re-exports generated by @stencil/angular-output-target.\n`;
+  indexTs += `export * from './lib/directives';\n`;
+  if (outputType === 'component') {
+    indexTs += `export * from './lib/${namespace}.module';\n`;
+  }
+
+  await Promise.all([
+    writeFile(join(wrapperDir, '.gitignore'), 'dist/\nnode_modules/\n.angular/\n', 'utf8'),
+    writeFile(join(wrapperDir, 'package.json'), JSON.stringify(pkgJson, null, 2) + '\n', 'utf8'),
+    writeFile(join(wrapperDir, 'ng-package.json'), JSON.stringify(ngPackage, null, 2) + '\n', 'utf8'),
+    writeFile(join(wrapperDir, 'tsconfig.json'), JSON.stringify(tsConfig, null, 2) + '\n', 'utf8'),
+    writeFile(join(wrapperDir, 'tsconfig.lib.json'), JSON.stringify(tsConfigLib, null, 2) + '\n', 'utf8'),
+    writeFile(join(wrapperDir, 'src', 'index.ts'), indexTs, 'utf8'),
+    ...(ngModuleTs ? [writeFile(join(libDir, `${namespace}.module.ts`), ngModuleTs, 'utf8')] : []),
+  ]);
+}
+
+// ---------------------------------------------------------------------------
+// Wizard
+// ---------------------------------------------------------------------------
+
+export const wizard = {
+  init: {
+    id: '@stencil/angular-output-target',
+    displayName: 'Angular',
+    description: 'Angular component wrappers for your Stencil components',
+
+    async run({ config, workspaceRoot, prompts, nypm }: WizardContext): Promise<void> {
+      const { intro, outro, text, select, confirm, spinner, isCancel, cancel, log } = prompts;
+
+      intro('Angular output target');
+
+      const stencilConfigPath = join(config.rootDir, 'stencil.config.ts');
+
+      // Guard: already configured?
+      const guardProject = new Project({ skipAddingFilesFromTsConfig: true });
+      const alreadyConfigured = guardProject
+        .addSourceFileAtPath(stencilConfigPath)
+        .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
+        .find((p) => p.getName() === 'outputTargets')
+        ?.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression)
+        ?.getText()
+        .includes('angularOutputTarget(');
+
+      if (alreadyConfigured) {
+        const redo = await confirm({
+          message: 'angularOutputTarget is already in stencil.config.ts — reconfigure?',
+          initialValue: false,
+        });
+        if (isCancel(redo) || !redo) {
+          cancel('Skipping Angular setup.');
+          return;
+        }
+      }
+
+      // Where should the wrapper package live?
+      let wrapperDir: string;
+      const defaultName = `${config.fsNamespace}-angular`;
+
+      if (workspaceRoot) {
+        const rawName = await text({
+          message: 'Wrapper package name?',
+          placeholder: defaultName,
+          defaultValue: defaultName,
+        });
+        if (isCancel(rawName)) {
+          cancel('Setup cancelled.');
+          return;
+        }
+        wrapperDir = join(dirname(config.rootDir), rawName as string);
+      } else {
+        const defaultRel = `../${config.fsNamespace}-angular`;
+        const rawDir = await text({
+          message: 'Wrapper package directory? (relative to stencil.config.ts)',
+          placeholder: defaultRel,
+          defaultValue: defaultRel,
+        });
+        if (isCancel(rawDir)) {
+          cancel('Setup cancelled.');
+          return;
+        }
+        wrapperDir = join(config.rootDir, rawDir as string);
+      }
+
+      // Angular component type — drives what we scaffold
+      const outputType = await select({
+        message: 'Angular component type?',
+        options: [
+          { value: 'standalone', label: 'Standalone', hint: 'Modern Angular (v19+) — no NgModule' },
+          { value: 'component', label: 'NgModule', hint: 'Classic — all components in one module' },
+          { value: 'scam', label: 'SCAM', hint: 'One NgModule per component' },
+        ],
+      });
+      if (isCancel(outputType)) {
+        cancel('Setup cancelled.');
+        return;
+      }
+      const selectedOutputType = outputType as 'standalone' | 'component' | 'scam';
+
+      // Derive stencil.config-relative paths from the wrapper location
+      const directivesProxyFile = relative(config.rootDir, join(wrapperDir, 'src', 'lib', 'directives.ts'));
+      const directivesArrayFile =
+        selectedOutputType === 'component'
+          ? relative(config.rootDir, join(wrapperDir, 'src', 'lib', 'directives.array.ts'))
+          : undefined;
+
+      const componentCorePackage = config.fsNamespace;
+
+      // Scaffold wrapper package if the directory doesn't exist yet
+      const shouldScaffold = !(await pathExists(wrapperDir));
+      if (shouldScaffold) {
+        const s = spinner();
+        s.start(`Scaffolding wrapper package at ${relative(workspaceRoot ?? config.rootDir, wrapperDir)}`);
+        try {
+          const corePkgVersion = workspaceRoot ? 'workspace:*' : `file:${relative(wrapperDir, config.rootDir)}`;
+          await scaffoldWrapperPackage(
+            wrapperDir,
+            `${config.fsNamespace}-angular`,
+            componentCorePackage,
+            corePkgVersion,
+            config.fsNamespace,
+            selectedOutputType
+          );
+          s.stop('Wrapper package scaffolded');
+        } catch (e) {
+          s.stop('Scaffolding failed — continuing');
+          log.warn(`Could not scaffold wrapper package: ${e}`);
+        }
+      }
+
+      // Ensure esbuild (used by ng-packagr) is allowed to run install scripts in pnpm workspaces
+      try {
+        await allowPnpmBuild('esbuild', config.rootDir, workspaceRoot);
+      } catch {
+        // non-fatal — user can run `pnpm approve-builds` manually
+      }
+
+      // Build target config
+      const lines = [
+        `componentCorePackage: '${componentCorePackage}'`,
+        `customElementsDir: 'dist/standalone'`,
+        `directivesProxyFile: '${directivesProxyFile}'`,
+        ...(directivesArrayFile ? [`directivesArrayFile: '${directivesArrayFile}'`] : []),
+        ...(selectedOutputType !== 'standalone' ? [`outputType: '${selectedOutputType}'`] : []),
+      ];
+      const targetCode = `angularOutputTarget({\n  ${lines.join(',\n  ')},\n})`;
+
+      // Amend stencil.config.ts in one pass so formatText() sees the final array
+      try {
+        const added = amendStencilConfig(stencilConfigPath, targetCode);
+        log.success(added ? 'stencil.config.ts updated' : 'angularOutputTarget already present — no changes made');
+      } catch (e) {
+        log.warn(
+          `Could not automatically update stencil.config.ts (${e}). Add manually:\n\n` +
+            `import { angularOutputTarget } from '@stencil/angular-output-target';\n` +
+            `// in outputTargets:\n${targetCode}`
+        );
+      }
+
+      // Install @stencil/angular-output-target as a devDep of the core package
+      log.info('Installing @stencil/angular-output-target...');
+      await nypm.addDependency(['@stencil/angular-output-target'], { cwd: config.rootDir, dev: true });
+      log.success('Installed @stencil/angular-output-target');
+
+      if (shouldScaffold && (await pathExists(wrapperDir))) {
+        log.info('Installing Angular dependencies in wrapper package...');
+        await nypm.addDependency(
+          [
+            '@angular/core',
+            '@angular/common',
+            '@angular/compiler',
+            '@angular/compiler-cli',
+            'ng-packagr',
+            'rxjs',
+            'tslib',
+          ],
+          { cwd: wrapperDir, dev: true }
+        );
+        log.success('Angular dependencies installed');
+      }
+
+      outro('Angular output target configured');
+    },
+  },
+} satisfies StencilWizardPlugin;
