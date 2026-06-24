@@ -36,7 +36,10 @@ function amendStencilConfig(configPath: string, targetCode: string, mode: 'lazy'
   const existing = arr.getText();
   const alreadyAdded = existing.includes('vueOutputTarget(');
 
-  const elements = arr.getElements().map((e) => e.getText().trim());
+  const elements = arr
+    .getElements()
+    .map((e) => e.getText().trim())
+    .filter((e) => !e.includes('vueOutputTarget('));
 
   if (mode === 'standalone') {
     const hasStandalone =
@@ -54,7 +57,7 @@ function amendStencilConfig(configPath: string, targetCode: string, mode: 'lazy'
     if (!hasLoaderBundle) elements.push("{ type: 'loader-bundle' }");
   }
 
-  if (!alreadyAdded) elements.push(targetCode);
+  elements.push(targetCode);
 
   prop.setInitializer(`[\n${elements.map((e) => `  ${e}`).join(',\n')},\n]`);
   src.formatText();

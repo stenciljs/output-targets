@@ -150,7 +150,7 @@ export const reactOutputTarget = ({
           const typesTarget = (config.outputTargets || []).find((o: any) => o.type === TYPES_OUTPUT_TARGET) as any;
           const rawTypesDir = typesTarget?.dir ?? TYPES_DEFAULT_DIR;
           const typesDir = isAbsolute(rawTypesDir) ? relative(config.rootDir!, rawTypesDir) : rawTypesDir;
-          componentsTypesDir = `${typesDir}/components.d.ts`;
+          componentsTypesDir = `${typesDir}/components`;
           // customElementsDir stays as default (dist/components) unless standalone.dir is set
           if ((customElementsOutputTarget as any).dir !== undefined) {
             const dir = (customElementsOutputTarget as any).dir;

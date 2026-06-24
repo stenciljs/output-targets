@@ -106,6 +106,34 @@ describe('Vue wizard', () => {
     expect(indexTs).toContain("export * from './components.js'");
   });
 
+  it('replaces existing vueOutputTarget when user confirms redo', async () => {
+    const alreadyConfigured =
+      `import type { Config } from '@stencil/core';\n` +
+      `import { vueOutputTarget } from '@stencil/vue-output-target';\n` +
+      `export const config: Config = { namespace: 'my-app', outputTargets: [vueOutputTarget({ proxiesFile: 'old/path/components.ts', componentCorePackage: 'my-app' })] };\n`;
+    await writeFile(join(tmpDir, 'stencil.config.ts'), alreadyConfigured, 'utf8');
+
+    const ctx = {
+      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      workspaceRoot: undefined,
+      prompts: makePrompts({
+        confirm: vi.fn().mockResolvedValueOnce(true), // confirm redo
+        text: vi.fn().mockResolvedValueOnce('./my-app-vue'),
+        select: vi.fn().mockResolvedValueOnce('lazy'),
+      }),
+      nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+    };
+
+    await wizard.init.run(ctx as any);
+
+    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
+    // old proxiesFile gone, new one present
+    expect(configText).not.toContain('old/path/components.ts');
+    expect(configText).toContain("proxiesFile: 'my-app-vue/src/components.ts'");
+    // only one vueOutputTarget call
+    expect(configText.split('vueOutputTarget(').length).toBe(2);
+  });
+
   it('skips setup when already configured and user declines redo', async () => {
     const alreadyConfigured =
       `import type { Config } from '@stencil/core';\n` +

@@ -164,6 +164,57 @@ describe('Angular wizard', () => {
     expect(yamlContent).toContain('esbuild');
   });
 
+  it('does not duplicate esbuild when pnpm-workspace.yaml already lists it', async () => {
+    await writeFile(
+      join(tmpDir, 'pnpm-workspace.yaml'),
+      'packages:\n  - packages/*\nonlyBuiltDependencies:\n  - esbuild\nallowBuilds:\n  esbuild: true\n',
+      'utf8',
+    );
+
+    const ctx = {
+      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      workspaceRoot: undefined,
+      prompts: makePrompts({
+        text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
+        select: vi.fn().mockResolvedValueOnce('standalone'),
+      }),
+      nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+    };
+
+    await wizard.init.run(ctx as any);
+
+    const yamlContent = await readFile(join(tmpDir, 'pnpm-workspace.yaml'), 'utf8');
+    // esbuild should appear exactly once in each section
+    const onlyBuiltMatches = yamlContent.match(/- esbuild/g) ?? [];
+    expect(onlyBuiltMatches.length).toBe(1);
+    const allowBuildsMatches = yamlContent.match(/esbuild: true/g) ?? [];
+    expect(allowBuildsMatches.length).toBe(1);
+  });
+
+  it('amends allowBuilds when section already has other entries', async () => {
+    await writeFile(
+      join(tmpDir, 'pnpm-workspace.yaml'),
+      'packages:\n  - packages/*\nonlyBuiltDependencies:\n  - other-pkg\nallowBuilds:\n  other-pkg: true\n',
+      'utf8',
+    );
+
+    const ctx = {
+      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      workspaceRoot: undefined,
+      prompts: makePrompts({
+        text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
+        select: vi.fn().mockResolvedValueOnce('standalone'),
+      }),
+      nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+    };
+
+    await wizard.init.run(ctx as any);
+
+    const yamlContent = await readFile(join(tmpDir, 'pnpm-workspace.yaml'), 'utf8');
+    expect(yamlContent).toContain('esbuild');
+    expect(yamlContent).toContain('other-pkg');
+  });
+
   it('skips setup when already configured and user declines redo', async () => {
     const alreadyConfigured =
       `import type { Config } from '@stencil/core';\n` +
