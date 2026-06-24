@@ -1,6 +1,5 @@
 import type { BuildCtx, OutputTargetCustom, OutputTargetDistCustomElements } from '@stencil/core/internal';
-import { readFileSync } from 'node:fs';
-import { isAbsolute, join, relative } from 'node:path';
+import { isAbsolute, relative } from 'node:path';
 import { Project } from 'ts-morph';
 import { createComponentWrappers } from './create-component-wrappers.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
@@ -93,21 +92,6 @@ const SSR_OUTPUT_TARGET = 'ssr';
 const TYPES_OUTPUT_TARGET = 'types';
 const TYPES_DEFAULT_DIR = 'dist/types';
 
-function getStencilMajorVersion(): number {
-  try {
-    let pkgPath: string;
-    if (typeof require !== 'undefined') {
-      pkgPath = require.resolve('@stencil/core/package.json');
-    } else {
-      pkgPath = join(process.cwd(), 'node_modules/@stencil/core/package.json');
-    }
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-    return parseInt(pkg.version.split('.')[0], 10);
-  } catch {
-    return 4;
-  }
-}
-
 interface ReactOutputTarget extends OutputTargetCustom {
   __internal_getCustomElementsDir: () => string;
 }
@@ -150,7 +134,10 @@ export const reactOutputTarget = ({
           (o: any) => o.type === DIST_CUSTOM_ELEMENTS || o.type === STANDALONE
         ) as OutputTargetDistCustomElements;
         if (customElementsOutputTarget == null) {
-          const requiredTarget = getStencilMajorVersion() >= 5 ? STANDALONE : DIST_CUSTOM_ELEMENTS;
+          const isV5 = (config.outputTargets || []).some((o: any) =>
+            ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
+          );
+          const requiredTarget = isV5 ? STANDALONE : DIST_CUSTOM_ELEMENTS;
           throw new Error(
             `The '${PLUGIN_NAME}' requires '${requiredTarget}' output target. Add { type: '${requiredTarget}' }, to the outputTargets config.`
           );
@@ -204,7 +191,10 @@ export const reactOutputTarget = ({
           (o: any) => o.type === HYDRATE_OUTPUT_TARGET || o.type === SSR_OUTPUT_TARGET
         );
         if (hydrateOutputTarget == null) {
-          const requiredTarget = getStencilMajorVersion() >= 5 ? SSR_OUTPUT_TARGET : HYDRATE_OUTPUT_TARGET;
+          const isV5 = (config.outputTargets || []).some((o: any) =>
+            ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
+          );
+          const requiredTarget = isV5 ? SSR_OUTPUT_TARGET : HYDRATE_OUTPUT_TARGET;
           throw new Error(
             `The '${PLUGIN_NAME}' requires '${requiredTarget}' output target when the 'hydrateModule' option is set. Add { type: '${requiredTarget}' }, to the outputTargets config.`
           );
