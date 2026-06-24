@@ -21,7 +21,6 @@ export default defineConfig({
         '@stencil/core', '@lit/react', 'typescript', 'react',
         'react-dom/server', 'ts-morph', 'html-react-parser',
         'node:path', 'node:fs', 'node:fs/promises', 'next/dynamic',
-        'nypm', '@clack/prompts',
       ],
       output: {
         // Provide global variables to use in the UMD build

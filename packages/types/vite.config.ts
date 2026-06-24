@@ -13,7 +13,7 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: ['@stencil/core', 'node:path', 'node:fs/promises', 'ts-morph', 'nypm', '@clack/prompts'],
+      external: ['@stencil/core', 'node:path', 'node:fs/promises', 'ts-morph'],
     },
   },
   plugins: [dts()],

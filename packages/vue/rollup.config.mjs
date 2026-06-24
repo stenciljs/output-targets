@@ -2,7 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import pkg from './package.json' with { type: 'json' };
 
 const external = ['path', 'node-sass', 'fs', 'util', 'vue', 'vue/server-renderer'];
-const wizardExternal = ['node:fs/promises', 'node:path', 'ts-morph', 'nypm', '@clack/prompts'];
+const wizardExternal = ['node:fs/promises', 'node:path', 'ts-morph'];
 const plugins = [typescript()];
 const core = {
   input: './src/index.ts',
