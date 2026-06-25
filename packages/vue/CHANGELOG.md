@@ -1,3 +1,11 @@
+## [0.14.0](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.13.2...@stencil/vue-output-target@0.14.0) (2026-06-25)
+
+
+### :rocket: Enhancement
+
+* v5 compatibility  ([#822](https://github.com/stenciljs/output-targets/issues/822)) ([1f981d0](https://github.com/stenciljs/output-targets/commit/1f981d061a90abd54e848fe685240f50add43a10))
+* **vue:** compat with stencil v5 ([a5f051c](https://github.com/stenciljs/output-targets/commit/a5f051cf15a98227b129c71b035a79d5af9ff84e))
+
 ## [0.13.2](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.13.1...@stencil/vue-output-target@0.13.2) (2026-05-28)
 
 
