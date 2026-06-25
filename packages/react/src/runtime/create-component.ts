@@ -1,5 +1,5 @@
-import type { EventName, Options } from '@lit/react';
-import { createComponent as createComponentWrapper } from '@lit/react';
+import type { EventName, Options } from './index.js';
+import { createLitComponent } from './index.js';
 
 // A key value map matching React prop names to event names.
 type EventNames = Record<string, EventName | string>;
@@ -33,7 +33,7 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
     defineCustomElement();
   }
   const finalTagName = transformTag ? transformTag(tagName) : tagName;
-  return createComponentWrapper<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
+  return createLitComponent<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
     I,
     E,
     C

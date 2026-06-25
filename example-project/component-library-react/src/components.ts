@@ -7,8 +7,8 @@
 
 /* eslint-disable */
 
-import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent } from '@stencil/react-output-target/runtime';
+import type { EventName, Options } from '@stencil/react-output-target/runtime';
+import { createLitComponent } from '@stencil/react-output-target/runtime';
 import React from 'react';
 import { transformTag } from './tag-transformer.js';
 
@@ -36,6 +36,45 @@ import { MyRange as MyRangeElement, defineCustomElement as defineMyRange } from 
 import { MyToggleContent as MyToggleContentElement, defineCustomElement as defineMyToggleContent } from "component-library/components/my-toggle-content.js";
 import { MyToggle as MyToggleElement, defineCustomElement as defineMyToggle } from "component-library/components/my-toggle.js";
 import { MyTransformTest as MyTransformTestElement, defineCustomElement as defineMyTransformTest } from "component-library/components/my-transform-test.js";
+
+// A key value map matching React prop names to event names.
+type EventNames = Record<string, EventName | string>;
+
+// Type that's compatible with both React 18 and 19
+type StencilProps<I extends HTMLElement, E extends EventNames, C> = Omit<React.HTMLAttributes<I>, keyof E> &
+    Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
+    Partial<C> &
+    React.RefAttributes<I>;
+
+export type StencilReactComponent<
+    I extends HTMLElement,
+    E extends EventNames = {},
+    C = Omit<I, keyof HTMLElement>,
+> = React.FunctionComponent<StencilProps<I, E, C>>;
+
+/**
+ * Defines a custom element and creates a React component.
+ * @public
+ */
+export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C = Omit<I, keyof HTMLElement>>({
+    defineCustomElement,
+    tagName,
+    transformTag,
+    ...options
+}: Options<I, E> & {
+    defineCustomElement: () => void;
+    transformTag?: (tagName: string) => string;
+}): StencilReactComponent<I, E, C> => {
+    if (typeof defineCustomElement !== 'undefined') {
+        defineCustomElement();
+    }
+    const finalTagName = transformTag ? transformTag(tagName) : tagName;
+    return createLitComponent<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
+        I,
+        E,
+        C
+    >;
+};
 
 export type MyButtonEvents = {
     onMyFocus: EventName<MyButtonCustomEvent<void>>,
