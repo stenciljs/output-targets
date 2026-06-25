@@ -1,3 +1,11 @@
+## [1.4.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.3.2...@stencil/angular-output-target@1.4.0) (2026-06-25)
+
+
+### :rocket: Enhancement
+
+* **angular:** compat with stencil v5 ([2d95eba](https://github.com/stenciljs/output-targets/commit/2d95ebaca406ec7fe4db495704a6ea09f996eecd))
+* v5 compatibility  ([#822](https://github.com/stenciljs/output-targets/issues/822)) ([1f981d0](https://github.com/stenciljs/output-targets/commit/1f981d061a90abd54e848fe685240f50add43a10))
+
 ## [1.3.2](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.3.1...@stencil/angular-output-target@1.3.2) (2026-06-05)
 
 
