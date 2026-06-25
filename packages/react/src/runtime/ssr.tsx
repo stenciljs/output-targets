@@ -48,6 +48,8 @@ export interface RenderToStringOptions {
    * @default 'declarative-shadow-dom'
    */
   serializeShadowRoot?: SerializeShadowRootOptions;
+  /** @deprecated use `beforeSsr` — kept for v4/v5 compatibility */
+  beforeHydrate?: (document: Document) => void | Promise<void>;
 }
 export interface HydrateStyleElement {
   id?: string;
@@ -62,7 +64,6 @@ type RenderToString = (
 
 export type HydrateModule = {
   renderToString: RenderToString;
-  serializeProperty: (value: any) => string;
   transformTag: (tagName: string) => string;
   setTagTransformer: (transformer: (tagName: string) => string) => void;
 };
@@ -70,7 +71,6 @@ interface CreateComponentForServerSideRenderingOptions {
   tagName: string;
   properties: Record<string, string>;
   renderToString: RenderToString;
-  serializeProperty: (value: any) => string;
   serializeShadowRoot?: SerializeShadowRootOptions;
   transformTag?: (tagName: string) => string;
 }
@@ -156,37 +156,33 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
     }
 
     /**
-     * compose element props into a string
+     * compose element props into a string; complex (non-primitive) props are banked
+     * and applied via beforeHydrate; they never need to be attribute-serialized
      */
     let stringProps = '';
+    const complexProps: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(props)) {
-      /**
-       * Skip boolean false values per the HTML spec for boolean attributes
-       */
       if (typeof value === 'boolean' && value === false) {
         continue;
       }
-
-      let propValue = isPrimitive(value)
-        ? `"${value}"`
-        : typeof value !== 'function'
-          ? options.serializeProperty(value)
-          : undefined;
 
       /**
        * parse the style object into a string
        */
       if (key === 'style' && typeof value === 'object' && value) {
-        propValue = `"${stringifyCSSProperties(value)}"`;
-      }
-
-      if (!propValue) {
+        const propName =
+          possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
+        stringProps += ` ${propName}="${stringifyCSSProperties(value)}"`;
         continue;
       }
 
-      const propName =
-        possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
-      stringProps += ` ${propName}=${propValue}`;
+      if (isPrimitive(value)) {
+        const propName =
+          possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
+        stringProps += ` ${propName}="${value}"`;
+      } else {
+        complexProps[key] = value;
+      }
     }
 
     /**
@@ -238,6 +234,16 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       fullDocument: false,
       serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
       prettyHtml: true,
+      ...(Object.keys(complexProps).length > 0 && {
+        beforeHydrate: (doc: Document) => {
+          const el = doc.querySelector(transformedTagName) as any;
+          if (el) {
+            for (const [propName, value] of Object.entries(complexProps)) {
+              el[propName] = value;
+            }
+          }
+        },
+      }),
     });
 
     if (!html) {
@@ -420,7 +426,7 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
     return type;
   } else if (isJSXClassElementConstructor(type)) {
     // Child is a Class Component
-    const instance = new type(props);
+    const instance = new type(props, undefined);
     resolvedType = instance.render ? instance.render() : instance;
   } else if (isLazyExoticComponent(type)) {
     // Handle React Lazy Component
@@ -457,7 +463,7 @@ type CreateComponentForSSROptions<
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,
   R extends keyof C = never,
-> = Omit<CreateComponentForServerSideRenderingOptions, 'renderToString' | 'serializeProperty' | 'transformTag'> & {
+> = Omit<CreateComponentForServerSideRenderingOptions, 'renderToString' | 'transformTag'> & {
   hydrateModule: Promise<HydrateModule> | undefined;
   transformTag?: (tag: string) => string;
   getTagTransformer?: () => ((tag: string) => string) | undefined;
@@ -527,7 +533,6 @@ export const createComponent = <
 
     return createComponentForServerSideRendering<I, E>({
       renderToString: resolvedHydrateModule.renderToString,
-      serializeProperty: resolvedHydrateModule.serializeProperty,
       ...options,
     })(props as any);
   }) as unknown as StencilReactComponent<I, E, C, R>;

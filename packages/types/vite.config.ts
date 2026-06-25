@@ -8,11 +8,12 @@ export default defineConfig({
     lib: {
       entry: {
         index: 'src/index.ts',
+        wizard: 'src/wizard.ts',
       },
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: ['@stencil/core', 'node:path'],
+      external: ['@stencil/core', 'node:path', 'node:fs/promises', 'ts-morph'],
     },
   },
   plugins: [dts()],

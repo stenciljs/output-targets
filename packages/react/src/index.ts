@@ -1,4 +1,5 @@
 import type { BuildCtx, OutputTargetCustom, OutputTargetDistCustomElements } from '@stencil/core/internal';
+import { isAbsolute, relative } from 'node:path';
 import { Project } from 'ts-morph';
 import { createComponentWrappers } from './create-component-wrappers.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
@@ -85,7 +86,11 @@ const PLUGIN_NAME = 'react-output-target';
 
 const DIST_CUSTOM_ELEMENTS_DEFAULT_DIR = 'dist/components';
 const DIST_CUSTOM_ELEMENTS = 'dist-custom-elements';
+const STANDALONE = 'standalone';
 const HYDRATE_OUTPUT_TARGET = 'dist-hydrate-script';
+const SSR_OUTPUT_TARGET = 'ssr';
+const TYPES_OUTPUT_TARGET = 'types';
+const TYPES_DEFAULT_DIR = 'dist/types';
 
 interface ReactOutputTarget extends OutputTargetCustom {
   __internal_getCustomElementsDir: () => string;
@@ -110,6 +115,7 @@ export const reactOutputTarget = ({
   transformTag,
 }: ReactOutputTargetOptions): ReactOutputTarget => {
   let customElementsDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
+  let componentsTypesDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
   return {
     type: 'custom',
     name: PLUGIN_NAME,
@@ -122,29 +128,54 @@ export const reactOutputTarget = ({
        */
       if (customElementsDirOverride) {
         customElementsDir = customElementsDirOverride;
+        componentsTypesDir = customElementsDirOverride;
       } else {
         const customElementsOutputTarget = (config.outputTargets || []).find(
-          (o) => o.type === DIST_CUSTOM_ELEMENTS
+          (o: any) => o.type === DIST_CUSTOM_ELEMENTS || o.type === STANDALONE
         ) as OutputTargetDistCustomElements;
         if (customElementsOutputTarget == null) {
+          const isV5 = (config.outputTargets || []).some((o: any) =>
+            ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
+          );
+          const requiredTarget = isV5 ? STANDALONE : DIST_CUSTOM_ELEMENTS;
           throw new Error(
-            `The '${PLUGIN_NAME}' requires '${DIST_CUSTOM_ELEMENTS}' output target. Add { type: '${DIST_CUSTOM_ELEMENTS}' }, to the outputTargets config.`
+            `The '${PLUGIN_NAME}' requires '${requiredTarget}' output target. Add { type: '${requiredTarget}' }, to the outputTargets config.`
           );
         }
-        if (customElementsOutputTarget.dir !== undefined) {
+        if ((customElementsOutputTarget as any).type === STANDALONE) {
+          /**
+           * In Stencil v5, `Components` types are emitted by the `types` output target
+           * (not by `standalone`). Resolve the types dir independently of the JS output dir.
+           */
+          const typesTarget = (config.outputTargets || []).find((o: any) => o.type === TYPES_OUTPUT_TARGET) as any;
+          const rawTypesDir = typesTarget?.dir ?? TYPES_DEFAULT_DIR;
+          const typesDir = isAbsolute(rawTypesDir) ? relative(config.rootDir!, rawTypesDir) : rawTypesDir;
+          componentsTypesDir = `${typesDir}/components`;
+          // customElementsDir stays as default (dist/components) unless standalone.dir is set
+          if ((customElementsOutputTarget as any).dir !== undefined) {
+            const dir = (customElementsOutputTarget as any).dir;
+            customElementsDir = isAbsolute(dir) ? relative(config.rootDir!, dir) : dir;
+          }
+        } else if (customElementsOutputTarget.dir !== undefined) {
           /**
            * If the developer has configured a custom output path for the Stencil components,
            * we need to use that path when importing the components in the React components.
+           * In Stencil v4 the dir is normalised to an absolute path before validate runs,
+           * so convert it back to a rootDir-relative path for use in import specifiers.
            */
-          customElementsDir = customElementsOutputTarget.dir;
+          const dir = customElementsOutputTarget.dir;
+          customElementsDir = isAbsolute(dir) ? relative(config.rootDir!, dir) : dir;
+          componentsTypesDir = customElementsDir;
         }
 
         /**
-         * Validate the configuration for `dist-custom-elements` output target to ensure that
-         * the bundle generates its own runtime. This is important because we need to ensure that
-         * the Stencil runtime has hydration flags set which the default Stencil runtime does not have.
+         * For the legacy `dist-custom-elements` output target, validate that externalRuntime is
+         * disabled so the Stencil runtime includes hydration flags.
          */
-        if (customElementsOutputTarget.externalRuntime !== false) {
+        if (
+          customElementsOutputTarget.type === DIST_CUSTOM_ELEMENTS &&
+          customElementsOutputTarget.externalRuntime !== false
+        ) {
           throw new Error(
             `The '${PLUGIN_NAME}' requires the '${DIST_CUSTOM_ELEMENTS}' output target to have 'externalRuntime: false' set in its configuration.`
           );
@@ -156,10 +187,16 @@ export const reactOutputTarget = ({
        * output target is defined in the Stencil configuration if the hydrateModule is provided.
        */
       if (hydrateModule) {
-        const hydrateOutputTarget = (config.outputTargets || []).find((o) => o.type === HYDRATE_OUTPUT_TARGET);
+        const hydrateOutputTarget = (config.outputTargets || []).find(
+          (o: any) => o.type === HYDRATE_OUTPUT_TARGET || o.type === SSR_OUTPUT_TARGET
+        );
         if (hydrateOutputTarget == null) {
+          const isV5 = (config.outputTargets || []).some((o: any) =>
+            ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
+          );
+          const requiredTarget = isV5 ? SSR_OUTPUT_TARGET : HYDRATE_OUTPUT_TARGET;
           throw new Error(
-            `The '${PLUGIN_NAME}' requires '${HYDRATE_OUTPUT_TARGET}' output target when the 'hydrateModule' option is set. Add { type: '${HYDRATE_OUTPUT_TARGET}' }, to the outputTargets config.`
+            `The '${PLUGIN_NAME}' requires '${requiredTarget}' output target when the 'hydrateModule' option is set. Add { type: '${requiredTarget}' }, to the outputTargets config.`
           );
         }
 
@@ -197,6 +234,7 @@ export const reactOutputTarget = ({
         components,
         stencilPackageName: stencilPackageName!,
         customElementsDir,
+        componentsTypesDir,
         excludeComponents,
         esModules: esModules === true,
         project,

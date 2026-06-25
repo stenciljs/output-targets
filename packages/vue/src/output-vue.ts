@@ -67,11 +67,7 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
 
   const generateTypeImports = () => {
     if (outputTarget.componentCorePackage !== undefined) {
-      const dirPath =
-        outputTarget.includeImportCustomElements && outputTarget.customElementsDir
-          ? `/${outputTarget.customElementsDir}`
-          : '';
-      return `import type { ${IMPORT_TYPES} } from '${normalizePath(outputTarget.componentCorePackage)}${dirPath}';\n`;
+      return `import type { ${IMPORT_TYPES} } from '${normalizePath(getPathToJSXTypes(config, outputTarget))}';\n`;
     }
 
     return `import type { ${IMPORT_TYPES} } from '${normalizePath(componentsTypeFile)}';\n`;
@@ -191,22 +187,60 @@ export function generateBarrelFile(components: ComponentCompilerMeta[]) {
 
 export function getPathToCorePackageLoader(config: Config, outputTarget: OutputTargetVue) {
   const basePkg = outputTarget.componentCorePackage || '';
-  const distOutputTarget = config.outputTargets?.find((o) => o.type === 'dist') as OutputTargetDist;
 
-  const distAbsEsmLoaderPath =
-    distOutputTarget?.esmLoaderPath && path.isAbsolute(distOutputTarget.esmLoaderPath)
-      ? distOutputTarget.esmLoaderPath
-      : null;
+  if (outputTarget.loaderDir) {
+    return normalizePath(path.join(basePkg, outputTarget.loaderDir));
+  }
 
-  const distRelEsmLoaderPath =
-    config.rootDir && distAbsEsmLoaderPath ? path.relative(config.rootDir, distAbsEsmLoaderPath) : null;
+  // v5: loader-bundle (replaces dist)
+  const loaderBundleTarget = config.outputTargets?.find((o: any) => o.type === 'loader-bundle') as any;
+  if (loaderBundleTarget) {
+    const rawDir = loaderBundleTarget.dir || 'dist/loader-bundle';
+    const relDir = config.rootDir && path.isAbsolute(rawDir) ? path.relative(config.rootDir, rawDir) : rawDir;
+    const loaderPath = loaderBundleTarget.loaderPath || 'loader';
+    return normalizePath(path.join(basePkg, relDir, loaderPath));
+  }
 
-  const loaderDir = outputTarget.loaderDir || distRelEsmLoaderPath || DEFAULT_LOADER_DIR;
-  return normalizePath(path.join(basePkg, loaderDir));
+  // v4: dist
+  const distTarget = config.outputTargets?.find((o: any) => o.type === 'dist') as OutputTargetDist;
+  if (distTarget) {
+    const absEsmLoaderPath =
+      distTarget.esmLoaderPath && path.isAbsolute(distTarget.esmLoaderPath) ? distTarget.esmLoaderPath : null;
+    const relEsmLoaderPath =
+      config.rootDir && absEsmLoaderPath ? path.relative(config.rootDir, absEsmLoaderPath) : null;
+    if (relEsmLoaderPath) {
+      return normalizePath(path.join(basePkg, relEsmLoaderPath));
+    }
+  }
+
+  const isV5 = config.outputTargets?.some((o: any) => ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type));
+  const defaultLoaderDir = isV5 ? DEFAULT_LOADER_DIR_V5 : DEFAULT_LOADER_DIR_V4;
+  return normalizePath(path.join(basePkg, defaultLoaderDir));
+}
+
+export function getPathToJSXTypes(config: Config, outputTarget: OutputTargetVue): string {
+  const basePkg = outputTarget.componentCorePackage || '';
+
+  // v5: types output target
+  const typesTarget = config.outputTargets?.find((o: any) => o.type === 'types') as any;
+  if (typesTarget) {
+    const rawDir = typesTarget.dir || 'dist/types';
+    const relDir = config.rootDir && path.isAbsolute(rawDir) ? path.relative(config.rootDir, rawDir) : rawDir;
+    return normalizePath(path.join(basePkg, relDir, 'components'));
+  }
+
+  // v4 'dist-custom-elements': append customElementsDir
+  if (outputTarget.includeImportCustomElements && outputTarget.customElementsDir) {
+    return normalizePath(path.join(basePkg, outputTarget.customElementsDir));
+  }
+
+  // v4 lazy: package root
+  return normalizePath(basePkg);
 }
 
 export const GENERATED_DTS = 'components.d.ts';
 const IMPORT_TYPES = 'JSX';
 const REGISTER_CUSTOM_ELEMENTS = 'defineCustomElements';
 const APPLY_POLYFILLS = 'applyPolyfills';
-const DEFAULT_LOADER_DIR = '/dist/loader';
+const DEFAULT_LOADER_DIR_V4 = '/dist/loader';
+const DEFAULT_LOADER_DIR_V5 = '/dist/loader-bundle/loader';

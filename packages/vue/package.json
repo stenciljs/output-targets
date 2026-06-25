@@ -16,20 +16,28 @@
   "bugs": {
     "url": "https://github.com/stenciljs/output-targets/issues"
   },
+  "stencil": {
+    "wizard": "./dist/wizard.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs.js"
+      "require": "./dist/index.cjs"
     },
     "./runtime": {
       "types": "./dist/runtime.d.ts",
       "import": "./dist/runtime.js",
-      "require": "./dist/runtime.cjs.js"
+      "require": "./dist/runtime.cjs"
+    },
+    "./wizard": {
+      "types": "./dist/wizard.d.ts",
+      "import": "./dist/wizard.js"
     }
   },
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
+  "type": "module",
   "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
@@ -49,7 +57,7 @@
   "peerDependencies": {
     "vue": "^3.4.38",
     "vue-router": "^4.5.0 || ^5.0.0",
-    "@stencil/core": ">=2.0.0 || >=3 || >= 4.0.0-beta.0 || >= 4.0.0"
+    "@stencil/core": ">=2.0.0 || >=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0"
   },
   "peerDependenciesMeta": {
     "vue": {
@@ -62,7 +70,11 @@
       "optional": true
     }
   },
+  "dependencies": {
+    "ts-morph": "^28.0.0"
+  },
   "devDependencies": {
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0",
     "@stencil/core": "^4.41.0",
     "@types/node": "^18.0.0",
     "@rollup/plugin-typescript": "^12.1.0",
