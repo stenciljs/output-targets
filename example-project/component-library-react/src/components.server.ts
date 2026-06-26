@@ -350,7 +350,7 @@ export type MyPopoverEvents = {
     onMyPopoverDidDismiss: EventName<MyPopoverCustomEvent<OverlayEventDetail>>
 };
 
-export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover> = /*@__PURE__*/ createComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover>({
+export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'> = /*@__PURE__*/ createComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'>({
     tagName: 'my-popover',
     properties: {
         component: 'component',
@@ -363,7 +363,7 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents,
         animated: 'animated'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyPopover as StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover>,
+    clientModule: clientComponents.MyPopover as StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'>,
     serializeShadowRoot,
     getTagTransformer
 });

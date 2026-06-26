@@ -10,6 +10,7 @@ export default defineConfig({
         index: 'src/index.ts',
         runtime: 'src/runtime/index.ts',
         ssr: 'src/runtime/ssr.tsx',
+        wizard: 'src/wizard.ts',
       },
       formats: ['es', 'cjs'],
     },
@@ -19,7 +20,7 @@ export default defineConfig({
       external: [
         '@stencil/core', '@lit/react', 'typescript', 'react',
         'react-dom/server', 'ts-morph', 'html-react-parser',
-        'node:path', 'next/dynamic'
+        'node:path', 'node:fs', 'node:fs/promises', 'next/dynamic',
       ],
       output: {
         // Provide global variables to use in the UMD build

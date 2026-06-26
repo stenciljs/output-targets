@@ -305,7 +305,7 @@ export type MyPopoverEvents = {
     onMyPopoverDidDismiss: EventName<MyPopoverCustomEvent<OverlayEventDetail>>
 };
 
-export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover> = /*@__PURE__*/ createComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover>({
+export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'> = /*@__PURE__*/ createComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'>({
     tagName: 'my-popover',
     elementClass: MyPopoverElement,
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.

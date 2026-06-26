@@ -2,8 +2,6 @@ import { defineComponent, useSlots, compile, createSSRApp, type SetupContext } f
 import { type LooseRequired } from '@vue/shared';
 import { type InputProps } from './types';
 
-const LOG_PREFIX = '[vue-output-target]';
-
 /**
  * these types are defined by a Stencil hydrate app so we have to copy the minimal types here
  */
@@ -11,6 +9,8 @@ interface RenderToStringOptions {
   fullDocument?: boolean;
   serializeShadowRoot?: boolean;
   prettyHtml?: boolean;
+  /** @deprecated use `beforeSsr` — kept for v4/v5 compatibility */
+  beforeHydrate?: (document: Document) => void | Promise<void>;
 }
 type RenderToString = (html: string, options: RenderToStringOptions) => Promise<{ html: string | null }>;
 
@@ -51,38 +51,27 @@ export function defineStencilSSRComponent<Props, VModelType = string | number | 
       }
 
       /**
-       * compose element props into a string
+       * compose element props into a string; complex (non-primitive) props are banked
+       * and applied via beforeHydrate so they never need to be attribute-serialized
        */
       let stringProps = '';
+      const complexProps: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(props)) {
         if (typeof value === 'undefined') {
           continue;
         }
 
-        /**
-         * Stencils metadata tells us which properties can be serialized
-         */
-        const propName = options.props?.[key][1];
-        const propValue = isPrimitive(value)
-          ? typeof value === 'boolean'
-            ? /**
-               * omit boolean properties that are false all together
-               */
-              value
-              ? '"true"'
-              : undefined
-            : `"${value}"`
-          : Array.isArray(value) && value.every(isPrimitive)
-            ? JSON.stringify(value)
-            : undefined;
-        if (!propName || !propValue) {
-          console.warn(
-            `${LOG_PREFIX} ignore component property "${key}" for ${options.tagName} ` +
-              "- property type is unknown or not a primitive and can't be serialized"
-          );
+        if (!isPrimitive(value)) {
+          complexProps[key] = value;
           continue;
         }
 
+        if (typeof value === 'boolean' && value === false) {
+          continue;
+        }
+
+        const propName = options.props?.[key]?.[1] ?? key;
+        const propValue = typeof value === 'boolean' ? '"true"' : `"${value}"`;
         stringProps += ` ${propName}=${propValue}`;
       }
 
@@ -108,6 +97,16 @@ export function defineStencilSSRComponent<Props, VModelType = string | number | 
       const { html } = await renderToString(toSerialize, {
         fullDocument: false,
         serializeShadowRoot: true,
+        ...(Object.keys(complexProps).length > 0 && {
+          beforeHydrate: (doc: Document) => {
+            const el = doc.querySelector(transformedTagName) as any;
+            if (el) {
+              for (const [propName, value] of Object.entries(complexProps)) {
+                el[propName] = value;
+              }
+            }
+          },
+        }),
       });
 
       if (!html) {

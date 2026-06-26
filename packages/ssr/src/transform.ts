@@ -35,10 +35,15 @@ const configuredModules = new WeakMap<object, boolean>();
 const shadowRootTemplateRegExp = /<template.* shadowrootmode="open"/;
 
 interface HydrateModule {
-  serializeProperty: (value: any) => string;
   renderToString: (
     tpl: string,
-    options: { prettyHtml?: boolean; fullDocument?: boolean; serializeShadowRoot?: SerializeShadowRootOptions }
+    options: {
+      prettyHtml?: boolean;
+      fullDocument?: boolean;
+      serializeShadowRoot?: SerializeShadowRootOptions;
+      /** @deprecated use `beforeSsr` — kept for v4/v5 compatibility */
+      beforeHydrate?: (document: Document) => void | Promise<void>;
+    }
   ) => Promise<{ html: string; styles: { id?: string; content?: string; href?: string }[] }>;
   setTagTransformer?: (transformer: (tagName: string) => string) => void;
   transformTag?: (tagName: string) => string;
@@ -352,6 +357,7 @@ export async function transform(
       }
 
       const propObject = parseSimpleObjectExpression(b.objectExpression(properties));
+      const complexProps: Record<string, unknown> = {};
       let props = Object.entries(propObject)
         /**
          * we don't want to serialize the children and style properties as we
@@ -362,8 +368,16 @@ export async function transform(
           if (key === 'style') {
             return `style="${cssPropertiesToString(value)}"`;
           }
-          return `${getReactPropertyName(key)}="${importedHydrateModule.serializeProperty(value)}"`;
+          if (typeof value === 'boolean') {
+            return value ? `${getReactPropertyName(key)}="true"` : null;
+          }
+          if (typeof value === 'string' || typeof value === 'number') {
+            return `${getReactPropertyName(key)}="${value}"`;
+          }
+          complexProps[key] = value;
+          return null;
         })
+        .filter(Boolean)
         .join(' ');
 
       /**
@@ -378,6 +392,16 @@ export async function transform(
         prettyHtml: true,
         fullDocument: false,
         serializeShadowRoot,
+        ...(Object.keys(complexProps).length > 0 && {
+          beforeHydrate: (doc: Document) => {
+            const el = doc.querySelector(tagName) as any;
+            if (el) {
+              for (const [propName, value] of Object.entries(complexProps)) {
+                el[propName] = value;
+              }
+            }
+          },
+        }),
       });
 
       const lines = html.split(NEW_LINE);

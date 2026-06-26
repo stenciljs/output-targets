@@ -497,4 +497,99 @@ describe('createStencilReactComponents', () => {
     expect(createComponentImportIndex).toBeGreaterThan(-1);
     expect(customElementImportIndex).toBeGreaterThan(-1);
   });
+
+  it('should emit required props as a 4th generic parameter', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-timer',
+        componentClassName: 'MyTimer',
+        properties: [
+          { name: 'hours', required: true, attribute: 'hours' },
+          { name: 'label', required: false, attribute: 'label' },
+        ],
+        events: [],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/custom-elements',
+    });
+
+    expect(result).toContain(`StencilReactComponent<MyTimerElement, MyTimerEvents, Components.MyTimer, 'hours'>`);
+    expect(result).toContain(`createComponent<MyTimerElement, MyTimerEvents, Components.MyTimer, 'hours'>(`);
+  });
+
+  it('should emit multiple required props as a union type', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-form',
+        componentClassName: 'MyForm',
+        properties: [
+          { name: 'action', required: true, attribute: 'action' },
+          { name: 'method', required: true, attribute: 'method' },
+          { name: 'target', required: false, attribute: 'target' },
+        ],
+        events: [],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/custom-elements',
+    });
+
+    expect(result).toContain(
+      `StencilReactComponent<MyFormElement, MyFormEvents, Components.MyForm, 'action' | 'method'>`
+    );
+  });
+
+  it('should not emit a 4th generic when no props are required', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-box',
+        componentClassName: 'MyBox',
+        properties: [{ name: 'color', required: false, attribute: 'color' }],
+        events: [],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/custom-elements',
+    });
+
+    expect(result).toContain(`StencilReactComponent<MyBoxElement, MyBoxEvents, Components.MyBox>`);
+    expect(result).not.toContain(`Components.MyBox,`);
+  });
+
+  it('should emit required props generic on SSR createComponent and clientModule cast', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-timer',
+        componentClassName: 'MyTimer',
+        properties: [
+          { name: 'hours', required: true, attribute: 'hours' },
+          { name: 'label', required: false, attribute: 'label' },
+        ],
+        events: [],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/custom-elements',
+      hydrateModule: 'my-package/hydrate',
+      clientModule: './client',
+    });
+
+    expect(result).toContain(`createComponent<MyTimerElement, MyTimerEvents, Components.MyTimer, 'hours'>(`);
+    expect(result).toContain(
+      `clientModule: clientComponents.MyTimer as StencilReactComponent<MyTimerElement, MyTimerEvents, Components.MyTimer, 'hours'>`
+    );
+  });
 });

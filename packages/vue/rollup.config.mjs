@@ -2,6 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import pkg from './package.json' with { type: 'json' };
 
 const external = ['path', 'node-sass', 'fs', 'util', 'vue', 'vue/server-renderer'];
+const wizardExternal = ['node:fs/promises', 'node:path', 'ts-morph'];
 const plugins = [typescript()];
 const core = {
   input: './src/index.ts',
@@ -39,5 +40,19 @@ const runtime = {
     },
   ],
 }
+const wizard = {
+  input: './src/wizard.ts',
+  external: wizardExternal,
+  plugins,
+  watch: {
+    clearScreen: false,
+  },
+  output: [
+    {
+      format: 'es',
+      file: pkg.exports['./wizard'].import,
+    },
+  ],
+};
 
-export default [core, runtime];
+export default [core, runtime, wizard];
