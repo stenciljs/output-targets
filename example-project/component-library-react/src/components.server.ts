@@ -44,16 +44,21 @@ import { MyTransformTest as MyTransformTestElement } from "component-library/com
 type EventNames = Record<string, EventName | string>;
 
 // Type that's compatible with both React 18 and 19
-type StencilProps<I extends HTMLElement, E extends EventNames, C> = Omit<React.HTMLAttributes<I>, keyof E> &
+type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyof C = never> = Omit<
+    React.HTMLAttributes<I>,
+    keyof E
+> &
     Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
-    Partial<C> &
+    Required<Pick<C, R>> &
+    Partial<Omit<C, R>> &
     React.RefAttributes<I>;
 
 export type StencilReactComponent<
     I extends HTMLElement,
     E extends EventNames = {},
     C = Omit<I, keyof HTMLElement>,
-> = React.FunctionComponent<StencilProps<I, E, C>>;
+    R extends keyof C = never,
+> = React.FunctionComponent<StencilProps<I, E, C, R>>;
 
 export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter", "my-button", "my-component", "my-radio"], "default": "declarative-shadow-dom" };
 

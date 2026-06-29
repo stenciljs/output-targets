@@ -11,6 +11,12 @@ interface ReactEvent {
   type: string;
 }
 
+function getSubstringBetween(before: string, after: string, src: string) {
+  const start = src.indexOf(before) + before.length;
+  const end = src.indexOf(after);
+  return src.substring(start, end);
+}
+
 export const createStencilReactComponents = ({
   components,
   stencilPackageName,
@@ -52,9 +58,10 @@ export const createStencilReactComponents = ({
         .filter(Boolean)
         .join('\n')
     : `import { createLitComponent } from '@stencil/react-output-target/runtime';`;
-  const createComponentBody = hydrateModule
-    ? createComponentSource.split('\n').slice(3, 18).join('\n')
-    : createComponentSource.split('\n').slice(3).join('\n');
+  let createComponentBody = getSubstringBetween('// @types-begin', '// @types-end', createComponentSource);
+  if (!hydrateModule) {
+    createComponentBody += getSubstringBetween('// @create-component-begin', '// @create-component-end', createComponentSource);
+  }
   // transformTag should be imported from tag-transformer for both client and server
   const transformTagImport = transformTag ? `import { transformTag } from './tag-transformer.js';\n` : '';
   const sourceFile = project.createSourceFile(
