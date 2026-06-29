@@ -63,7 +63,7 @@ jobs:
           - ecosystem: angular
             filter: --filter "@stencil/angular-output-target" --filter "*angular*" --filter "ng-app"
           - ecosystem: react
-            filter: --filter "@stencil/react-output-target" --filter "*react*" --filter "remix-app"
+            filter: --filter "@stencil/react-output-target" --filter "*react*" --filter "remix-app" --filter "next-15-runtime-based"
           - ecosystem: vue
             filter: --filter "@stencil/vue-output-target" --filter "*vue*" --filter "*nuxt*"
           - ecosystem: ssr
