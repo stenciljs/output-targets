@@ -19,6 +19,7 @@ import {
   MyRadio,
 } from 'component-library-react';
 import { InputShadow, InputScoped } from './Input';
+import { ClassNameMerge } from './ClassNameMerge';
 
 /**
  * A list of all test components that are available to be
@@ -55,6 +56,8 @@ const testComponents = [
   'my-list-shadow',
   'my-range-shadow',
   'my-toggle-shadow',
+  // className merge regression test
+  'classname-merge-shadow',
 ] as const;
 export type TestComponent = (typeof testComponents)[number];
 export type ShadowComponents = Exclude<Extract<TestComponent, `${string}shadow`>, 'transform-scoped-to-shadow'>;
@@ -218,6 +221,9 @@ const TestComponent = ({ name }: TestComponentProps) => {
   }
   if (name === 'my-toggle-shadow') {
     return <MyToggle>Toggle Content</MyToggle>;
+  }
+  if (name === 'classname-merge-shadow') {
+    return <ClassNameMerge />;
   }
 
   return (
