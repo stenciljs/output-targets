@@ -1,6 +1,7 @@
-import type { EventName, Options } from '@lit/react';
-import { createComponent as createComponentWrapper } from '@lit/react';
+import type { EventName, Options } from './index.js';
+import { createLitComponent } from './index.js';
 
+// @types-begin
 // A key value map matching React prop names to event names.
 type EventNames = Record<string, EventName | string>;
 
@@ -20,7 +21,9 @@ export type StencilReactComponent<
   C = Omit<I, keyof HTMLElement>,
   R extends keyof C = never,
 > = React.FunctionComponent<StencilProps<I, E, C, R>>;
+// @types-end
 
+// @create-component-begin
 /**
  * Defines a custom element and creates a React component.
  * @public
@@ -43,10 +46,11 @@ export const createComponent = <
     defineCustomElement();
   }
   const finalTagName = transformTag ? transformTag(tagName) : tagName;
-  return createComponentWrapper<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
+  return createLitComponent<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
     I,
     E,
     C,
     R
   >;
 };
+// @create-component-end

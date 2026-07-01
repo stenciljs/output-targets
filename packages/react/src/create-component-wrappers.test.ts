@@ -40,12 +40,62 @@ describe('createComponentWrappers', () => {
 
 /* eslint-disable */
 
-import type { StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent } from '@stencil/react-output-target/runtime';
+import type { EventName, Options } from '@stencil/react-output-target/runtime';
+import { createLitComponent } from '@stencil/react-output-target/runtime';
 import React from 'react';
 
 import type { Components } from "my-package/dist/custom-elements";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
+
+// A key value map matching React prop names to event names.
+type EventNames = Record<string, EventName | string>;
+
+// Type that's compatible with both React 18 and 19
+type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyof C = never> = Omit<
+    React.HTMLAttributes<I>,
+    keyof E
+> &
+    Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
+    Required<Pick<C, R>> &
+    Partial<Omit<C, R>> &
+    React.RefAttributes<I>;
+
+export type StencilReactComponent<
+    I extends HTMLElement,
+    E extends EventNames = {},
+    C = Omit<I, keyof HTMLElement>,
+    R extends keyof C = never,
+> = React.FunctionComponent<StencilProps<I, E, C, R>>;
+
+/**
+ * Defines a custom element and creates a React component.
+ * @public
+ */
+export const createComponent = <
+    I extends HTMLElement,
+    E extends EventNames = {},
+    C = Omit<I, keyof HTMLElement>,
+    R extends keyof C = never,
+>({
+    defineCustomElement,
+    tagName,
+    transformTag,
+    ...options
+}: Options<I, E> & {
+    defineCustomElement: () => void;
+    transformTag?: (tagName: string) => string;
+}): StencilReactComponent<I, E, C, R> => {
+    if (typeof defineCustomElement !== 'undefined') {
+        defineCustomElement();
+    }
+    const finalTagName = transformTag ? transformTag(tagName) : tagName;
+    return createLitComponent<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
+        I,
+        E,
+        C,
+        R
+    >;
+};
 
 export type MyComponentEvents = NonNullable<unknown>;
 
@@ -108,12 +158,62 @@ export { MyComponent } from "./my-component.js";
 
 /* eslint-disable */
 
-import type { StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent } from '@stencil/react-output-target/runtime';
+import type { EventName, Options } from '@stencil/react-output-target/runtime';
+import { createLitComponent } from '@stencil/react-output-target/runtime';
 import React from 'react';
 
 import type { Components } from "my-package/dist/custom-elements";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
+
+// A key value map matching React prop names to event names.
+type EventNames = Record<string, EventName | string>;
+
+// Type that's compatible with both React 18 and 19
+type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyof C = never> = Omit<
+    React.HTMLAttributes<I>,
+    keyof E
+> &
+    Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
+    Required<Pick<C, R>> &
+    Partial<Omit<C, R>> &
+    React.RefAttributes<I>;
+
+export type StencilReactComponent<
+    I extends HTMLElement,
+    E extends EventNames = {},
+    C = Omit<I, keyof HTMLElement>,
+    R extends keyof C = never,
+> = React.FunctionComponent<StencilProps<I, E, C, R>>;
+
+/**
+ * Defines a custom element and creates a React component.
+ * @public
+ */
+export const createComponent = <
+    I extends HTMLElement,
+    E extends EventNames = {},
+    C = Omit<I, keyof HTMLElement>,
+    R extends keyof C = never,
+>({
+    defineCustomElement,
+    tagName,
+    transformTag,
+    ...options
+}: Options<I, E> & {
+    defineCustomElement: () => void;
+    transformTag?: (tagName: string) => string;
+}): StencilReactComponent<I, E, C, R> => {
+    if (typeof defineCustomElement !== 'undefined') {
+        defineCustomElement();
+    }
+    const finalTagName = transformTag ? transformTag(tagName) : tagName;
+    return createLitComponent<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
+        I,
+        E,
+        C,
+        R
+    >;
+};
 
 export type MyComponentEvents = NonNullable<unknown>;
 
@@ -225,13 +325,63 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
 
 /* eslint-disable */
 
-import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent } from '@stencil/react-output-target/runtime';
+import type { EventName, Options } from '@stencil/react-output-target/runtime';
+import { createLitComponent } from '@stencil/react-output-target/runtime';
 import React from 'react';
 
 import { type MyComponentCustomEvent } from "my-package";
 import type { Components } from "my-package/dist/custom-elements";
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";
+
+// A key value map matching React prop names to event names.
+type EventNames = Record<string, EventName | string>;
+
+// Type that's compatible with both React 18 and 19
+type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyof C = never> = Omit<
+    React.HTMLAttributes<I>,
+    keyof E
+> &
+    Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
+    Required<Pick<C, R>> &
+    Partial<Omit<C, R>> &
+    React.RefAttributes<I>;
+
+export type StencilReactComponent<
+    I extends HTMLElement,
+    E extends EventNames = {},
+    C = Omit<I, keyof HTMLElement>,
+    R extends keyof C = never,
+> = React.FunctionComponent<StencilProps<I, E, C, R>>;
+
+/**
+ * Defines a custom element and creates a React component.
+ * @public
+ */
+export const createComponent = <
+    I extends HTMLElement,
+    E extends EventNames = {},
+    C = Omit<I, keyof HTMLElement>,
+    R extends keyof C = never,
+>({
+    defineCustomElement,
+    tagName,
+    transformTag,
+    ...options
+}: Options<I, E> & {
+    defineCustomElement: () => void;
+    transformTag?: (tagName: string) => string;
+}): StencilReactComponent<I, E, C, R> => {
+    if (typeof defineCustomElement !== 'undefined') {
+        defineCustomElement();
+    }
+    const finalTagName = transformTag ? transformTag(tagName) : tagName;
+    return createLitComponent<I, E>({ ...options, tagName: finalTagName }) as unknown as StencilReactComponent<
+        I,
+        E,
+        C,
+        R
+    >;
+};
 
 export type MyComponentEvents = { onMyEvent: EventName<MyComponentCustomEvent<IMyComponent.Events.Detail.MyComponentClicked>> };
 

@@ -7,9 +7,10 @@
 
 /* eslint-disable */
 
+import React from 'react';
 import { getTagTransformer } from './tag-transformer.js';
 
-import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
+import type { EventName } from '@stencil/react-output-target/runtime';
 import { createComponent, type HydrateModule, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
 
 import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
@@ -38,6 +39,26 @@ import { MyRange as MyRangeElement } from "component-library/components/my-range
 import { MyToggleContent as MyToggleContentElement } from "component-library/components/my-toggle-content.js";
 import { MyToggle as MyToggleElement } from "component-library/components/my-toggle.js";
 import { MyTransformTest as MyTransformTestElement } from "component-library/components/my-transform-test.js";
+
+// A key value map matching React prop names to event names.
+type EventNames = Record<string, EventName | string>;
+
+// Type that's compatible with both React 18 and 19
+type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyof C = never> = Omit<
+    React.HTMLAttributes<I>,
+    keyof E
+> &
+    Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
+    Required<Pick<C, R>> &
+    Partial<Omit<C, R>> &
+    React.RefAttributes<I>;
+
+export type StencilReactComponent<
+    I extends HTMLElement,
+    E extends EventNames = {},
+    C = Omit<I, keyof HTMLElement>,
+    R extends keyof C = never,
+> = React.FunctionComponent<StencilProps<I, E, C, R>>;
 
 export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter", "my-button", "my-component", "my-radio"], "default": "declarative-shadow-dom" };
 

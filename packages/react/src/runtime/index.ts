@@ -1,2 +1,2 @@
 export type { EventName, Options } from '@lit/react';
-export { createComponent, type StencilReactComponent } from './create-component.js';
+export { createComponent as createLitComponent } from '@lit/react';
