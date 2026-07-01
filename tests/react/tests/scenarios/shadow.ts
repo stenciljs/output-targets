@@ -164,4 +164,36 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
       await expect($('my-toggle')).toBePresent()
     })
   },
+  'classname-merge-shadow': () => {
+    it('should merge app className with runtime-managed host classes', async () => {
+      await browser.url('/classname-merge-shadow')
+      const checkbox = $('my-checkbox')
+      await expect(checkbox).toBePresent()
+
+      // The Stencil runtime manages these classes on the host.
+      await expect(checkbox).toHaveElementClass(expect.stringContaining('hydrated'))
+      await expect(checkbox).toHaveElementClass(expect.stringContaining('interactive'))
+
+      // Apply the validation classes the way a form library would (via className).
+      await $('.apply-classes').click()
+      await browser.waitUntil(async () => ((await checkbox.getAttribute('class')) ?? '').includes('ion-invalid'))
+
+      // App-supplied classes coexist with the runtime-managed classes.
+      const appliedClass = await checkbox.getAttribute('class')
+      expect(appliedClass).toContain('ion-invalid')
+      expect(appliedClass).toContain('ion-touched')
+      expect(appliedClass).toContain('hydrated')
+      expect(appliedClass).toContain('interactive')
+
+      // Dropping the className removes only the app classes, not the runtime ones.
+      await $('.remove-classes').click()
+      await browser.waitUntil(async () => !((await checkbox.getAttribute('class')) ?? '').includes('ion-invalid'))
+
+      const removedClass = await checkbox.getAttribute('class')
+      expect(removedClass).not.toContain('ion-invalid')
+      expect(removedClass).not.toContain('ion-touched')
+      expect(removedClass).toContain('hydrated')
+      expect(removedClass).toContain('interactive')
+    })
+  },
 }
