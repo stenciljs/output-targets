@@ -13,7 +13,7 @@ interface ReactEvent {
 
 function getSubstringBetween(before: string, after: string, src: string) {
   const start = src.indexOf(before) + before.length;
-  const end = src.indexOf(after);
+  const end = src.indexOf(after, start);
   return src.substring(start, end);
 }
 
