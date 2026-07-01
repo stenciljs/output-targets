@@ -1,14 +1,22 @@
 {
   "name": "@stencil/angular-output-target",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "Angular output target for @stencil/core components.",
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
+  "type": "module",
+  "stencil": {
+    "wizard": "./dist/wizard.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs.js"
+      "require": "./dist/index.cjs"
+    },
+    "./wizard": {
+      "types": "./dist/wizard.d.ts",
+      "import": "./dist/wizard.js"
     }
   },
   "types": "dist/index.d.ts",
@@ -47,7 +55,11 @@
   "bugs": {
     "url": "https://github.com/stenciljs/output-targets/issues"
   },
+  "dependencies": {
+    "ts-morph": "^28.0.0"
+  },
   "devDependencies": {
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0",
     "@angular/core": "8.2.14",
     "@angular/forms": "8.2.14",
     "@stencil/core": "4.41.0",
@@ -59,7 +71,7 @@
     "vitest": "^2.1.4"
   },
   "peerDependencies": {
-    "@stencil/core": ">=2.0.0 || >=3 || >= 4.0.0-beta.0 || >= 4.0.0"
+    "@stencil/core": ">=2.0.0 || >=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0"
   },
   "gitHead": "a3588e905186a0e86e7f88418fd5b2f9531b55e0"
 }

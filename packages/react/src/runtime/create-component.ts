@@ -6,16 +6,21 @@ import React from 'react';
 type EventNames = Record<string, EventName | string>;
 
 // Type that's compatible with both React 18 and 19
-type StencilProps<I extends HTMLElement, E extends EventNames, C> = Omit<React.HTMLAttributes<I>, keyof E> &
+type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyof C = never> = Omit<
+  React.HTMLAttributes<I>,
+  keyof E
+> &
   Partial<{ [K in keyof E]: E[K] extends EventName<infer T> ? (event: T) => void : (event: any) => void }> &
-  Partial<C> &
+  Required<Pick<C, R>> &
+  Partial<Omit<C, R>> &
   React.RefAttributes<I>;
 
 export type StencilReactComponent<
   I extends HTMLElement,
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,
-> = React.FunctionComponent<StencilProps<I, E, C>>;
+  R extends keyof C = never,
+> = React.FunctionComponent<StencilProps<I, E, C, R>>;
 
 const splitClassName = (className: string | undefined): string[] =>
   className ? className.split(/\s+/).filter(Boolean) : [];
@@ -62,7 +67,12 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayou
  * Defines a custom element and creates a React component.
  * @public
  */
-export const createComponent = <I extends HTMLElement, E extends EventNames = {}, C = Omit<I, keyof HTMLElement>>({
+export const createComponent = <
+  I extends HTMLElement,
+  E extends EventNames = {},
+  C = Omit<I, keyof HTMLElement>,
+  R extends keyof C = never,
+>({
   defineCustomElement,
   tagName,
   transformTag,
@@ -70,7 +80,7 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
 }: Options<I, E> & {
   defineCustomElement: () => void;
   transformTag?: (tagName: string) => string;
-}): StencilReactComponent<I, E, C> => {
+}): StencilReactComponent<I, E, C, R> => {
   if (typeof defineCustomElement !== 'undefined') {
     defineCustomElement();
   }
@@ -82,12 +92,12 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
    * `class` attribute, then reconcile it against the live host in a layout
    * effect. See `mergeClassNames`.
    */
-  const WrappedComponent = React.forwardRef<I, StencilProps<I, E, C>>((props, ref) => {
+  const WrappedComponent = React.forwardRef<I, StencilProps<I, E, C, R>>((props, ref) => {
     const {
       className,
       class: classProp,
       ...restProps
-    } = props as StencilProps<I, E, C> & {
+    } = props as StencilProps<I, E, C, R> & {
       className?: string;
       class?: string;
     };
@@ -122,5 +132,5 @@ export const createComponent = <I extends HTMLElement, E extends EventNames = {}
 
   WrappedComponent.displayName = options.displayName ?? finalTagName;
 
-  return WrappedComponent as unknown as StencilReactComponent<I, E, C>;
+  return WrappedComponent as unknown as StencilReactComponent<I, E, C, R>;
 };

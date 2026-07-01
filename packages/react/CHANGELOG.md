@@ -1,3 +1,12 @@
+## [1.6.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.3...@stencil/react-output-target@1.6.0) (2026-06-25)
+
+
+### :rocket: Enhancement
+
+* **react:** compat with stencil v5 ([3f82413](https://github.com/stenciljs/output-targets/commit/3f82413af6d440b33c3b14192bc53af65bf860c8))
+* **react:** reflect required props in generated React component types ([#821](https://github.com/stenciljs/output-targets/issues/821)) ([ab922ee](https://github.com/stenciljs/output-targets/commit/ab922eee6f8d27b76397686de34ffa906529c202))
+* v5 compatibility  ([#822](https://github.com/stenciljs/output-targets/issues/822)) ([1f981d0](https://github.com/stenciljs/output-targets/commit/1f981d061a90abd54e848fe685240f50add43a10))
+
 ## [1.5.3](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.2...@stencil/react-output-target@1.5.3) (2026-06-05)
 
 

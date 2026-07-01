@@ -9,7 +9,7 @@ import { jsxDEV } from "react/jsx-dev-runtime";
 
 
 const MyComponent$0 = ({ children, ...props }) => {
-  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "9", suppressHydrationWarning: true, ...props, children: [
+  return /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", last: "Doe", middle: "William", "s-id": "9", suppressHydrationWarning: true, ...props, children: [
     /* @__PURE__ */ jsxDEV("template", { shadowrootmode: "open", suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<style sty-id="sc-my-component">
       :host{display:block;color:green}
     </style>
@@ -485,7 +485,7 @@ const MyComponent$0 = ({ children, ...props }) => {
       lineNumber: 4,
       columnNumber: 8
     }),
-    /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", "kids-names": "serialized:eyJ0eXBlIjoiYXJyYXkiLCJ2YWx1ZSI6W3sidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSm9obiJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmFuZSJ9LHsidHlwZSI6InN0cmluZyIsInZhbHVlIjoiSmltIn1dfQ==", last: "Doe", middle: "William", "s-id": "1", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.1-->
+    /* @__PURE__ */ jsxDEV("my-component", { class: "hydrated sc-my-component-h", first: "John", last: "Doe", middle: "William", "s-id": "1", ...props, suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: \`<!--r.1-->
   <div c-id="1.0.0.0" class="sc-my-component">
     <!--t.1.1.1.0-->
     Hello, World! I'm John undefined Doe

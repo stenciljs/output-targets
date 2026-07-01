@@ -66,7 +66,6 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
 </test-component>`,
         });
       }),
-      serializeProperty: vi.fn((value) => `"${JSON.stringify(value)}"`),
       transformTag: vi.fn((tag) => tag),
       setTagTransformer: vi.fn(),
     };

@@ -1,5 +1,8 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 import type { CompilerCtx, ComponentCompilerMeta, ComponentCompilerProperty, Config } from '@stencil/core/internal';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import type { ComponentInputProperty, OutputTargetAngular, PackageJSON } from './types';
 import {
   relativeImport,
@@ -43,7 +46,7 @@ export async function angularDirectiveProxyOutput(
 
     for (const component of filteredComponents) {
       const componentFile = path.join(proxiesDir, `${component.tagName}.ts`);
-      const componentText = generateComponentProxy(component, pkgData, outputTarget, rootDir);
+      const componentText = generateComponentProxy(component, pkgData, outputTarget, rootDir, config);
       tasks.push(compilerCtx.fs.writeFile(componentFile, componentText));
     }
 
@@ -55,7 +58,7 @@ export async function angularDirectiveProxyOutput(
     tasks.push(generateAngularDirectivesFile(compilerCtx, filteredComponents, outputTarget));
   } else {
     // Generate single file with all components (original behavior)
-    const finalText = generateProxies(filteredComponents, pkgData, outputTarget, rootDir);
+    const finalText = generateProxies(filteredComponents, pkgData, outputTarget, rootDir, config);
     tasks.push(compilerCtx.fs.writeFile(outputTarget.directivesProxyFile, finalText));
     tasks.push(generateAngularDirectivesFile(compilerCtx, filteredComponents, outputTarget));
   }
@@ -123,7 +126,8 @@ export function generateProxies(
   components: ComponentCompilerMeta[],
   pkgData: PackageJSON,
   outputTarget: OutputTargetAngular,
-  rootDir: string
+  rootDir: string,
+  config: Config
 ) {
   const distTypesDir = path.dirname(pkgData.types);
   const dtsFilePath = path.join(rootDir, distTypesDir, GENERATED_DTS);
@@ -166,10 +170,9 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
    * otherwise we risk bundlers pulling in lazy loaded imports.
    */
   const generateTypeImports = () => {
-    let importLocation = outputTarget.componentCorePackage
-      ? normalizePath(outputTarget.componentCorePackage)
+    const importLocation = outputTarget.componentCorePackage
+      ? getPathToComponentTypes(config, outputTarget)
       : normalizePath(componentsTypeFile);
-    importLocation += isCustomElementsBuild ? `/${outputTarget.customElementsDir}` : '';
     return `import ${isCustomElementsBuild ? 'type ' : ''}{ ${IMPORT_TYPES} } from '${importLocation}';\n`;
   };
 
@@ -275,7 +278,8 @@ export function generateComponentProxy(
   cmpMeta: ComponentCompilerMeta,
   pkgData: PackageJSON,
   outputTarget: OutputTargetAngular,
-  rootDir: string
+  rootDir: string,
+  config: Config
 ) {
   const { outputType, componentCorePackage, customElementsDir } = outputTarget;
   const distTypesDir = path.dirname(pkgData.types);
@@ -304,8 +308,9 @@ ${createImportStatement(angularCoreImports, '@angular/core')}
 ${createImportStatement(['ProxyCmp'], './angular-component-lib/utils')}\n`;
 
   // Type imports
-  let importLocation = componentCorePackage ? normalizePath(componentCorePackage) : normalizePath(componentsTypeFile);
-  importLocation += isCustomElementsBuild ? `/${customElementsDir}` : '';
+  const importLocation = componentCorePackage
+    ? getPathToComponentTypes(config, outputTarget)
+    : normalizePath(componentsTypeFile);
   const typeImports = `import ${isCustomElementsBuild ? 'type ' : ''}{ ${IMPORT_TYPES} } from '${importLocation}';\n`;
 
   // defineCustomElement import
@@ -395,6 +400,25 @@ export function generateBarrelFile(components: ComponentCompilerMeta[], outputTa
     .join('\n');
 
   return header + exports + '\n';
+}
+
+export function getPathToComponentTypes(config: Config, outputTarget: OutputTargetAngular): string {
+  const basePkg = outputTarget.componentCorePackage || '';
+
+  // in v5, all types (including components.d.ts) are generated in the dist/types directory
+  const typesTarget = config.outputTargets?.find((o: any) => o.type === 'types') as any;
+  if (typesTarget) {
+    const rawDir = typesTarget.dir || 'dist/types';
+    const relDir = config.rootDir && path.isAbsolute(rawDir) ? path.relative(config.rootDir as string, rawDir) : rawDir;
+    return normalizePath(path.join(basePkg, relDir, 'components'));
+  }
+
+  // v4: append customElementsDir for custom elements build, otherwise package root
+  const isCustomElementsBuild = isOutputTypeCustomElementsBuild(outputTarget.outputType!);
+  if (isCustomElementsBuild && outputTarget.customElementsDir) {
+    return normalizePath(path.join(basePkg, outputTarget.customElementsDir));
+  }
+  return normalizePath(basePkg);
 }
 
 const GENERATED_DTS = 'components.d.ts';

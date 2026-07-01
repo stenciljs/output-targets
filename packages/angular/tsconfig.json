@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
@@ -7,13 +8,14 @@
     "strict": true,
     "declaration": true,
     "experimentalDecorators": true,
-    "lib": ["dom", "es2017", "esnext.array"],
-    "moduleResolution": "node",
+    "lib": ["dom", "es2021"],
+    "moduleResolution": "bundler",
     "module": "esnext",
-    "target": "es2017",
+    "target": "es2022",
     "noUnusedLocals": true,
     "noUnusedParameters": false,
-    "outDir": "dist"
+    "outDir": "dist",
+    "types": ["node"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "src/__tests__"]
