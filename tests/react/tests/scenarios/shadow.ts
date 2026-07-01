@@ -176,7 +176,7 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
 
       // Apply the validation classes the way a form library would (via className).
       await $('.apply-classes').click()
-      await browser.waitUntil(async () => (await checkbox.getAttribute('class')).includes('ion-invalid'))
+      await browser.waitUntil(async () => ((await checkbox.getAttribute('class')) ?? '').includes('ion-invalid'))
 
       // App-supplied classes coexist with the runtime-managed classes.
       const appliedClass = await checkbox.getAttribute('class')
@@ -187,7 +187,7 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
 
       // Dropping the className removes only the app classes, not the runtime ones.
       await $('.remove-classes').click()
-      await browser.waitUntil(async () => !(await checkbox.getAttribute('class')).includes('ion-invalid'))
+      await browser.waitUntil(async () => !((await checkbox.getAttribute('class')) ?? '').includes('ion-invalid'))
 
       const removedClass = await checkbox.getAttribute('class')
       expect(removedClass).not.toContain('ion-invalid')
