@@ -39,6 +39,10 @@ export default function Home() {
         <MyRadio value="baz">Baz</MyRadio>
       </MyRadioGroup>
       <MyTransformTest message="Tag transformation test: should render as v1-my-transform-test" />
+      <hr />
+      <p>
+        <a href="/named-slot">Named Slot SSR Tests →</a>
+      </p>
     </>
   );
 }

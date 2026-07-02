@@ -132,6 +132,25 @@ const isLazyExoticComponent = (value: unknown): value is LazyComponent<any, any>
   !!value && typeof value === 'object' && '_payload' in value;
 
 /**
+ * Returns true if the value is a React exotic component that react-dom/server handles
+ * natively (forwardRef or memo). These must NOT be called directly as their render
+ * functions use hooks, which are illegal outside of React's renderer.
+ *
+ * - React.forwardRef → { $$typeof: Symbol(react.forward_ref), render }
+ * - React.memo       → { $$typeof: Symbol(react.memo), type, compare }
+ *
+ * We require $$typeof to be present to avoid false-positives on plain objects
+ * that happen to have a 'render' or 'type' key.
+ */
+const isNativelyRenderedExotic = (
+  value: unknown
+): value is React.ForwardRefExoticComponent<any> | React.MemoExoticComponent<any> =>
+  !!value &&
+  typeof value === 'object' &&
+  '$$typeof' in value &&
+  ('render' in value || ('type' in value && 'compare' in value));
+
+/**
  * Transform a React component into a Stencil component for server side rendering. This logic is executed
  * by a React framework e.g. Next.js in an Node.js environment. The function will:
  *
@@ -405,13 +424,22 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
 
       const { type, props } = child as React.ReactElement<object & { children: ReactNode }>;
 
+      const resolvedType = await resolveType(type, props as any);
+
+      // If resolveType returned a fully rendered React element (e.g. from an async Stencil SSR
+      // component), return it directly — it is already the final output and must not be wrapped
+      // back into a new element with itself as the `type`.
+      if (React.isValidElement(resolvedType)) {
+        return resolvedType;
+      }
+
       return {
         ...child,
         props: {
           ...props,
           children: await resolveComponentTypes(props.children),
         },
-        type: await resolveType(type, props as any),
+        type: resolvedType,
       } as ReactNode;
     })
   );
@@ -429,29 +457,40 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
     const instance = new type(props, undefined);
     resolvedType = instance.render ? instance.render() : instance;
   } else if (isLazyExoticComponent(type)) {
-    // Handle React Lazy Component
+    // Handle React Lazy Component and Next.js RSC module references.
+    // React.lazy payload: { _status: -1, _result: promiseFn } → call _result() when uninitialized.
+    // Next.js RSC reference: { _result: undefined, _init: fn } → call _init(payload) to resolve.
     // https://github.com/facebook/react/blob/main/packages/react/src/ReactLazy.js
     const payload = type._payload;
-    const { default: lazyComponent } =
-      payload._status === -1 // Uninitialized = -1 so we need resolve the promise
-        ? await payload._result()
-        : payload._result;
+    let lazyComponent: any;
+    if (typeof (type as any)._init === 'function' && payload._result === undefined) {
+      // Next.js RSC module reference format: use _init to resolve the component
+      const resolved = await (type as any)._init(payload);
+      lazyComponent = resolved?.default ?? resolved;
+    } else {
+      const { default: def } =
+        payload._status === -1 // Uninitialized = -1 so we need resolve the promise
+          ? await payload._result()
+          : payload._result;
+      lazyComponent = def;
+    }
     // Now resolve the actual component type of the lazy component
     resolvedType = await resolveType(lazyComponent, props);
+  } else if (isNativelyRenderedExotic(type)) {
+    // React.forwardRef and React.memo objects are handled natively by react-dom/server.
+    // Calling their inner render/type functions directly violates React's hook rules.
+    // Return the exotic object as-is; renderToString will render it correctly.
+    return type;
   } else if (typeof type !== 'object') {
     // Child is a Function Component because React Server
     // Components can be a Promise we need to await it
     resolvedType = await type(props);
   }
 
-  // Recursively resolve the component type until we have a primitive element type
-  if (
-    !isEmpty(resolvedType) &&
-    !isPrimitive(resolvedType) &&
-    typeof resolvedType === 'object' &&
-    resolvedType !== null &&
-    'type' in resolvedType
-  ) {
+  // Recursively resolve the component type until we have a primitive element type.
+  // React.isValidElement narrows to ReactElement, giving `.type` as `string | JSXElementConstructor<any>`.
+  // Exotic components return early above, so a valid element here still needs its type resolved.
+  if (!isEmpty(resolvedType) && !isPrimitive(resolvedType) && React.isValidElement(resolvedType)) {
     resolvedType = await resolveType(resolvedType.type, props);
   }
 
