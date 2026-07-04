@@ -168,16 +168,16 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
       hydrateModule: Promise.resolve(mockHydrateModule),
     };
     const Component = createComponent(options);
-    await expect(Component({ children: React.createElement(ForwardRefChild, { slot: 'icon' }) })).resolves.toBeDefined();
+    await expect(
+      Component({ children: React.createElement(ForwardRefChild, { slot: 'icon' }) })
+    ).resolves.toBeDefined();
   });
 
   it('should serialize children that are React.memo components without throwing', async () => {
     // React.memo wraps a component in { $$typeof, type, compare }. The 'type' property
     // would trigger the bottom recursive unwrap in resolveType, calling the inner function
     // with hooks directly. The exotic guard must prevent this.
-    const MemoChild = React.memo((_props: { slot?: string }) =>
-      React.createElement('my-input', {})
-    );
+    const MemoChild = React.memo((_props: { slot?: string }) => React.createElement('my-input', {}));
     const options: CreateComponentForSSROptions<HTMLElement> = {
       tagName: 'my-button',
       properties: {},
@@ -193,7 +193,8 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
     // to use it as a `type` — which would cause renderToString to fail with
     // "Objects are not valid as a React child".
     const { renderToString } = await import('react-dom/server');
-    const realRenderToString = (await vi.importActual<typeof import('react-dom/server')>('react-dom/server')).renderToString;
+    const realRenderToString = (await vi.importActual<typeof import('react-dom/server')>('react-dom/server'))
+      .renderToString;
 
     // Parent component
     const parentOptions: CreateComponentForSSROptions<HTMLElement> = {
@@ -258,7 +259,6 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
     expect(htmlArg).toContain('maxLength="0"');
     expect(htmlArg).toContain('emptyString=""');
   });
-
 
   it('should resolve React.lazy wrapping a React.forwardRef component without calling render directly', async () => {
     const ForwardRefChild = React.forwardRef<HTMLElement, { slot?: string }>((_props, _ref) =>
@@ -330,7 +330,9 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
 
     await expect(
       ParentComponent({
-        children: React.createElement(ChildComponent as any, { slot: 'start' },
+        children: React.createElement(
+          ChildComponent as any,
+          { slot: 'start' },
           React.createElement(GrandchildComponent as any, { slot: 'icon' })
         ),
       })
@@ -391,9 +393,7 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
       hydrateModule: Promise.resolve(mockHydrateModule),
     };
     const Component = createComponent(options);
-    await expect(
-      Component({ children: React.createElement(ClassChild, { slot: 'label' }) })
-    ).resolves.toBeDefined();
+    await expect(Component({ children: React.createElement(ClassChild, { slot: 'label' }) })).resolves.toBeDefined();
   });
 
   it('should not throw when a function component slot child returns null', async () => {
@@ -404,9 +404,7 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
       hydrateModule: Promise.resolve(mockHydrateModule),
     };
     const Component = createComponent(options);
-    await expect(
-      Component({ children: React.createElement(NullChild, { slot: 'icon' }) })
-    ).resolves.toBeDefined();
+    await expect(Component({ children: React.createElement(NullChild, { slot: 'icon' }) })).resolves.toBeDefined();
   });
 
   it('should not treat a plain object with a render key as a forwardRef exotic', async () => {
@@ -423,10 +421,7 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
       hydrateModule: Promise.resolve(mockHydrateModule),
     };
     const Component = createComponent(options);
-    await expect(
-      Component({ children: React.createElement(NotExotic, { slot: 'icon' }) })
-    ).resolves.toBeDefined();
+    await expect(Component({ children: React.createElement(NotExotic, { slot: 'icon' }) })).resolves.toBeDefined();
     expect(spy).toHaveBeenCalled();
   });
 });
-

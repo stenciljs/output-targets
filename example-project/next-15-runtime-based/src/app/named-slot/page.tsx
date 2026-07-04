@@ -7,11 +7,23 @@
  *
  * Covers both shadow (DSD) and scoped rendering modes.
  */
-import { MyButton, MyButtonScoped, MyComponent, MyComponentScoped } from 'component-library-react/next';
+import {
+  MyButton,
+  MyButtonScoped,
+  MyComponent,
+  MyComponentScoped,
+} from 'component-library-react/next';
 
 export default function NamedSlotPage() {
   return (
-    <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
+    <main
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        padding: '1rem',
+      }}
+    >
       <h1>Named Slot SSR Tests</h1>
 
       <section>
@@ -25,14 +37,18 @@ export default function NamedSlotPage() {
 
         {/* Stencil SSR component in the start named slot */}
         <MyButton>
-          <MyComponent slot="start" first="Icon" last="Component">★</MyComponent>
+          <MyComponent slot="start" first="Icon" last="Component">
+            ★
+          </MyComponent>
           Button with Stencil component in start slot
         </MyButton>
 
         {/* Stencil SSR component in the end named slot */}
         <MyButton>
           Button with Stencil component in end slot
-          <MyComponent slot="end" first="Icon" last="Component">→</MyComponent>
+          <MyComponent slot="end" first="Icon" last="Component">
+            →
+          </MyComponent>
         </MyButton>
       </section>
 
@@ -49,14 +65,18 @@ export default function NamedSlotPage() {
 
         {/* Stencil SSR scoped component in the start named slot */}
         <MyButtonScoped>
-          <MyComponentScoped slot="start" first="Icon" last="Scoped">★</MyComponentScoped>
+          <MyComponentScoped slot="start" first="Icon" last="Scoped">
+            ★
+          </MyComponentScoped>
           Scoped button with Stencil scoped component in start slot
         </MyButtonScoped>
 
         {/* Stencil SSR scoped component in the end named slot */}
         <MyButtonScoped>
           Scoped button with Stencil scoped component in end slot
-          <MyComponentScoped slot="end" first="Icon" last="Scoped">→</MyComponentScoped>
+          <MyComponentScoped slot="end" first="Icon" last="Scoped">
+            →
+          </MyComponentScoped>
         </MyButtonScoped>
       </section>
     </main>
