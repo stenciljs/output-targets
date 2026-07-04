@@ -783,10 +783,6 @@ importers:
         version: 2.2.12(typescript@5.9.3)
 
   packages/angular:
-    dependencies:
-      ts-morph:
-        specifier: ^28.0.0
-        version: 28.0.0
     devDependencies:
       '@angular/core':
         specifier: 8.2.14
@@ -795,8 +791,8 @@ importers:
         specifier: 8.2.14
         version: 8.2.14(@angular/common@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.3.25(@angular/animations@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0
-        version: 5.0.0-alpha.9(@stencil/core@4.41.0)
+        specifier: 5.0.0-alpha.17
+        version: 5.0.0-alpha.17(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -826,10 +822,10 @@ importers:
         version: 1.0.8(@types/react@19.2.17)
       html-react-parser:
         specifier: ^5.2.2
-        version: 5.2.17(@types/react@19.2.17)(react@18.3.1)
+        version: 5.2.17(@types/react@19.2.17)(react@19.1.0)
       react:
         specifier: ^18 || ^19
-        version: 18.3.1
+        version: 19.1.0
       react-dom:
         specifier: ^18 || ^19
         version: 18.3.1(react@18.3.1)
@@ -841,8 +837,8 @@ importers:
         version: 28.0.0
     devDependencies:
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0
-        version: 5.0.0-alpha.9(@stencil/core@4.41.0)
+        specifier: 5.0.0-alpha.17
+        version: 5.0.0-alpha.17(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -896,7 +892,7 @@ importers:
         version: 0.23.11
       vite:
         specifier: ^6.x
-        version: 6.4.3(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 7.3.5(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
       webpack:
         specifier: ^5.x
         version: 5.107.2(esbuild@0.25.12)
@@ -915,17 +911,13 @@ importers:
         version: 5.8.3
       vite-plugin-dts:
         specifier: ^4.5.3
-        version: 4.5.4(@types/node@20.19.43)(rollup@4.62.0)(typescript@5.8.3)(vite@6.4.3(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 4.5.4(@types/node@20.19.43)(rollup@4.62.0)(typescript@5.8.3)(vite@7.3.5(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
 
   packages/types:
-    dependencies:
-      ts-morph:
-        specifier: ^28.0.0
-        version: 28.0.0
     devDependencies:
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0
-        version: 5.0.0-alpha.9(@stencil/core@4.41.0)
+        specifier: 5.0.0-alpha.17
+        version: 5.0.0-alpha.17(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -943,17 +935,13 @@ importers:
         version: 3.9.1(@types/node@20.19.43)(rollup@4.62.0)(typescript@5.8.3)(vite@5.4.21(@types/node@20.19.43)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))
 
   packages/vue:
-    dependencies:
-      ts-morph:
-        specifier: ^28.0.0
-        version: 28.0.0
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^12.1.0
         version: 12.3.0(rollup@4.62.0)(tslib@2.8.1)(typescript@5.7.3)
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0
-        version: 5.0.0-alpha.9(@stencil/core@4.41.0)
+        specifier: 5.0.0-alpha.17
+        version: 5.0.0-alpha.17(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: ^4.41.0
         version: 4.41.0
@@ -4871,8 +4859,8 @@ packages:
   '@speed-highlight/core@1.2.17':
     resolution: {integrity: sha512-Z92FwKpCtfaW1V0jTU/fh3QzYEZN8wDwrzRIBoADCJfn4mJCNcJN/XegifX7BDrQ8/h9Xh/JnbyMchL0FqXrkg==}
 
-  '@stencil/cli@5.0.0-alpha.9':
-    resolution: {integrity: sha512-wPw/YNc2eeCb3aZsgMcJGWdjFrlOIXQ8x+ouZmIgwWDV7+ARAzSM0iqLU74AIXjK8kJeEsO66X2IJT6N21wdfg==}
+  '@stencil/cli@5.0.0-alpha.17':
+    resolution: {integrity: sha512-f1QkdaN2ORY+f7fgJ1oWRHSnwUn5+t92pgMknqsj5L6ULehi6K8BCLfyMaK9nbY6R7+UrvrejR2EMwxkFFR+Ag==}
     hasBin: true
     peerDependencies:
       '@stencil/core': ^5.0.0-0
@@ -4882,13 +4870,13 @@ packages:
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
-  '@stencil/dev-server@5.0.0-alpha.9':
-    resolution: {integrity: sha512-87JdYBRZVSnvvooXDY40tJR8sHsh8yt03PqiEt5qcje09Mq8jrv8wVhyekAeWt/orhLTNwxEUWK6xMiRigLpMQ==}
+  '@stencil/dev-server@5.0.0-alpha.17':
+    resolution: {integrity: sha512-/G7K8xjT3lNZKTF1HXyfm1L/YJ6fipMKB7lF4mkzL7khJlpHM+Hu02J5B02DwP7ytUDO9uloxTmJNgsNWdJdRw==}
     peerDependencies:
       '@stencil/core': ^5.0.0-0
 
-  '@stencil/templates@5.0.0-alpha.8':
-    resolution: {integrity: sha512-Lj+IcuekV4+S+D+2lrfveVYO0BU2oVwBw1KPLt6L9CwyHg6KcaraDjhUoO+yND9/s/WBJMed7/mFORFYL+/BLQ==}
+  '@stencil/templates@5.0.0-alpha.17':
+    resolution: {integrity: sha512-AdYO5NmEL6ew97GJAvgBwQI9/F2KsMFUksQIVRJ+J6Tua6gpvoeR++yOxwAN/HEyRma9sjKoTqW6ubGMRBjnRQ==}
 
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
@@ -6246,6 +6234,11 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
+  baseline-browser-mapping@2.10.41:
+    resolution: {integrity: sha512-WwS7MHhqGHHlaVsqRZnhvCEMS0owDX+SxRlve7JkuH7My1Ara3ZriTmCQupPfYjxMZ8I/tgxtJYr2t7taHaH4A==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
   basic-auth@2.0.1:
     resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
     engines: {node: '>= 0.8'}
@@ -6321,6 +6314,11 @@ packages:
 
   browserslist@4.28.2:
     resolution: {integrity: sha512-48xSriZYYg+8qXna9kwqjIVzuQxi+KYWp2+5nCYnYKPTr0LvD89Jqk2Or5ogxz0NUMfIjhh2lIUX/LyX9B4oIg==}
+    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
+    hasBin: true
+
+  browserslist@4.28.4:
+    resolution: {integrity: sha512-MTc8i/x9jBQd1iMw2CFGS+rwMa07eYjLR0CCTLDACl9xhxy+nIs3KeML/biicXtk9JrZ6dnnTatmc7ErPXIxqw==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
@@ -7409,6 +7407,9 @@ packages:
 
   electron-to-chromium@1.5.375:
     resolution: {integrity: sha512-ZWP5eB4BVPW/ZYo9252hQZHZ5XavtsTgpbhcmMmRwymavC5AsLWQWBPaKMeNd2LW0KGby5HPXvj7+sr4ta5j/Q==}
+
+  electron-to-chromium@1.5.387:
+    resolution: {integrity: sha512-TaxwufTFDufvPEoXdhwVrA3UdFWBeWGkYoJ1K8ldF1xe6gKfth6iRNS5lTQ5JPNOHdGQm8PT1QYKUqFLCiUefQ==}
 
   elegant-spinner@1.0.1:
     resolution: {integrity: sha512-B+ZM+RXvRqQaAmkMlO/oSe5nMUOaUnyfGYCEHoR8wrXsZR2mA0XVibsxV1bvTwxdRWah1PkQqso2EzhILGHtEQ==}
@@ -10423,6 +10424,10 @@ packages:
 
   node-releases@2.0.47:
     resolution: {integrity: sha512-Uzmd6LXpouKo8EUK68IjH4+E01w/hXyV3R3g/geCJo+rXLNfh1xucB+LOzYEOQPSiUK3h/xZf0cQGcSsmyL2Og==}
+    engines: {node: '>=18'}
+
+  node-releases@2.0.50:
+    resolution: {integrity: sha512-J6l92tKHX6w8Jy5nO1Vuc01NoIiRGi/d6qBKVxh+IQ8Cr3b6HbVNfKiF8ZpFKufTwpwxMmce2W3iQZ861ZRyTg==}
     engines: {node: '>=18'}
 
   nopt@7.2.1:
@@ -18309,14 +18314,15 @@ snapshots:
 
   '@speed-highlight/core@1.2.17': {}
 
-  '@stencil/cli@5.0.0-alpha.9(@stencil/core@4.41.0)':
+  '@stencil/cli@5.0.0-alpha.17(@stencil/core@4.41.0)':
     dependencies:
       '@clack/prompts': 1.5.1
       '@stencil/core': 4.41.0
-      '@stencil/dev-server': 5.0.0-alpha.9(@stencil/core@4.41.0)
-      '@stencil/templates': 5.0.0-alpha.8
+      '@stencil/dev-server': 5.0.0-alpha.17(@stencil/core@4.41.0)
+      '@stencil/templates': 5.0.0-alpha.17
       nypm: 0.3.12
       std-env: 3.10.0
+      typescript: 5.7.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -18332,7 +18338,7 @@ snapshots:
       '@rollup/rollup-win32-arm64-msvc': 4.34.9
       '@rollup/rollup-win32-x64-msvc': 4.34.9
 
-  '@stencil/dev-server@5.0.0-alpha.9(@stencil/core@4.41.0)':
+  '@stencil/dev-server@5.0.0-alpha.17(@stencil/core@4.41.0)':
     dependencies:
       '@stencil/core': 4.41.0
       launch-editor: 2.14.1
@@ -18342,7 +18348,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@stencil/templates@5.0.0-alpha.8': {}
+  '@stencil/templates@5.0.0-alpha.17': {}
 
   '@swc/counter@0.1.3': {}
 
@@ -20170,6 +20176,8 @@ snapshots:
 
   baseline-browser-mapping@2.10.37: {}
 
+  baseline-browser-mapping@2.10.41: {}
+
   basic-auth@2.0.1:
     dependencies:
       safe-buffer: 5.1.2
@@ -20288,6 +20296,14 @@ snapshots:
       electron-to-chromium: 1.5.375
       node-releases: 2.0.47
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
+
+  browserslist@4.28.4:
+    dependencies:
+      baseline-browser-mapping: 2.10.41
+      caniuse-lite: 1.0.30001799
+      electron-to-chromium: 1.5.387
+      node-releases: 2.0.50
+      update-browserslist-db: 1.2.3(browserslist@4.28.4)
 
   bs-logger@0.2.6:
     dependencies:
@@ -21437,6 +21453,8 @@ snapshots:
       jake: 10.9.4
 
   electron-to-chromium@1.5.375: {}
+
+  electron-to-chromium@1.5.387: {}
 
   elegant-spinner@1.0.1: {}
 
@@ -22989,16 +23007,6 @@ snapshots:
       style-to-js: 1.1.21
     optionalDependencies:
       '@types/react': 18.3.31
-
-  html-react-parser@5.2.17(@types/react@19.2.17)(react@18.3.1):
-    dependencies:
-      domhandler: 5.0.3
-      html-dom-parser: 5.1.8
-      react: 18.3.1
-      react-property: 2.0.2
-      style-to-js: 1.1.21
-    optionalDependencies:
-      '@types/react': 19.2.17
 
   html-react-parser@5.2.17(@types/react@19.2.17)(react@19.1.0):
     dependencies:
@@ -25734,6 +25742,8 @@ snapshots:
   node-mock-http@1.0.4: {}
 
   node-releases@2.0.47: {}
+
+  node-releases@2.0.50: {}
 
   nopt@7.2.1:
     dependencies:
@@ -29182,6 +29192,12 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
+  update-browserslist-db@1.2.3(browserslist@4.28.4):
+    dependencies:
+      browserslist: 4.28.4
+      escalade: 3.2.0
+      picocolors: 1.1.1
+
   update-notifier@7.3.1:
     dependencies:
       boxen: 8.0.1
@@ -29463,7 +29479,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-dts@4.5.4(@types/node@20.19.43)(rollup@4.62.0)(typescript@5.8.3)(vite@6.4.3(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)):
+  vite-plugin-dts@4.5.4(@types/node@20.19.43)(rollup@4.62.0)(typescript@5.8.3)(vite@7.3.5(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
       '@microsoft/api-extractor': 7.58.9(@types/node@20.19.43)
       '@rollup/pluginutils': 5.4.0(rollup@4.62.0)
@@ -29476,7 +29492,7 @@ snapshots:
       magic-string: 0.30.21
       typescript: 5.8.3
     optionalDependencies:
-      vite: 6.4.3(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+      vite: 7.3.5(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
@@ -29567,24 +29583,6 @@ snapshots:
       terser: 5.48.0
     optional: true
 
-  vite@6.4.3(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0):
-    dependencies:
-      esbuild: 0.25.12
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
-      postcss: 8.5.15
-      rollup: 4.62.0
-      tinyglobby: 0.2.17
-    optionalDependencies:
-      '@types/node': 20.19.43
-      fsevents: 2.3.3
-      jiti: 2.7.0
-      less: 4.6.6
-      sass: 1.101.0
-      terser: 5.48.0
-      tsx: 4.22.4
-      yaml: 2.9.0
-
   vite@6.4.3(@types/node@22.19.21)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0):
     dependencies:
       esbuild: 0.25.12
@@ -29639,6 +29637,24 @@ snapshots:
       tsx: 4.22.4
       yaml: 2.9.0
     optional: true
+
+  vite@7.3.5(@types/node@20.19.43)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0):
+    dependencies:
+      esbuild: 0.27.7
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
+      postcss: 8.5.15
+      rollup: 4.62.0
+      tinyglobby: 0.2.17
+    optionalDependencies:
+      '@types/node': 20.19.43
+      fsevents: 2.3.3
+      jiti: 2.7.0
+      less: 4.6.6
+      sass: 1.101.0
+      terser: 5.48.0
+      tsx: 4.22.4
+      yaml: 2.9.0
 
   vite@7.3.5(@types/node@22.19.21)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0):
     dependencies:
@@ -30150,7 +30166,7 @@ snapshots:
       '@webassemblyjs/wasm-parser': 1.14.1
       acorn: 8.17.0
       acorn-import-phases: 1.0.4(acorn@8.17.0)
-      browserslist: 4.28.2
+      browserslist: 4.28.4
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.24.0
       es-module-lexer: 2.1.0
