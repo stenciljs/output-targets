@@ -48,10 +48,10 @@
     "url": "git+https://github.com/stenciljs/output-targets.git"
   },
   "peerDependencies": {
-    "@stencil/core": ">=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0"
+    "@stencil/core": ">=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0"
   },
   "devDependencies": {
-    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0",
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
     "@stencil/core": "4.41.0",
     "@types/node": "^20.14.12",
     "typescript": "^5.4.4",
