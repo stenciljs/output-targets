@@ -2,27 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { makeOpenStencilConfig, makePrompts } from 'stencil-output-targets-shared/test-utils/wizard';
 import { wizard } from './wizard';
 
 const MINIMAL_CONFIG =
   `import type { Config } from '@stencil/core';\n` +
   `export const config: Config = { namespace: 'my-app', outputTargets: [] };\n`;
-
-function makePrompts(overrides: Record<string, unknown> = {}) {
-  return {
-    intro: vi.fn(),
-    outro: vi.fn(),
-    cancel: vi.fn(),
-    text: vi.fn(),
-    confirm: vi.fn(),
-    select: vi.fn(),
-    multiselect: vi.fn(),
-    spinner: vi.fn().mockReturnValue({ start: vi.fn(), stop: vi.fn() }),
-    isCancel: vi.fn().mockReturnValue(false),
-    log: { success: vi.fn(), warn: vi.fn(), info: vi.fn() },
-    ...overrides,
-  };
-}
 
 describe('Vue wizard', () => {
   let tmpDir: string;
@@ -46,6 +31,7 @@ describe('Vue wizard', () => {
   it('adds loader-bundle output target in lazy mode', async () => {
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-vue'),
@@ -68,6 +54,7 @@ describe('Vue wizard', () => {
   it('adds standalone output target and standalone-specific options in standalone mode', async () => {
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-vue'),
@@ -88,6 +75,7 @@ describe('Vue wizard', () => {
   it('scaffolds wrapper package with correct Vue peer dependency', async () => {
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-vue'),
@@ -115,6 +103,7 @@ describe('Vue wizard', () => {
 
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         confirm: vi.fn().mockResolvedValueOnce(true), // confirm redo
@@ -145,6 +134,7 @@ describe('Vue wizard', () => {
     const nypm = { addDependency: vi.fn() };
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         cancel,
@@ -167,6 +157,7 @@ describe('Vue wizard', () => {
     const textMock = vi.fn().mockResolvedValueOnce('my-app-vue');
     const ctx = {
       config: { rootDir: coreDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(coreDir),
       workspaceRoot: tmpDir,
       prompts: makePrompts({
         text: textMock,

@@ -114,7 +114,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: ^20.0.2
-        version: 20.3.28(a1cb5661563ebef6f773345cd8338d11)
+        version: 20.3.28(f7e6aab50889d6dbf3b553fc3c58860c)
       '@angular/cli':
         specifier: ^20.0.2
         version: 20.3.28(@types/node@22.19.21)(chokidar@4.0.3)
@@ -439,7 +439,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: ^20.0.2
-        version: 20.3.28(f7e6aab50889d6dbf3b553fc3c58860c)
+        version: 20.3.28(a1cb5661563ebef6f773345cd8338d11)
       '@angular/cli':
         specifier: ^20.0.2
         version: 20.3.28(@types/node@22.19.21)(chokidar@4.0.3)
@@ -808,6 +808,9 @@ importers:
       rollup:
         specifier: ^2.80.0
         version: 2.80.0
+      stencil-output-targets-shared:
+        specifier: workspace:*
+        version: link:../shared
       typescript:
         specifier: ~5.7.3
         version: 5.7.3
@@ -854,6 +857,9 @@ importers:
       npm-run-all2:
         specifier: ^6.2.6
         version: 6.2.6
+      stencil-output-targets-shared:
+        specifier: workspace:*
+        version: link:../shared
       ts-dedent:
         specifier: ^2.3.0
         version: 2.3.0
@@ -866,6 +872,15 @@ importers:
       vite-plugin-dts:
         specifier: ^3.9.1
         version: 3.9.1(@types/node@20.19.43)(rollup@4.62.2)(typescript@5.9.3)(vite@5.4.21(@types/node@20.19.43)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))
+
+  packages/shared:
+    dependencies:
+      typescript:
+        specifier: '>=4 <7'
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0 || ^3.0.0
+        version: 3.2.6(@types/debug@4.1.13)(@types/node@22.19.21)(jiti@2.7.0)(jsdom@26.1.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
 
   packages/ssr:
     dependencies:
@@ -924,6 +939,9 @@ importers:
       '@types/node':
         specifier: ^20.14.12
         version: 20.19.43
+      stencil-output-targets-shared:
+        specifier: workspace:*
+        version: link:../shared
       typescript:
         specifier: ^5.4.4
         version: 5.8.3
@@ -963,6 +981,9 @@ importers:
       rollup:
         specifier: ^4.62.2
         version: 4.62.2
+      stencil-output-targets-shared:
+        specifier: workspace:*
+        version: link:../shared
       typescript:
         specifier: ~5.7.3
         version: 5.7.3
@@ -19261,6 +19282,14 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 2.0.0
 
+  '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@18.19.130)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))':
+    dependencies:
+      '@vitest/spy': 2.1.9
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 5.4.21(@types/node@18.19.130)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)
+
   '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.19.21)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))':
     dependencies:
       '@vitest/spy': 2.1.9
@@ -22220,7 +22249,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.10
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
@@ -22250,7 +22279,7 @@ snapshots:
       tinyglobby: 0.2.17
       unrs-resolver: 1.12.2
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -22320,7 +22349,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -30208,7 +30237,7 @@ snapshots:
   vitest@2.1.9(@types/node@18.19.130)(jsdom@26.1.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@22.19.21)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))
+      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@18.19.130)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9

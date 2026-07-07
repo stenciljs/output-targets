@@ -78,6 +78,7 @@
     "@vue/shared": "^3.5.39",
     "@vue/test-utils": "^2.4.11",
     "jsdom": "^26.1.0",
+    "stencil-output-targets-shared": "workspace:*",
     "rimraf": "^5.0.10",
     "rollup": "^4.62.2",
     "typescript": "~5.7.3",

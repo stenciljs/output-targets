@@ -2,27 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { makeOpenStencilConfig, makePrompts } from 'stencil-output-targets-shared/test-utils/wizard';
 import { wizard } from '../src/wizard';
 
 const MINIMAL_CONFIG =
   `import type { Config } from '@stencil/core';\n` +
   `export const config: Config = { namespace: 'my-app', outputTargets: [] };\n`;
-
-function makePrompts(overrides: Record<string, unknown> = {}) {
-  return {
-    intro: vi.fn(),
-    outro: vi.fn(),
-    cancel: vi.fn(),
-    text: vi.fn(),
-    confirm: vi.fn(),
-    select: vi.fn(),
-    multiselect: vi.fn(),
-    spinner: vi.fn().mockReturnValue({ start: vi.fn(), stop: vi.fn() }),
-    isCancel: vi.fn().mockReturnValue(false),
-    log: { success: vi.fn(), warn: vi.fn(), info: vi.fn() },
-    ...overrides,
-  };
-}
 
 describe('Angular wizard', () => {
   let tmpDir: string;
@@ -46,6 +31,7 @@ describe('Angular wizard', () => {
   it('generates standalone config with only directivesProxyFile (no directivesArrayFile, no outputType)', async () => {
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
@@ -68,6 +54,7 @@ describe('Angular wizard', () => {
   it('generates component (NgModule) config with directivesArrayFile and outputType', async () => {
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
@@ -94,6 +81,7 @@ describe('Angular wizard', () => {
   it('generates SCAM config with outputType:scam and no NgModule file', async () => {
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
@@ -119,6 +107,7 @@ describe('Angular wizard', () => {
   it('scaffolds Angular wrapper package with ng-packagr build setup', async () => {
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
@@ -150,6 +139,7 @@ describe('Angular wizard', () => {
 
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
@@ -173,6 +163,7 @@ describe('Angular wizard', () => {
 
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
@@ -200,6 +191,7 @@ describe('Angular wizard', () => {
 
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
@@ -226,6 +218,7 @@ describe('Angular wizard', () => {
     const nypm = { addDependency: vi.fn() };
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(tmpDir),
       workspaceRoot: undefined,
       prompts: makePrompts({
         cancel,
@@ -248,6 +241,7 @@ describe('Angular wizard', () => {
     const textMock = vi.fn().mockResolvedValueOnce('my-app-angular');
     const ctx = {
       config: { rootDir: coreDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(coreDir),
       workspaceRoot: tmpDir,
       prompts: makePrompts({
         text: textMock,
