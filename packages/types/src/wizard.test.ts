@@ -1,41 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { tmpdir } from 'node:os';
+import { describe, it, expect, vi } from 'vitest';
+import { makeFakeEditor, makeOpenStencilConfig, makePrompts } from 'stencil-output-targets-shared/test-utils/wizard';
 import { wizard } from './wizard';
 
-const MINIMAL_CONFIG =
-  `import type { Config } from '@stencil/core';\n` +
-  `export const config: Config = { namespace: 'my-app', outputTargets: [] };\n`;
-
-function makePrompts(overrides: Record<string, unknown> = {}) {
-  return {
-    intro: vi.fn(),
-    outro: vi.fn(),
-    cancel: vi.fn(),
-    text: vi.fn(),
-    confirm: vi.fn(),
-    select: vi.fn(),
-    multiselect: vi.fn(),
-    spinner: vi.fn().mockReturnValue({ start: vi.fn(), stop: vi.fn() }),
-    isCancel: vi.fn().mockReturnValue(false),
-    log: { success: vi.fn(), warn: vi.fn(), info: vi.fn() },
-    ...overrides,
-  };
-}
-
 describe('Types wizard', () => {
-  let tmpDir: string;
-
-  beforeEach(async () => {
-    tmpDir = await mkdtemp(join(tmpdir(), 'wizard-types-'));
-    await writeFile(join(tmpDir, 'stencil.config.ts'), MINIMAL_CONFIG, 'utf8');
-  });
-
-  afterEach(async () => {
-    await rm(tmpDir, { recursive: true, force: true });
-  });
-
   it('exports the correct wizard shape', () => {
     expect(wizard.init.id).toBe('@stencil/types-output-target');
     expect(wizard.init.displayName).toBe('Types');
@@ -44,17 +11,15 @@ describe('Types wizard', () => {
   });
 
   it('exits early and logs when typesOutputTarget is already configured', async () => {
-    await writeFile(
-      join(tmpDir, 'stencil.config.ts'),
-      MINIMAL_CONFIG + `// typesOutputTarget({ reactTypesPath: 'dist/types' })\n`,
-      'utf8'
-    );
+    const editor = makeFakeEditor();
+    editor.outputTargetsContains.mockReturnValueOnce(true); // already configured
 
     const log = { success: vi.fn(), warn: vi.fn(), info: vi.fn() };
     const outro = vi.fn();
     const multiselect = vi.fn();
     const ctx = {
-      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      config: { rootDir: '/virtual/my-app', fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       prompts: makePrompts({ log, outro, multiselect }),
       nypm: { addDependency: vi.fn() },
     };
@@ -63,11 +28,14 @@ describe('Types wizard', () => {
 
     expect(multiselect).not.toHaveBeenCalled();
     expect(outro).toHaveBeenCalledWith('Already configured');
+    expect(editor.addOutputTarget).not.toHaveBeenCalled();
   });
 
   it('adds typesOutputTarget with reactTypesPath when React is selected', async () => {
+    const editor = makeFakeEditor();
     const ctx = {
-      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      config: { rootDir: '/virtual/my-app', fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       prompts: makePrompts({
         multiselect: vi.fn().mockResolvedValueOnce(['react']),
       }),
@@ -76,15 +44,17 @@ describe('Types wizard', () => {
 
     await wizard.init.run(ctx as any);
 
-    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    expect(configText).toContain('typesOutputTarget(');
-    expect(configText).toContain("reactTypesPath: 'dist/types'");
-    expect(configText).toContain('import { typesOutputTarget }');
+    expect(editor.addImport).toHaveBeenCalledWith('@stencil/types-output-target', ['typesOutputTarget']);
+    const targetCode = editor.addOutputTarget.mock.calls[0]?.[0];
+    expect(targetCode).toContain('typesOutputTarget(');
+    expect(targetCode).toContain("reactTypesPath: 'dist/types'");
   });
 
   it('adds all selected framework type paths when multiple frameworks are chosen', async () => {
+    const editor = makeFakeEditor();
     const ctx = {
-      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      config: { rootDir: '/virtual/my-app', fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       prompts: makePrompts({
         multiselect: vi.fn().mockResolvedValueOnce(['react', 'vue', 'svelte']),
       }),
@@ -93,18 +63,20 @@ describe('Types wizard', () => {
 
     await wizard.init.run(ctx as any);
 
-    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    expect(configText).toContain("reactTypesPath: 'dist/types'");
-    expect(configText).toContain("vueTypesPath: 'dist/types'");
-    expect(configText).toContain("svelteTypesPath: 'dist/types'");
-    expect(configText).not.toContain('solidTypesPath');
-    expect(configText).not.toContain('preactTypesPath');
+    const targetCode = editor.addOutputTarget.mock.calls[0]?.[0];
+    expect(targetCode).toContain("reactTypesPath: 'dist/types'");
+    expect(targetCode).toContain("vueTypesPath: 'dist/types'");
+    expect(targetCode).toContain("svelteTypesPath: 'dist/types'");
+    expect(targetCode).not.toContain('solidTypesPath');
+    expect(targetCode).not.toContain('preactTypesPath');
   });
 
   it('cancels and makes no changes when user cancels the multiselect', async () => {
+    const editor = makeFakeEditor();
     const cancel = vi.fn();
     const ctx = {
-      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      config: { rootDir: '/virtual/my-app', fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       prompts: makePrompts({
         cancel,
         multiselect: vi.fn().mockResolvedValueOnce(Symbol('cancel')),
@@ -113,18 +85,18 @@ describe('Types wizard', () => {
       nypm: { addDependency: vi.fn() },
     };
 
-    const originalConfig = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-
     await wizard.init.run(ctx as any);
 
     expect(cancel).toHaveBeenCalledWith('Setup cancelled.');
-    const configAfter = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    expect(configAfter).toBe(originalConfig);
+    expect(editor.addOutputTarget).not.toHaveBeenCalled();
+    expect(editor.save).not.toHaveBeenCalled();
   });
 
   it('adds Solid and Preact type paths when selected', async () => {
+    const editor = makeFakeEditor();
     const ctx = {
-      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      config: { rootDir: '/virtual/my-app', fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       prompts: makePrompts({
         multiselect: vi.fn().mockResolvedValueOnce(['solid', 'preact']),
       }),
@@ -133,8 +105,8 @@ describe('Types wizard', () => {
 
     await wizard.init.run(ctx as any);
 
-    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    expect(configText).toContain("solidTypesPath: 'dist/types'");
-    expect(configText).toContain("preactTypesPath: 'dist/types'");
+    const targetCode = editor.addOutputTarget.mock.calls[0]?.[0];
+    expect(targetCode).toContain("solidTypesPath: 'dist/types'");
+    expect(targetCode).toContain("preactTypesPath: 'dist/types'");
   });
 });

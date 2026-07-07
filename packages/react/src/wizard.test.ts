@@ -1,35 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { makeFakeEditor, makeOpenStencilConfig, makePrompts } from 'stencil-output-targets-shared/test-utils/wizard';
 import { wizard } from './wizard';
-
-const MINIMAL_CONFIG =
-  `import type { Config } from '@stencil/core';\n` +
-  `export const config: Config = { namespace: 'my-app', outputTargets: [] };\n`;
-
-function makePrompts(overrides: Record<string, unknown> = {}) {
-  return {
-    intro: vi.fn(),
-    outro: vi.fn(),
-    cancel: vi.fn(),
-    text: vi.fn(),
-    confirm: vi.fn(),
-    select: vi.fn(),
-    multiselect: vi.fn(),
-    spinner: vi.fn().mockReturnValue({ start: vi.fn(), stop: vi.fn() }),
-    isCancel: vi.fn().mockReturnValue(false),
-    log: { success: vi.fn(), warn: vi.fn(), info: vi.fn() },
-    ...overrides,
-  };
-}
 
 describe('React wizard', () => {
   let tmpDir: string;
 
   beforeEach(async () => {
     tmpDir = await mkdtemp(join(tmpdir(), 'wizard-react-'));
-    await writeFile(join(tmpDir, 'stencil.config.ts'), MINIMAL_CONFIG, 'utf8');
   });
 
   afterEach(async () => {
@@ -44,9 +24,11 @@ describe('React wizard', () => {
   });
 
   it('amends stencil.config.ts and scaffolds wrapper package on happy path', async () => {
+    const editor = makeFakeEditor();
     const nypm = { addDependency: vi.fn().mockResolvedValue(undefined) };
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-react'), // wrapper dir
@@ -57,10 +39,12 @@ describe('React wizard', () => {
 
     await wizard.init.run(ctx as any);
 
-    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    expect(configText).toContain("reactOutputTarget({ outDir: 'my-app-react/src' })");
-    expect(configText).toContain("{ type: 'standalone' }");
-    expect(configText).toContain('import { reactOutputTarget }');
+    expect(editor.addImport).toHaveBeenCalledWith('@stencil/react-output-target', ['reactOutputTarget']);
+    expect(editor.addOutputTarget).toHaveBeenCalledWith("{ type: 'standalone' }");
+    const targetCode = editor.addOutputTarget.mock.calls
+      .map(([code]) => code)
+      .find((code) => code.includes('reactOutputTarget('));
+    expect(targetCode).toContain("reactOutputTarget({ outDir: 'my-app-react/src' })");
 
     const pkgJson = JSON.parse(await readFile(join(tmpDir, 'my-app-react', 'package.json'), 'utf8'));
     expect(pkgJson.name).toBe('my-app-react');
@@ -76,8 +60,10 @@ describe('React wizard', () => {
   });
 
   it('adds SSR output target and clientModule when SSR is enabled', async () => {
+    const editor = makeFakeEditor();
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi
@@ -91,23 +77,23 @@ describe('React wizard', () => {
 
     await wizard.init.run(ctx as any);
 
-    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    expect(configText).toContain("hydrateModule: 'my-app/dist/ssr'");
-    expect(configText).toContain("clientModule: 'my-app-react'");
-    expect(configText).toContain("{ type: 'ssr' }");
+    expect(editor.addOutputTarget).toHaveBeenCalledWith("{ type: 'ssr' }");
+    const targetCode = editor.addOutputTarget.mock.calls
+      .map(([code]) => code)
+      .find((code) => code.includes('reactOutputTarget('));
+    expect(targetCode).toContain("hydrateModule: 'my-app/dist/ssr'");
+    expect(targetCode).toContain("clientModule: 'my-app-react'");
   });
 
   it('skips setup when already configured and user declines redo', async () => {
-    const alreadyConfigured =
-      `import type { Config } from '@stencil/core';\n` +
-      `import { reactOutputTarget } from '@stencil/react-output-target';\n` +
-      `export const config: Config = { namespace: 'my-app', outputTargets: [reactOutputTarget({ outDir: 'src' })] };\n`;
-    await writeFile(join(tmpDir, 'stencil.config.ts'), alreadyConfigured, 'utf8');
+    const editor = makeFakeEditor();
+    editor.outputTargetsContains.mockReturnValueOnce(true); // already configured
 
     const nypm = { addDependency: vi.fn() };
     const cancel = vi.fn();
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         cancel,
@@ -120,18 +106,17 @@ describe('React wizard', () => {
 
     expect(cancel).toHaveBeenCalledWith('Skipping React setup.');
     expect(nypm.addDependency).not.toHaveBeenCalled();
+    expect(editor.save).not.toHaveBeenCalled();
   });
 
   it('proceeds when already configured and user confirms redo', async () => {
-    const alreadyConfigured =
-      `import type { Config } from '@stencil/core';\n` +
-      `import { reactOutputTarget } from '@stencil/react-output-target';\n` +
-      `export const config: Config = { namespace: 'my-app', outputTargets: [reactOutputTarget({ outDir: 'src' })] };\n`;
-    await writeFile(join(tmpDir, 'stencil.config.ts'), alreadyConfigured, 'utf8');
+    const editor = makeFakeEditor();
+    editor.outputTargetsContains.mockReturnValueOnce(true); // already configured
 
     const nypm = { addDependency: vi.fn().mockResolvedValue(undefined) };
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-react'),
@@ -153,11 +138,12 @@ describe('React wizard', () => {
     // Use a nested coreDir so dirname stays inside tmpDir
     const coreDir = join(tmpDir, 'packages', 'my-app');
     await mkdir(coreDir, { recursive: true });
-    await writeFile(join(coreDir, 'stencil.config.ts'), MINIMAL_CONFIG, 'utf8');
 
+    const editor = makeFakeEditor();
     const textMock = vi.fn().mockResolvedValueOnce('my-app-react');
     const ctx = {
       config: { rootDir: coreDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: tmpDir,
       prompts: makePrompts({
         text: textMock,

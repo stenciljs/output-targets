@@ -61,15 +61,7 @@ export type AutocompleteTypes =
 export type TextFieldTypes = 'date' | 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url' | 'time';
 export type Side = 'start' | 'end';
 export type PredefinedColors =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'light'
-  | 'medium'
-  | 'dark';
+  'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'danger' | 'light' | 'medium' | 'dark';
 
 export interface StyleEventDetail {
   [styleName: string]: boolean;
