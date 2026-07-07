@@ -875,9 +875,6 @@ importers:
 
   packages/shared:
     dependencies:
-      typescript:
-        specifier: '>=4 <7'
-        version: 5.9.3
       vitest:
         specifier: ^2.0.0 || ^3.0.0
         version: 3.2.6(@types/debug@4.1.13)(@types/node@22.19.21)(jiti@2.7.0)(jsdom@26.1.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
@@ -19282,14 +19279,6 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 2.0.0
 
-  '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@18.19.130)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))':
-    dependencies:
-      '@vitest/spy': 2.1.9
-      estree-walker: 3.0.3
-      magic-string: 0.30.21
-    optionalDependencies:
-      vite: 5.4.21(@types/node@18.19.130)(less@4.6.6)(sass@1.101.0)(terser@5.48.0)
-
   '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.19.21)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))':
     dependencies:
       '@vitest/spy': 2.1.9
@@ -30237,7 +30226,7 @@ snapshots:
   vitest@2.1.9(@types/node@18.19.130)(jsdom@26.1.0)(less@4.6.6)(sass@1.101.0)(terser@5.48.0):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@18.19.130)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))
+      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@22.19.21)(less@4.6.6)(sass@1.101.0)(terser@5.48.0))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9

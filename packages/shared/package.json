@@ -10,9 +10,6 @@
       "import": "./test-utils/wizard/index.ts"
     }
   },
-  "dependencies": {
-    "typescript": ">=4 <7"
-  },
   "peerDependencies": {
     "vitest": "^2.0.0 || ^3.0.0"
   }

@@ -1,20 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { makeOpenStencilConfig, makePrompts } from 'stencil-output-targets-shared/test-utils/wizard';
+import { makeFakeEditor, makeOpenStencilConfig, makePrompts } from 'stencil-output-targets-shared/test-utils/wizard';
 import { wizard } from './wizard';
-
-const MINIMAL_CONFIG =
-  `import type { Config } from '@stencil/core';\n` +
-  `export const config: Config = { namespace: 'my-app', outputTargets: [] };\n`;
 
 describe('Vue wizard', () => {
   let tmpDir: string;
 
   beforeEach(async () => {
     tmpDir = await mkdtemp(join(tmpdir(), 'wizard-vue-'));
-    await writeFile(join(tmpDir, 'stencil.config.ts'), MINIMAL_CONFIG, 'utf8');
   });
 
   afterEach(async () => {
@@ -29,9 +24,10 @@ describe('Vue wizard', () => {
   });
 
   it('adds loader-bundle output target in lazy mode', async () => {
+    const editor = makeFakeEditor();
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
-      openStencilConfig: makeOpenStencilConfig(tmpDir),
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-vue'),
@@ -42,19 +38,23 @@ describe('Vue wizard', () => {
 
     await wizard.init.run(ctx as any);
 
-    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    expect(configText).toContain("{ type: 'loader-bundle' }");
-    expect(configText).toContain('vueOutputTarget(');
-    expect(configText).toContain("proxiesFile: 'my-app-vue/src/components.ts'");
-    expect(configText).toContain("componentCorePackage: 'my-app'");
-    expect(configText).not.toContain('includeImportCustomElements');
-    expect(configText).toContain('import { vueOutputTarget }');
+    expect(editor.addImport).toHaveBeenCalledWith('@stencil/vue-output-target', ['vueOutputTarget']);
+    expect(editor.addOutputTarget).toHaveBeenCalledWith("{ type: 'loader-bundle' }");
+
+    const targetCode = editor.addOutputTarget.mock.calls
+      .map(([code]) => code)
+      .find((code) => code.includes('vueOutputTarget('));
+    expect(targetCode).toContain("proxiesFile: 'my-app-vue/src/components.ts'");
+    expect(targetCode).toContain("componentCorePackage: 'my-app'");
+    expect(targetCode).not.toContain('includeImportCustomElements');
+    expect(editor.save).toHaveBeenCalled();
   });
 
   it('adds standalone output target and standalone-specific options in standalone mode', async () => {
+    const editor = makeFakeEditor();
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
-      openStencilConfig: makeOpenStencilConfig(tmpDir),
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-vue'),
@@ -65,17 +65,20 @@ describe('Vue wizard', () => {
 
     await wizard.init.run(ctx as any);
 
-    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    expect(configText).toContain("{ type: 'standalone' }");
-    expect(configText).toContain('includeImportCustomElements: true');
-    expect(configText).toContain('includeDefineCustomElements: false');
-    expect(configText).toContain("customElementsDir: 'dist/standalone'");
+    expect(editor.addOutputTarget).toHaveBeenCalledWith("{ type: 'standalone' }");
+    const targetCode = editor.addOutputTarget.mock.calls
+      .map(([code]) => code)
+      .find((code) => code.includes('vueOutputTarget('));
+    expect(targetCode).toContain('includeImportCustomElements: true');
+    expect(targetCode).toContain('includeDefineCustomElements: false');
+    expect(targetCode).toContain("customElementsDir: 'dist/standalone'");
   });
 
   it('scaffolds wrapper package with correct Vue peer dependency', async () => {
+    const editor = makeFakeEditor();
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
-      openStencilConfig: makeOpenStencilConfig(tmpDir),
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         text: vi.fn().mockResolvedValueOnce('./my-app-vue'),
@@ -95,15 +98,13 @@ describe('Vue wizard', () => {
   });
 
   it('replaces existing vueOutputTarget when user confirms redo', async () => {
-    const alreadyConfigured =
-      `import type { Config } from '@stencil/core';\n` +
-      `import { vueOutputTarget } from '@stencil/vue-output-target';\n` +
-      `export const config: Config = { namespace: 'my-app', outputTargets: [vueOutputTarget({ proxiesFile: 'old/path/components.ts', componentCorePackage: 'my-app' })] };\n`;
-    await writeFile(join(tmpDir, 'stencil.config.ts'), alreadyConfigured, 'utf8');
+    const editor = makeFakeEditor();
+    editor.outputTargetsContains.mockReturnValueOnce(true); // already configured
+    editor.replaceOutputTarget.mockReturnValue(true); // an existing element is found and replaced in place
 
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
-      openStencilConfig: makeOpenStencilConfig(tmpDir),
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         confirm: vi.fn().mockResolvedValueOnce(true), // confirm redo
@@ -115,26 +116,24 @@ describe('Vue wizard', () => {
 
     await wizard.init.run(ctx as any);
 
-    const configText = await readFile(join(tmpDir, 'stencil.config.ts'), 'utf8');
-    // old proxiesFile gone, new one present
-    expect(configText).not.toContain('old/path/components.ts');
-    expect(configText).toContain("proxiesFile: 'my-app-vue/src/components.ts'");
-    // only one vueOutputTarget call
-    expect(configText.split('vueOutputTarget(').length).toBe(2);
+    expect(editor.replaceOutputTarget).toHaveBeenCalledWith(
+      'vueOutputTarget(',
+      expect.stringContaining("proxiesFile: 'my-app-vue/src/components.ts'")
+    );
+    // replaceOutputTarget reported success, so the wizard must not also append a second vueOutputTarget(...)
+    const vueTargetAdds = editor.addOutputTarget.mock.calls.filter(([code]) => code.includes('vueOutputTarget('));
+    expect(vueTargetAdds).toHaveLength(0);
   });
 
   it('skips setup when already configured and user declines redo', async () => {
-    const alreadyConfigured =
-      `import type { Config } from '@stencil/core';\n` +
-      `import { vueOutputTarget } from '@stencil/vue-output-target';\n` +
-      `export const config: Config = { namespace: 'my-app', outputTargets: [vueOutputTarget({ proxiesFile: 'src/components.ts', componentCorePackage: 'my-app' })] };\n`;
-    await writeFile(join(tmpDir, 'stencil.config.ts'), alreadyConfigured, 'utf8');
+    const editor = makeFakeEditor();
+    editor.outputTargetsContains.mockReturnValueOnce(true); // already configured
 
     const cancel = vi.fn();
     const nypm = { addDependency: vi.fn() };
     const ctx = {
       config: { rootDir: tmpDir, fsNamespace: 'my-app' },
-      openStencilConfig: makeOpenStencilConfig(tmpDir),
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: undefined,
       prompts: makePrompts({
         cancel,
@@ -147,17 +146,18 @@ describe('Vue wizard', () => {
 
     expect(cancel).toHaveBeenCalledWith('Skipping Vue setup.');
     expect(nypm.addDependency).not.toHaveBeenCalled();
+    expect(editor.save).not.toHaveBeenCalled();
   });
 
   it('prompts for package name (not dir) when workspaceRoot is set', async () => {
     const coreDir = join(tmpDir, 'packages', 'my-app');
     await mkdir(coreDir, { recursive: true });
-    await writeFile(join(coreDir, 'stencil.config.ts'), MINIMAL_CONFIG, 'utf8');
 
+    const editor = makeFakeEditor();
     const textMock = vi.fn().mockResolvedValueOnce('my-app-vue');
     const ctx = {
       config: { rootDir: coreDir, fsNamespace: 'my-app' },
-      openStencilConfig: makeOpenStencilConfig(coreDir),
+      openStencilConfig: makeOpenStencilConfig(editor),
       workspaceRoot: tmpDir,
       prompts: makePrompts({
         text: textMock,
