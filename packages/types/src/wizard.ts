@@ -1,52 +1,4 @@
 import type { StencilWizardPlugin, WizardContext } from '@stencil/cli';
-import { Project, SyntaxKind } from 'ts-morph';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-
-// ---------------------------------------------------------------------------
-// ts-morph helpers
-// ---------------------------------------------------------------------------
-
-function addOutputTargetToConfig(
-  configPath: string,
-  moduleSpecifier: string,
-  namedImport: string,
-  targetCode: string
-): boolean {
-  const project = new Project({ skipAddingFilesFromTsConfig: true });
-  const src = project.addSourceFileAtPath(configPath);
-
-  if (!src.getImportDeclaration(moduleSpecifier)) {
-    src.addImportDeclaration({ moduleSpecifier, namedImports: [namedImport] });
-  }
-
-  let prop = src.getDescendantsOfKind(SyntaxKind.PropertyAssignment).find((p) => p.getName() === 'outputTargets');
-
-  if (!prop) {
-    const configObj =
-      src.getVariableDeclaration('config')?.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression) ??
-      src
-        .getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression)
-        .find((obj) => obj.getProperty('namespace') !== undefined);
-    if (!configObj) throw new Error('Could not find Stencil config object in stencil.config.ts');
-    configObj.addPropertyAssignment({
-      name: 'outputTargets',
-      initializer: `[\n    ${targetCode},\n  ]`,
-    });
-    src.formatText();
-    src.saveSync();
-    return true;
-  }
-
-  const arr = prop.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression);
-  if (!arr) throw new Error('outputTargets is not an array literal in stencil.config.ts');
-
-  if (arr.getText().includes(namedImport + '(')) return false;
-
-  arr.addElement(targetCode);
-  src.saveSync();
-  return true;
-}
 
 // ---------------------------------------------------------------------------
 // Wizard
@@ -76,16 +28,14 @@ export const wizard = {
     displayName: 'Types',
     description: 'Framework-native TypeScript types (React, Vue, Svelte, Solid, Preact)',
 
-    async run({ config, prompts }: WizardContext): Promise<void> {
+    async run({ prompts, openStencilConfig }: WizardContext): Promise<void> {
       const { intro, outro, multiselect, isCancel, cancel, log } = prompts;
 
       intro('Types output target — framework-native TypeScript types');
 
-      const stencilConfigPath = join(config.rootDir, 'stencil.config.ts');
-
       // Guard: already configured?
-      const existingText = await readFile(stencilConfigPath, 'utf8').catch(() => '');
-      if (existingText.includes('typesOutputTarget(')) {
+      const editor = await openStencilConfig();
+      if (editor.outputTargetsContains('typesOutputTarget(')) {
         log.info('typesOutputTarget is already configured in stencil.config.ts');
         outro('Already configured');
         return;
@@ -106,13 +56,10 @@ export const wizard = {
       const targetCode = `typesOutputTarget({\n  ${entries.join(',\n  ')},\n})`;
 
       try {
-        const added = addOutputTargetToConfig(
-          stencilConfigPath,
-          '@stencil/types-output-target',
-          'typesOutputTarget',
-          targetCode
-        );
-        log.success(added ? 'stencil.config.ts updated' : 'typesOutputTarget already present — no changes made');
+        editor.addImport('@stencil/types-output-target', ['typesOutputTarget']);
+        editor.addOutputTarget(targetCode);
+        await editor.save();
+        log.success('stencil.config.ts updated');
       } catch (e) {
         log.warn(
           `Could not automatically update stencil.config.ts (${e}). Add manually:\n\n` +

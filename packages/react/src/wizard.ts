@@ -1,73 +1,6 @@
 import type { StencilWizardPlugin, WizardContext } from '@stencil/cli';
-import { Project, SyntaxKind } from 'ts-morph';
 import { access, mkdir, writeFile } from 'node:fs/promises';
 import { join, relative, dirname } from 'node:path';
-
-// ---------------------------------------------------------------------------
-// ts-morph helpers
-// ---------------------------------------------------------------------------
-
-function amendStencilConfig(configPath: string, targetCode: string, enableSsr: boolean): boolean {
-  const project = new Project({ skipAddingFilesFromTsConfig: true });
-  const src = project.addSourceFileAtPath(configPath);
-
-  if (!src.getImportDeclaration('@stencil/react-output-target')) {
-    src.addImportDeclaration({ moduleSpecifier: '@stencil/react-output-target', namedImports: ['reactOutputTarget'] });
-  }
-
-  const existingProp = src
-    .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
-    .find((p) => p.getName() === 'outputTargets');
-
-  if (!existingProp) {
-    const configObj =
-      src.getVariableDeclaration('config')?.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression) ??
-      src
-        .getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression)
-        .find((obj) => obj.getProperty('namespace') !== undefined);
-    if (!configObj) throw new Error('Could not find Stencil config object in stencil.config.ts');
-    configObj.addPropertyAssignment({ name: 'outputTargets', initializer: '[]' });
-  }
-
-  const prop = src.getDescendantsOfKind(SyntaxKind.PropertyAssignment).find((p) => p.getName() === 'outputTargets')!;
-  const arr = prop.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression);
-  if (!arr) throw new Error('outputTargets is not an array literal in stencil.config.ts');
-
-  const existing = arr.getText();
-  const alreadyAdded = existing.includes('reactOutputTarget(');
-
-  // Filter out any existing reactOutputTarget call so it can be replaced cleanly
-  const elements = arr
-    .getElements()
-    .map((e) => e.getText().trim())
-    .filter((e) => !e.includes('reactOutputTarget('));
-
-  const hasStandalone =
-    existing.includes("type: 'standalone'") ||
-    existing.includes('type: "standalone"') ||
-    existing.includes("type: 'dist-custom-elements'") ||
-    existing.includes('type: "dist-custom-elements"');
-  if (!hasStandalone) elements.push("{ type: 'standalone' }");
-
-  if (enableSsr) {
-    const hasSSR =
-      existing.includes("type: 'ssr'") ||
-      existing.includes('type: "ssr"') ||
-      existing.includes("type: 'dist-hydrate-script'") ||
-      existing.includes('type: "dist-hydrate-script"');
-    if (!hasSSR) elements.push("{ type: 'ssr' }");
-  }
-
-  elements.push(targetCode);
-
-  // Replace the entire initializer as an explicitly multiline array so
-  // formatText() sees a fresh structure and formats all elements consistently.
-  prop.setInitializer(`[\n${elements.map((e) => `  ${e}`).join(',\n')},\n]`);
-  src.formatText();
-  src.saveSync();
-
-  return !alreadyAdded;
-}
 
 // ---------------------------------------------------------------------------
 // Wrapper package scaffolding
@@ -144,22 +77,14 @@ export const wizard = {
     displayName: 'React',
     description: 'Type-safe React wrappers for your Stencil components',
 
-    async run({ config, workspaceRoot, prompts, nypm }: WizardContext): Promise<void> {
+    async run({ config, workspaceRoot, prompts, nypm, openStencilConfig }: WizardContext): Promise<void> {
       const { intro, outro, text, confirm, spinner, isCancel, cancel, log } = prompts;
 
       intro('React output target');
 
-      const stencilConfigPath = join(config.rootDir, 'stencil.config.ts');
-
       // Guard: already configured?
-      const guardProject = new Project({ skipAddingFilesFromTsConfig: true });
-      const alreadyConfigured = guardProject
-        .addSourceFileAtPath(stencilConfigPath)
-        .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
-        .find((p) => p.getName() === 'outputTargets')
-        ?.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression)
-        ?.getText()
-        .includes('reactOutputTarget(');
+      const editor = await openStencilConfig();
+      const alreadyConfigured = editor.outputTargetsContains('reactOutputTarget(');
 
       if (alreadyConfigured) {
         const redo = await confirm({
@@ -248,10 +173,32 @@ export const wizard = {
         ? `reactOutputTarget({\n    outDir: '${outDir}',\n    hydrateModule: '${config.fsNamespace}/dist/ssr',\n    clientModule: '${wrapperPackageName}',\n  })`
         : `reactOutputTarget({ outDir: '${outDir}' })`;
 
-      // Amend stencil.config.ts in one pass so formatText() sees the final array
+      // Amend stencil.config.ts
       try {
-        const added = amendStencilConfig(stencilConfigPath, targetCode, enableSsr as boolean);
-        log.success(added ? 'stencil.config.ts updated' : 'reactOutputTarget already present — no changes made');
+        editor.addImport('@stencil/react-output-target', ['reactOutputTarget']);
+
+        const hasStandalone =
+          editor.outputTargetsContains("type: 'standalone'") ||
+          editor.outputTargetsContains('type: "standalone"') ||
+          editor.outputTargetsContains("type: 'dist-custom-elements'") ||
+          editor.outputTargetsContains('type: "dist-custom-elements"');
+        if (!hasStandalone) editor.addOutputTarget("{ type: 'standalone' }");
+
+        if (enableSsr) {
+          const hasSSR =
+            editor.outputTargetsContains("type: 'ssr'") ||
+            editor.outputTargetsContains('type: "ssr"') ||
+            editor.outputTargetsContains("type: 'dist-hydrate-script'") ||
+            editor.outputTargetsContains('type: "dist-hydrate-script"');
+          if (!hasSSR) editor.addOutputTarget("{ type: 'ssr' }");
+        }
+
+        if (!editor.replaceOutputTarget('reactOutputTarget(', targetCode)) {
+          editor.addOutputTarget(targetCode);
+        }
+
+        await editor.save();
+        log.success('stencil.config.ts updated');
       } catch (e) {
         log.warn(
           `Could not automatically update stencil.config.ts (${e}). Add manually:\n\n` +

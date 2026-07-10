@@ -1,70 +1,6 @@
 import type { StencilWizardPlugin, WizardContext } from '@stencil/cli';
-import { Project, SyntaxKind } from 'ts-morph';
 import { access, mkdir, writeFile } from 'node:fs/promises';
 import { join, relative, dirname } from 'node:path';
-
-// ---------------------------------------------------------------------------
-// ts-morph helpers
-// ---------------------------------------------------------------------------
-
-function amendStencilConfig(configPath: string, targetCode: string, mode: 'lazy' | 'standalone'): boolean {
-  const project = new Project({ skipAddingFilesFromTsConfig: true });
-  const src = project.addSourceFileAtPath(configPath);
-
-  if (!src.getImportDeclaration('@stencil/vue-output-target')) {
-    src.addImportDeclaration({ moduleSpecifier: '@stencil/vue-output-target', namedImports: ['vueOutputTarget'] });
-  }
-
-  const existingProp = src
-    .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
-    .find((p) => p.getName() === 'outputTargets');
-
-  if (!existingProp) {
-    const configObj =
-      src.getVariableDeclaration('config')?.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression) ??
-      src
-        .getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression)
-        .find((obj) => obj.getProperty('namespace') !== undefined);
-    if (!configObj) throw new Error('Could not find Stencil config object in stencil.config.ts');
-    configObj.addPropertyAssignment({ name: 'outputTargets', initializer: '[]' });
-  }
-
-  const prop = src.getDescendantsOfKind(SyntaxKind.PropertyAssignment).find((p) => p.getName() === 'outputTargets')!;
-  const arr = prop.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression);
-  if (!arr) throw new Error('outputTargets is not an array literal in stencil.config.ts');
-
-  const existing = arr.getText();
-  const alreadyAdded = existing.includes('vueOutputTarget(');
-
-  const elements = arr
-    .getElements()
-    .map((e) => e.getText().trim())
-    .filter((e) => !e.includes('vueOutputTarget('));
-
-  if (mode === 'standalone') {
-    const hasStandalone =
-      existing.includes("type: 'standalone'") ||
-      existing.includes('type: "standalone"') ||
-      existing.includes("type: 'dist-custom-elements'") ||
-      existing.includes('type: "dist-custom-elements"');
-    if (!hasStandalone) elements.push("{ type: 'standalone' }");
-  } else {
-    const hasLoaderBundle =
-      existing.includes("type: 'loader-bundle'") ||
-      existing.includes('type: "loader-bundle"') ||
-      existing.includes("type: 'dist'") ||
-      existing.includes('type: "dist"');
-    if (!hasLoaderBundle) elements.push("{ type: 'loader-bundle' }");
-  }
-
-  elements.push(targetCode);
-
-  prop.setInitializer(`[\n${elements.map((e) => `  ${e}`).join(',\n')},\n]`);
-  src.formatText();
-  src.saveSync();
-
-  return !alreadyAdded;
-}
 
 // ---------------------------------------------------------------------------
 // Wrapper package scaffolding
@@ -137,22 +73,14 @@ export const wizard = {
     displayName: 'Vue',
     description: 'Type-safe Vue 3 wrappers for your Stencil components',
 
-    async run({ config, workspaceRoot, prompts, nypm }: WizardContext): Promise<void> {
+    async run({ config, workspaceRoot, prompts, nypm, openStencilConfig }: WizardContext): Promise<void> {
       const { intro, outro, text, select, confirm, spinner, isCancel, cancel, log } = prompts;
 
       intro('Vue output target');
 
-      const stencilConfigPath = join(config.rootDir, 'stencil.config.ts');
-
       // Guard: already configured?
-      const guardProject = new Project({ skipAddingFilesFromTsConfig: true });
-      const alreadyConfigured = guardProject
-        .addSourceFileAtPath(stencilConfigPath)
-        .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
-        .find((p) => p.getName() === 'outputTargets')
-        ?.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression)
-        ?.getText()
-        .includes('vueOutputTarget(');
+      const editor = await openStencilConfig();
+      const alreadyConfigured = editor.outputTargetsContains('vueOutputTarget(');
 
       if (alreadyConfigured) {
         const redo = await confirm({
@@ -245,10 +173,30 @@ export const wizard = {
       ];
       const targetCode = `vueOutputTarget({\n  ${lines.join(',\n  ')},\n})`;
 
-      // Amend stencil.config.ts in one pass so formatText() sees the final array
+      // Amend stencil.config.ts
       try {
-        const added = amendStencilConfig(stencilConfigPath, targetCode, mode as 'lazy' | 'standalone');
-        log.success(added ? 'stencil.config.ts updated' : 'vueOutputTarget already present — no changes made');
+        editor.addImport('@stencil/vue-output-target', ['vueOutputTarget']);
+
+        const hasRequiredTarget =
+          mode === 'standalone'
+            ? editor.outputTargetsContains("type: 'standalone'") ||
+              editor.outputTargetsContains('type: "standalone"') ||
+              editor.outputTargetsContains("type: 'dist-custom-elements'") ||
+              editor.outputTargetsContains('type: "dist-custom-elements"')
+            : editor.outputTargetsContains("type: 'loader-bundle'") ||
+              editor.outputTargetsContains('type: "loader-bundle"') ||
+              editor.outputTargetsContains("type: 'dist'") ||
+              editor.outputTargetsContains('type: "dist"');
+        if (!hasRequiredTarget) {
+          editor.addOutputTarget(mode === 'standalone' ? "{ type: 'standalone' }" : "{ type: 'loader-bundle' }");
+        }
+
+        if (!editor.replaceOutputTarget('vueOutputTarget(', targetCode)) {
+          editor.addOutputTarget(targetCode);
+        }
+
+        await editor.save();
+        log.success('stencil.config.ts updated');
       } catch (e) {
         log.warn(
           `Could not automatically update stencil.config.ts (${e}). Add manually:\n\n` +

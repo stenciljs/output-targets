@@ -55,23 +55,21 @@
   "bugs": {
     "url": "https://github.com/stenciljs/output-targets/issues"
   },
-  "dependencies": {
-    "ts-morph": "^28.0.0"
-  },
   "devDependencies": {
-    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0",
     "@angular/core": "8.2.14",
     "@angular/forms": "8.2.14",
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
     "@stencil/core": "4.41.0",
-    "@types/node": "^18.0.0",
-    "npm-run-all2": "^6.2.4",
-    "rimraf": "^5.0.0",
-    "rollup": "^2.23.1",
-    "typescript": "~5.7.0",
-    "vitest": "^2.1.4"
+    "@types/node": "^18.19.130",
+    "npm-run-all2": "^6.2.6",
+    "rimraf": "^5.0.10",
+    "rollup": "^2.80.0",
+    "stencil-output-targets-shared": "workspace:*",
+    "typescript": "~5.7.3",
+    "vitest": "^2.1.9"
   },
   "peerDependencies": {
-    "@stencil/core": ">=2.0.0 || >=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0"
+    "@stencil/core": ">=2.0.0 || >=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0"
   },
   "gitHead": "a3588e905186a0e86e7f88418fd5b2f9531b55e0"
 }
