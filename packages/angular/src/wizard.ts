@@ -1,65 +1,6 @@
 import type { StencilWizardPlugin, WizardContext } from '@stencil/cli';
-import { Project, SyntaxKind } from 'ts-morph';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, relative, dirname } from 'node:path';
-
-// ---------------------------------------------------------------------------
-// ts-morph helpers
-// ---------------------------------------------------------------------------
-
-function amendStencilConfig(configPath: string, targetCode: string): boolean {
-  const project = new Project({ skipAddingFilesFromTsConfig: true });
-  const src = project.addSourceFileAtPath(configPath);
-
-  if (!src.getImportDeclaration('@stencil/angular-output-target')) {
-    src.addImportDeclaration({
-      moduleSpecifier: '@stencil/angular-output-target',
-      namedImports: ['angularOutputTarget'],
-    });
-  }
-
-  const existingProp = src
-    .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
-    .find((p) => p.getName() === 'outputTargets');
-
-  if (!existingProp) {
-    const configObj =
-      src.getVariableDeclaration('config')?.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression) ??
-      src
-        .getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression)
-        .find((obj) => obj.getProperty('namespace') !== undefined);
-    if (!configObj) throw new Error('Could not find Stencil config object in stencil.config.ts');
-    configObj.addPropertyAssignment({ name: 'outputTargets', initializer: '[]' });
-  }
-
-  const prop = src.getDescendantsOfKind(SyntaxKind.PropertyAssignment).find((p) => p.getName() === 'outputTargets')!;
-  const arr = prop.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression);
-  if (!arr) throw new Error('outputTargets is not an array literal in stencil.config.ts');
-
-  const existing = arr.getText();
-  const alreadyAdded = existing.includes('angularOutputTarget(');
-
-  // Filter out any existing angularOutputTarget call so it can be replaced cleanly
-  const elements = arr
-    .getElements()
-    .map((e) => e.getText().trim())
-    .filter((e) => !e.includes('angularOutputTarget('));
-
-  const hasStandalone =
-    existing.includes("type: 'standalone'") ||
-    existing.includes('type: "standalone"') ||
-    existing.includes("type: 'dist-custom-elements'") ||
-    existing.includes('type: "dist-custom-elements"');
-  if (!hasStandalone) elements.push("{ type: 'standalone' }");
-
-  elements.push(targetCode);
-
-  prop.setInitializer(`[\n${elements.map((e) => `  ${e}`).join(',\n')},\n]`);
-  src.formatText();
-  src.saveSync();
-
-  return !alreadyAdded;
-}
 
 // ---------------------------------------------------------------------------
 // pnpm build approval
@@ -231,22 +172,14 @@ export const wizard = {
     displayName: 'Angular',
     description: 'Angular component wrappers for your Stencil components',
 
-    async run({ config, workspaceRoot, prompts, nypm }: WizardContext): Promise<void> {
+    async run({ config, workspaceRoot, prompts, nypm, openStencilConfig }: WizardContext): Promise<void> {
       const { intro, outro, text, select, confirm, spinner, isCancel, cancel, log } = prompts;
 
       intro('Angular output target');
 
-      const stencilConfigPath = join(config.rootDir, 'stencil.config.ts');
-
       // Guard: already configured?
-      const guardProject = new Project({ skipAddingFilesFromTsConfig: true });
-      const alreadyConfigured = guardProject
-        .addSourceFileAtPath(stencilConfigPath)
-        .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
-        .find((p) => p.getName() === 'outputTargets')
-        ?.getInitializerIfKind(SyntaxKind.ArrayLiteralExpression)
-        ?.getText()
-        .includes('angularOutputTarget(');
+      const editor = await openStencilConfig();
+      const alreadyConfigured = editor.outputTargetsContains('angularOutputTarget(');
 
       if (alreadyConfigured) {
         const redo = await confirm({
@@ -360,10 +293,23 @@ export const wizard = {
       ];
       const targetCode = `angularOutputTarget({\n  ${lines.join(',\n  ')},\n})`;
 
-      // Amend stencil.config.ts in one pass so formatText() sees the final array
+      // Amend stencil.config.ts
       try {
-        const added = amendStencilConfig(stencilConfigPath, targetCode);
-        log.success(added ? 'stencil.config.ts updated' : 'angularOutputTarget already present — no changes made');
+        editor.addImport('@stencil/angular-output-target', ['angularOutputTarget']);
+
+        const hasStandalone =
+          editor.outputTargetsContains("type: 'standalone'") ||
+          editor.outputTargetsContains('type: "standalone"') ||
+          editor.outputTargetsContains("type: 'dist-custom-elements'") ||
+          editor.outputTargetsContains('type: "dist-custom-elements"');
+        if (!hasStandalone) editor.addOutputTarget("{ type: 'standalone' }");
+
+        if (!editor.replaceOutputTarget('angularOutputTarget(', targetCode)) {
+          editor.addOutputTarget(targetCode);
+        }
+
+        await editor.save();
+        log.success('stencil.config.ts updated');
       } catch (e) {
         log.warn(
           `Could not automatically update stencil.config.ts (${e}). Add manually:\n\n` +

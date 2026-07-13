@@ -60,25 +60,26 @@
     "url": "git+https://github.com/stenciljs/output-targets.git"
   },
   "peerDependencies": {
-    "@stencil/core": ">=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0",
+    "@stencil/core": ">=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0",
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
     "@stencil/core": "4.41.0",
-    "@types/node": "^20.14.12",
-    "@types/react": "^18 || ^19",
-    "@types/react-dom": "^18 || ^19",
-    "npm-run-all2": "^6.2.4",
-    "ts-dedent": "^2.2.0",
-    "typescript": "^5.4.4",
-    "vite": "^5.0.0",
-    "vite-plugin-dts": "^3.8.1"
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "npm-run-all2": "^6.2.6",
+    "stencil-output-targets-shared": "workspace:*",
+    "ts-dedent": "^2.3.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21",
+    "vite-plugin-dts": "^3.9.1"
   },
   "dependencies": {
-    "@lit/react": "^1.0.7",
-    "html-react-parser": "^5.2.2",
+    "@lit/react": "^1.0.8",
+    "html-react-parser": "^5.2.17",
     "react-style-stringify": "^1.2.0",
     "ts-morph": "^28.0.0"
   },

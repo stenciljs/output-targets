@@ -55,9 +55,9 @@
     "test.watch": "vitest --run --watch"
   },
   "peerDependencies": {
+    "@stencil/core": ">=2.0.0 || >=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
     "vue": "^3.4.38",
-    "vue-router": "^4.5.0 || ^5.0.0",
-    "@stencil/core": ">=2.0.0 || >=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0"
+    "vue-router": "^4.5.0 || ^5.0.0"
   },
   "peerDependenciesMeta": {
     "vue": {
@@ -70,22 +70,20 @@
       "optional": true
     }
   },
-  "dependencies": {
-    "ts-morph": "^28.0.0"
-  },
   "devDependencies": {
-    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.0 <5.0.0-next.0",
-    "@stencil/core": "^4.41.0",
-    "@types/node": "^18.0.0",
-    "@rollup/plugin-typescript": "^12.1.0",
-    "@vue/shared": "^3.5.12",
-    "@vue/test-utils": "^2.4.6",
-    "jsdom": "^26.0.0",
-    "rimraf": "^5.0.0",
-    "rollup": "^4.14.3",
-    "typescript": "~5.7.0",
-    "vitest": "^3.0.8",
-    "vue": "^3.5.12",
-    "vue-router": "^5.0.0"
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
+    "@stencil/core": "^4.43.5",
+    "@types/node": "^18.19.130",
+    "@vue/shared": "^3.5.39",
+    "@vue/test-utils": "^2.4.11",
+    "jsdom": "^26.1.0",
+    "stencil-output-targets-shared": "workspace:*",
+    "rimraf": "^5.0.10",
+    "rollup": "^4.62.2",
+    "typescript": "~5.7.3",
+    "vitest": "^3.2.6",
+    "vue": "^3.5.39",
+    "vue-router": "^5.1.0"
   }
 }
