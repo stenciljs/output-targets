@@ -13,7 +13,7 @@ inputs:
   node-version:
     description: 'Node.js version to use for publishing.'
     required: false
-    default: '20.20.0'
+    default: '24'
   registry-url:
     description: 'Registry URL to publish to.'
     required: false
@@ -30,9 +30,6 @@ runs:
         cache: 'pnpm'
         registry-url: ${{ inputs.registry-url }}
         scope: '@stencil'
-    - name: 🔄 Ensure Latest npm
-      run: npm install -g npm@latest
-      shell: bash
     - name: Install Dependencies
       run: pnpm --filter ${{ inputs.scope }} install
       shell: bash
