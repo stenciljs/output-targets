@@ -112,7 +112,9 @@ export const wizard = {
           return;
         }
         wrapperPackageName = rawName as string;
-        wrapperDir = join(dirname(config.rootDir), wrapperPackageName);
+        // Directory is already namespaced by living under packages/, so keep it
+        // short rather than repeating the fsNamespace prefix from the package name.
+        wrapperDir = join(dirname(config.rootDir), 'react');
       } else {
         const defaultRel = `../${config.fsNamespace}-react`;
         const rawDir = await text({
@@ -157,7 +159,13 @@ export const wizard = {
         const s = spinner();
         s.start(`Scaffolding wrapper package at ${relative(workspaceRoot ?? config.rootDir, wrapperDir)}`);
         try {
-          const corePkgVersion = workspaceRoot
+          // workspace:* only resolves under pnpm/yarn-berry/bun — npm and yarn classic reject
+          // the protocol outright (even for devDependencies that are never installed), so only
+          // use it when the detected package manager actually understands it.
+          const pm = workspaceRoot ? await nypm.detectPackageManager(workspaceRoot) : undefined;
+          const supportsWorkspaceProtocol =
+            pm?.name === 'pnpm' || pm?.name === 'bun' || (pm?.name === 'yarn' && pm.majorVersion !== '1');
+          const corePkgVersion = supportsWorkspaceProtocol
             ? 'workspace:*'
             : `file:${relative(wrapperDir, config.rootDir).replace(/\\/g, '/')}`;
           await scaffoldWrapperPackage(wrapperDir, wrapperPackageName, config.fsNamespace, corePkgVersion);
