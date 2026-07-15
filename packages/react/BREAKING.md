@@ -1,3 +1,9 @@
+## 2.0
+
+### Breaking Changes
+
+- The `createComponent` funtion and `StencilReactComponent` type have been moved from `@stencil/runtime` to generated build artifacts. Apps that imported these directly can now import them from their Stencil React components package.
+
 ## 0.6.0
 
 ### Breaking Changes
