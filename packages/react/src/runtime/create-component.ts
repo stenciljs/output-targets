@@ -1,6 +1,11 @@
 import type { EventName, Options } from './index.js';
 import { createLitComponent } from './index.js';
 
+/**
+ * The special comments types-begin, types-end, create-component-begin, and
+ * create-component-end mark regions of code to be copied to output build artifacts.
+ */
+
 // @types-begin
 // A key value map matching React prop names to event names.
 type EventNames = Record<string, EventName | string>;

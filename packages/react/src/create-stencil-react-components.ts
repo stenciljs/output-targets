@@ -12,9 +12,11 @@ interface ReactEvent {
 }
 
 function getSubstringBetween(before: string, after: string, src: string) {
-  const start = src.indexOf(before) + before.length;
-  const end = src.indexOf(after, start);
-  return src.substring(start, end);
+  const start = src.indexOf(before);
+  if (start === -1) throw Error(`"${before}" delimiter not found`);
+  const end = src.indexOf(after, start + before.length);
+  if (end === -1) throw Error(`"${after}" delimiter not found`);
+  return src.substring(start + before.length, end);
 }
 
 export const createStencilReactComponents = ({
@@ -60,7 +62,11 @@ export const createStencilReactComponents = ({
     : `import { createLitComponent } from '@stencil/react-output-target/runtime';`;
   let createComponentBody = getSubstringBetween('// @types-begin', '// @types-end', createComponentSource);
   if (!hydrateModule) {
-    createComponentBody += getSubstringBetween('// @create-component-begin', '// @create-component-end', createComponentSource);
+    createComponentBody += getSubstringBetween(
+      '// @create-component-begin',
+      '// @create-component-end',
+      createComponentSource
+    );
   }
   // transformTag should be imported from tag-transformer for both client and server
   const transformTagImport = transformTag ? `import { transformTag } from './tag-transformer.js';\n` : '';
