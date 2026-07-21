@@ -19,6 +19,11 @@ describe('Next.js 14 React 18 SSR Integration', () => {
       'complex-props-scoped',
       'complex-props-shadow',
       'my-list-shadow',
+      /**
+       * Relies on a runtime re-render (button click updates className), which
+       * doesn't fire here for the same reason as input-scoped above.
+       */
+      'classname-merge-shadow',
     ],
   });
 });
