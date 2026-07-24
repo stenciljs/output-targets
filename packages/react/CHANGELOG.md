@@ -1,3 +1,11 @@
+## [1.6.1](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.0...@stencil/react-output-target@1.6.1) (2026-07-14)
+
+
+### :bug: Bug Fix
+
+* **react:** guard resolveType against exotic components and rendered SSR elements ([#809](https://github.com/stenciljs/output-targets/issues/809)) ([8d71209](https://github.com/stenciljs/output-targets/commit/8d712093b23aea34420c58370c5e1de0949662d5))
+* **react:** stop guessing package manager and inserting `workspace` links ([11b5eb1](https://github.com/stenciljs/output-targets/commit/11b5eb1895f4e1a23fdcee9fb0fe445acfd00e06))
+
 ## [1.6.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.5.3...@stencil/react-output-target@1.6.0) (2026-06-25)
 
 

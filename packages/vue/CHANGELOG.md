@@ -1,3 +1,10 @@
+## [0.14.1](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.0...@stencil/vue-output-target@0.14.1) (2026-07-14)
+
+
+### :bug: Bug Fix
+
+* **vue:** stop guessing package manager and inserting `workspace` links ([2aa84f7](https://github.com/stenciljs/output-targets/commit/2aa84f741405c79253fe74ff6ece9e3531e4da1d))
+
 ## [0.14.0](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.13.2...@stencil/vue-output-target@0.14.0) (2026-06-25)
 
 

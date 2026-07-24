@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.4.0...@stencil/angular-output-target@1.4.1) (2026-07-14)
+
+
+### :bug: Bug Fix
+
+* **angular:** stop guessing package manager and inserting `workspace` links ([88eb3ce](https://github.com/stenciljs/output-targets/commit/88eb3ce9a513d6bdde2b6f89c58ec6760752bd57))
+
 ## [1.4.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.3.2...@stencil/angular-output-target@1.4.0) (2026-06-25)
 
 
