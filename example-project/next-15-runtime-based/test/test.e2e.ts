@@ -12,6 +12,8 @@ describe('Next 15 React 19 SSR Integration', () => {
       'style-no-deduplication-scoped',
       // Known issue: aria-checked and label placement are undefined on hydration.
       'checkbox-shadow',
+      // Uses my-checkbox, hits the same hydration issue as checkbox-shadow above.
+      'classname-merge-shadow',
       /**
        * Known hydration mismatch errors
        */

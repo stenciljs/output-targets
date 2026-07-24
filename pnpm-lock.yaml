@@ -170,6 +170,21 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
+  example-project/component-library-angular/projects/library/dist:
+    dependencies:
+      '@angular/common':
+        specifier: ^20.0.0
+        version: 20.3.25(@angular/core@20.3.25(@angular/compiler@20.3.25)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
+      '@angular/core':
+        specifier: ^20.0.0
+        version: 20.3.25(@angular/compiler@20.3.25)(rxjs@7.8.2)(zone.js@0.15.1)
+      component-library:
+        specifier: workspace:*
+        version: link:../../../../component-library
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   example-project/component-library-react:
     dependencies:
       '@stencil/react-output-target':
@@ -1233,6 +1248,7 @@ packages:
   '@angular/platform-browser-dynamic@20.3.25':
     resolution: {integrity: sha512-3Ku+IsN4tQPVBsw75SoLbLf7TsXAGL0rGPHSsyNYFhG2ZZeQuYNIAi8mc4cwz/qMDnuassHFrCxuLDgN6Yab5w==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    deprecated: '@angular/platform-browser-dynamic is deprecated. Use `@angular/platform-browser` instead.'
     peerDependencies:
       '@angular/common': 20.3.25
       '@angular/compiler': 20.3.25
