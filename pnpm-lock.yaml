@@ -114,7 +114,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: ^20.0.2
-        version: 20.3.28(f7e6aab50889d6dbf3b553fc3c58860c)
+        version: 20.3.28(a1cb5661563ebef6f773345cd8338d11)
       '@angular/cli':
         specifier: ^20.0.2
         version: 20.3.28(@types/node@22.19.21)(chokidar@4.0.3)
@@ -170,6 +170,21 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
+  example-project/component-library-angular/projects/library/dist:
+    dependencies:
+      '@angular/common':
+        specifier: ^20.0.0
+        version: 20.3.25(@angular/core@20.3.25(@angular/compiler@20.3.25)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
+      '@angular/core':
+        specifier: ^20.0.0
+        version: 20.3.25(@angular/compiler@20.3.25)(rxjs@7.8.2)(zone.js@0.15.1)
+      component-library:
+        specifier: workspace:*
+        version: link:../../../../component-library
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   example-project/component-library-react:
     dependencies:
       '@stencil/react-output-target':
@@ -179,18 +194,18 @@ importers:
         specifier: workspace:*
         version: link:../component-library
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        specifier: ^19.0.1
+        version: 19.1.0(react@19.1.0)
     devDependencies:
       '@types/node':
         specifier: ^22.13.9
         version: 22.19.21
       '@types/react':
-        specifier: ^18
-        version: 18.3.31
+        specifier: ^19
+        version: 19.2.17
       '@types/react-dom':
-        specifier: ^18
-        version: 18.3.7(@types/react@18.3.31)
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.17)
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.8.1
         version: 8.61.1(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)
@@ -207,8 +222,8 @@ importers:
         specifier: ^0.4.12
         version: 0.4.26(eslint@8.57.1)
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.1.0
+        version: 19.1.0
       typescript:
         specifier: ^5.6.3
         version: 5.8.3
@@ -439,7 +454,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: ^20.0.2
-        version: 20.3.28(a1cb5661563ebef6f773345cd8338d11)
+        version: 20.3.28(f7e6aab50889d6dbf3b553fc3c58860c)
       '@angular/cli':
         specifier: ^20.0.2
         version: 20.3.28(@types/node@22.19.21)(chokidar@4.0.3)
@@ -825,13 +840,13 @@ importers:
         version: 1.0.8(@types/react@19.2.17)
       html-react-parser:
         specifier: ^5.2.17
-        version: 5.2.17(@types/react@19.2.17)(react@19.2.7)
+        version: 5.2.17(@types/react@19.2.17)(react@18.3.1)
       react:
         specifier: ^18 || ^19
-        version: 19.2.7
+        version: 18.3.1
       react-dom:
         specifier: ^18 || ^19
-        version: 19.2.7(react@19.2.7)
+        version: 18.3.1(react@18.3.1)
       react-style-stringify:
         specifier: ^1.2.0
         version: 1.2.0
@@ -1233,6 +1248,7 @@ packages:
   '@angular/platform-browser-dynamic@20.3.25':
     resolution: {integrity: sha512-3Ku+IsN4tQPVBsw75SoLbLf7TsXAGL0rGPHSsyNYFhG2ZZeQuYNIAi8mc4cwz/qMDnuassHFrCxuLDgN6Yab5w==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    deprecated: '@angular/platform-browser-dynamic is deprecated. Use `@angular/platform-browser` instead.'
     peerDependencies:
       '@angular/common': 20.3.25
       '@angular/compiler': 20.3.25
@@ -22238,7 +22254,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.10
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
@@ -22268,7 +22284,7 @@ snapshots:
       tinyglobby: 0.2.17
       unrs-resolver: 1.12.2
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -22338,7 +22354,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -23400,21 +23416,21 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.31
 
-  html-react-parser@5.2.17(@types/react@19.2.17)(react@19.1.0):
+  html-react-parser@5.2.17(@types/react@19.2.17)(react@18.3.1):
     dependencies:
       domhandler: 5.0.3
       html-dom-parser: 5.1.8
-      react: 19.1.0
+      react: 18.3.1
       react-property: 2.0.2
       style-to-js: 1.1.21
     optionalDependencies:
       '@types/react': 19.2.17
 
-  html-react-parser@5.2.17(@types/react@19.2.17)(react@19.2.7):
+  html-react-parser@5.2.17(@types/react@19.2.17)(react@19.1.0):
     dependencies:
       domhandler: 5.0.3
       html-dom-parser: 5.1.8
-      react: 19.2.7
+      react: 19.1.0
       react-property: 2.0.2
       style-to-js: 1.1.21
     optionalDependencies:

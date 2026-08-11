@@ -33,12 +33,12 @@ describe('createStencilReactComponents', () => {
     expect(result).toContain(`export type MyComponentEvents = NonNullable<unknown>;`);
     expect(result)
       .toContain(`export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
-    tagName: 'my-component',
-    elementClass: MyComponentElement,
-    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
-    react: React,
-    events: {} as MyComponentEvents,
-    defineCustomElement: defineMyComponent
+  tagName: 'my-component',
+  elementClass: MyComponentElement,
+  // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
+  react: React,
+  events: {} as MyComponentEvents,
+  defineCustomElement: defineMyComponent
 });`);
   });
 
@@ -262,10 +262,10 @@ describe('createStencilReactComponents', () => {
       `export const serializeShadowRoot: SerializeShadowRootOptions = { default: "declarative-shadow-dom" };`
     );
     expect(result).toContain(`tagName: 'my-component',
-    properties: { value: 'value' },
-    hydrateModule: typeof window === 'undefined' ? (import('my-package/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
-    serializeShadowRoot`);
+  properties: { value: 'value' },
+  hydrateModule: typeof window === 'undefined' ? (import('my-package/hydrate') as Promise<HydrateModule>) : undefined,
+  clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
+  serializeShadowRoot`);
   });
 
   it('should filter out properties without attributes for SSR', () => {
