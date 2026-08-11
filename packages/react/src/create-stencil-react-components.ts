@@ -38,11 +38,11 @@ export const createStencilReactComponents = ({
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
   transformTag?: boolean;
 }) => {
-  const project = new Project({ 
+  const project = new Project({
     useInMemoryFileSystem: true,
     manipulationSettings: {
-      indentationText: IndentationText.TwoSpaces
-    }
+      indentationText: IndentationText.TwoSpaces,
+    },
   });
 
   /**
