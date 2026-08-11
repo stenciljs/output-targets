@@ -5,6 +5,9 @@ import React from 'react';
 /**
  * The special comments types-begin, types-end, create-component-begin, and
  * create-component-end mark regions of code to be copied to output build artifacts.
+ * 
+ * Backticks are avoided in this file's comments so the unit tests' code can compare
+ * unchanged source code to the build artifacts. Backticks would escape the string.
  */
 
 // @types-begin
