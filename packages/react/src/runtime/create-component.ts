@@ -21,7 +21,7 @@ type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyo
   Partial<Omit<C, R>> &
   React.RefAttributes<I>;
 
-type StencilReactComponent<
+export type StencilReactComponent<
   I extends HTMLElement,
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,
@@ -75,7 +75,7 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayou
  * Defines a custom element and creates a React component.
  * @public
  */
-const createComponent = <
+export const createComponent = <
   I extends HTMLElement,
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,
@@ -144,5 +144,4 @@ const createComponent = <
 };
 // @create-component-end
 
-export type { StencilReactComponent };
-export { mergeClassNames, createComponent };
+export { mergeClassNames };
