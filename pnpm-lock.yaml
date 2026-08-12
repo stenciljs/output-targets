@@ -840,13 +840,13 @@ importers:
         version: 1.0.8(@types/react@19.2.17)
       html-react-parser:
         specifier: ^5.2.17
-        version: 5.2.17(@types/react@19.2.17)(react@18.3.1)
+        version: 5.2.17(@types/react@19.2.17)(react@19.2.7)
       react:
         specifier: ^18 || ^19
-        version: 18.3.1
+        version: 19.2.7
       react-dom:
         specifier: ^18 || ^19
-        version: 18.3.1(react@18.3.1)
+        version: 18.3.1(react@19.2.7)
       react-style-stringify:
         specifier: ^1.2.0
         version: 1.2.0
@@ -23416,21 +23416,21 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.31
 
-  html-react-parser@5.2.17(@types/react@19.2.17)(react@18.3.1):
-    dependencies:
-      domhandler: 5.0.3
-      html-dom-parser: 5.1.8
-      react: 18.3.1
-      react-property: 2.0.2
-      style-to-js: 1.1.21
-    optionalDependencies:
-      '@types/react': 19.2.17
-
   html-react-parser@5.2.17(@types/react@19.2.17)(react@19.1.0):
     dependencies:
       domhandler: 5.0.3
       html-dom-parser: 5.1.8
       react: 19.1.0
+      react-property: 2.0.2
+      style-to-js: 1.1.21
+    optionalDependencies:
+      '@types/react': 19.2.17
+
+  html-react-parser@5.2.17(@types/react@19.2.17)(react@19.2.7):
+    dependencies:
+      domhandler: 5.0.3
+      html-dom-parser: 5.1.8
+      react: 19.2.7
       react-property: 2.0.2
       style-to-js: 1.1.21
     optionalDependencies:
@@ -27732,6 +27732,12 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
       react: 18.3.1
+      scheduler: 0.23.2
+
+  react-dom@18.3.1(react@19.2.7):
+    dependencies:
+      loose-envify: 1.4.0
+      react: 19.2.7
       scheduler: 0.23.2
 
   react-dom@19.1.0(react@19.1.0):
