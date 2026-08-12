@@ -8,7 +8,7 @@
 /* eslint-disable */
 
 import type { EventName, Options } from '@stencil/react-output-target/runtime';
-import { createLitComponent } from '@stencil/react-output-target/runtime';
+import { createCustomElementReactComponent } from '@stencil/react-output-target/runtime';
 import React from 'react';
 import { transformTag } from './tag-transformer.js';
 
@@ -50,7 +50,7 @@ type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyo
   Partial<Omit<C, R>> &
   React.RefAttributes<I>;
 
-export type StencilReactComponent<
+type StencilReactComponent<
   I extends HTMLElement,
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,
@@ -61,12 +61,12 @@ const splitClassName = (className: string | undefined): string[] =>
   className ? className.split(/\s+/).filter(Boolean) : [];
 
 /**
- * Merge the app's 'className'/'class' with the classes the Stencil runtime
- * manages on the host. '@lit/react' maps 'className' to 'class' and rewrites it
- * wholesale on every render, which wipes runtime-added classes like 'hydrated',
- * 'sc-*' scope classes, and state classes a design system relies on.
+ * Merge the app's `className`/`class` with the classes the Stencil runtime
+ * manages on the host. `@lit/react` maps `className` to `class` and rewrites it
+ * wholesale on every render, which wipes runtime-added classes like `hydrated`,
+ * `sc-*` scope classes, and state classes a design system relies on.
  */
-export const mergeClassNames = (
+const mergeClassNames = (
   currentClasses: Iterable<string>,
   newClassName: string | undefined,
   oldClassName: string | undefined
@@ -86,7 +86,7 @@ export const mergeClassNames = (
     // Anything else was set by the app last render and dropped now, so drop it.
   }
 
-  // Whatever's left in 'incoming' isn't on the element yet.
+  // Whatever's left in `incoming` isn't on the element yet.
   for (const className of incoming) {
     finalClassNames.push(className);
   }
@@ -94,15 +94,15 @@ export const mergeClassNames = (
   return finalClassNames.join(' ');
 };
 
-// 'useLayoutEffect' warns during server rendering and the reconciliation is
-// client-only anyway, so fall back to 'useEffect' on the server.
+// `useLayoutEffect` warns during server rendering and the reconciliation is
+// client-only anyway, so fall back to `useEffect` on the server.
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
 /**
  * Defines a custom element and creates a React component.
  * @public
  */
-export const createComponent = <
+const createComponent = <
   I extends HTMLElement,
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,
@@ -120,12 +120,12 @@ export const createComponent = <
     defineCustomElement();
   }
   const finalTagName = transformTag ? transformTag(tagName) : tagName;
-  const ReactComponent = createLitComponent<I, E>({ ...options, tagName: finalTagName });
+  const ReactComponent = createCustomElementReactComponent<I, E>({ ...options, tagName: finalTagName });
 
   /**
-   * Withhold 'className'/'class' from '@lit/react' so React never writes the
-   * 'class' attribute, then reconcile it against the live host in a layout
-   * effect. See 'mergeClassNames'.
+   * Withhold `className`/`class` from `@lit/react` so React never writes the
+   * `class` attribute, then reconcile it against the live host in a layout
+   * effect. See `mergeClassNames`.
    */
   const WrappedComponent = React.forwardRef<I, StencilProps<I, E, C, R>>((props, ref) => {
     const {

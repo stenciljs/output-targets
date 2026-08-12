@@ -53,7 +53,7 @@ type StencilProps<I extends HTMLElement, E extends EventNames, C, R extends keyo
   Partial<Omit<C, R>> &
   React.RefAttributes<I>;
 
-export type StencilReactComponent<
+type StencilReactComponent<
   I extends HTMLElement,
   E extends EventNames = {},
   C = Omit<I, keyof HTMLElement>,

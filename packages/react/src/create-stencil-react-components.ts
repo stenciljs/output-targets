@@ -64,7 +64,7 @@ export const createStencilReactComponents = ({
       ]
         .filter(Boolean)
         .join('\n')
-    : `import { createLitComponent } from '@stencil/react-output-target/runtime';`;
+    : `import { createCustomElementReactComponent } from '@stencil/react-output-target/runtime';`;
   let createComponentBody = getSubstringBetween('// @types-begin', '// @types-end', createComponentSource);
   if (!hydrateModule) {
     createComponentBody += getSubstringBetween(
