@@ -1,5 +1,5 @@
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
-import { Project, VariableDeclarationKind } from 'ts-morph';
+import { Project, VariableDeclarationKind, IndentationText } from 'ts-morph';
 import { eventListenerName, kebabToPascalCase, normalizeTypeString } from './utils/string-utils.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
 // Inlined at build time so the generated wrapper can be self-contained.
@@ -38,7 +38,12 @@ export const createStencilReactComponents = ({
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
   transformTag?: boolean;
 }) => {
-  const project = new Project({ useInMemoryFileSystem: true });
+  const project = new Project({
+    useInMemoryFileSystem: true,
+    manipulationSettings: {
+      indentationText: IndentationText.TwoSpaces,
+    },
+  });
 
   /**
    * automatically attach the `use client` directive if we are not generating
@@ -59,7 +64,7 @@ export const createStencilReactComponents = ({
       ]
         .filter(Boolean)
         .join('\n')
-    : `import { createLitComponent } from '@stencil/react-output-target/runtime';`;
+    : `import { createCustomElementReactComponent } from '@stencil/react-output-target/runtime';`;
   let createComponentBody = getSubstringBetween('// @types-begin', '// @types-end', createComponentSource);
   if (!hydrateModule) {
     createComponentBody += getSubstringBetween(

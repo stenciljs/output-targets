@@ -2,7 +2,8 @@
 
 ### Breaking Changes
 
-- The `createComponent` funtion and `StencilReactComponent` type have been moved from `@stencil/runtime` to generated build artifacts. Apps that imported these directly can now import them from their Stencil React components package. Stencil React components generated with `@stencil/react-output-target` v1 will not be compatible with `@stencil/react-output-target` v2 runtime.
+- The `createComponent` function and `StencilReactComponent` type have been moved from `@stencil/react-output-target/runtime` to generated build artifacts. Apps that imported these directly can now import them from their Stencil React components package. Stencil React components generated with `@stencil/react-output-target` v1 will not be compatible with `@stencil/react-output-target` v2 runtime.
+- Building the generated React component library requires targeting es2015 at minimum. Projects can set `"target": "es2015"` or higher in their `tsconfig.json` files.
 
 ## 0.6.0
 
