@@ -846,7 +846,7 @@ importers:
         version: 19.2.7
       react-dom:
         specifier: ^18 || ^19
-        version: 18.3.1(react@19.2.7)
+        version: 19.2.7(react@19.2.7)
       react-style-stringify:
         specifier: ^1.2.0
         version: 1.2.0
@@ -27732,12 +27732,6 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
       react: 18.3.1
-      scheduler: 0.23.2
-
-  react-dom@18.3.1(react@19.2.7):
-    dependencies:
-      loose-envify: 1.4.0
-      react: 19.2.7
       scheduler: 0.23.2
 
   react-dom@19.1.0(react@19.1.0):
