@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.1...@stencil/react-output-target@1.6.2) (2026-08-13)
+
+
+### :bug: Bug Fix
+
+* **react:** merge className with runtime-managed host classes ([#827](https://github.com/stenciljs/output-targets/issues/827)) ([6192e5c](https://github.com/stenciljs/output-targets/commit/6192e5c4bd5488904361216c3cce510a81706fbd))
+
 ## [1.6.1](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.0...@stencil/react-output-target@1.6.1) (2026-07-14)
 
 
