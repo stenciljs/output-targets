@@ -127,6 +127,41 @@ describe('Stencil Vue Integration', () => {
         await expect(target).toHaveElementClass('hydrated');
         await expect(target).toHaveElementClass('static-class');
       });
+
+      it('should keep a conditional :class removed once the binding stops producing it', async () => {
+        await browser.url(scenario.path);
+
+        const items = ['a', 'b', 'c'];
+        const expectOnlyActive = async (activeId: string) => {
+          for (const id of items) {
+            const item = $(`[data-testid="reactive-item-${id}"]`);
+            if (id === activeId) {
+              await expect(item).toHaveElementClass('is-active');
+            } else {
+              await expect(item).not.toHaveElementClass('is-active');
+            }
+          }
+        };
+        const select = async (id: string) => {
+          await $(`[data-testid="select-item-${id}-btn"]`).click();
+          await expect($('[data-testid="selected-item"] strong')).toHaveText(id);
+        };
+
+        await expectOnlyActive('a');
+
+        await select('b');
+        await expectOnlyActive('b');
+
+        // Item 'a' is no longer selected but its class string is unchanged, so Vue skips patching it
+        await select('c');
+        await expectOnlyActive('c');
+
+        await select('a');
+        await expectOnlyActive('a');
+
+        // Stencil adds `hydrated`, so it has to survive the removals
+        await expect($('[data-testid="reactive-item-c"]')).toHaveElementClass('hydrated');
+      });
     })
   })
 });

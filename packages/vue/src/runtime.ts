@@ -37,27 +37,61 @@ interface NavManager<T = any> {
   navigate: (options: T) => void;
 }
 
+/**
+ * Split a class attribute value into tokens the way `DOMTokenList` does, on runs of ASCII
+ * whitespace. A single-space split leaves whitespace inside the tokens of a multi-line class
+ * attribute, and `classList` rejects those. The token set has to match the DOM's exactly: one
+ * we record that the DOM never produced can never be removed again.
+ *
+ * React's `splitClassName` gets away with a looser `\s+` because it rewrites the whole `class`
+ * attribute, so its own tokens become the truth. We mutate individual tokens on an element the
+ * DOM already tokenized, so the two regexes are deliberately different.
+ */
 const getComponentClasses = (classes: unknown) => {
-  return (classes as string)?.split(' ') || [];
+  return ((classes as string)?.split(/[ \t\n\f\r]+/) || []).filter((className) => className.length > 0);
 };
 
+/**
+ * Sync the classes Vue supplied onto the host element, and return the ones it didn't supply
+ * (Stencil's `hydrated` and `sc-*` scope classes, plus anything added imperatively) so Vue's
+ * class patch doesn't wipe them. Vue merges that return value back with `attrs.class`.
+ *
+ * We read `previousVueClasses` for last render's Vue classes, then rewrite it with this
+ * render's.
+ *
+ * Classes Vue has stopped supplying have to come off the element before that return value is
+ * computed, or a stale one gets reported back as a class Vue never supplied and rewritten on
+ * every later render. Deleting the removal loop reintroduces issue #835.
+ */
 const syncElementClasses = (
   ref: Ref<HTMLElement | undefined>,
-  componentClasses: Set<string>,
+  previousVueClasses: Set<string>,
+  vueClasses: unknown,
   defaultClasses: string[] = []
 ) => {
+  const nextClasses = new Set(getComponentClasses(vueClasses));
+
   if (ref?.value) {
     const element = ref.value;
+    // drops the vue classes that are no longer bound
+    previousVueClasses.forEach((c) => {
+      if (!nextClasses.has(c)) {
+        element.classList.remove(c);
+      }
+    });
     // makes sure vue classes are on the actual element
-    componentClasses.forEach((c) => {
-      if (!!c && !element.classList.contains(c)) {
+    nextClasses.forEach((c) => {
+      if (!element.classList.contains(c)) {
         element.classList.add(c);
       }
     });
   }
 
+  previousVueClasses.clear();
+  nextClasses.forEach((c) => previousVueClasses.add(c));
+
   return [...Array.from(ref.value?.classList || []), ...defaultClasses].filter((c: string, i, self) => {
-    return !componentClasses.has(c) && self.indexOf(c) === i;
+    return !nextClasses.has(c) && self.indexOf(c) === i;
   });
 };
 
@@ -114,7 +148,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
     (props, { attrs, slots, emit }) => {
       let modelPropValue = modelProp ? props[modelProp as keyof InputProps<VModelType>] : undefined;
       const containerRef = ref<HTMLElement>();
-      const classes = new Set(getComponentClasses(attrs.class));
+      const previousVueClasses = new Set<string>();
 
       onMounted(() => {
         /**
@@ -210,10 +244,6 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
       return () => {
         modelPropValue = props[modelProp as keyof InputProps<VModelType>];
 
-        getComponentClasses(attrs.class).forEach((value) => {
-          classes.add(value);
-        });
-
         // @ts-expect-error
         const oldClick = props.onClick;
         const handleClick = (ev: Event) => {
@@ -227,7 +257,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
 
         const propsToAdd: Record<string, unknown> = {
           ref: containerRef,
-          class: syncElementClasses(containerRef, classes),
+          class: syncElementClasses(containerRef, previousVueClasses, attrs.class),
           onClick: handleClick,
         };
 
