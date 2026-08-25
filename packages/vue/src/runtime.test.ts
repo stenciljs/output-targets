@@ -140,6 +140,202 @@ describe('defineContainer', () => {
     });
   });
 
+  describe('reactive class removal (issue #835)', () => {
+    // Passing children keeps the slots object unstable, so Vue re-renders the child on every
+    // parent update even when its props haven't changed
+    const mountList = (ids: string[]) => {
+      const MyComponent = defineContainer('my-component', undefined as any);
+      const WrapperComponent = defineComponent({
+        setup() {
+          const selected = ref(ids[0]);
+          return { selected };
+        },
+        render() {
+          return h(
+            'div',
+            ids.map((id) =>
+              h(
+                MyComponent,
+                { id: `item-${id}`, class: { 'is-active': this.selected === id } },
+                { default: () => `item ${id}` }
+              )
+            )
+          );
+        },
+      });
+
+      const wrapper = mount(WrapperComponent);
+      const elementFor = (id: string) => wrapper.element.querySelector(`#item-${id}`) as HTMLElement;
+      // Simulate Stencil adding its own class outside of Vue
+      ids.forEach((id) => elementFor(id).classList.add('hydrated'));
+
+      const activeIds = () => ids.filter((id) => elementFor(id).classList.contains('is-active'));
+      const select = async (id: string) => {
+        wrapper.vm.selected = id;
+        await wrapper.vm.$nextTick();
+      };
+
+      return { activeIds, select, elementFor };
+    };
+
+    it('should keep a conditional class removed on later re-renders', async () => {
+      const { activeIds, select } = mountList(['a', 'b', 'c']);
+
+      expect(activeIds()).toEqual(['a']);
+
+      await select('b');
+      expect(activeIds()).toEqual(['b']);
+
+      // Item 'a' is no longer bound but its class string is unchanged, so Vue skips patching it
+      await select('c');
+      expect(activeIds()).toEqual(['c']);
+
+      await select('a');
+      expect(activeIds()).toEqual(['a']);
+    });
+
+    it('should not drop runtime managed classes while removing a conditional class', async () => {
+      const { select, elementFor } = mountList(['a', 'b', 'c']);
+
+      await select('b');
+      await select('c');
+
+      expect(elementFor('a').classList.contains('hydrated')).toBe(true);
+      expect(elementFor('c').classList.contains('hydrated')).toBe(true);
+    });
+
+    it('should swap between two conditional classes', async () => {
+      const MyComponent = defineContainer('my-component', undefined as any);
+      const WrapperComponent = defineComponent({
+        setup() {
+          const isOn = ref(true);
+          return { isOn };
+        },
+        render() {
+          return h(MyComponent, { class: this.isOn ? 'on' : 'off' }, { default: () => 'content' });
+        },
+      });
+
+      const wrapper = mount(WrapperComponent);
+      const element = wrapper.find('my-component').element as HTMLElement;
+      element.classList.add('hydrated');
+
+      expect(element.classList.contains('on')).toBe(true);
+
+      wrapper.vm.isOn = false;
+      await wrapper.vm.$nextTick();
+      expect(element.classList.contains('on')).toBe(false);
+      expect(element.classList.contains('off')).toBe(true);
+
+      // A re-render that leaves the class binding untouched must not resurrect 'on'
+      wrapper.vm.$forceUpdate();
+      await wrapper.vm.$nextTick();
+      expect(element.classList.contains('on')).toBe(false);
+      expect(element.classList.contains('off')).toBe(true);
+      expect(element.classList.contains('hydrated')).toBe(true);
+    });
+
+    it('should not track an empty class binding as a class', async () => {
+      const MyComponent = defineContainer('my-component', undefined as any);
+      const WrapperComponent = defineComponent({
+        setup() {
+          const isActive = ref(false);
+          return { isActive };
+        },
+        render() {
+          return h(MyComponent, { class: { active: this.isActive } }, { default: () => 'content' });
+        },
+      });
+
+      const wrapper = mount(WrapperComponent);
+      const element = wrapper.find('my-component').element as HTMLElement;
+
+      expect(element.getAttribute('class')).toBe('');
+
+      wrapper.vm.isActive = true;
+      await wrapper.vm.$nextTick();
+      expect(element.classList.contains('active')).toBe(true);
+
+      wrapper.vm.isActive = false;
+      await wrapper.vm.$nextTick();
+      expect(element.classList.contains('active')).toBe(false);
+      expect(Array.from(element.classList)).toEqual([]);
+    });
+  });
+
+  describe('class attribute tokenization (issue ionic-framework#31393)', () => {
+    it('should tokenize a class attribute that spans several lines', async () => {
+      const MyComponent = defineContainer('my-component', undefined as any);
+      const wrapper = mount(MyComponent, {
+        attrs: {
+          class: '\n      first-class\n      second-class\n    ',
+        },
+      });
+
+      // The render that syncs the classes to the element only runs once the ref is set
+      await wrapper.vm.$nextTick();
+
+      expect(Array.from(wrapper.element.classList).sort()).toEqual(['first-class', 'second-class']);
+    });
+
+    it('should not tokenize on whitespace the DOM does not split on', async () => {
+      // A non-breaking space is whitespace to `\s` but not to `DOMTokenList`. Splitting on it would
+      // record `foo` and `bar`, neither of which matches the element's real token, so nothing
+      // would ever remove it
+      const MyComponent = defineContainer('my-component', undefined as any);
+      const WrapperComponent = defineComponent({
+        setup() {
+          const isActive = ref(true);
+          return { isActive };
+        },
+        render() {
+          return h(MyComponent, { class: this.isActive ? 'foo\u00a0bar' : '' }, { default: () => 'content' });
+        },
+      });
+
+      const wrapper = mount(WrapperComponent);
+      const element = wrapper.find('my-component').element as HTMLElement;
+      element.classList.add('hydrated');
+      await wrapper.vm.$nextTick();
+
+      expect(element.classList.contains('foo\u00a0bar')).toBe(true);
+      expect(element.classList.contains('foo')).toBe(false);
+
+      wrapper.vm.isActive = false;
+      await wrapper.vm.$nextTick();
+
+      expect(Array.from(element.classList)).toEqual(['hydrated']);
+    });
+
+    it('should remove a multi-line class once the binding stops producing it', async () => {
+      const MyComponent = defineContainer('my-component', undefined as any);
+      const WrapperComponent = defineComponent({
+        setup() {
+          const isActive = ref(true);
+          return { isActive };
+        },
+        render() {
+          return h(
+            MyComponent,
+            { class: this.isActive ? '\n  first-class\n  second-class\n' : '' },
+            { default: () => 'content' }
+          );
+        },
+      });
+
+      const wrapper = mount(WrapperComponent);
+      const element = wrapper.find('my-component').element as HTMLElement;
+      element.classList.add('hydrated');
+
+      wrapper.vm.isActive = false;
+      await wrapper.vm.$nextTick();
+
+      expect(element.classList.contains('first-class')).toBe(false);
+      expect(element.classList.contains('second-class')).toBe(false);
+      expect(element.classList.contains('hydrated')).toBe(true);
+    });
+  });
+
   describe('routerLink modifier key clicks (issue FW-7149)', () => {
     const mountWithRouter = (routerLink: string | undefined) => {
       const navigate = vi.fn();

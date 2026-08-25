@@ -5,6 +5,7 @@ import Input from '../components/Input.vue'
 // @ts-ignore
 import Checkbox from '../components/Checkbox.vue';
 import HydratedClassTest from '../components/HydratedClassTest.vue';
+import ReactiveClassTest from '../components/ReactiveClassTest.vue';
 import { MyComponent, MyCheckbox, MyInput, MyRadio, MyRadioGroup, MyTransformTest } from 'component-library-vue'
 import { ref } from 'vue'
 
@@ -60,6 +61,7 @@ const radioGroupValue = ref('option1')
   </p>
   <hr />
   <HydratedClassTest />
+  <ReactiveClassTest />
 </template>
 
 <style scoped>
