@@ -1,3 +1,10 @@
+## [0.14.2](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.1...@stencil/vue-output-target@0.14.2) (2026-08-26)
+
+
+### :bug: Bug Fix
+
+* **vue:** remove conditional classes that are no longer bound ([#840](https://github.com/stenciljs/output-targets/issues/840)) ([8d1722e](https://github.com/stenciljs/output-targets/commit/8d1722e6646d037f4f4db39eb6c9de27d4e2abee))
+
 ## [0.14.1](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.0...@stencil/vue-output-target@0.14.1) (2026-07-14)
 
 
