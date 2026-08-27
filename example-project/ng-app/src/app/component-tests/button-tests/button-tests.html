@@ -1,3 +1,12 @@
 <div>
   <my-button (click)="handleClick()" href="https://google.com">Why is the default button behaviour to navigate?</my-button>
 </div>
+<div>
+  <!--
+    Boolean properties can be set by attribute presence because the output target declares them
+    with an input transform. Without it these bind the empty string and fail `strictTemplates`.
+  -->
+  <my-button id="attribute-presence" disabled strong>Disabled</my-button>
+  <my-button id="attribute-false" disabled="false">Not disabled</my-button>
+  <my-button id="attribute-bound" [disabled]="isDisabled">Bound</my-button>
+</div>

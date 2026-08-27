@@ -85,6 +85,42 @@ export class MyComponent {
 }`);
     });
 
+    it('generates a component with inputs (transformed)', () => {
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: false}, {name: 'my-boolean-input', required: false, transform: true}], [], false, false, [], []);
+      expect(component).toMatch(`@ProxyCmp({
+  inputs: ['my-input', 'my-boolean-input']
+})
+@Component({
+  selector: 'my-component',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['my-input', { name: 'my-boolean-input', transform: nullableBooleanAttribute }],
+  standalone: false
+})
+export class MyComponent {
+  protected el: HTMLMyComponentElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}`);
+    });
+
+    it('generates a component with inputs (required and transformed)', () => {
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-input', required: true, transform: true}], [], false, false, [], []);
+      expect(component).toContain(`  inputs: [{ name: 'my-input', required: true, transform: nullableBooleanAttribute }],`);
+    });
+
+    it('keeps transformed inputs in the ProxyCmp inputs list', () => {
+      /**
+       * The transform runs before the value is written to the proxied property, so the property
+       * still has to be proxied through to the underlying element.
+       */
+      const component = createAngularComponentDefinition('my-component', [{name: 'my-boolean-input', required: false, transform: true}], [], false, false, [], []);
+      expect(component).toContain(`  inputs: ['my-boolean-input']\n})`);
+    });
+
     it('generates a component with outputs', () => {
       const mockEvents = [
         createMockEvent('my-output'),

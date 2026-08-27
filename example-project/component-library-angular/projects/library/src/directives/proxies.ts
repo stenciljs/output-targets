@@ -2,7 +2,7 @@
 /* auto-generated angular directive proxies */
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, NgZone } from '@angular/core';
 
-import { ProxyCmp } from './angular-component-lib/utils';
+import { ProxyCmp, nullableBooleanAttribute } from './angular-component-lib/utils';
 
 import type { Components } from 'component-library/components';
 
@@ -37,7 +37,7 @@ import { defineCustomElement as defineMyTransformTest } from 'component-library/
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type'],
+  inputs: ['buttonType', 'color', { name: 'disabled', transform: nullableBooleanAttribute }, 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', { name: 'strong', transform: nullableBooleanAttribute }, 'target', 'type'],
   outputs: ['myFocus', 'myBlur'],
 })
 export class MyButton {
@@ -74,7 +74,7 @@ export declare interface MyButton extends Components.MyButton {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['buttonType', 'color', 'disabled', 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', 'strong', 'target', 'type'],
+  inputs: ['buttonType', 'color', { name: 'disabled', transform: nullableBooleanAttribute }, 'download', 'expand', 'fill', 'href', 'mode', 'rel', 'shape', 'size', { name: 'strong', transform: nullableBooleanAttribute }, 'target', 'type'],
   outputs: ['myFocus', 'myBlur'],
 })
 export class MyButtonScoped {
@@ -111,7 +111,7 @@ export declare interface MyButtonScoped extends Components.MyButtonScoped {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['alignment', 'checked', 'color', 'disabled', 'indeterminate', 'justify', 'labelPlacement', 'mode', 'name', 'value'],
+  inputs: ['alignment', { name: 'checked', transform: nullableBooleanAttribute }, 'color', { name: 'disabled', transform: nullableBooleanAttribute }, { name: 'indeterminate', transform: nullableBooleanAttribute }, 'justify', 'labelPlacement', 'mode', 'name', 'value'],
   outputs: ['ionChange', 'ionChangeNested', 'ionFocus', 'ionBlur'],
 })
 export class MyCheckbox {
@@ -327,7 +327,7 @@ export declare interface MyCounter extends Components.MyCounter {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', 'autofocus', 'clearInput', 'clearOnEdit', 'color', 'disabled', 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'spellcheck', 'step', 'type', 'value'],
+  inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', { name: 'autofocus', transform: nullableBooleanAttribute }, { name: 'clearInput', transform: nullableBooleanAttribute }, { name: 'clearOnEdit', transform: nullableBooleanAttribute }, 'color', { name: 'disabled', transform: nullableBooleanAttribute }, 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', { name: 'multiple', transform: nullableBooleanAttribute }, 'name', 'pattern', 'placeholder', { name: 'readonly', transform: nullableBooleanAttribute }, { name: 'required', transform: nullableBooleanAttribute }, 'size', { name: 'spellcheck', transform: nullableBooleanAttribute }, 'step', 'type', 'value'],
   outputs: ['myInput', 'myChange', 'myBlur', 'myFocus'],
 })
 export class MyInput {
@@ -376,7 +376,7 @@ export declare interface MyInput extends Components.MyInput {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', 'autofocus', 'clearInput', 'clearOnEdit', 'color', 'disabled', 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'spellcheck', 'step', 'type', 'value'],
+  inputs: ['accept', 'autocapitalize', 'autocomplete', 'autocorrect', { name: 'autofocus', transform: nullableBooleanAttribute }, { name: 'clearInput', transform: nullableBooleanAttribute }, { name: 'clearOnEdit', transform: nullableBooleanAttribute }, 'color', { name: 'disabled', transform: nullableBooleanAttribute }, 'enterkeyhint', 'inputmode', 'max', 'maxlength', 'min', 'minlength', 'mode', { name: 'multiple', transform: nullableBooleanAttribute }, 'name', 'pattern', 'placeholder', { name: 'readonly', transform: nullableBooleanAttribute }, { name: 'required', transform: nullableBooleanAttribute }, 'size', { name: 'spellcheck', transform: nullableBooleanAttribute }, 'step', 'type', 'value'],
   outputs: ['myInput', 'myChange', 'myBlur', 'myFocus'],
 })
 export class MyInputScoped {
@@ -513,7 +513,7 @@ export declare interface MyListScoped extends Components.MyListScoped {}
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['animated', 'backdropDismiss', { name: 'component', required: true }, 'componentProps', 'cssClass', 'event', 'keyboardClose', 'mode', 'showBackdrop', 'translucent'],
+  inputs: [{ name: 'animated', transform: nullableBooleanAttribute }, { name: 'backdropDismiss', transform: nullableBooleanAttribute }, { name: 'component', required: true }, 'componentProps', 'cssClass', 'event', { name: 'keyboardClose', transform: nullableBooleanAttribute }, 'mode', { name: 'showBackdrop', transform: nullableBooleanAttribute }, { name: 'translucent', transform: nullableBooleanAttribute }],
   outputs: ['myPopoverDidPresent', 'myPopoverWillPresent', 'myPopoverWillDismiss', 'myPopoverDidDismiss'],
 })
 export class MyPopover {
@@ -561,7 +561,7 @@ export declare interface MyPopover extends Components.MyPopover {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['alignment', 'color', 'disabled', 'justify', 'labelPlacement', 'mode', 'name', 'value'],
+  inputs: ['alignment', 'color', { name: 'disabled', transform: nullableBooleanAttribute }, 'justify', 'labelPlacement', 'mode', 'name', 'value'],
   outputs: ['ionFocus', 'ionBlur'],
 })
 export class MyRadio {
@@ -598,7 +598,7 @@ export declare interface MyRadio extends Components.MyRadio {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['allowEmptySelection', 'compareWith', 'name', 'value'],
+  inputs: [{ name: 'allowEmptySelection', transform: nullableBooleanAttribute }, 'compareWith', 'name', 'value'],
   outputs: ['myChange'],
 })
 export class MyRadioGroup {
@@ -633,7 +633,7 @@ This event will not emit when programmatically setting the `value` property.
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['color', 'debounce', 'disabled', 'dualKnobs', 'max', 'min', 'mode', 'name', 'pin', 'snaps', 'step', 'ticks', 'value'],
+  inputs: ['color', 'debounce', { name: 'disabled', transform: nullableBooleanAttribute }, { name: 'dualKnobs', transform: nullableBooleanAttribute }, 'max', 'min', 'mode', 'name', { name: 'pin', transform: nullableBooleanAttribute }, { name: 'snaps', transform: nullableBooleanAttribute }, 'step', { name: 'ticks', transform: nullableBooleanAttribute }, 'value'],
   outputs: ['myChange', 'myFocus', 'myBlur'],
 })
 export class MyRange {
@@ -698,7 +698,7 @@ export declare interface MyToggle extends Components.MyToggle {}
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['visible'],
+  inputs: [{ name: 'visible', transform: nullableBooleanAttribute }],
 })
 export class MyToggleContent {
   protected el: HTMLMyToggleContentElement;

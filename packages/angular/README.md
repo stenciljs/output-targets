@@ -57,3 +57,43 @@ export const config: Config = {
 | `outputType`           | Specifies the type of output to be generated. It can take one of the following values: <br />1. `component`: Generates all the component wrappers to be declared on an Angular module. This option is required for Stencil projects using the `dist` hydrated output.<br /> 2. `scam`: Generates a separate Angular module for each component.<br /> 3. `standalone`: Generates standalone component wrappers.<br /> Both `scam` and `standalone` options are compatible with the `dist-custom-elements` output. <br />Note: Please choose the appropriate `outputType` based on your project's requirements and the desired output structure. Defaults to `component`. |
 | `customElementsDir`    | This is the directory where the custom elements are imported from when using the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements). Defaults to the `components` directory. Only applies for `outputType: "scam"` or `outputType: "standalone"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `inlineProperties` | Experimental. When true, tries to inline the properties of components. This is required to enable Angular Language Service to type-check and show jsdocs when using the components in html-templates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `booleanAttributes`    | When `true`, boolean properties are declared with an Angular input transform so they can be set by attribute presence, e.g. `<my-component disabled>` instead of `<my-component [disabled]="true">`. Requires Angular 16.1 or later. Defaults to `false`. Refer to [Boolean attributes](#boolean-attributes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+
+## Boolean attributes
+
+Angular resolves a bare attribute to the empty string, so a boolean property has to be bound
+explicitly by default:
+
+```html
+<!-- Type 'string' is not assignable to type 'boolean' under strictTemplates -->
+<my-component disabled></my-component>
+
+<my-component [disabled]="true"></my-component>
+```
+
+Setting `booleanAttributes: true` declares boolean properties with an Angular input transform,
+which accepts the attribute form and coerces it:
+
+```html
+<my-component disabled></my-component>
+<my-component disabled="false"></my-component>
+<my-component [disabled]="isDisabled"></my-component>
+```
+
+The transform used is `nullableBooleanAttribute` rather than Angular's `booleanAttribute`. It
+coerces strings identically, but passes `null` and `undefined` through instead of coercing them to
+`false`. Components frequently treat those as a state distinct from `false`:
+
+```tsx
+// `undefined` means "decide based on the mode", which is not the same as `false`
+const showDetail = detail !== undefined ? detail : mode === 'ios';
+
+// a strict comparison also behaves differently for `null` than it does for `false`
+const showHandle = handle !== false;
+```
+
+Both values reach inputs routinely, from the `async` pipe before its first emission and from form
+control values, so coercing them would change the behavior of bindings that work today.
+
+Virtual properties are never transformed, since they are declared with a free-form type string and
+an exact `boolean` match is not reliable enough.

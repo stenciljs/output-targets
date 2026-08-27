@@ -111,6 +111,101 @@ describe('generateProxies', () => {
     expect(finalText.includes(`import { ProxyCmp } from './angular-component-lib/utils';`)).toBeTruthy();
   });
 
+  describe('when booleanAttributes is enabled', () => {
+    const booleanComponents = [
+      {
+        tagName: 'my-component',
+        componentClassName: 'MyComponent',
+        properties: [
+          { name: 'disabled', type: 'boolean', optional: false, required: false, internal: false },
+          { name: 'detail', type: 'boolean', optional: true, required: false, internal: false },
+          { name: 'color', type: 'string', optional: false, required: false, internal: false },
+        ],
+        virtualProperties: [],
+        events: [],
+        methods: [],
+      },
+    ] as unknown as ComponentCompilerMeta[];
+
+    const createOutputTarget = (booleanAttributes?: boolean): OutputTargetAngular =>
+      ({
+        componentCorePackage: 'component-library',
+        directivesProxyFile: '../component-library-angular/src/proxies.ts',
+        booleanAttributes,
+      }) as OutputTargetAngular;
+
+    it('should transform boolean properties regardless of whether they are optional', () => {
+      const finalText = generateProxies(booleanComponents, pkgData, createOutputTarget(true), rootDir, emptyConfig);
+
+      expect(finalText).toContain(`{ name: 'disabled', transform: nullableBooleanAttribute }`);
+      expect(finalText).toContain(`{ name: 'detail', transform: nullableBooleanAttribute }`);
+    });
+
+    it('should not transform properties that are not booleans', () => {
+      const finalText = generateProxies(booleanComponents, pkgData, createOutputTarget(true), rootDir, emptyConfig);
+
+      expect(finalText).not.toContain(`name: 'color'`);
+    });
+
+    it('should import the transform and leave the @angular/core imports untouched', () => {
+      const finalText = generateProxies(booleanComponents, pkgData, createOutputTarget(true), rootDir, emptyConfig);
+
+      expect(finalText).toContain(
+        `import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, NgZone } from '@angular/core';`
+      );
+      expect(finalText).toContain(
+        `import { ProxyCmp, nullableBooleanAttribute } from './angular-component-lib/utils';`
+      );
+    });
+
+    it('should not import the transform when it is not used', () => {
+      const stringOnlyComponents = [
+        {
+          tagName: 'my-component',
+          componentClassName: 'MyComponent',
+          properties: [{ name: 'color', type: 'string', optional: false, required: false, internal: false }],
+          virtualProperties: [],
+          events: [],
+          methods: [],
+        },
+      ] as unknown as ComponentCompilerMeta[];
+
+      const finalText = generateProxies(stringOnlyComponents, pkgData, createOutputTarget(true), rootDir, emptyConfig);
+
+      expect(finalText).not.toContain('booleanAttribute');
+      expect(finalText).toContain(`import { ProxyCmp } from './angular-component-lib/utils';`);
+    });
+
+    it('should not transform virtual properties', () => {
+      /**
+       * Virtual properties are declared with a free-form type string, so an exact `boolean`
+       * match is not reliable enough to transform them.
+       */
+      const virtualComponents = [
+        {
+          tagName: 'my-component',
+          componentClassName: 'MyComponent',
+          properties: [],
+          virtualProperties: [{ name: 'hidden', type: 'boolean', docs: '' }],
+          events: [],
+          methods: [],
+        },
+      ] as unknown as ComponentCompilerMeta[];
+
+      const finalText = generateProxies(virtualComponents, pkgData, createOutputTarget(true), rootDir, emptyConfig);
+
+      expect(finalText).toContain(`inputs: ['hidden']`);
+      expect(finalText).not.toContain('booleanAttribute');
+    });
+
+    it('should leave inputs untouched when not enabled', () => {
+      const finalText = generateProxies(booleanComponents, pkgData, createOutputTarget(), rootDir, emptyConfig);
+
+      expect(finalText).toContain(`inputs: ['color', 'detail', 'disabled']`);
+      expect(finalText).not.toContain('booleanAttribute');
+    });
+  });
+
   describe('when outputType is scam', () => {
     it('should include an Angular module for each component', () => {
       const outputTarget: OutputTargetAngular = {
@@ -207,6 +302,55 @@ describe('generateComponentProxy', () => {
 
     expect(result).toContain('export class MyButtonModule');
     expect(result).toContain('NgModule');
+  });
+
+  it('should transform boolean properties when booleanAttributes is enabled', () => {
+    const component: ComponentCompilerMeta = {
+      tagName: 'my-component',
+      properties: [
+        { name: 'disabled', type: 'boolean', optional: false, internal: false },
+        { name: 'detail', type: 'boolean', optional: true, internal: false },
+      ],
+      events: [],
+      methods: [],
+      virtualProperties: [],
+    } as unknown as ComponentCompilerMeta;
+
+    const outputTarget: OutputTargetAngular = {
+      componentCorePackage: 'component-library',
+      directivesProxyFile: '../component-library-angular/src/proxies.ts',
+      outputType: 'standalone',
+      customElementsDir: 'components',
+      booleanAttributes: true,
+    };
+
+    const result = generateComponentProxy(component, pkgData, outputTarget, rootDir, emptyConfig);
+
+    expect(result).toContain(`{ name: 'disabled', transform: nullableBooleanAttribute }`);
+    expect(result).toContain(`{ name: 'detail', transform: nullableBooleanAttribute }`);
+    expect(result).toContain(`import { ProxyCmp, nullableBooleanAttribute } from './angular-component-lib/utils';`);
+  });
+
+  it('should not transform boolean properties by default', () => {
+    const component: ComponentCompilerMeta = {
+      tagName: 'my-component',
+      properties: [{ name: 'disabled', type: 'boolean', optional: false, internal: false }],
+      events: [],
+      methods: [],
+      virtualProperties: [],
+    } as unknown as ComponentCompilerMeta;
+
+    const outputTarget: OutputTargetAngular = {
+      componentCorePackage: 'component-library',
+      directivesProxyFile: '../component-library-angular/src/proxies.ts',
+      outputType: 'standalone',
+      customElementsDir: 'components',
+    };
+
+    const result = generateComponentProxy(component, pkgData, outputTarget, rootDir, emptyConfig);
+
+    expect(result).toContain(`inputs: ['disabled']`);
+    expect(result).not.toContain('booleanAttribute');
   });
 });
 

@@ -95,6 +95,31 @@ export interface OutputTargetAngular {
    * @default false
    */
   esModules?: boolean;
+  /**
+   * When `true`, boolean properties are declared with an Angular input transform so they can
+   * be set using attribute presence syntax:
+   *
+   * ```html
+   * <!-- with booleanAttributes enabled -->
+   * <my-component disabled></my-component>
+   *
+   * <!-- otherwise the value has to be bound explicitly -->
+   * <my-component [disabled]="true"></my-component>
+   * ```
+   *
+   * Without a transform the Angular language service resolves the bare attribute to the empty
+   * string and reports `Type 'string' is not assignable to type 'boolean'` under
+   * `strictTemplates`.
+   *
+   * The transform coerces strings the same way Angular's `booleanAttribute` does, but passes
+   * `null` and `undefined` through instead of coercing them to `false`, so bindings that work
+   * today keep behaving the same. Refer to `nullableBooleanAttribute`.
+   *
+   * Requires Angular 16.1 or later, which is when input transforms were added.
+   *
+   * @default false
+   */
+  booleanAttributes?: boolean;
 }
 
 export type ValueAccessorTypes = 'text' | 'radio' | 'select' | 'number' | 'boolean';
@@ -113,4 +138,8 @@ export interface PackageJSON {
 export interface ComponentInputProperty {
   name: string;
   required: boolean;
+  /**
+   * Whether to declare an input transform so the property can be set by attribute presence.
+   */
+  transform?: boolean;
 }

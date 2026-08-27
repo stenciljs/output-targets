@@ -34,20 +34,38 @@ function createPropertyDeclaration(
 }
 
 /**
- * Creates a formatted inputs text with required declaration.
+ * The transform function to reference in generated code, exported from
+ * `angular-component-lib/utils`.
+ */
+export const INPUT_TRANSFORM_FUNCTION = 'nullableBooleanAttribute';
+
+/**
+ * Creates a formatted inputs text with required and transform declarations.
  *
- * @param prop A ComponentCompilerEvent or ComponentCompilerProperty to turn into a property declaration.
+ * Inputs are emitted as bare strings unless they carry options, in which case Angular's object
+ * form is used (e.g. `{ name: 'myInput', required: true }`).
+ *
  * @param inputs The inputs of the Stencil component (e.g. [{name: 'myInput', required: true]).
  * @returns The inputs list declaration as a string.
  */
 function formatInputs(inputs: readonly ComponentInputProperty[]): string {
   return inputs
     .map((item) => {
+      const options: string[] = [];
+
       if (item.required) {
-        return `{ name: '${item.name}', required: true }`;
-      } else {
+        options.push('required: true');
+      }
+
+      if (item.transform) {
+        options.push(`transform: ${INPUT_TRANSFORM_FUNCTION}`);
+      }
+
+      if (options.length === 0) {
         return `'${item.name}'`;
       }
+
+      return `{ name: '${item.name}', ${options.join(', ')} }`;
     })
     .join(', ');
 }

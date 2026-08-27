@@ -10,6 +10,7 @@ import { MyButton } from 'component-library-angular';
 })
 export class ButtonTests {
   clicked: number = 0;
+  isDisabled: boolean = true;
 
   handleClick() {
     this.clicked++;
