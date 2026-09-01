@@ -57,7 +57,7 @@ export const config: Config = {
 | `outputType`           | Specifies the type of output to be generated. It can take one of the following values: <br />1. `component`: Generates all the component wrappers to be declared on an Angular module. This option is required for Stencil projects using the `dist` hydrated output.<br /> 2. `scam`: Generates a separate Angular module for each component.<br /> 3. `standalone`: Generates standalone component wrappers.<br /> Both `scam` and `standalone` options are compatible with the `dist-custom-elements` output. <br />Note: Please choose the appropriate `outputType` based on your project's requirements and the desired output structure. Defaults to `component`. |
 | `customElementsDir`    | This is the directory where the custom elements are imported from when using the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements). Defaults to the `components` directory. Only applies for `outputType: "scam"` or `outputType: "standalone"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `inlineProperties` | Experimental. When true, tries to inline the properties of components. This is required to enable Angular Language Service to type-check and show jsdocs when using the components in html-templates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `booleanAttributes`    | When `true`, boolean properties are declared with an Angular input transform so they can be set by attribute presence, e.g. `<my-component disabled>` instead of `<my-component [disabled]="true">`. Requires Angular 16.1 or later. Defaults to `false`. Refer to [Boolean attributes](#boolean-attributes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `booleanAttributes`    | When `true`, boolean properties are declared with an Angular input transform so they can be set by attribute presence, e.g. `<my-component disabled>` instead of `<my-component [disabled]="true">`. Type-checking the attribute form also requires `inlineProperties`. Defaults to `false`. Refer to [Boolean attributes](#boolean-attributes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Boolean attributes
 
@@ -95,5 +95,31 @@ const showHandle = handle !== false;
 Both values reach inputs routinely, from the `async` pipe before its first emission and from form
 control values, so coercing them would change the behavior of bindings that work today.
 
-Virtual properties are never transformed, since they are declared with a free-form type string and
-an exact `boolean` match is not reliable enough.
+### Type-checking requires `inlineProperties`
+
+This option changes what the Angular compiler accepts, so it only has a visible effect where the
+compiler type-checks the wrapper's inputs in the first place. That needs `inlineProperties`
+enabled as well:
+
+```ts
+angularOutputTarget({
+  // ...
+  booleanAttributes: true,
+  inlineProperties: true,
+});
+```
+
+Without `inlineProperties` the generated wrappers declare no typed members for their inputs, so
+Angular does not check these bindings at all and there is no `TS2322` for the transform to
+resolve. The runtime is unaffected either way, because Stencil already coerces boolean attributes
+on the element itself.
+
+### Limitations
+
+Two kinds of property are never transformed, and a bare attribute on them still fails to compile:
+
+- **Virtual properties**, which are declared with a free-form type string, so an exact `boolean`
+  match is not reliable enough to act on.
+- **Properties whose type unions `boolean` with something else**, such as `boolean | 'auto'` or
+  `string | boolean`. Stencil reports these to the output target as `any` rather than `boolean`,
+  so there is nothing to key the transform off. Bind these explicitly.

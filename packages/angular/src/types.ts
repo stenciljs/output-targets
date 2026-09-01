@@ -107,15 +107,21 @@ export interface OutputTargetAngular {
    * <my-component [disabled]="true"></my-component>
    * ```
    *
-   * Without a transform the Angular language service resolves the bare attribute to the empty
-   * string and reports `Type 'string' is not assignable to type 'boolean'` under
-   * `strictTemplates`.
+   * Without a transform Angular resolves the bare attribute to the empty string and reports
+   * `Type 'string' is not assignable to type 'boolean'` under `strictTemplates`.
+   *
+   * This only has a visible effect where Angular type-checks the wrapper's inputs, which also
+   * requires `inlineProperties`. Without it the generated wrappers declare no typed members for
+   * their inputs, so these bindings are never checked. The runtime is unaffected either way,
+   * because Stencil already coerces boolean attributes on the element itself.
    *
    * The transform coerces strings the same way Angular's `booleanAttribute` does, but passes
    * `null` and `undefined` through instead of coercing them to `false`, so bindings that work
    * today keep behaving the same. Refer to `nullableBooleanAttribute`.
    *
-   * Requires Angular 16.1 or later, which is when input transforms were added.
+   * Properties are only transformed when Stencil reports their type as `boolean`. A type that
+   * unions `boolean` with something else, such as `boolean | 'auto'`, is reported as `any` and
+   * gets no transform.
    *
    * @default false
    */
