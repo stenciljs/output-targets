@@ -15,7 +15,11 @@ import {
   OutputTypes,
   mapPropName,
 } from './utils';
-import { createAngularComponentDefinition, createComponentTypeDefinition } from './generate-angular-component';
+import {
+  createAngularComponentDefinition,
+  createComponentTypeDefinition,
+  INPUT_TRANSFORM_FUNCTION,
+} from './generate-angular-component';
 import { generateAngularDirectivesFile } from './generate-angular-directives-file';
 import generateValueAccessors from './generate-value-accessors';
 import { generateAngularModuleForComponent } from './generate-angular-modules';
@@ -191,7 +195,7 @@ export function generateProxies(
   const booleanAttributes = outputTarget.booleanAttributes === true;
 
   if (usesInputTransform(components, booleanAttributes)) {
-    componentLibImports.push('nullableBooleanAttribute');
+    componentLibImports.push(INPUT_TRANSFORM_FUNCTION);
   }
 
   if (includeSingleComponentAngularModules) {
@@ -338,7 +342,7 @@ export function generateComponentProxy(
 
   const componentLibImports = ['ProxyCmp'];
   if (usesInputTransform([cmpMeta], booleanAttributes)) {
-    componentLibImports.push('nullableBooleanAttribute');
+    componentLibImports.push(INPUT_TRANSFORM_FUNCTION);
   }
 
   const imports = `/* tslint:disable */
