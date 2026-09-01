@@ -67,6 +67,7 @@ export const config: Config = {
       valueAccessorConfigs: angularValueAccessorBindings,
       transformTag: true,
       booleanAttributes: true,
+      inlineProperties: true,
     }),
     reactOutputTarget({
       outDir: '../component-library-react/src',

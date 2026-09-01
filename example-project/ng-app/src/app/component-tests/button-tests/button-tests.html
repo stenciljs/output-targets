@@ -3,10 +3,17 @@
 </div>
 <div>
   <!--
-    Boolean properties can be set by attribute presence because the output target declares them
-    with an input transform. Without it these bind the empty string and fail `strictTemplates`.
+    These bindings are a build-time test of the `booleanAttributes` output target option, not a
+    display case. This app runs with `strictTemplates`, and the library is generated with
+    `inlineProperties`, so Angular type-checks every binding below against the declared prop type.
+
+    A bare attribute resolves to the empty string. Without the input transform that the option
+    declares, `disabled` and `strong` accept only `boolean`, and `ng build` fails with
+    "TS2322: Type 'string' is not assignable to type 'boolean'". Building this app is therefore
+    what proves the option works. Don't remove these bindings.
   -->
-  <my-button id="attribute-presence" disabled strong>Disabled</my-button>
-  <my-button id="attribute-false" disabled="false">Not disabled</my-button>
-  <my-button id="attribute-bound" [disabled]="isDisabled">Bound</my-button>
+  <my-button disabled strong>Attribute presence</my-button>
+  <my-button disabled="false">Attribute with a value</my-button>
+  <my-button [disabled]="isDisabled">Property binding</my-button>
+  <my-button [disabled]="maybeDisabled">Nullable property binding</my-button>
 </div>

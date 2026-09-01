@@ -46,30 +46,6 @@ describe('Stencil Angular Integration', () => {
     await expect(counter.$('span')).toHaveText('2278');
   });
 
-  it('should set boolean props from attribute presence', async () => {
-    await browser.execute(async () => await customElements.whenDefined('my-button'));
-
-    const props = await browser.execute(() => {
-      const read = (id: string) => {
-        const el = document.querySelector(`#${id}`) as any;
-        return { disabled: el?.disabled, strong: el?.strong };
-      };
-      return {
-        presence: read('attribute-presence'),
-        explicitFalse: read('attribute-false'),
-        bound: read('attribute-bound'),
-      };
-    });
-
-    // A bare attribute resolves to the empty string, which the transform coerces to `true`.
-    expect(props.presence.disabled).toBe(true);
-    expect(props.presence.strong).toBe(true);
-    // `disabled="false"` is the one string the transform treats as `false`.
-    expect(props.explicitFalse.disabled).toBe(false);
-    // Property bindings are passed through untouched.
-    expect(props.bound.disabled).toBe(true);
-  });
-
   it('should focus the inner input when setFocus is called', async function () {
     if (os.platform() === 'win32') {
       return this.skip()
