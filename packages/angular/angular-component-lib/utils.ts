@@ -72,7 +72,9 @@ export const defineCustomElement = (tagName: string, customElement: any) => {
  * Declared as a function rather than an arrow constant because Angular has to resolve input
  * transforms statically when compiling a library in partial compilation mode.
  */
-export function nullableBooleanAttribute(value: unknown): boolean | null | undefined {
+export function nullableBooleanAttribute(
+  value: boolean | string | null | undefined
+): boolean | null | undefined {
   if (value === null || value === undefined) {
     return value;
   }
