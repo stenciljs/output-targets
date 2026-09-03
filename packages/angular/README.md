@@ -114,6 +114,10 @@ Angular does not check these bindings at all and there is no `TS2322` for the tr
 resolve. The runtime is unaffected either way, because Stencil already coerces boolean attributes
 on the element itself.
 
+Note that `inlineProperties` is itself experimental, so enabling both is opting into that. With
+`booleanAttributes` on its own you still get the attribute syntax at runtime, just without the
+compiler checking it.
+
 ### Limitations
 
 A property is only transformed when Stencil reports its type as exactly `boolean`. Three kinds of
