@@ -116,10 +116,23 @@ on the element itself.
 
 ### Limitations
 
-Two kinds of property are never transformed, and a bare attribute on them still fails to compile:
+A property is only transformed when Stencil reports its type as exactly `boolean`. Three kinds of
+property fall outside that, and they behave differently from each other. In all three the property
+receives the attribute's empty string rather than `true`, so bind them explicitly when you need a
+boolean.
 
-- **Virtual properties**, which are declared with a free-form type string, so an exact `boolean`
-  match is not reliable enough to act on.
-- **Properties whose type unions `boolean` with something else**, such as `boolean | 'auto'` or
-  `string | boolean`. Stencil reports these to the output target as `any` rather than `boolean`,
-  so there is nothing to key the transform off. Bind these explicitly.
+**Virtual properties** are not transformed and get no inlined class member either, so Angular has
+nothing to check the binding against and skips it. A bare attribute compiles, and the property
+receives `''`. Nothing warns you.
+
+**Properties declared as `any`** are not transformed, but they do get an inlined member typed
+`any`, so `''` is assignable. A bare attribute compiles, and the property receives `''`. Nothing
+warns you here either.
+
+**Properties whose type unions `boolean` with something else**, such as `boolean | 'auto'`, are
+reported to the output target as `any`, so they get no transform, but their inlined member keeps
+the real union type. This is the only case the compiler catches:
+
+```
+TS2322: Type '""' is not assignable to type 'boolean | "auto"'
+```

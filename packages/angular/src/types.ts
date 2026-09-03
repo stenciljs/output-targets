@@ -119,9 +119,11 @@ export interface OutputTargetAngular {
    * `null` and `undefined` through instead of coercing them to `false`, so bindings that work
    * today keep behaving the same. Refer to `nullableBooleanAttribute`.
    *
-   * Properties are only transformed when Stencil reports their type as `boolean`. A type that
-   * unions `boolean` with something else, such as `boolean | 'auto'`, is reported as `any` and
-   * gets no transform.
+   * Properties are only transformed when Stencil reports their type as exactly `boolean`.
+   * Virtual properties, properties declared as `any`, and types that union `boolean` with
+   * something else (such as `boolean | 'auto'`, reported as `any`) get no transform, and the
+   * property receives the attribute's empty string rather than `true`. Only the union case fails
+   * to compile; the other two are silent. Refer to the README for the differences.
    *
    * @default false
    */
