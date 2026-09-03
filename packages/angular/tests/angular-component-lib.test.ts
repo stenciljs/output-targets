@@ -1,12 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
-/**
- * `angular-component-lib/utils.ts` is copied into the consumer's project rather than compiled
- * here, so `rxjs` is not a dependency of this package. Only `proxyOutputs` uses it.
- */
-vi.mock('rxjs', () => ({ fromEvent: () => undefined }));
-
-const { nullableBooleanAttribute } = await import('../angular-component-lib/utils');
+import { nullableBooleanAttribute } from '../angular-component-lib/boolean-attribute';
 
 describe('nullableBooleanAttribute()', () => {
   it('coerces attribute strings the same way Angular booleanAttribute does', () => {

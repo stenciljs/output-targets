@@ -207,10 +207,15 @@ export function generateProxies(
    */
   const componentLibImports = ['ProxyCmp'];
 
+  /**
+   * The input transform lives in its own module so that it carries no runtime imports.
+   */
+  let transformImport = '';
+
   const booleanAttributes = outputTarget.booleanAttributes === true;
 
   if (usesInputTransform(components, booleanAttributes)) {
-    componentLibImports.push(INPUT_TRANSFORM_FUNCTION);
+    transformImport = `\n${createImportStatement([INPUT_TRANSFORM_FUNCTION], './angular-component-lib/boolean-attribute')}`;
   }
 
   if (includeSingleComponentAngularModules) {
@@ -221,7 +226,7 @@ export function generateProxies(
 /* auto-generated angular directive proxies */
 ${createImportStatement(angularCoreImports, '@angular/core')}
 
-${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n`;
+${createImportStatement(componentLibImports, './angular-component-lib/utils')}${transformImport}\n`;
 
   /**
    * Generate JSX import type from correct location.
@@ -356,15 +361,18 @@ export function generateComponentProxy(
   const booleanAttributes = outputTarget.booleanAttributes === true;
 
   const componentLibImports = ['ProxyCmp'];
+
+  // The input transform lives in its own module so that it carries no runtime imports.
+  let transformImport = '';
   if (usesInputTransform([cmpMeta], booleanAttributes)) {
-    componentLibImports.push(INPUT_TRANSFORM_FUNCTION);
+    transformImport = `\n${createImportStatement([INPUT_TRANSFORM_FUNCTION], './angular-component-lib/boolean-attribute')}`;
   }
 
   const imports = `/* tslint:disable */
 /* auto-generated angular directive proxies */
 ${createImportStatement(angularCoreImports, '@angular/core')}
 
-${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n`;
+${createImportStatement(componentLibImports, './angular-component-lib/utils')}${transformImport}\n`;
 
   // Type imports
   const importLocation = componentCorePackage

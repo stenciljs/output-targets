@@ -153,8 +153,9 @@ describe('generateProxies', () => {
       expect(finalText).toContain(
         `import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, NgZone } from '@angular/core';`
       );
+      expect(finalText).toContain(`import { ProxyCmp } from './angular-component-lib/utils';`);
       expect(finalText).toContain(
-        `import { ProxyCmp, nullableBooleanAttribute } from './angular-component-lib/utils';`
+        `import { nullableBooleanAttribute } from './angular-component-lib/boolean-attribute';`
       );
     });
 
@@ -328,7 +329,10 @@ describe('generateComponentProxy', () => {
 
     expect(result).toContain(`{ name: 'disabled', transform: nullableBooleanAttribute }`);
     expect(result).toContain(`{ name: 'detail', transform: nullableBooleanAttribute }`);
-    expect(result).toContain(`import { ProxyCmp, nullableBooleanAttribute } from './angular-component-lib/utils';`);
+    expect(result).toContain(`import { ProxyCmp } from './angular-component-lib/utils';`);
+    expect(result).toContain(
+      `import { nullableBooleanAttribute } from './angular-component-lib/boolean-attribute';`
+    );
   });
 
   it('should not transform boolean properties by default', () => {
