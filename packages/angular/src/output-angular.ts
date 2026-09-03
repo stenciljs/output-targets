@@ -28,9 +28,25 @@ import { generateTransformTagScript } from './generate-transformtag-script';
 const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
 
 /**
+ * Whether a property declares an input transform.
+ *
+ * This is the single definition of the rule. Both the generated declaration and the import that
+ * satisfies it are derived from it, so widening the rule can't leave a generated file referencing
+ * a transform it never imports.
+ *
+ * @param prop The property compiler metadata.
+ * @param booleanAttributes Whether boolean properties should declare an input transform.
+ * @returns `true` when the property should be transformed.
+ */
+const isTransformedProp = (prop: { type?: string }, booleanAttributes: boolean) =>
+  booleanAttributes && prop.type === 'boolean';
+
+/**
  * Maps a Stencil property to an Angular input declaration.
  *
- * Only boolean properties declare a transform, and only when `booleanAttributes` is enabled.
+ * Virtual properties are mapped with `booleanAttributes` left at its default of `false`. They
+ * carry a free-form type string and no `required` flag, so they are never transformed and always
+ * come out as optional.
  *
  * @param prop The property compiler metadata.
  * @param booleanAttributes Whether boolean properties should declare an input transform.
@@ -42,7 +58,7 @@ const mapInputProp = (
 ): ComponentInputProperty => ({
   name: prop.name,
   required: prop.required ?? false,
-  transform: booleanAttributes && prop.type === 'boolean' ? true : undefined,
+  transform: isTransformedProp(prop, booleanAttributes) ? true : undefined,
 });
 
 /**
@@ -54,9 +70,8 @@ const mapInputProp = (
  * @returns `true` when at least one property is transformed.
  */
 const usesInputTransform = (components: readonly ComponentCompilerMeta[], booleanAttributes: boolean) =>
-  booleanAttributes &&
   components.some((cmpMeta) =>
-    (cmpMeta.properties ?? []).filter(filterInternalProps).some((p) => p.type === 'boolean')
+    (cmpMeta.properties ?? []).filter(filterInternalProps).some((prop) => isTransformedProp(prop, booleanAttributes))
   );
 
 export async function angularDirectiveProxyOutput(
