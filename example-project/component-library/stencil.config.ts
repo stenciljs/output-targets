@@ -66,6 +66,15 @@ export const config: Config = {
       directivesProxyFile: '../component-library-angular/projects/library/src/directives/proxies.ts',
       valueAccessorConfigs: angularValueAccessorBindings,
       transformTag: true,
+      /**
+       * Deliberately not the default shape, so don't read this as the recommended config.
+       * `booleanAttributes` is opt-in and `inlineProperties` is experimental. Both are on
+       * because the `strictTemplates` test in ng-app only means something when Angular
+       * type-checks the wrappers' inputs, which needs `inlineProperties`. The default shape is
+       * covered by the unit tests in `packages/angular/tests`.
+       */
+      booleanAttributes: true,
+      inlineProperties: true,
     }),
     reactOutputTarget({
       outDir: '../component-library-react/src',

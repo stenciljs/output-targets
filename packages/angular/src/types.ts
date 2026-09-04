@@ -95,6 +95,43 @@ export interface OutputTargetAngular {
    * @default false
    */
   esModules?: boolean;
+  /**
+   * When `true`, boolean properties are declared with an Angular input transform so they can
+   * be set using attribute presence syntax:
+   *
+   * ```html
+   * <!-- with booleanAttributes enabled -->
+   * <my-component disabled></my-component>
+   *
+   * <!-- otherwise the value has to be bound explicitly -->
+   * <my-component [disabled]="true"></my-component>
+   * ```
+   *
+   * Without a transform Angular resolves the bare attribute to the empty string and reports
+   * `Type 'string' is not assignable to type 'boolean'` under `strictTemplates`.
+   *
+   * Compile-time checking of these bindings also requires `inlineProperties`. Without it the
+   * generated wrappers declare no typed members for their inputs, so Angular never checks them
+   * and there is no error for the transform to resolve.
+   *
+   * The transform still runs either way, because Angular applies it from the component
+   * definition's input map rather than from a declared class member. Enabling this on its own
+   * therefore moves boolean coercion from Stencil to the transform with nothing checking what
+   * callers pass, so prefer enabling `inlineProperties` alongside it.
+   *
+   * The transform coerces strings the same way Angular's `booleanAttribute` does, but passes
+   * `null` and `undefined` through instead of coercing them to `false`. Refer to
+   * `nullableBooleanAttribute`.
+   *
+   * Properties are only transformed when Stencil reports their type as exactly `boolean`.
+   * Virtual properties, properties declared as `any`, and types that union `boolean` with
+   * something else (such as `boolean | 'auto'`, reported as `any`) get no transform, and the
+   * property receives the attribute's empty string rather than `true`. Only the union case fails
+   * to compile; the other two are silent. Refer to the README for the differences.
+   *
+   * @default false
+   */
+  booleanAttributes?: boolean;
 }
 
 export type ValueAccessorTypes = 'text' | 'radio' | 'select' | 'number' | 'boolean';
@@ -113,4 +150,8 @@ export interface PackageJSON {
 export interface ComponentInputProperty {
   name: string;
   required: boolean;
+  /**
+   * Whether to declare an input transform so the property can be set by attribute presence.
+   */
+  transform?: boolean;
 }

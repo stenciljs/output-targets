@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  },
+  /**
+   * Only the modules the tests actually import. `angular-component-lib/utils.ts` is deliberately
+   * left out: it imports `rxjs` for `proxyOutputs`, which is not a dependency of this package
+   * because that file ships as source for consumers to compile.
+   */
+  "include": ["src", "tests", "angular-component-lib/boolean-attribute.ts"]
+}

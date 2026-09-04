@@ -15,11 +15,64 @@ import {
   OutputTypes,
   mapPropName,
 } from './utils';
-import { createAngularComponentDefinition, createComponentTypeDefinition } from './generate-angular-component';
+import {
+  createAngularComponentDefinition,
+  createComponentTypeDefinition,
+  INPUT_TRANSFORM_FUNCTION,
+} from './generate-angular-component';
 import { generateAngularDirectivesFile } from './generate-angular-directives-file';
 import generateValueAccessors from './generate-value-accessors';
 import { generateAngularModuleForComponent } from './generate-angular-modules';
 import { generateTransformTagScript } from './generate-transformtag-script';
+
+const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
+
+/**
+ * Whether a property declares an input transform.
+ *
+ * This is the single definition of the rule. Both the generated declaration and the import that
+ * satisfies it are derived from it, so widening the rule can't leave a generated file referencing
+ * a transform it never imports.
+ *
+ * @param prop The property compiler metadata.
+ * @param booleanAttributes Whether boolean properties should declare an input transform.
+ * @returns `true` when the property should be transformed.
+ */
+const isTransformedProp = (prop: { type?: string }, booleanAttributes: boolean) =>
+  booleanAttributes && prop.type === 'boolean';
+
+/**
+ * Maps a Stencil property to an Angular input declaration.
+ *
+ * Virtual properties are mapped with `booleanAttributes` left at its default of `false`. They
+ * carry a free-form type string and no `required` flag, so they are never transformed and always
+ * come out as optional.
+ *
+ * @param prop The property compiler metadata.
+ * @param booleanAttributes Whether boolean properties should declare an input transform.
+ * @returns The Angular input declaration.
+ */
+const mapInputProp = (
+  prop: { name: string; required?: boolean; type?: string },
+  booleanAttributes = false
+): ComponentInputProperty => ({
+  name: prop.name,
+  required: prop.required ?? false,
+  transform: isTransformedProp(prop, booleanAttributes) ? true : undefined,
+});
+
+/**
+ * Whether any of a component's properties will declare an input transform, which determines
+ * whether the transform needs to be imported.
+ *
+ * @param components The components in the generated file.
+ * @param booleanAttributes Whether boolean properties should declare an input transform.
+ * @returns `true` when at least one property is transformed.
+ */
+const usesInputTransform = (components: readonly ComponentCompilerMeta[], booleanAttributes: boolean) =>
+  components.some((cmpMeta) =>
+    (cmpMeta.properties ?? []).filter(filterInternalProps).some((prop) => isTransformedProp(prop, booleanAttributes))
+  );
 
 export async function angularDirectiveProxyOutput(
   compilerCtx: CompilerCtx,
@@ -154,6 +207,17 @@ export function generateProxies(
    */
   const componentLibImports = ['ProxyCmp'];
 
+  /**
+   * The input transform lives in its own module so that it carries no runtime imports.
+   */
+  let transformImport = '';
+
+  const booleanAttributes = outputTarget.booleanAttributes === true;
+
+  if (usesInputTransform(components, booleanAttributes)) {
+    transformImport = `\n${createImportStatement([INPUT_TRANSFORM_FUNCTION], './angular-component-lib/boolean-attribute')}`;
+  }
+
   if (includeSingleComponentAngularModules) {
     angularCoreImports.push('NgModule');
   }
@@ -162,7 +226,8 @@ export function generateProxies(
 /* auto-generated angular directive proxies */
 ${createImportStatement(angularCoreImports, '@angular/core')}
 
-${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n`;
+${createImportStatement(componentLibImports, './angular-component-lib/utils')}${transformImport}\n`;
+
   /**
    * Generate JSX import type from correct location.
    * When using custom elements build, we need to import from
@@ -200,14 +265,6 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
 
   const proxyFileOutput = [];
 
-  const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
-
-  // Ensure that virtual properties has required as false.
-  const mapInputProp = (prop: { name: string; required?: boolean }) => ({
-    name: prop.name,
-    required: prop.required ?? false,
-  });
-
   const { componentCorePackage, customElementsDir } = outputTarget;
 
   for (let cmpMeta of components) {
@@ -219,10 +276,10 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}\n
       internalProps.push(...cmpMeta.properties.filter(filterInternalProps));
     }
 
-    const inputs = internalProps.map(mapInputProp);
+    const inputs = internalProps.map((prop) => mapInputProp(prop, booleanAttributes));
 
     if (cmpMeta.virtualProperties) {
-      inputs.push(...cmpMeta.virtualProperties.map(mapInputProp));
+      inputs.push(...cmpMeta.virtualProperties.map((prop) => mapInputProp(prop)));
     }
 
     const orderedInputs = sortBy(inputs, (cip: ComponentInputProperty) => cip.name);
@@ -301,11 +358,21 @@ export function generateComponentProxy(
     angularCoreImports.push('NgModule');
   }
 
+  const booleanAttributes = outputTarget.booleanAttributes === true;
+
+  const componentLibImports = ['ProxyCmp'];
+
+  // The input transform lives in its own module so that it carries no runtime imports.
+  let transformImport = '';
+  if (usesInputTransform([cmpMeta], booleanAttributes)) {
+    transformImport = `\n${createImportStatement([INPUT_TRANSFORM_FUNCTION], './angular-component-lib/boolean-attribute')}`;
+  }
+
   const imports = `/* tslint:disable */
 /* auto-generated angular directive proxies */
 ${createImportStatement(angularCoreImports, '@angular/core')}
 
-${createImportStatement(['ProxyCmp'], './angular-component-lib/utils')}\n`;
+${createImportStatement(componentLibImports, './angular-component-lib/utils')}${transformImport}\n`;
 
   // Type imports
   const importLocation = componentCorePackage
@@ -322,20 +389,14 @@ ${createImportStatement(['ProxyCmp'], './angular-component-lib/utils')}\n`;
   }
 
   // Generate component definition
-  const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
-  const mapInputProp = (prop: { name: string; required?: boolean }) => ({
-    name: prop.name,
-    required: prop.required ?? false,
-  });
-
   const internalProps: ComponentCompilerProperty[] = [];
   if (cmpMeta.properties) {
     internalProps.push(...cmpMeta.properties.filter(filterInternalProps));
   }
 
-  const inputs = internalProps.map(mapInputProp);
+  const inputs = internalProps.map((prop) => mapInputProp(prop, booleanAttributes));
   if (cmpMeta.virtualProperties) {
-    inputs.push(...cmpMeta.virtualProperties.map(mapInputProp));
+    inputs.push(...cmpMeta.virtualProperties.map((prop) => mapInputProp(prop)));
   }
 
   const orderedInputs = sortBy(inputs, (cip: ComponentInputProperty) => cip.name);
