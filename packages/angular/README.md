@@ -111,8 +111,14 @@ angularOutputTarget({
 
 Without `inlineProperties` the generated wrappers declare no typed members for their inputs, so
 Angular does not check these bindings at all and there is no `TS2322` for the transform to
-resolve. The runtime is unaffected either way, because Stencil already coerces boolean attributes
-on the element itself.
+resolve.
+
+The transform itself still runs either way. Angular applies it from the component definition's
+input map, which does not depend on a declared class member, so enabling `booleanAttributes` on
+its own moves boolean coercion from Stencil to the transform without the compiler checking what
+you pass. The two agree on strings, booleans, `null` and `undefined`. If you bind a value outside
+those, prefer enabling `inlineProperties` too so that `ngAcceptInputType_*` rejects it at compile
+time rather than silently coercing it.
 
 Note that `inlineProperties` is itself experimental, so enabling both is opting into that. With
 `booleanAttributes` on its own you still get the attribute syntax at runtime, just without the
