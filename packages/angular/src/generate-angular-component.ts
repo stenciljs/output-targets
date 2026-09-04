@@ -35,7 +35,7 @@ function createPropertyDeclaration(
 
 /**
  * The transform function to reference in generated code, exported from
- * `angular-component-lib/utils`.
+ * `angular-component-lib/boolean-attribute`.
  */
 export const INPUT_TRANSFORM_FUNCTION = 'nullableBooleanAttribute';
 
