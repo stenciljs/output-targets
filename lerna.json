@@ -1,19 +1,9 @@
 {
-  "packages": [
-    "packages/angular-output-target",
-    "packages/react-output-target",
-    "packages/vue-output-target",
-    "packages/svelte-output-target",
-    "packages/example-project/component-library",
-    "packages/example-project/component-library-angular",
-    "packages/example-project/component-library-react",
-    "packages/example-project/component-library-vue",
-    "packages/example-project/component-library-svelte"
-  ],
   "version": "independent",
   "command": {
     "publish": {
-      "ignoreChanges": ["packages/example-project/*"]
+      "ignoreChanges": ["example-project/**", "**/package.json", "**/package-lock.json"]
     }
-  }
+  },
+  "npmClient": "pnpm"
 }

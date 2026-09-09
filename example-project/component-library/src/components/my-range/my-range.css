@@ -1,0 +1,119 @@
+:host {
+  --knob-size: 26px;
+  --bar-height: 4px;
+  --bar-background: rgba(0, 84, 233, 0.26);
+  --bar-background-active: #0054e9;
+  --knob-background: #0054e9;
+  --pin-background: #0054e9;
+  --pin-color: #fff;
+  --height: 42px;
+
+  display: flex;
+  position: relative;
+  flex: 1;
+  align-items: center;
+  width: 100%;
+  min-width: 200px;
+  height: var(--height);
+  padding: 0 calc(var(--knob-size) / 2);
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:host(.range-disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.range-slider {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: var(--height);
+  contain: size style;
+  cursor: grab;
+  touch-action: none;
+}
+
+:host(.range-pressed) .range-slider {
+  cursor: grabbing;
+}
+
+.range-bar {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  height: var(--bar-height);
+  transform: translateY(-50%);
+  background: var(--bar-background);
+  border-radius: var(--bar-height);
+  pointer-events: none;
+}
+
+.range-bar-active {
+  width: auto;
+  background: var(--bar-background-active);
+}
+
+.range-tick {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: var(--bar-height);
+  margin-left: -1px;
+  transform: translateY(-50%);
+  background: var(--bar-background);
+  pointer-events: none;
+}
+
+.range-tick-active {
+  background: var(--bar-background-active);
+}
+
+.range-knob-handle {
+  position: absolute;
+  top: 0;
+  width: var(--knob-size);
+  height: var(--height);
+  margin-left: calc(0px - var(--knob-size) / 2);
+  text-align: center;
+  outline: none;
+  touch-action: none;
+}
+
+.range-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--knob-size);
+  height: var(--knob-size);
+  transform: translate(-50%, -50%);
+  background: var(--knob-background);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.range-knob-pressed .range-knob {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.range-pin {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  min-width: 28px;
+  height: 22px;
+  transform: translate(-50%, -100%);
+  padding: 2px 4px;
+  background: var(--pin-background);
+  color: var(--pin-color);
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  box-sizing: border-box;
+  pointer-events: none;
+}

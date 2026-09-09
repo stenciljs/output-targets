@@ -1,0 +1,34 @@
+<div style="display:flex;flex-direction: column;gap:3rem">
+  <app-button-tests></app-button-tests>
+  <app-checkbox-tests></app-checkbox-tests>
+  <app-complex-props-tests></app-complex-props-tests>
+  <my-component first="John" [middleName]="middleName" last="Doe" (myCustomEvent)="onMyCustomEvent()"></my-component>
+  @if (myCustomEventFired) {
+    <div data-testid="my-custom-event-fired">myCustomEvent fired!</div>
+  }
+  <button data-testid="change-middle-name" (click)="changeMiddleName()">Change middle name</button>
+  <div>
+    <my-counter [startValue]="2277"></my-counter>
+  </div>
+  <app-input-form-tests></app-input-form-tests>
+
+  <my-radio-group [(ngModel)]="selectedColor">
+      <my-radio value="Red">Red</my-radio>
+      <my-radio value="Green">Green</my-radio>
+      <my-radio value="Blue">Blue</my-radio>
+  </my-radio-group>
+  Selected: {{ selectedColor }}
+
+  <app-range-tests></app-range-tests>
+
+  <my-toggle>
+    Toggle Content
+  </my-toggle>
+
+  <hr />
+  <h2>Transform Tag Test</h2>
+  <v1-my-transform-test message="This component's tag should be transformed to v1-my-transform-test"></v1-my-transform-test>
+  <p data-testid="transform-test-info">
+    Check the DOM: the tag should be &lt;v1-my-transform-test&gt; instead of &lt;my-transform-test&gt;
+  </p>
+</div>

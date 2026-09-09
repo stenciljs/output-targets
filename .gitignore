@@ -3,4 +3,13 @@ dist/
 build/
 *.swp
 .DS_Store
+.idea/
 .vscode
+.npmrc
+*.tgz
+*.lerna_backup
+example-project/component-library/hydrate
+example-project/component-library/components
+*.tsbuildinfo
+.claude/
+.next/

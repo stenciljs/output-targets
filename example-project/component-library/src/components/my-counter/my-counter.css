@@ -1,0 +1,10 @@
+:host button {
+  padding: 5px 10px;
+  font-size: 20px;
+  margin: 0 10px;
+}
+
+:host span {
+  font-size: 20px;
+  margin: 0 10px;
+}

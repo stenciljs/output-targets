@@ -1,0 +1,18 @@
+name: Needs Reproduction
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  reproduire:
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'needs reproduction'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+      - uses: Hebilicious/reproduire@v0.0.9
+        with:
+          label: needs reproduction

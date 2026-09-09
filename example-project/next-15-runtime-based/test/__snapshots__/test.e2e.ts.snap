@@ -1,0 +1,562 @@
+// Snapshot v1
+
+exports[`complex-props-scoped > should correctly server side render complex props 1`] = `
+"
+<div id="complex-props-scoped">
+  <my-complex-props-scoped
+    class="hydrated sc-my-complex-props-scoped-h"
+    grault="Infinity"
+    s-id="x"
+  >
+    <ul
+      c-id="x"
+      class="sc-my-complex-props-scoped"
+    >
+      <li
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        this.foo.bar: baz
+      </li>
+      <li
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        this.foo.loo: 1, 2, 3
+      </li>
+      <li
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        this.foo.qux: symbol
+      </li>
+      <li
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        this.baz.get('foo'): symbol
+      </li>
+      <li
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        this.quux.has('foo'): true
+      </li>
+      <li
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        this.grault: true
+      </li>
+      <li
+        c-id="x"
+        class="sc-my-complex-props-scoped"
+      >
+        this.waldo: true
+      </li>
+    </ul>
+  </my-complex-props-scoped>
+</div>
+"
+`;
+
+exports[`complex-props-shadow > should correctly server side render complex props 1`] = `
+"
+<div id="complex-props-shadow">
+  <my-complex-props
+    class="hydrated sc-my-complex-props-h"
+    grault="Infinity"
+    s-id="x"
+  >
+    <template shadowrootmode="open">
+      <ul
+        c-id="x"
+        class="sc-my-complex-props"
+      >
+        <li
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          this.foo.bar: baz
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          this.foo.loo: 1, 2, 3
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          this.foo.qux: symbol
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          this.baz.get('foo'): symbol
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          this.quux.has('foo'): true
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          this.grault: true
+        </li>
+        <li
+          c-id="x"
+          class="sc-my-complex-props"
+        >
+          this.waldo: true
+        </li>
+      </ul>
+    </template>
+  </my-complex-props>
+</div>
+"
+`;
+
+exports[`nested-shadow > should correctly server side render 1`] = `
+"
+<div id="nested-shadow">
+  <my-list
+    class="hydrated sc-my-list-h"
+    s-id="x"
+  >
+    <template shadowrootmode="open">
+      <ul
+        c-id="x"
+        class="sc-my-list"
+      >
+        <slot
+          c-id="x"
+          class="sc-my-list"
+        >
+        </slot>
+      </ul>
+    </template>
+    <my-list-item
+      class="hydrated sc-my-list-item-h"
+      s-id="x"
+    >
+      <template shadowrootmode="open">
+        <li
+          c-id="x"
+          class="sc-my-list-item"
+        >
+          <slot
+            c-id="x"
+            class="sc-my-list-item"
+          >
+          </slot>
+        </li>
+      </template>
+      Foo Shadow
+    </my-list-item>
+    <my-list-item
+      class="hydrated sc-my-list-item-h"
+      s-id="x"
+    >
+      <template shadowrootmode="open">
+        <li
+          c-id="x"
+          class="sc-my-list-item"
+        >
+          <slot
+            c-id="x"
+            class="sc-my-list-item"
+          >
+          </slot>
+        </li>
+      </template>
+      Bar Shadow
+    </my-list-item>
+    <my-list-item
+      class="hydrated sc-my-list-item-h"
+      s-id="x"
+    >
+      <template shadowrootmode="open">
+        <li
+          c-id="x"
+          class="sc-my-list-item"
+        >
+          <slot
+            c-id="x"
+            class="sc-my-list-item"
+          >
+          </slot>
+        </li>
+      </template>
+      Loo Shadow
+    </my-list-item>
+  </my-list>
+</div>
+"
+`;
+
+exports[`single-children-scoped > should correctly server side render 1`] = `
+"
+<div id="single-children-scoped">
+  <my-button-scoped
+    class="hydrated my-activatable my-focusable sc-my-button-scoped sc-my-button-scoped-h undefined undefined-outline"
+    fill="outline"
+    s-id="x"
+  >
+    <button
+      c-id="x"
+      class="button-native sc-my-button-scoped"
+    >
+      <span
+        c-id="x"
+        class="button-inner sc-my-button-scoped sc-my-button-scoped-s"
+      >
+        Test
+      </span>
+    </button>
+  </my-button-scoped>
+</div>
+"
+`;
+
+exports[`single-children-shadow > should correctly server side render 1`] = `
+"
+<div id="single-children-shadow">
+  <my-button
+    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-outline"
+    fill="outline"
+    s-id="x"
+  >
+    <button
+      c-id="x"
+      class="button-native sc-my-button"
+    >
+      <span
+        c-id="x"
+        class="button-inner sc-my-button sc-my-button-s"
+      >
+        Test
+      </span>
+    </button>
+  </my-button>
+</div>
+"
+`;
+
+exports[`style-deduplication-scoped > should server side render component with style tags and precedence attributes 1`] = `
+"
+<div id="style-deduplication-scoped">
+  <my-counter
+    class="hydrated sc-my-counter-h"
+    s-id="x"
+    start-value="1"
+  >
+    <div
+      c-id="x"
+      class="sc-my-counter"
+    >
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        -
+      </button>
+      <span
+        c-id="x"
+        class="sc-my-counter"
+      >
+        1
+      </span>
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        +
+      </button>
+    </div>
+  </my-counter>
+  <my-counter
+    class="hydrated sc-my-counter-h"
+    s-id="x"
+    start-value="2"
+  >
+    <div
+      c-id="x"
+      class="sc-my-counter"
+    >
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        -
+      </button>
+      <span
+        c-id="x"
+        class="sc-my-counter"
+      >
+        2
+      </span>
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        +
+      </button>
+    </div>
+  </my-counter>
+  <my-counter
+    class="hydrated sc-my-counter-h"
+    s-id="x"
+    start-value="3"
+  >
+    <div
+      c-id="x"
+      class="sc-my-counter"
+    >
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        -
+      </button>
+      <span
+        c-id="x"
+        class="sc-my-counter"
+      >
+        3
+      </span>
+      <button
+        c-id="x"
+        class="sc-my-counter"
+      >
+        +
+      </button>
+    </div>
+  </my-counter>
+  <my-button
+    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-outline"
+    fill="outline"
+    s-id="x"
+  >
+    <button
+      c-id="x"
+      class="button-native sc-my-button"
+    >
+      <span
+        c-id="x"
+        class="button-inner sc-my-button sc-my-button-s"
+      >
+        Button 1
+      </span>
+    </button>
+  </my-button>
+  <my-button
+    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-solid"
+    fill="solid"
+    s-id="x"
+  >
+    <button
+      c-id="x"
+      class="button-native sc-my-button"
+    >
+      <span
+        c-id="x"
+        class="button-inner sc-my-button sc-my-button-s"
+      >
+        Button 2
+      </span>
+    </button>
+  </my-button>
+  <my-button
+    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-clear"
+    fill="clear"
+    s-id="x"
+  >
+    <button
+      c-id="x"
+      class="button-native sc-my-button"
+    >
+      <span
+        c-id="x"
+        class="button-inner sc-my-button sc-my-button-s"
+      >
+        Button 3
+      </span>
+    </button>
+  </my-button>
+  <my-component
+    class="hydrated sc-my-component-h"
+    first="John"
+    last="Doe"
+    middle-name="A"
+    s-id="x"
+  >
+    <div
+      c-id="x"
+      class="sc-my-component"
+    >
+      Hello, World! I'm John A Doe
+    </div>
+  </my-component>
+  <my-component
+    class="hydrated sc-my-component-h"
+    first="Jane"
+    last="Smith"
+    middle-name="B"
+    s-id="x"
+  >
+    <div
+      c-id="x"
+      class="sc-my-component"
+    >
+      Hello, World! I'm Jane B Smith
+    </div>
+  </my-component>
+  <my-component
+    class="hydrated sc-my-component-h"
+    first="Bob"
+    last="Jones"
+    middle-name="C"
+    s-id="x"
+  >
+    <div
+      c-id="x"
+      class="sc-my-component"
+    >
+      Hello, World! I'm Bob C Jones
+    </div>
+  </my-component>
+  <my-radio
+    aria-checked="false"
+    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
+    role="radio"
+    s-id="x"
+    value="option1"
+  >
+    <label
+      c-id="x"
+      class="radio-wrapper sc-my-radio"
+    >
+      <div
+        c-id="x"
+        class="label-text-wrapper sc-my-radio sc-my-radio-s"
+        part="label"
+      >
+        Option 1
+      </div>
+      <div
+        c-id="x"
+        class="native-wrapper sc-my-radio"
+      >
+        <div
+          c-id="x"
+          class="radio-icon sc-my-radio"
+          part="container"
+        >
+          <div
+            c-id="x"
+            class="radio-inner sc-my-radio"
+            part="mark"
+          >
+          </div>
+          <div
+            c-id="x"
+            class="radio-ripple sc-my-radio"
+          >
+          </div>
+        </div>
+      </div>
+    </label>
+  </my-radio>
+  <my-radio
+    aria-checked="false"
+    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
+    role="radio"
+    s-id="x"
+    value="option2"
+  >
+    <label
+      c-id="x"
+      class="radio-wrapper sc-my-radio"
+    >
+      <div
+        c-id="x"
+        class="label-text-wrapper sc-my-radio sc-my-radio-s"
+        part="label"
+      >
+        Option 2
+      </div>
+      <div
+        c-id="x"
+        class="native-wrapper sc-my-radio"
+      >
+        <div
+          c-id="x"
+          class="radio-icon sc-my-radio"
+          part="container"
+        >
+          <div
+            c-id="x"
+            class="radio-inner sc-my-radio"
+            part="mark"
+          >
+          </div>
+          <div
+            c-id="x"
+            class="radio-ripple sc-my-radio"
+          >
+          </div>
+        </div>
+      </div>
+    </label>
+  </my-radio>
+  <my-radio
+    aria-checked="false"
+    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
+    role="radio"
+    s-id="x"
+    value="option3"
+  >
+    <label
+      c-id="x"
+      class="radio-wrapper sc-my-radio"
+    >
+      <div
+        c-id="x"
+        class="label-text-wrapper sc-my-radio sc-my-radio-s"
+        part="label"
+      >
+        Option 3
+      </div>
+      <div
+        c-id="x"
+        class="native-wrapper sc-my-radio"
+      >
+        <div
+          c-id="x"
+          class="radio-icon sc-my-radio"
+          part="container"
+        >
+          <div
+            c-id="x"
+            class="radio-inner sc-my-radio"
+            part="mark"
+          >
+          </div>
+          <div
+            c-id="x"
+            class="radio-ripple sc-my-radio"
+          >
+          </div>
+        </div>
+      </div>
+    </label>
+  </my-radio>
+</div>
+"
+`;

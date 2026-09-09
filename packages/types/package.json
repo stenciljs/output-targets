@@ -1,0 +1,67 @@
+{
+  "name": "@stencil/types-output-target",
+  "version": "1.0.0",
+  "description": "Generate native TypeScript type definitions for using Stencil web components in various frameworks (React, Vue, Svelte, Solid, Preact).",
+  "author": "Ionic Team",
+  "homepage": "https://stenciljs.com/",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stenciljs/output-targets/issues"
+  },
+  "files": [
+    "dist/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "stencil": {
+    "wizard": "./dist/wizard.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./wizard": {
+      "types": "./dist/wizard.d.ts",
+      "import": "./dist/wizard.js"
+    }
+  },
+  "scripts": {
+    "prepublishOnly": "pnpm run build",
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "version": "pnpm run build",
+    "prettier": "prettier \"./src/**/*.{html,ts,tsx,js,jsx}\" --write",
+    "release": "np",
+    "test": "vitest run",
+    "test.watch": "vitest --watch",
+    "coverage": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stenciljs/output-targets.git"
+  },
+  "peerDependencies": {
+    "@stencil/core": ">=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0"
+  },
+  "devDependencies": {
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
+    "@stencil/core": "4.41.0",
+    "@types/node": "^20.14.12",
+    "stencil-output-targets-shared": "workspace:*",
+    "typescript": "^5.4.4",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.8.1"
+  },
+  "peerDependenciesMeta": {
+    "@stencil/core": {
+      "optional": false
+    }
+  }
+}

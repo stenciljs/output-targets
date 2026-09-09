@@ -1,0 +1,130 @@
+import { Config } from '@stencil/core';
+import { angularOutputTarget, ValueAccessorConfig } from '@stencil/angular-output-target';
+import { reactOutputTarget } from '@stencil/react-output-target';
+import { typesOutputTarget } from '@stencil/types-output-target';
+import { vueOutputTarget, ComponentModelConfig } from '@stencil/vue-output-target';
+
+const angularValueAccessorBindings: ValueAccessorConfig[] = [
+  {
+    elementSelectors: ['my-input[type=text],my-input[type=email],my-input[type=password]'],
+    event: 'myChange',
+    targetAttr: 'value',
+    type: 'text',
+  },
+  {
+    elementSelectors: ['my-input[type=number]'],
+    event: 'myChange',
+    targetAttr: 'value',
+    type: 'number',
+  },
+  {
+    elementSelectors: ['my-checkbox'],
+    event: 'ionChange',
+    targetAttr: 'checked',
+    type: 'boolean',
+  },
+  {
+    elementSelectors: ['my-range', 'my-radio-group'],
+    event: 'myChange',
+    targetAttr: 'value',
+    type: 'select',
+  },
+  {
+    elementSelectors: ['my-radio'],
+    event: 'mySelect',
+    targetAttr: 'checked',
+    type: 'radio',
+  },
+];
+
+const vueComponentModels: ComponentModelConfig[] = [
+  {
+    elements: ['my-input', 'my-range'],
+    event: 'myChange',
+    targetAttr: 'value',
+  },
+  {
+    elements: ['my-checkbox'],
+    event: 'ionChangeNested',
+    targetAttr: 'checked',
+    eventAttr: 'detail.nested.checked',
+  },
+  {
+    elements: ['my-range', 'my-radio-group'],
+    event: 'myChange',
+    targetAttr: 'value',
+  },
+];
+
+export const config: Config = {
+  namespace: 'component-library',
+  taskQueue: 'async',
+  minifyJs: false,
+  outputTargets: [
+    angularOutputTarget({
+      componentCorePackage: 'component-library',
+      directivesProxyFile: '../component-library-angular/projects/library/src/directives/proxies.ts',
+      valueAccessorConfigs: angularValueAccessorBindings,
+      transformTag: true,
+      /**
+       * Deliberately not the default shape, so don't read this as the recommended config.
+       * `booleanAttributes` is opt-in and `inlineProperties` is experimental. Both are on
+       * because the `strictTemplates` test in ng-app only means something when Angular
+       * type-checks the wrappers' inputs, which needs `inlineProperties`. The default shape is
+       * covered by the unit tests in `packages/angular/tests`.
+       */
+      booleanAttributes: true,
+      inlineProperties: true,
+    }),
+    reactOutputTarget({
+      outDir: '../component-library-react/src',
+      hydrateModule: 'component-library/hydrate',
+      clientModule: 'component-library-react',
+      serializeShadowRoot: {
+        scoped: ['my-counter', 'my-button', 'my-component', 'my-radio'],
+        default: 'declarative-shadow-dom',
+      },
+      transformTag: true,
+    }),
+    typesOutputTarget({
+      reactTypesPath: 'dist/types',
+      vueTypesPath: 'dist/types',
+      solidTypesPath: 'dist/types',
+      svelteTypesPath: 'dist/types',
+      preactTypesPath: 'dist/types',
+    }),
+    vueOutputTarget({
+      includeImportCustomElements: true,
+      includePolyfills: false,
+      includeDefineCustomElements: false,
+      componentCorePackage: 'component-library',
+      hydrateModule: 'component-library/hydrate',
+      proxiesFile: '../component-library-vue/src/index.ts',
+      componentModels: vueComponentModels,
+      transformTag: true,
+    }),
+    {
+      type: 'dist-custom-elements',
+      externalRuntime: false,
+      dir: 'components',
+    },
+    {
+      type: 'dist',
+      esmLoaderPath: '../loader',
+    },
+    {
+      type: 'dist-hydrate-script',
+      dir: './hydrate',
+    },
+    {
+      type: 'docs-readme',
+    },
+    {
+      type: 'www',
+      serviceWorker: null, // disable service workers
+    },
+  ],
+  extras: {
+    additionalTagTransformers: true,
+  },
+};

@@ -1,0 +1,89 @@
+{
+  "name": "@stencil/vue-output-target",
+  "version": "0.14.2",
+  "description": "Vue output target for @stencil/core components.",
+  "author": "Ionic Team",
+  "homepage": "https://stenciljs.com/",
+  "license": "MIT",
+  "files": [
+    "dist/",
+    "runtime.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stenciljs/output-targets.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stenciljs/output-targets/issues"
+  },
+  "stencil": {
+    "wizard": "./dist/wizard.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "import": "./dist/runtime.js",
+      "require": "./dist/runtime.cjs"
+    },
+    "./wizard": {
+      "types": "./dist/wizard.d.ts",
+      "import": "./dist/wizard.js"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "pnpm run build",
+    "prebuild": "rimraf ./dist",
+    "build": "rollup -c ./rollup.config.mjs",
+    "dev": "pnpm run build --watch",
+    "prettier": "pnpm run prettier.base --write",
+    "prettier.base": "prettier \"./({vue-component-lib,src,test,__tests__}/**/*.{ts,tsx,js,jsx})|*.{ts,tsx,js,jsx}\"",
+    "prettier.dry-run": "pnpm run prettier.base --list-different",
+    "release": "np",
+    "test": "vitest --run",
+    "test.watch": "vitest --run --watch"
+  },
+  "peerDependencies": {
+    "@stencil/core": ">=2.0.0 || >=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
+    "vue": "^3.4.38",
+    "vue-router": "^4.5.0 || ^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": false
+    },
+    "vue-router": {
+      "optional": true
+    },
+    "@stencil/core": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
+    "@stencil/core": "^4.43.5",
+    "@types/node": "^18.19.130",
+    "@vue/shared": "^3.5.39",
+    "@vue/test-utils": "^2.4.11",
+    "jsdom": "^26.1.0",
+    "stencil-output-targets-shared": "workspace:*",
+    "rimraf": "^5.0.10",
+    "rollup": "^4.62.2",
+    "typescript": "~5.7.3",
+    "vitest": "^3.2.6",
+    "vue": "^3.5.39",
+    "vue-router": "^5.1.0"
+  }
+}

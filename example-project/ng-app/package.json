@@ -1,0 +1,44 @@
+{
+  "name": "ng-app",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "postinstall": "pnpm patcher",
+    "prebuild": "pnpm patcher",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "pretest": "pnpm patcher",
+    "test": "wdio run ./wdio.conf.ts",
+    "patcher": "node node_modules/component-library-angular/scripts/patch-transform-selectors.mjs || echo '[patcher] patch-transform-selectors not found, skipping'"
+  },
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@angular/common": "^20.0.0",
+    "@angular/compiler": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/forms": "^20.0.0",
+    "@angular/platform-browser": "^20.0.0",
+    "@angular/router": "^20.0.0",
+    "component-library-angular": "workspace:../component-library-angular/projects/library/dist",
+    "component-library": "workspace:*",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.0.2",
+    "@angular/cli": "^20.0.2",
+    "@angular/compiler-cli": "^20.0.0",
+    "@wdio/cli": "^9.11.0",
+    "@wdio/globals": "^9.11.0",
+    "@wdio/local-runner": "^9.11.0",
+    "@wdio/mocha-framework": "^9.11.0",
+    "@wdio/spec-reporter": "^9.11.0",
+    "expect-webdriverio": "^5.1.0",
+    "typescript": "~5.8.2",
+    "webdriverio": "^9.11.0"
+  }
+}

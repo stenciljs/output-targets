@@ -1,0 +1,17 @@
+{
+  "name": "vue-type-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build.app": "vue-tsc --noEmit -p ./tsconfig.json",
+    "test": "vitest --run"
+  },
+  "dependencies": {
+    "component-library-vue": "workspace:*",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "vue-tsc": "^2.2.10",
+    "vitest": "^3.0.8"
+  }
+}

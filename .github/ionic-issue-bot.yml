@@ -1,0 +1,91 @@
+triage:
+  label: triage
+  removeLabelWhenProjectAssigned: true
+  dryRun: false
+
+comment:
+  labels:
+    - label: "help wanted"
+      message: >
+        This issue has been labeled as `help wanted`. This label is added to issues
+        that we believe would be good for contributors.
+
+
+        If you'd like to work on this issue, please comment here letting us know that
+        you would like to submit a pull request for it. This helps us to keep track of
+        the pull request and make sure there isn't duplicated effort.
+
+        Thank you!
+    - label: "triage"
+      message: >
+        Thanks for the issue!
+
+
+        This project is currently maintained for the purposes of supporting Ionic Framework.
+        At this time, only new issues & pull requests that support Ionic Framework will be prioritized.
+        For the latest updates regarding the maintenance status of this project, please see [this section of the project's README](https://github.com/stenciljs/output-targets#maintenance-status)
+  dryRun: false
+
+closeAndLock:
+  labels:
+    - label: "ionitron: missing template"
+      message: >
+        Thanks for the issue! It appears that you have not filled out the provided issue template. We use this issue
+        template in order to gather more information and further assist you. Please create a new issue and ensure the
+        template is fully filled out.
+  close: true
+  lock: true
+  dryRun: false
+
+lockClosed:
+  days: 30
+  maxIssuesPerRun: 100
+  message: >
+    Thanks for the issue! This issue is being locked to prevent comments that are not relevant to the original issue.
+    If this is still an issue with the latest version of the output targets, please create a new issue and ensure the template is fully filled out.
+  dryRun: false
+
+noReply:
+  days: 14
+  maxIssuesPerRun: 100
+  label: "needs: reply"
+  responseLabel: triage
+  exemptProjects: true
+  exemptMilestones: true
+  message: >
+    Thanks for the issue! This issue is being closed due to the lack of a reply. If this is still
+    an issue with the latest version of the output targets, please create a new issue and ensure the
+    template is fully filled out.
+  close: true
+  lock: true
+  dryRun: false
+
+stale:
+  days: 14
+  maxIssuesPerRun: 100
+  exemptLabels:
+    - dependencies
+    - documentation
+    - help wanted
+    - internal
+    - 'needs: reply' # allow the `noReply` configuration above to handle these issues
+    - 'needs reproduction' # handled by stale.yml workflow
+    - 'package: angular'
+    - 'package: react'
+    - 'package: vue'
+    - 'pending triage'
+    - triage
+    - 'type: bug'
+    - 'type: feature'
+  exemptAssigned: true
+  exemptProjects: true
+  exemptMilestones: true
+  label: 'ionitron: stale issue'
+  message: >
+    Thanks for the issue! This issue is being closed due to the lack of a code reproduction. If this is still
+    an issue with the latest version of the output targets, please create a new issue and ensure the
+    template is fully filled out.
+  close: true
+  lock: true
+  dryRun: false
+

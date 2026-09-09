@@ -1,0 +1,75 @@
+{
+  "name": "@stencil/angular-output-target",
+  "version": "1.4.1",
+  "description": "Angular output target for @stencil/core components.",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "type": "module",
+  "stencil": {
+    "wizard": "./dist/wizard.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./wizard": {
+      "types": "./dist/wizard.d.ts",
+      "import": "./dist/wizard.js"
+    }
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "resources/",
+    "angular-component-lib/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "pnpm run build",
+    "prebuild": "rimraf ./dist",
+    "build": "tsc && pnpm run rollup",
+    "dev": "run-p dev:*",
+    "dev:build": "tsc --watch --preserveWatchOutput",
+    "dev:rollup": "rollup -c --watch --preserveWatchOutput",
+    "watch": "tsc --watch",
+    "rollup": "rollup -c",
+    "version": "pnpm run build",
+    "prettier": "pnpm run prettier.base --write",
+    "prettier.base": "prettier \"./({angular-component-lib,src,test,__tests__}/**/*.{ts,tsx,js,jsx})|*.{ts,tsx,js,jsx}\"",
+    "prettier.dry-run": "pnpm run prettier.base --list-different",
+    "release": "np",
+    "test": "vitest --run",
+    "test.watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stenciljs/output-targets.git"
+  },
+  "author": "Ionic Team",
+  "homepage": "https://stenciljs.com/",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stenciljs/output-targets/issues"
+  },
+  "devDependencies": {
+    "@angular/core": "8.2.14",
+    "@angular/forms": "8.2.14",
+    "@stencil/cli": "^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0",
+    "@stencil/core": "4.41.0",
+    "@types/node": "^18.19.130",
+    "npm-run-all2": "^6.2.6",
+    "rimraf": "^5.0.10",
+    "rollup": "^2.80.0",
+    "stencil-output-targets-shared": "workspace:*",
+    "typescript": "~5.7.3",
+    "vitest": "^2.1.9"
+  },
+  "peerDependencies": {
+    "@stencil/core": ">=2.0.0 || >=3 || >=4.0.0 || ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0"
+  },
+  "gitHead": "a3588e905186a0e86e7f88418fd5b2f9531b55e0"
+}

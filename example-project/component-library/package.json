@@ -1,0 +1,80 @@
+{
+  "name": "component-library",
+  "private": true,
+  "description": "Stencil Component Library for testing purposes",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stenciljs/output-targets.git"
+  },
+  "type": "module",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./components/*.js",
+      "require": "./components/*.js"
+    },
+    "./hydrate": {
+      "types": "./hydrate/index.d.ts",
+      "import": "./hydrate/index.mjs",
+      "require": "./hydrate/index.js",
+      "default": "./hydrate/index.mjs"
+    },
+    "./loader": {
+      "types": "./loader/index.d.ts",
+      "import": "./loader/index.js",
+      "require": "./loader/index.js",
+      "default": "./loader/index.js"
+    },
+    "./components/*.js": {
+      "types": "./dist/types/components/*.d.ts",
+      "import": "./components/*.js"
+    },
+    "./components": {
+      "types": "./dist/types/components.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "loader/"
+  ],
+  "scripts": {
+    "build": "stencil build --docs",
+    "test": "echo \"No tests specified\" && exit 0",
+    "start": "stencil build --dev --watch --serve",
+    "generate": "stencil generate",
+    "prettier": "pnpm run prettier.base --write",
+    "prettier.base": "prettier \"./src/**/*.{ts,tsx,js,jsx}|*.{ts,tsx,js,jsx}\"",
+    "prettier.dry-run": "pnpm run prettier.base --list-different"
+  },
+  "devDependencies": {
+    "@stencil/angular-output-target": "workspace:*",
+    "@stencil/core": "4.41.0",
+    "@stencil/react-output-target": "workspace:*",
+    "@stencil/types-output-target": "workspace:*",
+    "@stencil/vue-output-target": "workspace:*",
+    "@types/puppeteer": "2.0.1"
+  },
+  "peerDependencies": {
+    "@types/react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,63 @@
+name: 'Production Release'
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        required: true
+        type: choice
+        description: Which package should be published?
+        options:
+          - vue
+          - angular
+          - react
+          - ssr
+          - types
+      tag:
+        required: true
+        type: choice
+        description: Which npm tag should this be published to?
+        options:
+          - latest
+          - next
+      preid:
+        type: choice
+        description: Which prerelease identifier should be used? This is only needed when version is "prepatch", "preminor", "premajor", or "prerelease".
+        default: ''
+        options:
+          - '' # no prerelease
+          - alpha
+          - beta
+          - rc
+          - next
+jobs:
+  prod-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - name: 🟢 Use Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+      - name: 📦 Install Dependencies
+        run: pnpm install
+        shell: bash
+      - name: 📦 Publish Package
+        uses: ./.github/actions/publish-npm
+        with:
+          tag: ${{ inputs.tag }} # "latest" or "next"
+          preid: ${{ inputs.preid }} # Only needed when version is "prepatch", "preminor", "premajor", or "prerelease"
+          scope: ${{ inputs.package == 'ssr' && '@stencil/ssr' || format('@stencil/{0}-output-target', inputs.package) }}
+          # Look at package.json's name
+          # Coupled to project structure. Update this when adding a new output target.
+          # Examples: vue-output-target, angular-output-target, react-output-target
+          working-directory: './packages/${{ inputs.package }}' # Follow the repo structure
+
