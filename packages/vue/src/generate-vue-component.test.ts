@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createComponentDefinition } from './generate-vue-component';
 import { ComponentCompilerMeta } from '@stencil/core/internal';
+import { ComponentModelConfig } from './types';
 
 const exampleComponentMetadata: Pick<ComponentCompilerMeta, 'properties' | 'tagName' | 'methods' | 'events'> = {
   tagName: 'my-component',
@@ -215,6 +216,62 @@ export const MyComponent: StencilVueComponent<Components.MyComponent> = /*@__PUR
 export const MyComponent: StencilVueComponent<Components.MyComponent> = /*@__PURE__*/ defineContainer<Components.MyComponent>('my-component', undefined, [
   'myProp'
 ]);
+`);
+  });
+
+  it('should not conflict with the component which starts with same tag name', () => {
+    const componentModels: ComponentModelConfig[] = [
+      {
+        elements: 'my-list-item',
+        event: 'selectedIndexChange',
+        targetAttr: 'selectedIndex',
+      },
+    ];
+    const generateComponentDefinition = createComponentDefinition('Components', {
+      proxiesFile: './src/components.ts',
+      componentModels,
+    });
+    const listItemOutput = generateComponentDefinition({
+      properties: [
+        {
+          name: 'selectedIndex',
+          internal: false,
+          mutable: false,
+          optional: false,
+          required: false,
+          type: 'number',
+          getter: true,
+          setter: true,
+          complexType: {
+            original: '',
+            resolved: '',
+            references: {},
+          },
+          docs: {
+            text: '',
+            tags: [],
+          },
+        },
+      ],
+      tagName: 'my-list-item',
+      methods: [],
+      events: [],
+    });
+    const listOutput = generateComponentDefinition({
+      properties: [],
+      tagName: 'my-list',
+      methods: [],
+      events: [],
+    });
+
+    expect(listItemOutput).toEqual(`
+export const MyListItem: StencilVueComponent<Components.MyListItem, Components.MyListItem["selectedIndex"]> = /*@__PURE__*/ defineContainer<Components.MyListItem, Components.MyListItem["selectedIndex"]>('my-list-item', undefined, [
+  'selectedIndex'
+], [],
+'selectedIndex', 'selectedIndexChange', undefined);
+`);
+    expect(listOutput).toEqual(`
+export const MyList: StencilVueComponent<Components.MyList> = /*@__PURE__*/ defineContainer<Components.MyList>('my-list', undefined);
 `);
   });
 });
