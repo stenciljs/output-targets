@@ -35,9 +35,7 @@ export const createComponentDefinition =
 
     const componentType = `${importTypes}.${tagNameAsPascal}`;
     const findModel = outputTarget.componentModels?.find((config) =>
-      Array.isArray(config.elements)
-        ? config.elements.includes(cmpMeta.tagName)
-        : config.elements === cmpMeta.tagName,
+      Array.isArray(config.elements) ? config.elements.includes(cmpMeta.tagName) : config.elements === cmpMeta.tagName
     );
     const modelType = findModel !== undefined ? `, ${componentType}["${findModel.targetAttr}"]` : '';
     const supportSSR = typeof outputTarget.hydrateModule === 'string';
