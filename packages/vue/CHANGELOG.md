@@ -1,3 +1,11 @@
+## [0.14.3](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.2...@stencil/vue-output-target@0.14.3) (2026-09-11)
+
+
+### :bug: Bug Fix
+
+* **vue:** find correct tag when `ComponentModelConfig.elements` is not an array ([#215](https://github.com/stenciljs/output-targets/issues/215)) ([e0a63bc](https://github.com/stenciljs/output-targets/commit/e0a63bc89b4435a9ff9eb26ff4ba3625d5d02607))
+
+
 ## [0.14.2](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.1...@stencil/vue-output-target@0.14.2) (2026-08-26)
 
 

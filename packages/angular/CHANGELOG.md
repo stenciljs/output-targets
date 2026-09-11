@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.4.1...@stencil/angular-output-target@1.5.0) (2026-09-11)
+
+
+### :rocket: Enhancement
+
+* **angular:** support setting boolean props by attribute presence ([#842](https://github.com/stenciljs/output-targets/issues/842)) ([6e5fed2](https://github.com/stenciljs/output-targets/commit/6e5fed25a0d8f06196064f777583d6f8153ba156))
+
 ## [1.4.1](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.4.0...@stencil/angular-output-target@1.4.1) (2026-07-14)
 
 
