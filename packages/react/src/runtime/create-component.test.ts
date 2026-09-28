@@ -57,3 +57,91 @@ describe('mergeClassNames', () => {
     expect(mergeClassNames(['md', 'hydrated'], '', '')).toBe('md hydrated');
   });
 });
+
+describe('createComponent on the server', () => {
+  // Shape of a Stencil custom-elements class in Node: prop accessors plus observedAttributes.
+  class FakeElement {
+    static observedAttributes = ['variant', 'icon-start', 'full-width', 'count'];
+    get variant() {
+      return '';
+    }
+    get iconStart() {
+      return '';
+    }
+    get fullWidth() {
+      return false;
+    }
+    get count() {
+      return 0;
+    }
+    get items() {
+      return [] as unknown[];
+    }
+  }
+
+  const make = (elementClass: unknown = FakeElement) =>
+    createComponent<HTMLElement, {}, Record<string, unknown>>({
+      tagName: 'fake-element',
+      elementClass: elementClass as any,
+      react: React,
+      events: {},
+      defineCustomElement: vi.fn(),
+    });
+
+  it('renders Stencil props as kebab-case attributes', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const Fake = make();
+
+    const html = renderToString(
+      React.createElement(Fake, { variant: 'tertiary', iconStart: 'home', fullWidth: true, count: 3 }, 'Open')
+    );
+
+    expect(html).toBe('<fake-element variant="tertiary" icon-start="home" full-width="" count="3">Open</fake-element>');
+  });
+
+  it('omits false, nullish, function and object-valued Stencil props', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const Fake = make();
+
+    const html = renderToString(
+      React.createElement(Fake, {
+        fullWidth: false,
+        variant: undefined,
+        iconStart: null,
+        items: [{ label: 'a' }],
+        onClick: () => undefined,
+      })
+    );
+
+    expect(html).toBe('<fake-element></fake-element>');
+  });
+
+  it('passes non-Stencil props through untouched and maps className to class', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const Fake = make();
+
+    const html = renderToString(
+      React.createElement(Fake, {
+        className: 'a b',
+        id: 'x',
+        slot: 'footer',
+        'aria-label': 'Open',
+        'data-test': 'y',
+        style: { color: 'red' },
+      })
+    );
+
+    expect(html).toBe(
+      '<fake-element class="a b" id="x" slot="footer" aria-label="Open" data-test="y" style="color:red"></fake-element>'
+    );
+  });
+
+  it('renders only pass-through props when the element class exposes no attributes', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const Fake = make(class Bare {});
+
+    const html = renderToString(React.createElement(Fake, { variant: 'tertiary', id: 'x' }));
+
+    expect(html).toBe('<fake-element variant="tertiary" id="x"></fake-element>');
+  });
+});
