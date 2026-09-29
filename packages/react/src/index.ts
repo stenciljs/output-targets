@@ -235,7 +235,7 @@ export const reactOutputTarget = ({
         componentsTypesDir,
         excludeComponents,
         esModules: esModules === true,
-        writeFile: compilerCtx.fs.writeFile,
+        writeFile: (filePath: string, content: string) => compilerCtx.fs.writeFile(filePath, content),
         hydrateModule,
         clientModule,
         excludeServerSideRenderingFor,
