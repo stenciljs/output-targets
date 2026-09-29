@@ -153,6 +153,35 @@ describe('createComponent on the server', () => {
     expect(html).toBe('<fake-element data-icon="home" variant="tertiary"></fake-element>');
   });
 
+  it('treats accessors inherited from HTMLElement as pass-through props', async () => {
+    const { renderToString } = await import('react-dom/server');
+    // Server DOM shims (jsdom, happy-dom) put id/title on HTMLElement.prototype.
+    class HTMLElementStub {
+      get id() {
+        return '';
+      }
+      get title() {
+        return '';
+      }
+    }
+    vi.stubGlobal('HTMLElement', HTMLElementStub);
+    try {
+      class Fixture extends HTMLElementStub {
+        static observedAttributes = ['variant'];
+        get variant() {
+          return '';
+        }
+      }
+      const Fake = make(Fixture);
+
+      const html = renderToString(React.createElement(Fake, { variant: 'tertiary', id: 'x', title: 'Open' }));
+
+      expect(html).toBe('<fake-element variant="tertiary" id="x" title="Open"></fake-element>');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('renders only pass-through props when the element class exposes no attributes', async () => {
     const { renderToString } = await import('react-dom/server');
     const Fake = make(class Bare {});
