@@ -201,10 +201,17 @@ import type { Components } from "${componentsTypesModule}";
       type: events.length > 0 ? `{ ${events.map((e) => `${e.name}: ${e.type}`).join(',\n')} }` : 'NonNullable<unknown>',
     });
 
+    // Only props with an attribute; complex props stay client-side properties.
+    const propertiesLiteral = `{${component.properties
+      .filter((prop) => Boolean(prop.attribute))
+      .map((e) => `${e.name}: '${e.attribute}'`)
+      .join(',\n')}}`;
+
     const transformTagParam = transformTag ? ',\n    transformTag' : '';
     const clientComponentCall = `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>({
     tagName: '${tagName}',
     elementClass: ${componentElement},
+    properties: ${propertiesLiteral},
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {${events.map((e) => `${e.name}: '${e.originalName}'`).join(',\n')}} as ${componentEventNamesType},
@@ -214,14 +221,7 @@ import type { Components } from "${componentsTypesModule}";
     const getTagTransformerParam = transformTag ? ',\n    getTagTransformer' : '';
     const serverComponentCall = `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>({
     tagName: '${tagName}',
-    properties: {${component.properties
-      /**
-       * Filter out properties that don't have an attribute.
-       * These are properties with complex types and can't be serialized.
-       */
-      .filter((prop) => Boolean(prop.attribute))
-      .map((e) => `${e.name}: '${e.attribute}'`)
-      .join(',\n')}},
+    properties: ${propertiesLiteral},
     hydrateModule: typeof window === 'undefined' ? (import('${hydrateModule}') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.${reactTagName} as StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>,
     serializeShadowRoot${getTagTransformerParam}

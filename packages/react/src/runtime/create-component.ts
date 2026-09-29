@@ -67,15 +67,23 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayou
 const toAttributeName = (propName: string): string => propName.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
 
 // Server render: emit Stencil props as attributes so the element upgrades in its final state.
-// Props are read off the element class; objects and functions stay client-only, `false` is omitted.
+// Objects and functions stay client-only, `false` is omitted, matching `ssr.tsx`.
 const createServerComponent = <I extends HTMLElement, E extends EventNames, C, R extends keyof C>(
   tagName: string,
   elementClass: Options<I, E>['elementClass'],
+  properties: Record<string, string> | undefined,
   displayName: string | undefined
 ): StencilReactComponent<I, E, C, R> => {
   const observedAttributes: unknown = (elementClass as { observedAttributes?: unknown }).observedAttributes;
   const attributeNames = new Set<string>(Array.isArray(observedAttributes) ? observedAttributes : []);
   const prototype: object = elementClass.prototype;
+  // Generated wrappers pass the prop-to-attribute map (honours `@Prop({ attribute })`);
+  // without it, fall back to the kebab-case name checked against `observedAttributes`.
+  const attributeNameFor = (propName: string): string | undefined => {
+    if (properties) return properties[propName];
+    const attributeName = toAttributeName(propName);
+    return attributeNames.has(attributeName) ? attributeName : undefined;
+  };
 
   const ServerComponent = React.forwardRef<I, StencilProps<I, E, C, R>>((props, _ref) => {
     const {
@@ -100,8 +108,8 @@ const createServerComponent = <I extends HTMLElement, E extends EventNames, C, R
         continue;
       }
       if (key in prototype) {
-        const attributeName = toAttributeName(key);
-        if (attributeNames.has(attributeName) && typeof value !== 'object' && value !== false) {
+        const attributeName = attributeNameFor(key);
+        if (attributeName && typeof value !== 'object' && value !== false) {
           attributes[attributeName] = value === true ? '' : value;
         }
         continue;
@@ -127,11 +135,13 @@ export const createComponent = <
   R extends keyof C = never,
 >({
   defineCustomElement,
+  properties,
   tagName,
   transformTag,
   ...options
 }: Options<I, E> & {
   defineCustomElement: () => void;
+  properties?: Record<string, string>;
   transformTag?: (tagName: string) => string;
 }): StencilReactComponent<I, E, C, R> => {
   if (typeof defineCustomElement !== 'undefined') {
@@ -140,7 +150,7 @@ export const createComponent = <
   const finalTagName = transformTag ? transformTag(tagName) : tagName;
 
   if (typeof window === 'undefined') {
-    return createServerComponent<I, E, C, R>(finalTagName, options.elementClass, options.displayName);
+    return createServerComponent<I, E, C, R>(finalTagName, options.elementClass, properties, options.displayName);
   }
 
   const ReactComponent = createComponentWrapper<I, E>({ ...options, tagName: finalTagName });
