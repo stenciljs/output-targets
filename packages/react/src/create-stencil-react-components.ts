@@ -175,7 +175,7 @@ export const createStencilReactComponents = ({
     const serverComponentCall = [
       `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>({`,
       `    tagName: '${tagName}',`,
-      `    properties: {${serverProperties ? `\n      ${serverProperties}\n    ` : ''},`,
+      `    properties: {${serverProperties ? `\n      ${serverProperties}\n    ` : ''}},`,
       `    hydrateModule: typeof window === 'undefined' ? (import('${hydrateModule}') as Promise<HydrateModule>) : undefined,`,
       `    clientModule: ${reactTagName}React as StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>,`,
       `    serializeShadowRoot,`,

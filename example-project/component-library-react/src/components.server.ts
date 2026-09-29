@@ -168,9 +168,7 @@ export type MyComponentDelegatesFocusEvents = NonNullable<unknown>;
 
 export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus> = /*@__PURE__*/ createComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>({
     tagName: 'my-component-delegates-focus',
-    properties: {
-      
-    },
+    properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: MyComponentDelegatesFocusReact as StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>,
     serializeShadowRoot,
@@ -299,9 +297,7 @@ export type MyListEvents = NonNullable<unknown>;
 
 export const MyList: StencilReactComponent<MyListElement, MyListEvents, Components.MyList> = /*@__PURE__*/ createComponent<MyListElement, MyListEvents, Components.MyList>({
     tagName: 'my-list',
-    properties: {
-      
-    },
+    properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: MyListReact as StencilReactComponent<MyListElement, MyListEvents, Components.MyList>,
     serializeShadowRoot,
@@ -312,9 +308,7 @@ export type MyListItemEvents = NonNullable<unknown>;
 
 export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEvents, Components.MyListItem> = /*@__PURE__*/ createComponent<MyListItemElement, MyListItemEvents, Components.MyListItem>({
     tagName: 'my-list-item',
-    properties: {
-      
-    },
+    properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: MyListItemReact as StencilReactComponent<MyListItemElement, MyListItemEvents, Components.MyListItem>,
     serializeShadowRoot,
@@ -325,9 +319,7 @@ export type MyListItemScopedEvents = NonNullable<unknown>;
 
 export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped> = /*@__PURE__*/ createComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped>({
     tagName: 'my-list-item-scoped',
-    properties: {
-      
-    },
+    properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: MyListItemScopedReact as StencilReactComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped>,
     serializeShadowRoot,
@@ -338,9 +330,7 @@ export type MyListScopedEvents = NonNullable<unknown>;
 
 export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped> = /*@__PURE__*/ createComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped>({
     tagName: 'my-list-scoped',
-    properties: {
-      
-    },
+    properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: MyListScopedReact as StencilReactComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped>,
     serializeShadowRoot,
@@ -444,9 +434,7 @@ export type MyToggleEvents = NonNullable<unknown>;
 
 export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents, Components.MyToggle> = /*@__PURE__*/ createComponent<MyToggleElement, MyToggleEvents, Components.MyToggle>({
     tagName: 'my-toggle',
-    properties: {
-      
-    },
+    properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: MyToggleReact as StencilReactComponent<MyToggleElement, MyToggleEvents, Components.MyToggle>,
     serializeShadowRoot,
