@@ -76,7 +76,19 @@ const createServerComponent = <I extends HTMLElement, E extends EventNames, C, R
 ): StencilReactComponent<I, E, C, R> => {
   const observedAttributes: unknown = (elementClass as { observedAttributes?: unknown }).observedAttributes;
   const attributeNames = new Set<string>(Array.isArray(observedAttributes) ? observedAttributes : []);
-  const prototype: object = elementClass.prototype;
+  // Stencil defines prop accessors on the component's own prototype chain, above HTMLElement.
+  // Anything inherited from the DOM (`id`, `title`, `slot`) is a pass-through prop.
+  const componentPrototypes: object[] = [];
+  const domPrototype: object | null = typeof HTMLElement === 'function' ? HTMLElement.prototype : null;
+  for (
+    let p: object | null = elementClass.prototype;
+    p && p !== Object.prototype && p !== domPrototype;
+    p = Object.getPrototypeOf(p)
+  ) {
+    componentPrototypes.push(p);
+  }
+  const isStencilProp = (propName: string): boolean =>
+    componentPrototypes.some((p) => Object.prototype.hasOwnProperty.call(p, propName));
   // Generated wrappers pass the prop-to-attribute map (honours `@Prop({ attribute })`);
   // without it, fall back to the kebab-case name checked against `observedAttributes`.
   const attributeNameFor = (propName: string): string | undefined => {
@@ -107,7 +119,7 @@ const createServerComponent = <I extends HTMLElement, E extends EventNames, C, R
       if (value === null || value === undefined || typeof value === 'function') {
         continue;
       }
-      if (key in prototype) {
+      if (isStencilProp(key)) {
         const attributeName = attributeNameFor(key);
         if (attributeName && typeof value !== 'object' && value !== false) {
           attributes[attributeName] = value === true ? '' : value;
