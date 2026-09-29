@@ -136,6 +136,23 @@ describe('createComponent on the server', () => {
     );
   });
 
+  it('prefers the generated properties map over the derived attribute name', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const Fake = createComponent<HTMLElement, {}, Record<string, unknown>>({
+      tagName: 'fake-element',
+      elementClass: FakeElement as any,
+      properties: { iconStart: 'data-icon', variant: 'variant' },
+      react: React,
+      events: {},
+      defineCustomElement: vi.fn(),
+    });
+
+    const html = renderToString(React.createElement(Fake, { iconStart: 'home', variant: 'tertiary', count: 3 }));
+
+    // `count` is a Stencil prop without an attribute in the map, so it stays client-side.
+    expect(html).toBe('<fake-element data-icon="home" variant="tertiary"></fake-element>');
+  });
+
   it('renders only pass-through props when the element class exposes no attributes', async () => {
     const { renderToString } = await import('react-dom/server');
     const Fake = make(class Bare {});

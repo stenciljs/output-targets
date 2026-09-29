@@ -164,6 +164,13 @@ export const createStencilReactComponents = ({
 
     exports.push(`export type ${componentEventNamesType} = ${eventType};`);
 
+    // Only props with an attribute; complex props stay client-side properties.
+    const serverProperties = component.properties
+      .filter(({ attribute }) => Boolean(attribute))
+      .map(({ name, attribute }) => `${name}: '${attribute}'`)
+      .join(',\n      ');
+    const propertiesLine = `    properties: {${serverProperties ? `\n      ${serverProperties}\n    ` : ''}},`;
+
     const clientComponentCall = [
       `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>({`,
       `    tagName: '${tagName}',`,
@@ -172,25 +179,17 @@ export const createStencilReactComponents = ({
       `    react: React,`,
       `    events: ${events.length ? `{\n      ${events.map((e) => `${e.name}: '${e.originalName}'`).join(',\n      ')}\n    }` : '{}'} as ${componentEventNamesType},`,
       `    defineCustomElement: define${reactTagName},`,
+      propertiesLine,
       transformTag && `    transformTag,`,
       `})`,
     ]
       .filter(Boolean)
       .join('\n');
 
-    /**
-     * Filter out properties that don't have an attribute.
-     * These are properties with complex types and can't be serialized.
-     */
-    const serverProperties = component.properties
-      .filter(({ attribute }) => Boolean(attribute))
-      .map(({ name, attribute }) => `${name}: '${attribute}'`)
-      .join(',\n      ');
-
     const serverComponentCall = [
       `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>({`,
       `    tagName: '${tagName}',`,
-      `    properties: {${serverProperties ? `\n      ${serverProperties}\n    ` : ''}},`,
+      propertiesLine,
       `    hydrateModule: typeof window === 'undefined' ? (import('${hydrateModule}') as Promise<HydrateModule>) : undefined,`,
       `    clientModule: clientComponents.${reactTagName} as StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>,`,
       `    serializeShadowRoot,`,
