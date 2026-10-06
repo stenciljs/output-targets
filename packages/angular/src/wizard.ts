@@ -56,6 +56,19 @@ async function allowPnpmBuild(pkg: string, rootDir: string, workspaceRoot: strin
 // Wrapper package scaffolding
 // ---------------------------------------------------------------------------
 
+/**
+ * The core package's real npm name. This is not always its lowercased namespace
+ * (`testy-test` vs `testytest`), and it's what the wrapper has to depend on and import from.
+ */
+async function readCorePackageName(rootDir: string, fallback: string): Promise<string> {
+  try {
+    const { name } = JSON.parse(await readFile(join(rootDir, 'package.json'), 'utf8'));
+    return typeof name === 'string' && name ? name : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 async function pathExists(p: string): Promise<boolean> {
   try {
     await access(p);
@@ -249,7 +262,7 @@ export const wizard = {
           ? relative(config.rootDir, join(wrapperDir, 'src', 'lib', 'directives.array.ts')).replace(/\\/g, '/')
           : undefined;
 
-      const componentCorePackage = config.fsNamespace;
+      const componentCorePackage = await readCorePackageName(config.rootDir, config.fsNamespace);
 
       // Scaffold wrapper package if the directory doesn't exist yet
       const shouldScaffold = !(await pathExists(wrapperDir));

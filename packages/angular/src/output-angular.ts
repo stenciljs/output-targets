@@ -74,6 +74,40 @@ const usesInputTransform = (components: readonly ComponentCompilerMeta[], boolea
     (cmpMeta.properties ?? []).filter(filterInternalProps).some((prop) => isTransformedProp(prop, booleanAttributes))
   );
 
+/**
+ * Whether the Stencil project generates a package.json `exports` map. Deep `dist/` imports are
+ * blocked for consumers then, so the proxies import through the map's entries instead
+ * (`<pkg>/<tag>`, `<pkg>/loader`, `<pkg>/standalone`).
+ */
+export function usesExportMaps(config: Config): boolean {
+  // Stencil v5 only: v4's map has no `./standalone` entry, and its root types aren't
+  // guaranteed to export the component types.
+  const isV5 = (config.outputTargets || []).some((o: any) =>
+    ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
+  );
+  return isV5 && (config as { generateExportMaps?: boolean }).generateExportMaps === true;
+}
+
+/**
+ * The module specifier a proxy imports a component's `defineCustomElement` from.
+ */
+function getComponentModule(config: Config, outputTarget: OutputTargetAngular, tagName: string): string {
+  const basePkg = normalizePath(outputTarget.componentCorePackage!);
+  if (usesExportMaps(config)) {
+    return `${basePkg}/${tagName}`;
+  }
+  return `${basePkg}/${outputTarget.customElementsDir}/${tagName}.js`;
+}
+
+/**
+ * The relative import of the project's own `components.d.ts`, for when there's no
+ * `componentCorePackage`. Only resolved when needed: package.json may have no `types` field.
+ */
+function getComponentsTypeFile(pkgData: PackageJSON, outputTarget: OutputTargetAngular, rootDir: string): string {
+  const dtsFilePath = path.join(rootDir, path.dirname(pkgData.types), GENERATED_DTS);
+  return relativeImport(outputTarget.directivesProxyFile, dtsFilePath, '.d.ts');
+}
+
 export async function angularDirectiveProxyOutput(
   compilerCtx: CompilerCtx,
   outputTarget: OutputTargetAngular,
@@ -118,33 +152,7 @@ export async function angularDirectiveProxyOutput(
 
   // Generate transformer script if transformTag is enabled
   if (outputTarget.transformTag) {
-    // Read the Angular library's package.json to get its name
-    // directivesProxyFile is like: projects/library/src/directives/proxies.ts
-    // We need to go up to: projects/library/package.json
-    const angularLibraryDir = path.dirname(path.dirname(path.dirname(outputTarget.directivesProxyFile)));
-    const angularPkgJsonPath = path.join(angularLibraryDir, 'package.json');
-    let angularPackageName = '';
-
-    try {
-      const angularPkgJson = JSON.parse(await compilerCtx.fs.readFile(angularPkgJsonPath));
-      if (angularPkgJson.name) {
-        angularPackageName = angularPkgJson.name;
-      }
-    } catch (e) {
-      throw new Error(
-        `Could not read Angular library package.json at ${angularPkgJsonPath}. ` +
-          `The package name is required to generate the transformTag patch script.`
-      );
-    }
-
-    if (!angularPackageName) {
-      throw new Error(
-        `Angular library package.json at ${angularPkgJsonPath} does not have a "name" field. ` +
-          `The package name is required to generate the transformTag patch script.`
-      );
-    }
-
-    tasks.push(generateTransformTagScript(compilerCtx, filteredComponents, outputTarget, angularPackageName));
+    tasks.push(generateTransformTagScript(compilerCtx, filteredComponents, outputTarget, usesExportMaps(config)));
   }
 
   await Promise.all(tasks);
@@ -182,10 +190,7 @@ export function generateProxies(
   rootDir: string,
   config: Config
 ) {
-  const distTypesDir = path.dirname(pkgData.types);
-  const dtsFilePath = path.join(rootDir, distTypesDir, GENERATED_DTS);
   const { outputType } = outputTarget;
-  const componentsTypeFile = relativeImport(outputTarget.directivesProxyFile, dtsFilePath, '.d.ts');
   const includeSingleComponentAngularModules = outputType === OutputTypes.Scam;
   const isCustomElementsBuild = isOutputTypeCustomElementsBuild(outputType!);
   const isStandaloneBuild = outputType === OutputTypes.Standalone;
@@ -237,7 +242,7 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
   const generateTypeImports = () => {
     const importLocation = outputTarget.componentCorePackage
       ? getPathToComponentTypes(config, outputTarget)
-      : normalizePath(componentsTypeFile);
+      : normalizePath(getComponentsTypeFile(pkgData, outputTarget, rootDir));
     return `import ${isCustomElementsBuild ? 'type ' : ''}{ ${IMPORT_TYPES} } from '${importLocation}';\n`;
   };
 
@@ -255,9 +260,11 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     const cmpImports = components.map((component) => {
       const pascalImport = dashToPascalCase(component.tagName);
 
-      return `import { defineCustomElement as define${pascalImport} } from '${normalizePath(
-        outputTarget.componentCorePackage
-      )}/${outputTarget.customElementsDir}/${component.tagName}.js';`;
+      return `import { defineCustomElement as define${pascalImport} } from '${getComponentModule(
+        config,
+        outputTarget,
+        component.tagName
+      )}';`;
     });
 
     sourceImports = cmpImports.join('\n');
@@ -313,7 +320,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
       tagNameAsPascal,
       cmpMeta.events,
       componentCorePackage,
-      customElementsDir
+      customElementsDir,
+      usesExportMaps(config)
     );
 
     proxyFileOutput.push(componentDefinition, '\n');
@@ -339,9 +347,6 @@ export function generateComponentProxy(
   config: Config
 ) {
   const { outputType, componentCorePackage, customElementsDir } = outputTarget;
-  const distTypesDir = path.dirname(pkgData.types);
-  const dtsFilePath = path.join(rootDir, distTypesDir, GENERATED_DTS);
-  const componentsTypeFile = relativeImport(outputTarget.directivesProxyFile, dtsFilePath, '.d.ts');
   const includeSingleComponentAngularModules = outputType === OutputTypes.Scam;
   const isCustomElementsBuild = isOutputTypeCustomElementsBuild(outputType!);
   const isStandaloneBuild = outputType === OutputTypes.Standalone;
@@ -377,15 +382,17 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
   // Type imports
   const importLocation = componentCorePackage
     ? getPathToComponentTypes(config, outputTarget)
-    : normalizePath(componentsTypeFile);
+    : normalizePath(getComponentsTypeFile(pkgData, outputTarget, rootDir));
   const typeImports = `import ${isCustomElementsBuild ? 'type ' : ''}{ ${IMPORT_TYPES} } from '${importLocation}';\n`;
 
   // defineCustomElement import
   let sourceImport = '';
   if (isCustomElementsBuild && componentCorePackage !== undefined) {
-    sourceImport = `import { defineCustomElement as define${tagNameAsPascal} } from '${normalizePath(
-      componentCorePackage
-    )}/${customElementsDir}/${cmpMeta.tagName}.js';\n`;
+    sourceImport = `import { defineCustomElement as define${tagNameAsPascal} } from '${getComponentModule(
+      config,
+      outputTarget,
+      cmpMeta.tagName
+    )}';\n`;
   }
 
   // Generate component definition
@@ -425,7 +432,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     tagNameAsPascal,
     cmpMeta.events,
     componentCorePackage,
-    customElementsDir
+    customElementsDir,
+    usesExportMaps(config)
   );
 
   const proxyFileOutput = [componentDefinition, '\n'];
@@ -465,6 +473,13 @@ export function generateBarrelFile(components: ComponentCompilerMeta[], outputTa
 
 export function getPathToComponentTypes(config: Config, outputTarget: OutputTargetAngular): string {
   const basePkg = outputTarget.componentCorePackage || '';
+
+  // The entry of the output the proxies are built on always exports the component types - the
+  // package root only does when the project has no `src/index.ts`, or that file re-exports them
+  if (usesExportMaps(config)) {
+    const entry = isOutputTypeCustomElementsBuild(outputTarget.outputType!) ? 'standalone' : 'loader';
+    return `${normalizePath(basePkg)}/${entry}`;
+  }
 
   // in v5, all types (including components.d.ts) are generated in the dist/types directory
   const typesTarget = config.outputTargets?.find((o: any) => o.type === 'types') as any;
