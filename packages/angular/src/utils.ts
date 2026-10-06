@@ -137,6 +137,8 @@ export const createComponentEventTypeImports = (
     componentCorePackage: string;
     customElementsDir?: string;
     outputType: OutputType;
+    /** Import through the package's `exports` map (`./standalone` or `./loader`) instead of a deep path. */
+    exportMaps?: boolean;
   }
 ) => {
   const { componentCorePackage, customElementsDir } = options;
@@ -144,7 +146,10 @@ export const createComponentEventTypeImports = (
   const namedImports: Set<string> = new Set();
   const isCustomElementsBuild = isOutputTypeCustomElementsBuild(options.outputType);
 
-  const importPathName = normalizePath(componentCorePackage) + (isCustomElementsBuild ? `/${customElementsDir}` : '');
+  const exportMapEntry = isCustomElementsBuild ? '/standalone' : '/loader';
+  const importPathName =
+    normalizePath(componentCorePackage) +
+    (options.exportMaps ? exportMapEntry : isCustomElementsBuild ? `/${customElementsDir}` : '');
 
   /**
    * Each component's events are typed with the per-component CustomEvent type

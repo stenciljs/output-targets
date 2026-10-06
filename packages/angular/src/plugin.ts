@@ -1,8 +1,13 @@
-import type { Config, OutputTargetCustom } from '@stencil/core/internal';
+import type { Config } from '@stencil/core';
 import { OutputTypes, normalizePath } from './utils';
 import { angularDirectiveProxyOutput } from './output-angular';
 import type { OutputTargetAngular } from './types';
 import path from 'path';
+
+// Stencil v5 removed the `@stencil/core/internal` entry point, so anything that ends up in
+// our public typings is derived from the root `Config` type, which v4 and v5 both export.
+type OutputTargetCustom = Extract<NonNullable<Config['outputTargets']>[number], { type: 'custom' }>;
+type PluginConfig = Parameters<OutputTargetCustom['generator']>[0];
 
 export const angularOutputTarget = (outputTarget: OutputTargetAngular): OutputTargetCustom => {
   let validatedOutputTarget: OutputTargetAngular;
@@ -23,7 +28,7 @@ export const angularOutputTarget = (outputTarget: OutputTargetAngular): OutputTa
   };
 };
 
-export function normalizeOutputTarget(config: Config, outputTarget: OutputTargetAngular) {
+export function normalizeOutputTarget(config: PluginConfig, outputTarget: OutputTargetAngular) {
   const results: OutputTargetAngular = {
     ...outputTarget,
     excludeComponents: outputTarget.excludeComponents || [],

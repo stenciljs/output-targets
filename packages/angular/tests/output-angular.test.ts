@@ -1,6 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { ComponentCompilerEventComplexType, ComponentCompilerMeta, Config } from '@stencil/core/internal';
-import { generateProxies, generateComponentProxy, generateBarrelFile } from '../src/output-angular';
+import {
+  generateProxies,
+  generateComponentProxy,
+  generateBarrelFile,
+  getPathToComponentTypes,
+  usesExportMaps,
+} from '../src/output-angular';
 import { PackageJSON, OutputTargetAngular } from '../src/types';
 
 const emptyConfig: Config = { outputTargets: [] } as unknown as Config;
@@ -278,7 +284,9 @@ describe('generateComponentProxy', () => {
 
     const result = generateComponentProxy(component, pkgData, outputTarget, rootDir, emptyConfig);
 
-    expect(result).toContain("import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';");
+    expect(result).toContain(
+      "import { defineCustomElement as defineMyComponent } from 'component-library/components/my-component.js';"
+    );
     expect(result).toContain("import type { Components } from 'component-library/components';");
     expect(result).toContain('export class MyComponent');
   });
@@ -330,9 +338,7 @@ describe('generateComponentProxy', () => {
     expect(result).toContain(`{ name: 'disabled', transform: nullableBooleanAttribute }`);
     expect(result).toContain(`{ name: 'detail', transform: nullableBooleanAttribute }`);
     expect(result).toContain(`import { ProxyCmp } from './angular-component-lib/utils';`);
-    expect(result).toContain(
-      `import { nullableBooleanAttribute } from './angular-component-lib/boolean-attribute';`
-    );
+    expect(result).toContain(`import { nullableBooleanAttribute } from './angular-component-lib/boolean-attribute';`);
   });
 
   it('should not transform boolean properties by default', () => {
@@ -380,9 +386,7 @@ describe('generateBarrelFile', () => {
   });
 
   it('should include module exports for scam output', () => {
-    const components: ComponentCompilerMeta[] = [
-      { tagName: 'my-button' },
-    ] as unknown as ComponentCompilerMeta[];
+    const components: ComponentCompilerMeta[] = [{ tagName: 'my-button' }] as unknown as ComponentCompilerMeta[];
 
     const outputTarget: OutputTargetAngular = {
       componentCorePackage: 'component-library',
@@ -394,5 +398,33 @@ describe('generateBarrelFile', () => {
     const result = generateBarrelFile(components, outputTarget);
 
     expect(result).toContain("export { MyButton, MyButtonModule } from './my-button';");
+  });
+});
+
+describe('usesExportMaps', () => {
+  it('is true for a Stencil v5 project with generateExportMaps', () => {
+    expect(usesExportMaps({ generateExportMaps: true, outputTargets: [{ type: 'standalone' }] } as any)).toBe(true);
+  });
+
+  it('is false for a Stencil v4 project, whose exports map lacks the entries the proxies need', () => {
+    expect(usesExportMaps({ generateExportMaps: true, outputTargets: [{ type: 'dist-custom-elements' }] } as any)).toBe(
+      false
+    );
+  });
+
+  it('is false when generateExportMaps is not set', () => {
+    expect(usesExportMaps({ outputTargets: [{ type: 'standalone' }] } as any)).toBe(false);
+  });
+});
+
+describe('getPathToComponentTypes with an exports map', () => {
+  const config = { generateExportMaps: true, outputTargets: [{ type: 'standalone' }] } as any;
+
+  it.each([
+    ['standalone', 'my-lib/standalone'],
+    ['scam', 'my-lib/standalone'],
+    ['component', 'my-lib/loader'],
+  ])('imports types for outputType "%s" from %s', (outputType, expected) => {
+    expect(getPathToComponentTypes(config, { componentCorePackage: 'my-lib', outputType } as any)).toBe(expected);
   });
 });
