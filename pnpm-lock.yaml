@@ -170,21 +170,6 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
-  example-project/component-library-angular/projects/library/dist:
-    dependencies:
-      '@angular/common':
-        specifier: ^20.0.0
-        version: 20.3.25(@angular/core@20.3.25(@angular/compiler@20.3.25)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
-      '@angular/core':
-        specifier: ^20.0.0
-        version: 20.3.25(@angular/compiler@20.3.25)(rxjs@7.8.2)(zone.js@0.15.1)
-      component-library:
-        specifier: workspace:*
-        version: link:../../../../component-library
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-
   example-project/component-library-react:
     dependencies:
       '@stencil/react-output-target':
@@ -809,8 +794,8 @@ importers:
         specifier: 8.2.14
         version: 8.2.14(@angular/common@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.3.25(@angular/animations@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0
-        version: 5.0.0-alpha.17(@stencil/core@4.41.0)
+        specifier: ^5.0.0 || >=5.0.0-beta.16 <5.0.0-next.0
+        version: 5.0.0-beta.16(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -858,8 +843,8 @@ importers:
         version: 28.0.0
     devDependencies:
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0
-        version: 5.0.0-alpha.17(@stencil/core@4.41.0)
+        specifier: ^5.0.0 || >=5.0.0-beta.16 <5.0.0-next.0
+        version: 5.0.0-beta.16(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -946,8 +931,8 @@ importers:
   packages/types:
     devDependencies:
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0
-        version: 5.0.0-alpha.17(@stencil/core@4.41.0)
+        specifier: ^5.0.0 || >=5.0.0-beta.16 <5.0.0-next.0
+        version: 5.0.0-beta.16(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -973,8 +958,8 @@ importers:
         specifier: ^12.3.0
         version: 12.3.0(rollup@4.62.2)(tslib@2.8.1)(typescript@5.7.3)
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-alpha.17 <5.0.0-next.0
-        version: 5.0.0-alpha.17(@stencil/core@4.43.5)
+        specifier: ^5.0.0 || >=5.0.0-beta.16 <5.0.0-next.0
+        version: 5.0.0-beta.16(@stencil/core@4.43.5)
       '@stencil/core':
         specifier: ^4.43.5
         version: 4.43.5
@@ -1251,7 +1236,6 @@ packages:
   '@angular/platform-browser-dynamic@20.3.25':
     resolution: {integrity: sha512-3Ku+IsN4tQPVBsw75SoLbLf7TsXAGL0rGPHSsyNYFhG2ZZeQuYNIAi8mc4cwz/qMDnuassHFrCxuLDgN6Yab5w==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
-    deprecated: '@angular/platform-browser-dynamic is deprecated. Use `@angular/platform-browser` instead.'
     peerDependencies:
       '@angular/common': 20.3.25
       '@angular/compiler': 20.3.25
@@ -4939,11 +4923,11 @@ packages:
   '@speed-highlight/core@1.2.17':
     resolution: {integrity: sha512-Z92FwKpCtfaW1V0jTU/fh3QzYEZN8wDwrzRIBoADCJfn4mJCNcJN/XegifX7BDrQ8/h9Xh/JnbyMchL0FqXrkg==}
 
-  '@stencil/cli@5.0.0-alpha.17':
-    resolution: {integrity: sha512-f1QkdaN2ORY+f7fgJ1oWRHSnwUn5+t92pgMknqsj5L6ULehi6K8BCLfyMaK9nbY6R7+UrvrejR2EMwxkFFR+Ag==}
+  '@stencil/cli@5.0.0-beta.16':
+    resolution: {integrity: sha512-lrrgyv2scC7thW65uzbj6BoxBE4bHleWUmRbzZYCRV6IAdIKNDf3suv9eU/MMUQE4zMNrBRxozkNP8r9vjMhRg==}
     hasBin: true
     peerDependencies:
-      '@stencil/core': ^5.0.0-0
+      '@stencil/core': ^5.0.0 || 5.0.0-beta.16
 
   '@stencil/core@4.41.0':
     resolution: {integrity: sha512-KDVea3bjv7qJS+Pk8GcrWqRws6kAJAKiUPIxdDqK3KYH2yWPmzCzJO2XKsVyiBWmhdm2Q2KSdlb/EMFArfREiw==}
@@ -4955,13 +4939,15 @@ packages:
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
-  '@stencil/dev-server@5.0.0-alpha.17':
-    resolution: {integrity: sha512-/G7K8xjT3lNZKTF1HXyfm1L/YJ6fipMKB7lF4mkzL7khJlpHM+Hu02J5B02DwP7ytUDO9uloxTmJNgsNWdJdRw==}
+  '@stencil/dev-server@5.0.0-beta.16':
+    resolution: {integrity: sha512-qPK1HGYmLUj0Xn6Yl5/SZRYqo+sW+lzT+maearo/KFhqcaBVFqm/6lnTNVkI6tM9sWELs3SfaZmy+OerYPcscQ==}
     peerDependencies:
-      '@stencil/core': ^5.0.0-0
+      '@stencil/core': ^5.0.0 || 5.0.0-beta.16
 
-  '@stencil/templates@5.0.0-alpha.17':
-    resolution: {integrity: sha512-AdYO5NmEL6ew97GJAvgBwQI9/F2KsMFUksQIVRJ+J6Tua6gpvoeR++yOxwAN/HEyRma9sjKoTqW6ubGMRBjnRQ==}
+  '@stencil/templates@5.0.0-beta.16':
+    resolution: {integrity: sha512-Jx4NkqKh1qXiBkiiDzznM3wdM6ZVPdhvvjgNysKC6NHfMEP3fthHD8mcNvkgntkbSstO1MlibraXz7hb5QAbmg==}
+    peerDependencies:
+      '@stencil/core': ^5.0.0 || 5.0.0-beta.16
 
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
@@ -14414,6 +14400,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.22.0:
+    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   wsl-utils@0.1.0:
     resolution: {integrity: sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==}
     engines: {node: '>=18'}
@@ -18597,12 +18595,13 @@ snapshots:
 
   '@speed-highlight/core@1.2.17': {}
 
-  '@stencil/cli@5.0.0-alpha.17(@stencil/core@4.41.0)':
+  '@stencil/cli@5.0.0-beta.16(@stencil/core@4.41.0)':
     dependencies:
       '@clack/prompts': 1.7.0
       '@stencil/core': 4.41.0
-      '@stencil/dev-server': 5.0.0-alpha.17(@stencil/core@4.41.0)
-      '@stencil/templates': 5.0.0-alpha.17
+      '@stencil/dev-server': 5.0.0-beta.16(@stencil/core@4.41.0)
+      '@stencil/templates': 5.0.0-beta.16(@stencil/core@4.41.0)
+      local-pkg: 1.2.1
       nypm: 0.3.12
       std-env: 3.10.0
       typescript: 5.9.3
@@ -18610,12 +18609,13 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@stencil/cli@5.0.0-alpha.17(@stencil/core@4.43.5)':
+  '@stencil/cli@5.0.0-beta.16(@stencil/core@4.43.5)':
     dependencies:
       '@clack/prompts': 1.7.0
       '@stencil/core': 4.43.5
-      '@stencil/dev-server': 5.0.0-alpha.17(@stencil/core@4.43.5)
-      '@stencil/templates': 5.0.0-alpha.17
+      '@stencil/dev-server': 5.0.0-beta.16(@stencil/core@4.43.5)
+      '@stencil/templates': 5.0.0-beta.16(@stencil/core@4.43.5)
+      local-pkg: 1.2.1
       nypm: 0.3.12
       std-env: 3.10.0
       typescript: 5.9.3
@@ -18645,27 +18645,33 @@ snapshots:
       '@rollup/rollup-win32-arm64-msvc': 4.44.0
       '@rollup/rollup-win32-x64-msvc': 4.44.0
 
-  '@stencil/dev-server@5.0.0-alpha.17(@stencil/core@4.41.0)':
+  '@stencil/dev-server@5.0.0-beta.16(@stencil/core@4.41.0)':
     dependencies:
       '@stencil/core': 4.41.0
       launch-editor: 2.14.1
       open: 11.0.0
-      ws: 8.21.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@stencil/dev-server@5.0.0-alpha.17(@stencil/core@4.43.5)':
+  '@stencil/dev-server@5.0.0-beta.16(@stencil/core@4.43.5)':
     dependencies:
       '@stencil/core': 4.43.5
       launch-editor: 2.14.1
       open: 11.0.0
-      ws: 8.21.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@stencil/templates@5.0.0-alpha.17': {}
+  '@stencil/templates@5.0.0-beta.16(@stencil/core@4.41.0)':
+    dependencies:
+      '@stencil/core': 4.41.0
+
+  '@stencil/templates@5.0.0-beta.16(@stencil/core@4.43.5)':
+    dependencies:
+      '@stencil/core': 4.43.5
 
   '@swc/counter@0.1.3': {}
 
@@ -31018,6 +31024,8 @@ snapshots:
   ws@7.5.11: {}
 
   ws@8.21.0: {}
+
+  ws@8.22.0: {}
 
   wsl-utils@0.1.0:
     dependencies:
