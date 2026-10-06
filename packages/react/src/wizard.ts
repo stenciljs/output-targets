@@ -1,10 +1,23 @@
 import type { StencilWizardPlugin, WizardContext } from '@stencil/cli';
-import { access, mkdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, relative, dirname } from 'node:path';
 
 // ---------------------------------------------------------------------------
 // Wrapper package scaffolding
 // ---------------------------------------------------------------------------
+
+/**
+ * The core package's real npm name. This is not always its lowercased namespace
+ * (`testy-test` vs `testytest`), and it's what the wrapper has to depend on and import from.
+ */
+async function readCorePackageName(rootDir: string, fallback: string): Promise<string> {
+  try {
+    const { name } = JSON.parse(await readFile(join(rootDir, 'package.json'), 'utf8'));
+    return typeof name === 'string' && name ? name : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 async function pathExists(p: string): Promise<boolean> {
   try {
@@ -99,6 +112,7 @@ export const wizard = {
 
       // Where should the wrapper package live?
       let wrapperDir: string;
+      const corePackageName = await readCorePackageName(config.rootDir, config.fsNamespace);
       let wrapperPackageName = `${config.fsNamespace}-react`;
 
       if (workspaceRoot) {
@@ -168,7 +182,7 @@ export const wizard = {
           const corePkgVersion = supportsWorkspaceProtocol
             ? 'workspace:*'
             : `file:${relative(wrapperDir, config.rootDir).replace(/\\/g, '/')}`;
-          await scaffoldWrapperPackage(wrapperDir, wrapperPackageName, config.fsNamespace, corePkgVersion);
+          await scaffoldWrapperPackage(wrapperDir, wrapperPackageName, corePackageName, corePkgVersion);
           s.stop('Wrapper package scaffolded');
         } catch (e) {
           s.stop('Scaffolding failed — continuing');
@@ -176,9 +190,12 @@ export const wizard = {
         }
       }
 
-      // Build the output target code
+      // Build the output target code. Multi-line snippets are indented relative to their own
+      // start - the config editor re-indents them to whatever depth they get spliced in at.
+      // With an `exports` map, only the `./ssr` entry is importable
+      const ssrPath = config.generateExportMaps === true ? 'ssr' : 'dist/ssr';
       const targetCode = enableSsr
-        ? `reactOutputTarget({\n    outDir: '${outDir}',\n    hydrateModule: '${config.fsNamespace}/dist/ssr',\n    clientModule: '${wrapperPackageName}',\n  })`
+        ? `reactOutputTarget({\n  outDir: '${outDir}',\n  hydrateModule: '${corePackageName}/${ssrPath}',\n  clientModule: '${wrapperPackageName}',\n})`
         : `reactOutputTarget({ outDir: '${outDir}' })`;
 
       // Amend stencil.config.ts

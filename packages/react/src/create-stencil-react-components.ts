@@ -18,6 +18,7 @@ export const createStencilReactComponents = ({
   clientModule,
   serializeShadowRoot,
   transformTag,
+  exportMaps,
 }: {
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
@@ -27,8 +28,18 @@ export const createStencilReactComponents = ({
   clientModule?: string;
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
   transformTag?: boolean;
+  /**
+   * The Stencil project generates a package.json `exports` map, so import through its
+   * entries (`<pkg>/<tag>`, `<pkg>/standalone`) instead of deep `dist/` paths the map would block.
+   */
+  exportMaps?: boolean;
 }) => {
   const project = new Project({ useInMemoryFileSystem: true });
+  // `<pkg>/standalone` always exports the component types - the package root only does
+  // when the project has no `src/index.ts`, or that file re-exports them
+  const componentsTypesModule = exportMaps
+    ? `${stencilPackageName}/standalone`
+    : `${stencilPackageName}/${componentsTypesDir}`;
 
   /**
    * automatically attach the `use client` directive if we are not generating
@@ -59,7 +70,7 @@ import React from 'react';
 ${createComponentImport}
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 ${transformTagImport}
-import type { Components } from "${stencilPackageName}/${componentsTypesDir}";
+import type { Components } from "${componentsTypesModule}";
   `
   );
 
@@ -100,7 +111,9 @@ import type { Components } from "${stencilPackageName}/${componentsTypesDir}";
     const componentCustomEvent = `${reactTagName}CustomEvent`;
 
     sourceFile.addImportDeclaration({
-      moduleSpecifier: `${stencilPackageName}/${customElementsDir}/${tagName}.js`,
+      moduleSpecifier: exportMaps
+        ? `${stencilPackageName}/${tagName}`
+        : `${stencilPackageName}/${customElementsDir}/${tagName}.js`,
       namedImports: [
         {
           name: reactTagName,
