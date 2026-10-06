@@ -39,6 +39,7 @@ describe('Vue wizard', () => {
     await wizard.init.run(ctx as any);
 
     expect(editor.addImport).toHaveBeenCalledWith('@stencil/vue-output-target', ['vueOutputTarget']);
+    expect(editor.setProperty).not.toHaveBeenCalled();
     expect(editor.addOutputTarget).toHaveBeenCalledWith("{ type: 'loader-bundle' }");
 
     const targetCode = editor.addOutputTarget.mock.calls
