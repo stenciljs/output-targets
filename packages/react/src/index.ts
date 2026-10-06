@@ -1,4 +1,5 @@
-import type { BuildCtx, OutputTargetCustom, OutputTargetDistCustomElements } from '@stencil/core/internal';
+import type { Config } from '@stencil/core';
+import type { OutputTargetDistCustomElements } from '@stencil/core/internal';
 import { isAbsolute, relative } from 'node:path';
 import { Project } from 'ts-morph';
 import { createComponentWrappers } from './create-component-wrappers.js';
@@ -89,6 +90,11 @@ const DIST_CUSTOM_ELEMENTS = 'dist-custom-elements';
 const STANDALONE = 'standalone';
 const HYDRATE_OUTPUT_TARGET = 'dist-hydrate-script';
 const SSR_OUTPUT_TARGET = 'ssr';
+// Stencil v5 removed the `@stencil/core/internal` entry point, so anything that ends up in
+// our public typings is derived from the root `Config` type, which v4 and v5 both export.
+type OutputTargetCustom = Extract<NonNullable<Config['outputTargets']>[number], { type: 'custom' }>;
+type BuildCtx = Parameters<OutputTargetCustom['generator']>[2];
+
 const TYPES_OUTPUT_TARGET = 'types';
 const TYPES_DEFAULT_DIR = 'dist/types';
 
@@ -116,10 +122,21 @@ export const reactOutputTarget = ({
 }: ReactOutputTargetOptions): ReactOutputTarget => {
   let customElementsDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
   let componentsTypesDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
+  let exportMaps = false;
   return {
     type: 'custom',
     name: PLUGIN_NAME,
     validate(config) {
+      /**
+       * When the Stencil project generates a package.json `exports` map, deep `dist/` imports
+       * are blocked for consumers, so the wrappers import through the map's entries instead.
+       * Stencil v5 only: v4's map has no `./standalone` or `./ssr` entry, and its root types
+       * aren't guaranteed to export the component types.
+       */
+      exportMaps =
+        (config as { generateExportMaps?: boolean }).generateExportMaps === true &&
+        (config.outputTargets || []).some((o: any) => ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type));
+
       /**
        * Validate the configuration to ensure that the dist-custom-elements
        * output target is defined in the Stencil configuration.
@@ -243,6 +260,7 @@ export const reactOutputTarget = ({
         excludeServerSideRenderingFor,
         serializeShadowRoot,
         transformTag,
+        exportMaps,
       });
 
       await Promise.all(

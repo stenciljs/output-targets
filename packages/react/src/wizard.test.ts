@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mkdtemp, mkdir, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { makeFakeEditor, makeOpenStencilConfig, makePrompts } from 'stencil-output-targets-shared/test-utils/wizard';
@@ -131,6 +131,74 @@ describe('React wizard', () => {
     await wizard.init.run(ctx as any);
 
     expect(nypm.addDependency).toHaveBeenCalled();
+  });
+
+  it("uses the core package's real name, not its namespace, for the dependency and hydrateModule", async () => {
+    await writeFile(join(tmpDir, 'package.json'), JSON.stringify({ name: 'testy-test' }), 'utf8');
+
+    const editor = makeFakeEditor();
+    const ctx = {
+      config: { rootDir: tmpDir, fsNamespace: 'testytest' },
+      openStencilConfig: makeOpenStencilConfig(editor),
+      workspaceRoot: undefined,
+      prompts: makePrompts({
+        text: vi
+          .fn()
+          .mockResolvedValueOnce('./testytest-react') // wrapper dir
+          .mockResolvedValueOnce('testytest-react'), // wrapper package name (SSR clientModule)
+        confirm: vi.fn().mockResolvedValueOnce(true), // SSR
+      }),
+      nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+    };
+
+    await wizard.init.run(ctx as any);
+
+    const targetCode = editor.addOutputTarget.mock.calls
+      .map(([code]) => code)
+      .find((code) => code.includes('reactOutputTarget('));
+    expect(targetCode).toContain("hydrateModule: 'testy-test/dist/ssr'");
+
+    const pkgJson = JSON.parse(await readFile(join(tmpDir, 'testytest-react', 'package.json'), 'utf8'));
+    expect(Object.keys(pkgJson.dependencies)).toEqual(['testy-test']);
+  });
+
+  it('points hydrateModule at the `./ssr` entry when the project generates an exports map', async () => {
+    const editor = makeFakeEditor();
+    const ctx = {
+      config: { rootDir: tmpDir, fsNamespace: 'my-app', generateExportMaps: true },
+      openStencilConfig: makeOpenStencilConfig(editor),
+      workspaceRoot: undefined,
+      prompts: makePrompts({
+        text: vi.fn().mockResolvedValueOnce('./my-app-react').mockResolvedValueOnce('my-app-react'),
+        confirm: vi.fn().mockResolvedValueOnce(true),
+      }),
+      nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+    };
+
+    await wizard.init.run(ctx as any);
+
+    const targetCode = editor.addOutputTarget.mock.calls
+      .map(([code]) => code)
+      .find((code) => code.includes('reactOutputTarget('));
+    expect(targetCode).toContain("hydrateModule: 'my-app/ssr'");
+  });
+
+  it('leaves generateExportMaps for the author to opt into', async () => {
+    const editor = makeFakeEditor();
+    const ctx = {
+      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
+      workspaceRoot: undefined,
+      prompts: makePrompts({
+        text: vi.fn().mockResolvedValueOnce('./my-app-react'),
+        confirm: vi.fn().mockResolvedValueOnce(false),
+      }),
+      nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+    };
+
+    await wizard.init.run(ctx as any);
+
+    expect(editor.setProperty).not.toHaveBeenCalled();
   });
 
   it('prompts for package name (not dir) when workspaceRoot is set', async () => {
