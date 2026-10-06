@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.5.0...@stencil/angular-output-target@1.5.1) (2026-10-06)
+
+
+### :bug: Bug Fix
+
+* **angular:** support `generateExportMaps` config option (v5 only) ([b8413e2](https://github.com/stenciljs/output-targets/commit/b8413e29aae6c293fec88b48431cbe2bc6f94cef))
+
 ## [1.5.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.4.1...@stencil/angular-output-target@1.5.0) (2026-09-11)
 
 
