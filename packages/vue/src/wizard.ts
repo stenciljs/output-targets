@@ -1,10 +1,23 @@
 import type { StencilWizardPlugin, WizardContext } from '@stencil/cli';
-import { access, mkdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, relative, dirname } from 'node:path';
 
 // ---------------------------------------------------------------------------
 // Wrapper package scaffolding
 // ---------------------------------------------------------------------------
+
+/**
+ * The core package's real npm name. This is not always its lowercased namespace
+ * (`testy-test` vs `testytest`), and it's what the wrapper has to depend on and import from.
+ */
+async function readCorePackageName(rootDir: string, fallback: string): Promise<string> {
+  try {
+    const { name } = JSON.parse(await readFile(join(rootDir, 'package.json'), 'utf8'));
+    return typeof name === 'string' && name ? name : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 async function pathExists(p: string): Promise<boolean> {
   try {
@@ -95,6 +108,7 @@ export const wizard = {
 
       // Where should the wrapper package live?
       let wrapperDir: string;
+      const corePackageName = await readCorePackageName(config.rootDir, config.fsNamespace);
       let wrapperPackageName = `${config.fsNamespace}-vue`;
 
       if (workspaceRoot) {
@@ -160,7 +174,7 @@ export const wizard = {
           const corePkgVersion = supportsWorkspaceProtocol
             ? 'workspace:*'
             : `file:${relative(wrapperDir, config.rootDir).replace(/\\/g, '/')}`;
-          await scaffoldWrapperPackage(wrapperDir, wrapperPackageName, config.fsNamespace, corePkgVersion);
+          await scaffoldWrapperPackage(wrapperDir, wrapperPackageName, corePackageName, corePkgVersion);
           s.stop('Wrapper package scaffolded');
         } catch (e) {
           s.stop('Scaffolding failed — continuing');
@@ -171,7 +185,7 @@ export const wizard = {
       // Build target config
       const lines = [
         `proxiesFile: '${proxiesFile}'`,
-        `componentCorePackage: '${config.fsNamespace}'`,
+        `componentCorePackage: '${corePackageName}'`,
         ...(mode === 'standalone'
           ? [
               `includeImportCustomElements: true`,
