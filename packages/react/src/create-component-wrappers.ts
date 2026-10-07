@@ -1,6 +1,5 @@
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
 import path from 'node:path';
-import { Project, SourceFile } from 'ts-morph';
 import { createEsModulesComponentsFile } from './create-es-modules-components-file.js';
 import { createStencilReactComponents } from './create-stencil-react-components.js';
 import { createTagTransformer } from './create-tag-transformer.js';
@@ -14,13 +13,13 @@ export const createComponentWrappers = async ({
   customElementsDir,
   componentsTypesDir,
   excludeComponents,
-  project,
   hydrateModule,
   clientModule,
   excludeServerSideRenderingFor,
   serializeShadowRoot,
   transformTag,
   exportMaps,
+  writeFile,
 }: {
   stencilPackageName: string;
   components: ComponentCompilerMeta[];
@@ -29,38 +28,33 @@ export const createComponentWrappers = async ({
   outDir: string;
   esModules?: boolean;
   excludeComponents?: string[];
-  project: Project;
   hydrateModule?: string;
   clientModule?: string;
   excludeServerSideRenderingFor?: string[];
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
   transformTag?: boolean;
+  writeFile: (path: string, contents: string) => Promise<unknown>;
   exportMaps?: boolean;
 }) => {
-  const sourceFiles: SourceFile[] = [];
+  const promises: Promise<unknown>[] = [];
 
   const filteredComponents = components.filter((c) => {
-    if (c.internal === true) {
+    if (c.internal) {
       /**
        * Skip internal components
        */
       return false;
     }
-    if (excludeComponents?.includes(c.tagName)) {
-      /**
-       * Skip excluded components
-       */
-      return false;
-    }
 
-    return true;
+    /**
+     * Skip excluded components
+     */
+    return !excludeComponents?.includes(c.tagName);
   });
 
   if (filteredComponents.length === 0) {
-    return [];
+    return undefined;
   }
-
-  const fileContents: Record<string, string> = {};
 
   /**
    * create a single file with all components or a separate file for each component
@@ -84,14 +78,19 @@ export const createComponentWrappers = async ({
       exportMaps,
       transformTag,
     });
-    fileContents[outputPath] = stencilReactComponent;
+
+    promises.push(writeFile(outputPath, stencilReactComponent));
 
     /**
      * create tag-transformer file (for both client and server)
      */
     if (transformTag) {
-      const tagTransformerPath = path.join(outDir, 'tag-transformer.ts');
-      fileContents[tagTransformerPath] = createTagTransformer({ stencilPackageName, customElementsDir, exportMaps });
+      promises.push(
+        writeFile(
+          path.join(outDir, 'tag-transformer.ts'),
+          createTagTransformer({ stencilPackageName, customElementsDir, exportMaps })
+        )
+      );
     }
 
     /**
@@ -100,9 +99,7 @@ export const createComponentWrappers = async ({
     if (hydrateModule) {
       const outputPath = path.join(outDir, `${filename}.server.ts`);
       const stencilReactComponent = createStencilReactComponents({
-        components: components.filter(
-          (c) => !excludeServerSideRenderingFor || !excludeServerSideRenderingFor.includes(c.tagName)
-        ),
+        components: components.filter((c) => !excludeServerSideRenderingFor?.includes(c.tagName)),
         stencilPackageName,
         customElementsDir,
         componentsTypesDir,
@@ -112,7 +109,8 @@ export const createComponentWrappers = async ({
         serializeShadowRoot,
         transformTag,
       });
-      fileContents[outputPath] = stencilReactComponent;
+
+      promises.push(writeFile(outputPath, stencilReactComponent));
     }
   }
 
@@ -123,8 +121,9 @@ export const createComponentWrappers = async ({
     for (const component of filteredComponents) {
       createComponentFile([component], component.tagName);
     }
-    const componentsSource = await createEsModulesComponentsFile({ components: filteredComponents, project, outDir });
-    sourceFiles.push(componentsSource);
+    const componentsSource = createEsModulesComponentsFile({ components: filteredComponents });
+
+    promises.push(writeFile(path.join(outDir, 'components.ts'), componentsSource));
 
     /**
      * Server barrel — mirrors the client barrel but points at `*.server.js` and
@@ -132,29 +131,19 @@ export const createComponentWrappers = async ({
      * tree-shake per-component imports.
      */
     if (hydrateModule) {
-      const serverComponentsSource = await createEsModulesComponentsFile({
+      const serverComponentsSource = createEsModulesComponentsFile({
         components: filteredComponents.filter(
           (c) => !excludeServerSideRenderingFor || !excludeServerSideRenderingFor.includes(c.tagName)
         ),
-        project,
-        outDir,
-        filename: 'components.server.ts',
         componentSuffix: '.server',
         serializeShadowRoot,
       });
-      sourceFiles.push(serverComponentsSource);
+
+      promises.push(writeFile(path.join(outDir, 'components.server.ts'), serverComponentsSource));
     }
   } else {
     createComponentFile(filteredComponents);
   }
 
-  await Promise.all(
-    Object.entries(fileContents).map(async ([outputPath, content]) => {
-      const sourceFile = project.createSourceFile(outputPath, content, { overwrite: true });
-      await sourceFile.save();
-      sourceFiles.push(sourceFile);
-    })
-  );
-
-  return sourceFiles;
+  return await Promise.all(promises);
 };

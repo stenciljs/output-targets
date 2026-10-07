@@ -1,7 +1,6 @@
 import type { Config } from '@stencil/core';
 import type { OutputTargetDistCustomElements } from '@stencil/core/internal';
 import { isAbsolute, relative } from 'node:path';
-import { Project } from 'ts-morph';
 import { createComponentWrappers } from './create-component-wrappers.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
 
@@ -244,9 +243,8 @@ export const reactOutputTarget = ({
       const timespan = buildCtx.createTimeSpan(`generate ${PLUGIN_NAME} started`, true);
 
       const components = buildCtx.components;
-      const project = new Project();
 
-      const sourceFiles = await createComponentWrappers({
+      await createComponentWrappers({
         outDir,
         components,
         stencilPackageName: stencilPackageName!,
@@ -254,7 +252,7 @@ export const reactOutputTarget = ({
         componentsTypesDir,
         excludeComponents,
         esModules: esModules === true,
-        project,
+        writeFile: (filePath: string, content: string) => compilerCtx.fs.writeFile(filePath, content),
         hydrateModule,
         clientModule,
         excludeServerSideRenderingFor,
@@ -262,10 +260,6 @@ export const reactOutputTarget = ({
         transformTag,
         exportMaps,
       });
-
-      await Promise.all(
-        sourceFiles.map((sourceFile) => compilerCtx.fs.writeFile(sourceFile.getFilePath(), sourceFile.getFullText()))
-      );
 
       timespan.finish(`generate ${PLUGIN_NAME} finished`);
     },

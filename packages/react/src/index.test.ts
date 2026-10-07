@@ -195,8 +195,8 @@ describe('reactOutputTarget', () => {
 
     it('imports through the exports map for a Stencil v5 project with generateExportMaps', async () => {
       const output = await run({ rootDir: '/', generateExportMaps: true, outputTargets: [{ type: 'standalone' }] });
-      expect(output).toContain('from "my-components/my-button"');
-      expect(output).toContain('import type { Components } from "my-components/standalone"');
+      expect(output).toContain(`from 'my-components/my-button'`);
+      expect(output).toContain(`import type { Components } from 'my-components/standalone'`);
     });
 
     it('keeps deep paths for a Stencil v4 project, even with generateExportMaps', async () => {
@@ -205,8 +205,8 @@ describe('reactOutputTarget', () => {
         generateExportMaps: true,
         outputTargets: [{ type: 'dist-custom-elements', externalRuntime: false }],
       });
-      expect(output).toContain('from "my-components/dist/components/my-button.js"');
-      expect(output).not.toContain('from "my-components/my-button"');
+      expect(output).toContain(`from 'my-components/dist/components/my-button.js'`);
+      expect(output).not.toContain(`from 'my-components/my-button'`);
     });
   });
 });

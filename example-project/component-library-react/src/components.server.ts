@@ -8,156 +8,160 @@
 /* eslint-disable */
 
 import { getTagTransformer } from './tag-transformer.js';
-
-import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
-import { createComponent, type HydrateModule, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
-
-import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import { createComponent, type SerializeShadowRootOptions, type HydrateModule } from '@stencil/react-output-target/ssr';
+import type { Components } from 'component-library/components';
 // @ts-ignore - ignore potential type issues as the project is importing itself
-import * as clientComponents from "component-library-react";
-import type { Components } from "component-library/components";
-import { MyButtonScoped as MyButtonScopedElement } from "component-library/components/my-button-scoped.js";
-import { MyButton as MyButtonElement } from "component-library/components/my-button.js";
-import { MyCheckbox as MyCheckboxElement } from "component-library/components/my-checkbox.js";
-import { MyComplexPropsScoped as MyComplexPropsScopedElement } from "component-library/components/my-complex-props-scoped.js";
-import { MyComplexProps as MyComplexPropsElement } from "component-library/components/my-complex-props.js";
-import { MyComponentDelegatesFocus as MyComponentDelegatesFocusElement } from "component-library/components/my-component-delegates-focus.js";
-import { MyComponentScoped as MyComponentScopedElement } from "component-library/components/my-component-scoped.js";
-import { MyComponent as MyComponentElement } from "component-library/components/my-component.js";
-import { MyCounter as MyCounterElement } from "component-library/components/my-counter.js";
-import { MyInputScoped as MyInputScopedElement } from "component-library/components/my-input-scoped.js";
-import { MyInput as MyInputElement } from "component-library/components/my-input.js";
-import { MyListItemScoped as MyListItemScopedElement } from "component-library/components/my-list-item-scoped.js";
-import { MyListItem as MyListItemElement } from "component-library/components/my-list-item.js";
-import { MyListScoped as MyListScopedElement } from "component-library/components/my-list-scoped.js";
-import { MyList as MyListElement } from "component-library/components/my-list.js";
-import { MyPopover as MyPopoverElement } from "component-library/components/my-popover.js";
-import { MyRadioGroup as MyRadioGroupElement } from "component-library/components/my-radio-group.js";
-import { MyRadio as MyRadioElement } from "component-library/components/my-radio.js";
-import { MyRange as MyRangeElement } from "component-library/components/my-range.js";
-import { MyToggleContent as MyToggleContentElement } from "component-library/components/my-toggle-content.js";
-import { MyToggle as MyToggleElement } from "component-library/components/my-toggle.js";
-import { MyTransformTest as MyTransformTestElement } from "component-library/components/my-transform-test.js";
+import { MyButton as MyButtonReact, MyButtonScoped as MyButtonScopedReact, MyCheckbox as MyCheckboxReact, MyComplexProps as MyComplexPropsReact, MyComplexPropsScoped as MyComplexPropsScopedReact, MyComponent as MyComponentReact, MyComponentDelegatesFocus as MyComponentDelegatesFocusReact, MyComponentScoped as MyComponentScopedReact, MyCounter as MyCounterReact, MyInput as MyInputReact, MyInputScoped as MyInputScopedReact, MyList as MyListReact, MyListItem as MyListItemReact, MyListItemScoped as MyListItemScopedReact, MyListScoped as MyListScopedReact, MyPopover as MyPopoverReact, MyRadio as MyRadioReact, MyRadioGroup as MyRadioGroupReact, MyRange as MyRangeReact, MyToggle as MyToggleReact, MyToggleContent as MyToggleContentReact, MyTransformTest as MyTransformTestReact } from 'component-library-react';
+import { MyButton as MyButtonElement } from 'component-library/components/my-button.js';
+import { MyButtonScoped as MyButtonScopedElement } from 'component-library/components/my-button-scoped.js';
+import { MyCheckbox as MyCheckboxElement } from 'component-library/components/my-checkbox.js';
+import { MyComplexProps as MyComplexPropsElement } from 'component-library/components/my-complex-props.js';
+import { MyComplexPropsScoped as MyComplexPropsScopedElement } from 'component-library/components/my-complex-props-scoped.js';
+import { MyComponent as MyComponentElement } from 'component-library/components/my-component.js';
+import { MyComponentDelegatesFocus as MyComponentDelegatesFocusElement } from 'component-library/components/my-component-delegates-focus.js';
+import { MyComponentScoped as MyComponentScopedElement } from 'component-library/components/my-component-scoped.js';
+import { MyCounter as MyCounterElement } from 'component-library/components/my-counter.js';
+import { MyInput as MyInputElement } from 'component-library/components/my-input.js';
+import { MyInputScoped as MyInputScopedElement } from 'component-library/components/my-input-scoped.js';
+import { MyList as MyListElement } from 'component-library/components/my-list.js';
+import { MyListItem as MyListItemElement } from 'component-library/components/my-list-item.js';
+import { MyListItemScoped as MyListItemScopedElement } from 'component-library/components/my-list-item-scoped.js';
+import { MyListScoped as MyListScopedElement } from 'component-library/components/my-list-scoped.js';
+import { MyPopover as MyPopoverElement } from 'component-library/components/my-popover.js';
+import { MyRadio as MyRadioElement } from 'component-library/components/my-radio.js';
+import { MyRadioGroup as MyRadioGroupElement } from 'component-library/components/my-radio-group.js';
+import { MyRange as MyRangeElement } from 'component-library/components/my-range.js';
+import { MyToggle as MyToggleElement } from 'component-library/components/my-toggle.js';
+import { MyToggleContent as MyToggleContentElement } from 'component-library/components/my-toggle-content.js';
+import { MyTransformTest as MyTransformTestElement } from 'component-library/components/my-transform-test.js';
+import type { MyButtonCustomEvent, MyButtonScopedCustomEvent, CheckboxChangeEventDetail, CheckboxChangeNestedEventDetail, MyCheckboxCustomEvent, MyComponentCustomEvent, IMyComponent, MyComponentScopedCustomEvent, MyCounterCustomEvent, InputChangeEventDetail, MyInputCustomEvent, MyInputScopedCustomEvent, OverlayEventDetail, MyPopoverCustomEvent, MyRadioCustomEvent, RadioGroupChangeEventDetail, MyRadioGroupCustomEvent, RangeChangeEventDetail, MyRangeCustomEvent } from 'component-library';
+import type { StencilReactComponent, EventName } from '@stencil/react-output-target/runtime';
 
-export const serializeShadowRoot: SerializeShadowRootOptions = { "scoped": ["my-counter", "my-button", "my-component", "my-radio"], "default": "declarative-shadow-dom" };
+export const serializeShadowRoot: SerializeShadowRootOptions = {"scoped":["my-counter","my-button","my-component","my-radio"],"default":"declarative-shadow-dom"};
 
 export type MyButtonEvents = {
-    onMyFocus: EventName<MyButtonCustomEvent<void>>,
-    onMyBlur: EventName<MyButtonCustomEvent<void>>
+  onMyFocus: EventName<MyButtonCustomEvent<void>>,
+  onMyBlur: EventName<MyButtonCustomEvent<void>>
 };
 
 export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents, Components.MyButton> = /*@__PURE__*/ createComponent<MyButtonElement, MyButtonEvents, Components.MyButton>({
     tagName: 'my-button',
     properties: {
-        color: 'color',
-        buttonType: 'button-type',
-        disabled: 'disabled',
-        expand: 'expand',
-        fill: 'fill',
-        download: 'download',
-        href: 'href',
-        rel: 'rel',
-        shape: 'shape',
-        size: 'size',
-        strong: 'strong',
-        target: 'target',
-        type: 'type'
+      color: 'color',
+      buttonType: 'button-type',
+      disabled: 'disabled',
+      expand: 'expand',
+      fill: 'fill',
+      download: 'download',
+      href: 'href',
+      rel: 'rel',
+      shape: 'shape',
+      size: 'size',
+      strong: 'strong',
+      target: 'target',
+      type: 'type'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyButton as StencilReactComponent<MyButtonElement, MyButtonEvents, Components.MyButton>,
+    clientModule: MyButtonReact as StencilReactComponent<MyButtonElement, MyButtonEvents, Components.MyButton>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyButtonScopedEvents = {
-    onMyFocus: EventName<MyButtonScopedCustomEvent<void>>,
-    onMyBlur: EventName<MyButtonScopedCustomEvent<void>>
+  onMyFocus: EventName<MyButtonScopedCustomEvent<void>>,
+  onMyBlur: EventName<MyButtonScopedCustomEvent<void>>
 };
 
 export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButtonScopedEvents, Components.MyButtonScoped> = /*@__PURE__*/ createComponent<MyButtonScopedElement, MyButtonScopedEvents, Components.MyButtonScoped>({
     tagName: 'my-button-scoped',
     properties: {
-        color: 'color',
-        buttonType: 'button-type',
-        disabled: 'disabled',
-        expand: 'expand',
-        fill: 'fill',
-        download: 'download',
-        href: 'href',
-        rel: 'rel',
-        shape: 'shape',
-        size: 'size',
-        strong: 'strong',
-        target: 'target',
-        type: 'type'
+      color: 'color',
+      buttonType: 'button-type',
+      disabled: 'disabled',
+      expand: 'expand',
+      fill: 'fill',
+      download: 'download',
+      href: 'href',
+      rel: 'rel',
+      shape: 'shape',
+      size: 'size',
+      strong: 'strong',
+      target: 'target',
+      type: 'type'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyButtonScoped as StencilReactComponent<MyButtonScopedElement, MyButtonScopedEvents, Components.MyButtonScoped>,
+    clientModule: MyButtonScopedReact as StencilReactComponent<MyButtonScopedElement, MyButtonScopedEvents, Components.MyButtonScoped>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyCheckboxEvents = {
-    onIonChange: EventName<MyCheckboxCustomEvent<CheckboxChangeEventDetail>>,
-    onIonChangeNested: EventName<MyCheckboxCustomEvent<CheckboxChangeNestedEventDetail>>,
-    onIonFocus: EventName<MyCheckboxCustomEvent<void>>,
-    onIonBlur: EventName<MyCheckboxCustomEvent<void>>
+  onIonChange: EventName<MyCheckboxCustomEvent<CheckboxChangeEventDetail>>,
+  onIonChangeNested: EventName<MyCheckboxCustomEvent<CheckboxChangeNestedEventDetail>>,
+  onIonFocus: EventName<MyCheckboxCustomEvent<void>>,
+  onIonBlur: EventName<MyCheckboxCustomEvent<void>>
 };
 
 export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEvents, Components.MyCheckbox> = /*@__PURE__*/ createComponent<MyCheckboxElement, MyCheckboxEvents, Components.MyCheckbox>({
     tagName: 'my-checkbox',
     properties: {
-        color: 'color',
-        name: 'name',
-        checked: 'checked',
-        indeterminate: 'indeterminate',
-        disabled: 'disabled',
-        value: 'value',
-        labelPlacement: 'label-placement',
-        justify: 'justify',
-        alignment: 'alignment'
+      color: 'color',
+      name: 'name',
+      checked: 'checked',
+      indeterminate: 'indeterminate',
+      disabled: 'disabled',
+      value: 'value',
+      labelPlacement: 'label-placement',
+      justify: 'justify',
+      alignment: 'alignment'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyCheckbox as StencilReactComponent<MyCheckboxElement, MyCheckboxEvents, Components.MyCheckbox>,
+    clientModule: MyCheckboxReact as StencilReactComponent<MyCheckboxElement, MyCheckboxEvents, Components.MyCheckbox>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyComplexPropsEvents = NonNullable<unknown>;
 
 export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps> = /*@__PURE__*/ createComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps>({
     tagName: 'my-complex-props',
-    properties: { grault: 'grault' },
+    properties: {
+      grault: 'grault'
+    },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyComplexProps as StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps>,
+    clientModule: MyComplexPropsReact as StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyComplexPropsScopedEvents = NonNullable<unknown>;
 
 export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped> = /*@__PURE__*/ createComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped>({
     tagName: 'my-complex-props-scoped',
-    properties: { grault: 'grault' },
+    properties: {
+      grault: 'grault'
+    },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyComplexPropsScoped as StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped>,
+    clientModule: MyComplexPropsScopedReact as StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
-export type MyComponentEvents = { onMyCustomEvent: EventName<MyComponentCustomEvent<void>> };
+export type MyComponentEvents = {
+  onMyCustomEvent: EventName<MyComponentCustomEvent<void>>
+};
 
 export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
     tagName: 'my-component',
     properties: {
-        first: 'first',
-        middleName: 'middle-name',
-        last: 'last'
+      first: 'first',
+      middleName: 'middle-name',
+      last: 'last'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
+    clientModule: MyComponentReact as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyComponentDelegatesFocusEvents = NonNullable<unknown>;
@@ -166,121 +170,127 @@ export const MyComponentDelegatesFocus: StencilReactComponent<MyComponentDelegat
     tagName: 'my-component-delegates-focus',
     properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyComponentDelegatesFocus as StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>,
+    clientModule: MyComponentDelegatesFocusReact as StencilReactComponent<MyComponentDelegatesFocusElement, MyComponentDelegatesFocusEvents, Components.MyComponentDelegatesFocus>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
-export type MyComponentScopedEvents = { onMyCustomEvent: EventName<MyComponentScopedCustomEvent<IMyComponent.someVar>> };
+export type MyComponentScopedEvents = {
+  onMyCustomEvent: EventName<MyComponentScopedCustomEvent<IMyComponent.someVar>>
+};
 
 export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, MyComponentScopedEvents, Components.MyComponentScoped> = /*@__PURE__*/ createComponent<MyComponentScopedElement, MyComponentScopedEvents, Components.MyComponentScoped>({
     tagName: 'my-component-scoped',
     properties: {
-        first: 'first',
-        middleName: 'middle-name',
-        last: 'last'
+      first: 'first',
+      middleName: 'middle-name',
+      last: 'last'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyComponentScoped as StencilReactComponent<MyComponentScopedElement, MyComponentScopedEvents, Components.MyComponentScoped>,
+    clientModule: MyComponentScopedReact as StencilReactComponent<MyComponentScopedElement, MyComponentScopedEvents, Components.MyComponentScoped>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
-export type MyCounterEvents = { onCount: EventName<MyCounterCustomEvent<number>> };
+export type MyCounterEvents = {
+  onCount: EventName<MyCounterCustomEvent<number>>
+};
 
 export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents, Components.MyCounter> = /*@__PURE__*/ createComponent<MyCounterElement, MyCounterEvents, Components.MyCounter>({
     tagName: 'my-counter',
-    properties: { startValue: 'start-value' },
+    properties: {
+      startValue: 'start-value'
+    },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyCounter as StencilReactComponent<MyCounterElement, MyCounterEvents, Components.MyCounter>,
+    clientModule: MyCounterReact as StencilReactComponent<MyCounterElement, MyCounterEvents, Components.MyCounter>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyInputEvents = {
-    onMyInput: EventName<MyInputCustomEvent<KeyboardEvent>>,
-    onMyChange: EventName<MyInputCustomEvent<InputChangeEventDetail>>,
-    onMyBlur: EventName<MyInputCustomEvent<void>>,
-    onMyFocus: EventName<MyInputCustomEvent<void>>
+  onMyInput: EventName<MyInputCustomEvent<KeyboardEvent>>,
+  onMyChange: EventName<MyInputCustomEvent<InputChangeEventDetail>>,
+  onMyBlur: EventName<MyInputCustomEvent<void>>,
+  onMyFocus: EventName<MyInputCustomEvent<void>>
 };
 
 export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents, Components.MyInput> = /*@__PURE__*/ createComponent<MyInputElement, MyInputEvents, Components.MyInput>({
     tagName: 'my-input',
     properties: {
-        color: 'color',
-        accept: 'accept',
-        autocapitalize: 'autocapitalize',
-        autocomplete: 'autocomplete',
-        autocorrect: 'autocorrect',
-        autofocus: 'autofocus',
-        clearInput: 'clear-input',
-        clearOnEdit: 'clear-on-edit',
-        disabled: 'disabled',
-        enterkeyhint: 'enterkeyhint',
-        inputmode: 'inputmode',
-        max: 'max',
-        maxlength: 'maxlength',
-        min: 'min',
-        minlength: 'minlength',
-        multiple: 'multiple',
-        name: 'name',
-        pattern: 'pattern',
-        placeholder: 'placeholder',
-        readonly: 'readonly',
-        required: 'required',
-        spellcheck: 'spellcheck',
-        step: 'step',
-        size: 'size',
-        type: 'type',
-        value: 'value'
+      color: 'color',
+      accept: 'accept',
+      autocapitalize: 'autocapitalize',
+      autocomplete: 'autocomplete',
+      autocorrect: 'autocorrect',
+      autofocus: 'autofocus',
+      clearInput: 'clear-input',
+      clearOnEdit: 'clear-on-edit',
+      disabled: 'disabled',
+      enterkeyhint: 'enterkeyhint',
+      inputmode: 'inputmode',
+      max: 'max',
+      maxlength: 'maxlength',
+      min: 'min',
+      minlength: 'minlength',
+      multiple: 'multiple',
+      name: 'name',
+      pattern: 'pattern',
+      placeholder: 'placeholder',
+      readonly: 'readonly',
+      required: 'required',
+      spellcheck: 'spellcheck',
+      step: 'step',
+      size: 'size',
+      type: 'type',
+      value: 'value'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyInput as StencilReactComponent<MyInputElement, MyInputEvents, Components.MyInput>,
+    clientModule: MyInputReact as StencilReactComponent<MyInputElement, MyInputEvents, Components.MyInput>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyInputScopedEvents = {
-    onMyInput: EventName<MyInputScopedCustomEvent<KeyboardEvent>>,
-    onMyChange: EventName<MyInputScopedCustomEvent<InputChangeEventDetail>>,
-    onMyBlur: EventName<MyInputScopedCustomEvent<void>>,
-    onMyFocus: EventName<MyInputScopedCustomEvent<void>>
+  onMyInput: EventName<MyInputScopedCustomEvent<KeyboardEvent>>,
+  onMyChange: EventName<MyInputScopedCustomEvent<InputChangeEventDetail>>,
+  onMyBlur: EventName<MyInputScopedCustomEvent<void>>,
+  onMyFocus: EventName<MyInputScopedCustomEvent<void>>
 };
 
 export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputScopedEvents, Components.MyInputScoped> = /*@__PURE__*/ createComponent<MyInputScopedElement, MyInputScopedEvents, Components.MyInputScoped>({
     tagName: 'my-input-scoped',
     properties: {
-        color: 'color',
-        accept: 'accept',
-        autocapitalize: 'autocapitalize',
-        autocomplete: 'autocomplete',
-        autocorrect: 'autocorrect',
-        autofocus: 'autofocus',
-        clearInput: 'clear-input',
-        clearOnEdit: 'clear-on-edit',
-        disabled: 'disabled',
-        enterkeyhint: 'enterkeyhint',
-        inputmode: 'inputmode',
-        max: 'max',
-        maxlength: 'maxlength',
-        min: 'min',
-        minlength: 'minlength',
-        multiple: 'multiple',
-        name: 'name',
-        pattern: 'pattern',
-        placeholder: 'placeholder',
-        readonly: 'readonly',
-        required: 'required',
-        spellcheck: 'spellcheck',
-        step: 'step',
-        size: 'size',
-        type: 'type',
-        value: 'value'
+      color: 'color',
+      accept: 'accept',
+      autocapitalize: 'autocapitalize',
+      autocomplete: 'autocomplete',
+      autocorrect: 'autocorrect',
+      autofocus: 'autofocus',
+      clearInput: 'clear-input',
+      clearOnEdit: 'clear-on-edit',
+      disabled: 'disabled',
+      enterkeyhint: 'enterkeyhint',
+      inputmode: 'inputmode',
+      max: 'max',
+      maxlength: 'maxlength',
+      min: 'min',
+      minlength: 'minlength',
+      multiple: 'multiple',
+      name: 'name',
+      pattern: 'pattern',
+      placeholder: 'placeholder',
+      readonly: 'readonly',
+      required: 'required',
+      spellcheck: 'spellcheck',
+      step: 'step',
+      size: 'size',
+      type: 'type',
+      value: 'value'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyInputScoped as StencilReactComponent<MyInputScopedElement, MyInputScopedEvents, Components.MyInputScoped>,
+    clientModule: MyInputScopedReact as StencilReactComponent<MyInputScopedElement, MyInputScopedEvents, Components.MyInputScoped>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyListEvents = NonNullable<unknown>;
@@ -289,9 +299,9 @@ export const MyList: StencilReactComponent<MyListElement, MyListEvents, Componen
     tagName: 'my-list',
     properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyList as StencilReactComponent<MyListElement, MyListEvents, Components.MyList>,
+    clientModule: MyListReact as StencilReactComponent<MyListElement, MyListEvents, Components.MyList>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyListItemEvents = NonNullable<unknown>;
@@ -300,9 +310,9 @@ export const MyListItem: StencilReactComponent<MyListItemElement, MyListItemEven
     tagName: 'my-list-item',
     properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyListItem as StencilReactComponent<MyListItemElement, MyListItemEvents, Components.MyListItem>,
+    clientModule: MyListItemReact as StencilReactComponent<MyListItemElement, MyListItemEvents, Components.MyListItem>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyListItemScopedEvents = NonNullable<unknown>;
@@ -311,9 +321,9 @@ export const MyListItemScoped: StencilReactComponent<MyListItemScopedElement, My
     tagName: 'my-list-item-scoped',
     properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyListItemScoped as StencilReactComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped>,
+    clientModule: MyListItemScopedReact as StencilReactComponent<MyListItemScopedElement, MyListItemScopedEvents, Components.MyListItemScoped>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyListScopedEvents = NonNullable<unknown>;
@@ -322,100 +332,102 @@ export const MyListScoped: StencilReactComponent<MyListScopedElement, MyListScop
     tagName: 'my-list-scoped',
     properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyListScoped as StencilReactComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped>,
+    clientModule: MyListScopedReact as StencilReactComponent<MyListScopedElement, MyListScopedEvents, Components.MyListScoped>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyPopoverEvents = {
-    onMyPopoverDidPresent: EventName<MyPopoverCustomEvent<void>>,
-    onMyPopoverWillPresent: EventName<MyPopoverCustomEvent<void>>,
-    onMyPopoverWillDismiss: EventName<MyPopoverCustomEvent<OverlayEventDetail>>,
-    onMyPopoverDidDismiss: EventName<MyPopoverCustomEvent<OverlayEventDetail>>
+  onMyPopoverDidPresent: EventName<MyPopoverCustomEvent<void>>,
+  onMyPopoverWillPresent: EventName<MyPopoverCustomEvent<void>>,
+  onMyPopoverWillDismiss: EventName<MyPopoverCustomEvent<OverlayEventDetail>>,
+  onMyPopoverDidDismiss: EventName<MyPopoverCustomEvent<OverlayEventDetail>>
 };
 
 export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'> = /*@__PURE__*/ createComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'>({
     tagName: 'my-popover',
     properties: {
-        component: 'component',
-        keyboardClose: 'keyboard-close',
-        cssClass: 'css-class',
-        backdropDismiss: 'backdrop-dismiss',
-        event: 'event',
-        showBackdrop: 'show-backdrop',
-        translucent: 'translucent',
-        animated: 'animated'
+      component: 'component',
+      keyboardClose: 'keyboard-close',
+      cssClass: 'css-class',
+      backdropDismiss: 'backdrop-dismiss',
+      event: 'event',
+      showBackdrop: 'show-backdrop',
+      translucent: 'translucent',
+      animated: 'animated'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyPopover as StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'>,
+    clientModule: MyPopoverReact as StencilReactComponent<MyPopoverElement, MyPopoverEvents, Components.MyPopover, 'component'>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyRadioEvents = {
-    onIonFocus: EventName<MyRadioCustomEvent<void>>,
-    onIonBlur: EventName<MyRadioCustomEvent<void>>
+  onIonFocus: EventName<MyRadioCustomEvent<void>>,
+  onIonBlur: EventName<MyRadioCustomEvent<void>>
 };
 
 export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents, Components.MyRadio> = /*@__PURE__*/ createComponent<MyRadioElement, MyRadioEvents, Components.MyRadio>({
     tagName: 'my-radio',
     properties: {
-        color: 'color',
-        name: 'name',
-        disabled: 'disabled',
-        value: 'value',
-        labelPlacement: 'label-placement',
-        justify: 'justify',
-        alignment: 'alignment'
+      color: 'color',
+      name: 'name',
+      disabled: 'disabled',
+      value: 'value',
+      labelPlacement: 'label-placement',
+      justify: 'justify',
+      alignment: 'alignment'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyRadio as StencilReactComponent<MyRadioElement, MyRadioEvents, Components.MyRadio>,
+    clientModule: MyRadioReact as StencilReactComponent<MyRadioElement, MyRadioEvents, Components.MyRadio>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
-export type MyRadioGroupEvents = { onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>> };
+export type MyRadioGroupEvents = {
+  onMyChange: EventName<MyRadioGroupCustomEvent<RadioGroupChangeEventDetail>>
+};
 
 export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGroupEvents, Components.MyRadioGroup> = /*@__PURE__*/ createComponent<MyRadioGroupElement, MyRadioGroupEvents, Components.MyRadioGroup>({
     tagName: 'my-radio-group',
     properties: {
-        allowEmptySelection: 'allow-empty-selection',
-        compareWith: 'compare-with',
-        name: 'name',
-        value: 'value'
+      allowEmptySelection: 'allow-empty-selection',
+      compareWith: 'compare-with',
+      name: 'name',
+      value: 'value'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyRadioGroup as StencilReactComponent<MyRadioGroupElement, MyRadioGroupEvents, Components.MyRadioGroup>,
+    clientModule: MyRadioGroupReact as StencilReactComponent<MyRadioGroupElement, MyRadioGroupEvents, Components.MyRadioGroup>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyRangeEvents = {
-    onMyChange: EventName<MyRangeCustomEvent<RangeChangeEventDetail>>,
-    onMyFocus: EventName<MyRangeCustomEvent<void>>,
-    onMyBlur: EventName<MyRangeCustomEvent<void>>
+  onMyChange: EventName<MyRangeCustomEvent<RangeChangeEventDetail>>,
+  onMyFocus: EventName<MyRangeCustomEvent<void>>,
+  onMyBlur: EventName<MyRangeCustomEvent<void>>
 };
 
 export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents, Components.MyRange> = /*@__PURE__*/ createComponent<MyRangeElement, MyRangeEvents, Components.MyRange>({
     tagName: 'my-range',
     properties: {
-        color: 'color',
-        debounce: 'debounce',
-        name: 'name',
-        dualKnobs: 'dual-knobs',
-        min: 'min',
-        max: 'max',
-        pin: 'pin',
-        snaps: 'snaps',
-        step: 'step',
-        ticks: 'ticks',
-        disabled: 'disabled',
-        value: 'value'
+      color: 'color',
+      debounce: 'debounce',
+      name: 'name',
+      dualKnobs: 'dual-knobs',
+      min: 'min',
+      max: 'max',
+      pin: 'pin',
+      snaps: 'snaps',
+      step: 'step',
+      ticks: 'ticks',
+      disabled: 'disabled',
+      value: 'value'
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyRange as StencilReactComponent<MyRangeElement, MyRangeEvents, Components.MyRange>,
+    clientModule: MyRangeReact as StencilReactComponent<MyRangeElement, MyRangeEvents, Components.MyRange>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyToggleEvents = NonNullable<unknown>;
@@ -424,29 +436,33 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents, Co
     tagName: 'my-toggle',
     properties: {},
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyToggle as StencilReactComponent<MyToggleElement, MyToggleEvents, Components.MyToggle>,
+    clientModule: MyToggleReact as StencilReactComponent<MyToggleElement, MyToggleEvents, Components.MyToggle>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyToggleContentEvents = NonNullable<unknown>;
 
 export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent> = /*@__PURE__*/ createComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent>({
     tagName: 'my-toggle-content',
-    properties: { visible: 'visible' },
+    properties: {
+      visible: 'visible'
+    },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyToggleContent as StencilReactComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent>,
+    clientModule: MyToggleContentReact as StencilReactComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
 
 export type MyTransformTestEvents = NonNullable<unknown>;
 
 export const MyTransformTest: StencilReactComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest> = /*@__PURE__*/ createComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest>({
     tagName: 'my-transform-test',
-    properties: { message: 'message' },
+    properties: {
+      message: 'message'
+    },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: clientComponents.MyTransformTest as StencilReactComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest>,
+    clientModule: MyTransformTestReact as StencilReactComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest>,
     serializeShadowRoot,
-    getTagTransformer
+    getTagTransformer,
 });
