@@ -53,7 +53,7 @@ export const createStencilReactComponents = ({
           transformTag && `import { transformTag } from './tag-transformer.js';`,
           `import { createComponent } from '@stencil/react-output-target/runtime';`,
         ]),
-    `import type { Components } from '${componentsTypesModule}/${componentsTypesDir}';`,
+    `import type { Components } from '${componentsTypesModule}';`,
   ];
 
   const exports: (string | false)[] = [];
@@ -102,8 +102,8 @@ export const createStencilReactComponents = ({
       .join(', ');
 
     const specifier = exportMaps
-        ? `${stencilPackageName}/${tagName}`
-        : `${stencilPackageName}/${customElementsDir}/${tagName}.js`,
+      ? `${stencilPackageName}/${tagName}`
+      : `${stencilPackageName}/${customElementsDir}/${tagName}.js`;
 
     imports.push(`import { ${namedImport} } from '${specifier}';`);
 

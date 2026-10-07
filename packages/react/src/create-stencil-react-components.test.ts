@@ -61,9 +61,9 @@ describe('createStencilReactComponents', () => {
     });
 
     expect(result).toContain(
-      `import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/my-component";`
+      `import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from 'my-package/my-component';`
     );
-    expect(result).toContain(`import type { Components } from "my-package/standalone";`);
+    expect(result).toContain(`import type { Components } from 'my-package/standalone';`);
     expect(result).not.toContain('my-package/dist/');
   });
 
