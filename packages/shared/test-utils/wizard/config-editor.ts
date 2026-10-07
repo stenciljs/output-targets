@@ -6,6 +6,7 @@ export function makeFakeEditor() {
     outputTargetsContains: vi.fn().mockReturnValue(false),
     addOutputTarget: vi.fn(),
     replaceOutputTarget: vi.fn().mockReturnValue(false),
+    setProperty: vi.fn(),
     save: vi.fn().mockResolvedValue(undefined),
   };
 }

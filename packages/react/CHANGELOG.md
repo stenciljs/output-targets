@@ -1,3 +1,11 @@
+## [1.6.3](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.2...@stencil/react-output-target@1.6.3) (2026-10-06)
+
+
+### :bug: Bug Fix
+
+* **react:** support `generateExportMaps` config option (v5 only) ([dff36e7](https://github.com/stenciljs/output-targets/commit/dff36e72505829f33853fcfeda33f962ebc33432))
+
+
 ## [1.6.2](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.1...@stencil/react-output-target@1.6.2) (2026-08-13)
 
 

@@ -42,6 +42,31 @@ describe('createStencilReactComponents', () => {
 });`);
   });
 
+  it('imports through the package exports map when exportMaps is set', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-component',
+        componentClassName: 'MyComponent',
+        properties: [],
+        events: [],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/standalone',
+      componentsTypesDir: 'dist/types/components',
+      exportMaps: true,
+    });
+
+    expect(result).toContain(
+      `import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/my-component";`
+    );
+    expect(result).toContain(`import type { Components } from "my-package/standalone";`);
+    expect(result).not.toContain('my-package/dist/');
+  });
+
   it('should generate a react component with events', () => {
     const components: ComponentCompilerMeta[] = [
       {

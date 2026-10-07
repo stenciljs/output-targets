@@ -22,6 +22,7 @@ export const createStencilReactComponents = ({
   clientModule,
   serializeShadowRoot,
   transformTag,
+  exportMaps,
 }: {
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
@@ -31,9 +32,16 @@ export const createStencilReactComponents = ({
   clientModule?: string;
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
   transformTag?: boolean;
+  /**
+   * The Stencil project generates a package.json `exports` map, so import through its
+   * entries (`<pkg>/<tag>`, `<pkg>/standalone`) instead of deep `dist/` paths the map would block.
+   */
+  exportMaps?: boolean;
 }) => {
   const isSSRModule = hydrateModule && clientModule;
-
+  const componentsTypesModule = exportMaps
+    ? `${stencilPackageName}/standalone`
+    : `${stencilPackageName}/${componentsTypesDir}`;
   const imports: (string | false | undefined)[] = [
     !isSSRModule && `import React from 'react';`,
     ...(hydrateModule
@@ -45,7 +53,7 @@ export const createStencilReactComponents = ({
           transformTag && `import { transformTag } from './tag-transformer.js';`,
           `import { createComponent } from '@stencil/react-output-target/runtime';`,
         ]),
-    `import type { Components } from '${stencilPackageName}/${componentsTypesDir}';`,
+    `import type { Components } from '${componentsTypesModule}/${componentsTypesDir}';`,
   ];
 
   const exports: (string | false)[] = [];
@@ -93,7 +101,11 @@ export const createStencilReactComponents = ({
       .filter(Boolean)
       .join(', ');
 
-    imports.push(`import { ${namedImport} } from '${stencilPackageName}/${customElementsDir}/${tagName}.js';`);
+    const specifier = exportMaps
+        ? `${stencilPackageName}/${tagName}`
+        : `${stencilPackageName}/${customElementsDir}/${tagName}.js`,
+
+    imports.push(`import { ${namedImport} } from '${specifier}';`);
 
     const events: ReactEvent[] = [];
 

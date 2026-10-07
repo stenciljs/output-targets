@@ -12,11 +12,14 @@ export async function generateTransformTagScript(
   compilerCtx: CompilerCtx,
   components: ComponentCompilerMeta[],
   outputTarget: OutputTargetAngular,
-  packageName: string
+  /** Import through the package's `exports` map (`<pkg>/standalone`) instead of a deep path. */
+  exportMaps = false
 ) {
   const scriptsDirectory = path.join(path.dirname(outputTarget.directivesProxyFile), '../../scripts');
   const customElementsDir = outputTarget.customElementsDir || 'dist/components';
-  const stencilImportPath = `${outputTarget.componentCorePackage}/${customElementsDir}/index.js`;
+  const stencilImportPath = exportMaps
+    ? `${outputTarget.componentCorePackage}/standalone`
+    : `${outputTarget.componentCorePackage}/${customElementsDir}/index.js`;
 
   // Generate the mappings object
   const mappings = components

@@ -1,3 +1,10 @@
+## [0.14.4](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.3...@stencil/vue-output-target@0.14.4) (2026-10-06)
+
+
+### :bug: Bug Fix
+
+* **vue:** support `generateExportMaps` config option (v5 only) ([7b692c2](https://github.com/stenciljs/output-targets/commit/7b692c231cc21edc858d4a9b0aa5137c00bd88ef))
+
 ## [0.14.3](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.2...@stencil/vue-output-target@0.14.3) (2026-09-11)
 
 
