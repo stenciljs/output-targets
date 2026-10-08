@@ -137,8 +137,11 @@ export const createComponentEventTypeImports = (
     componentCorePackage: string;
     customElementsDir?: string;
     outputType: OutputType;
-    /** Import through the package's `exports` map (`./standalone` or `./loader`) instead of a deep path. */
-    exportMaps?: boolean;
+    /**
+     * The module every component type is imported from (Stencil v5: the `types` output's
+     * `components.d.ts`). When not set, v4's own locations are used.
+     */
+    typesModule?: string;
   }
 ) => {
   const { componentCorePackage, customElementsDir } = options;
@@ -146,10 +149,8 @@ export const createComponentEventTypeImports = (
   const namedImports: Set<string> = new Set();
   const isCustomElementsBuild = isOutputTypeCustomElementsBuild(options.outputType);
 
-  const exportMapEntry = isCustomElementsBuild ? '/standalone' : '/loader';
   const importPathName =
-    normalizePath(componentCorePackage) +
-    (options.exportMaps ? exportMapEntry : isCustomElementsBuild ? `/${customElementsDir}` : '');
+    options.typesModule ?? normalizePath(componentCorePackage) + (isCustomElementsBuild ? `/${customElementsDir}` : '');
 
   /**
    * Each component's events are typed with the per-component CustomEvent type

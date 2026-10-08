@@ -77,15 +77,26 @@ const usesInputTransform = (components: readonly ComponentCompilerMeta[], boolea
 /**
  * Whether the Stencil project generates a package.json `exports` map. Deep `dist/` imports are
  * blocked for consumers then, so the proxies import through the map's entries instead
- * (`<pkg>/<tag>`, `<pkg>/loader`, `<pkg>/standalone`).
+ * (`<pkg>/<tag>`, `<pkg>/components`, `<pkg>/standalone`).
  */
 export function usesExportMaps(config: Config): boolean {
-  // Stencil v5 only: v4's map has no `./standalone` entry, and its root types aren't
-  // guaranteed to export the component types.
-  const isV5 = (config.outputTargets || []).some((o: any) =>
+  // Stencil v5 only: v4's map has no `./components` or `./standalone` entry.
+  return isStencilV5(config) && config.generateExportMaps === true;
+}
+
+function isStencilV5(config: Config): boolean {
+  return (config.outputTargets || []).some((o: any) =>
     ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
   );
-  return isV5 && (config as { generateExportMaps?: boolean }).generateExportMaps === true;
+}
+
+/**
+ * For Stencil v5 only, use the `types/components.d.ts`
+ */
+function getEventTypesModule(config: Config, outputTarget: OutputTargetAngular): string | undefined {
+  return isStencilV5(config) && outputTarget.componentCorePackage
+    ? getPathToComponentTypes(config, outputTarget)
+    : undefined;
 }
 
 /**
@@ -321,7 +332,7 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
       cmpMeta.events,
       componentCorePackage,
       customElementsDir,
-      usesExportMaps(config)
+      getEventTypesModule(config, outputTarget)
     );
 
     proxyFileOutput.push(componentDefinition, '\n');
@@ -433,7 +444,7 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     cmpMeta.events,
     componentCorePackage,
     customElementsDir,
-    usesExportMaps(config)
+    getEventTypesModule(config, outputTarget)
   );
 
   const proxyFileOutput = [componentDefinition, '\n'];
@@ -474,11 +485,9 @@ export function generateBarrelFile(components: ComponentCompilerMeta[], outputTa
 export function getPathToComponentTypes(config: Config, outputTarget: OutputTargetAngular): string {
   const basePkg = outputTarget.componentCorePackage || '';
 
-  // The entry of the output the proxies are built on always exports the component types - the
-  // package root only does when the project has no `src/index.ts`, or that file re-exports them
+  // for Stencil v5 use the `<pkg>/components` export entry when `generateExportMaps` is enabled
   if (usesExportMaps(config)) {
-    const entry = isOutputTypeCustomElementsBuild(outputTarget.outputType!) ? 'standalone' : 'loader';
-    return `${normalizePath(basePkg)}/${entry}`;
+    return `${normalizePath(basePkg)}/components`;
   }
 
   // in v5, all types (including components.d.ts) are generated in the dist/types directory
