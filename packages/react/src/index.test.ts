@@ -221,6 +221,19 @@ describe('reactOutputTarget', () => {
       expect(output).toContain('import { type MyButtonCustomEvent } from "my-components/build/typings/components"');
     });
 
+    it('writes output dirs into imports with forward slashes (Windows paths)', async () => {
+      const output = await run({
+        rootDir: '/',
+        outputTargets: [
+          { type: 'standalone', dir: 'build\\elements' },
+          { type: 'types', dir: 'build\\typings' },
+        ],
+      });
+      expect(output).toContain('import type { Components } from "my-components/build/typings/components"');
+      expect(output).toContain('from "my-components/build/elements/my-button.js"');
+      expect(output).not.toContain('\\');
+    });
+
     it('imports every type from <pkg>/components with an exports map, whatever the types dir', async () => {
       const output = await run({
         rootDir: '/',
