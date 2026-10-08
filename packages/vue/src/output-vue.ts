@@ -40,7 +40,7 @@ export async function vueProxyOutput(
 /**
  * Whether the Stencil project generates a package.json `exports` map. Deep `dist/` imports are
  * blocked for consumers then, so the proxies import through the map's entries instead
- * (`<pkg>/<tag>`, `<pkg>/loader`, `<pkg>/standalone`).
+ * (`<pkg>/<tag>`, `<pkg>/components`, `<pkg>/loader`, `<pkg>/standalone`).
  */
 export function usesExportMaps(config: Config): boolean {
   // Stencil v5 only: v4's map has no `./standalone` entry, and its root types aren't
@@ -172,11 +172,7 @@ export function generateComponentProxy(
 /* auto-generated vue proxies */
 import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n`;
 
-  const dirPath = outputTarget.customElementsDir ? `/${outputTarget.customElementsDir}` : '';
-  const typesModule = usesExportMaps(config)
-    ? getExportMapTypesModule(outputTarget)
-    : `${normalizePath(outputTarget.componentCorePackage!)}${dirPath}`;
-  const typeImports = `import type { ${IMPORT_TYPES} } from '${typesModule}';\n`;
+  const typeImports = `import type { ${IMPORT_TYPES} } from '${getPathToJSXTypes(config, outputTarget)}';\n`;
 
   const sourceImport = `import { defineCustomElement as define${pascalImport} } from '${getComponentModule(
     config,
@@ -255,21 +251,13 @@ export function getPathToCorePackageLoader(config: Config, outputTarget: OutputT
   return normalizePath(path.join(basePkg, defaultLoaderDir));
 }
 
-/**
- * The `exports` map entry the proxies import the component types from. The entry of the
- * output they're built on always exports them - the package root only does when the
- * project has no `src/index.ts`, or that file re-exports them.
- */
-function getExportMapTypesModule(outputTarget: OutputTargetVue): string {
-  const entry = outputTarget.includeImportCustomElements ? 'standalone' : 'loader';
-  return `${normalizePath(outputTarget.componentCorePackage!)}/${entry}`;
-}
-
 export function getPathToJSXTypes(config: Config, outputTarget: OutputTargetVue): string {
   const basePkg = outputTarget.componentCorePackage || '';
 
+  // `components.d.ts` holds every component type, whichever output the proxies are built on
+  // and whatever a `src/index.ts` re-exports. With an exports map it's `<pkg>/components`.
   if (usesExportMaps(config)) {
-    return getExportMapTypesModule(outputTarget);
+    return `${normalizePath(basePkg)}/components`;
   }
 
   // v5: types output target
