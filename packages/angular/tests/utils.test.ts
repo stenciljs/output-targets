@@ -48,21 +48,24 @@ describe('createComponentEventTypeImports()', () => {
     },
   ];
 
-  describe('exports map', () => {
-    it.each([
-      ['standalone', '@ionic/core/standalone'],
-      ['component', '@ionic/core/loader'],
-    ] as const)('imports types for outputType "%s" from %s', (outputType, expected) => {
-      const imports = createComponentEventTypeImports('MyComponent', testEvents, {
-        componentCorePackage: '@ionic/core',
-        customElementsDir: 'components',
-        outputType,
-        exportMaps: true,
-      });
+  describe('typesModule (Stencil v5)', () => {
+    it.each(['standalone', 'component'] as const)(
+      'imports every event type from it for outputType "%s"',
+      (outputType) => {
+        const imports = createComponentEventTypeImports('MyComponent', testEvents, {
+          componentCorePackage: '@ionic/core',
+          customElementsDir: 'dist/standalone',
+          outputType,
+          typesModule: '@ionic/core/components',
+        });
 
-      expect(imports).toContain(`import type { MyComponentCustomEvent } from '${expected}';`);
-      expect(imports).not.toContain('@ionic/core/components');
-    });
+        expect(imports).toEqual(
+          `import type { MyComponentCustomEvent } from '@ionic/core/components';
+import type { MyEvent as IMyComponentMyEvent } from '@ionic/core/components';
+import type { MyOtherEvent as IMyComponentMyOtherEvent } from '@ionic/core/components';`
+        );
+      }
+    );
   });
 
   describe('www output', () => {
