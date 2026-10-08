@@ -19,6 +19,7 @@ export const createStencilReactComponents = ({
   serializeShadowRoot,
   transformTag,
   exportMaps,
+  typesFromComponentsFile,
 }: {
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
@@ -30,16 +31,23 @@ export const createStencilReactComponents = ({
   transformTag?: boolean;
   /**
    * The Stencil project generates a package.json `exports` map, so import through its
-   * entries (`<pkg>/<tag>`, `<pkg>/standalone`) instead of deep `dist/` paths the map would block.
+   * entries (`<pkg>/<tag>`, `<pkg>/components`) instead of deep `dist/` paths the map would block.
    */
   exportMaps?: boolean;
+  /**
+   * `componentsTypesDir` points at the `types` output's `components.d.ts` (Stencil v5), so
+   * event types can come from there too instead of relying on the package root exporting them.
+   */
+  typesFromComponentsFile?: boolean;
 }) => {
   const project = new Project({ useInMemoryFileSystem: true });
-  // `<pkg>/standalone` always exports the component types - the package root only does
-  // when the project has no `src/index.ts`, or that file re-exports them
+  // `components.d.ts` from deep link - e.g. `dist/types/components.d.ts`
+  // or export map - e.g. `@my-components/components`
   const componentsTypesModule = exportMaps
-    ? `${stencilPackageName}/standalone`
+    ? `${stencilPackageName}/components`
     : `${stencilPackageName}/${componentsTypesDir}`;
+  // Stencil v4 keeps importing event types from the package root, as it always has.
+  const eventTypesModule = exportMaps || typesFromComponentsFile ? componentsTypesModule : stencilPackageName;
 
   /**
    * automatically attach the `use client` directive if we are not generating
@@ -149,7 +157,7 @@ import type { Components } from "${componentsTypesModule}";
           if (!isGlobalType && !importedEventDetailTypes.has(referenceKey)) {
             importedEventDetailTypes.add(referenceKey);
             sourceFile.addImportDeclaration({
-              moduleSpecifier: stencilPackageName,
+              moduleSpecifier: eventTypesModule,
               namedImports: [
                 {
                   name: referenceKey,
@@ -172,7 +180,7 @@ import type { Components } from "${componentsTypesModule}";
       if (!importedComponentCustomEvent) {
         importedComponentCustomEvent = true;
         sourceFile.addImportDeclaration({
-          moduleSpecifier: stencilPackageName,
+          moduleSpecifier: eventTypesModule,
           namedImports: [
             {
               name: componentCustomEvent,
