@@ -1,3 +1,10 @@
+## [1.6.4](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.3...@stencil/react-output-target@1.6.4) (2026-10-08)
+
+
+### :bug: Bug Fix
+
+* **react:** v5 always use unified `components.d.ts` for types ([f95c22e](https://github.com/stenciljs/output-targets/commit/f95c22e326a2c07d6e8b81716b096574d3b4e3f9))
+
 ## [1.6.3](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.2...@stencil/react-output-target@1.6.3) (2026-10-06)
 
 

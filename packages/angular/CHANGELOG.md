@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.5.1...@stencil/angular-output-target@1.5.2) (2026-10-08)
+
+
+### :bug: Bug Fix
+
+* **angular:** v5 always use unified `components.d.ts` for types ([0027275](https://github.com/stenciljs/output-targets/commit/0027275a692859938a76d1d5324d12a413651a71))
+
 ## [1.5.1](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.5.0...@stencil/angular-output-target@1.5.1) (2026-10-06)
 
 
