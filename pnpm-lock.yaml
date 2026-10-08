@@ -794,8 +794,8 @@ importers:
         specifier: 8.2.14
         version: 8.2.14(@angular/common@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.3.25(@angular/animations@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.3.25(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@8.2.14(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-beta.16 <5.0.0-next.0
-        version: 5.0.0-beta.16(@stencil/core@4.41.0)
+        specifier: ^5.0.0 || >=5.0.0-beta.18
+        version: 5.0.0-beta.18(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -843,8 +843,8 @@ importers:
         version: 28.0.0
     devDependencies:
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-beta.16 <5.0.0-next.0
-        version: 5.0.0-beta.16(@stencil/core@4.41.0)
+        specifier: ^5.0.0 || >=5.0.0-beta.18
+        version: 5.0.0-beta.18(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -931,8 +931,8 @@ importers:
   packages/types:
     devDependencies:
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-beta.16 <5.0.0-next.0
-        version: 5.0.0-beta.16(@stencil/core@4.41.0)
+        specifier: ^5.0.0 || >=5.0.0-beta.16
+        version: 5.0.0-beta.18(@stencil/core@4.41.0)
       '@stencil/core':
         specifier: 4.41.0
         version: 4.41.0
@@ -958,8 +958,8 @@ importers:
         specifier: ^12.3.0
         version: 12.3.0(rollup@4.62.2)(tslib@2.8.1)(typescript@5.7.3)
       '@stencil/cli':
-        specifier: ^5.0.0 || >=5.0.0-beta.16 <5.0.0-next.0
-        version: 5.0.0-beta.16(@stencil/core@4.43.5)
+        specifier: ^5.0.0 || >=5.0.0-beta.18
+        version: 5.0.0-beta.18(@stencil/core@4.43.5)
       '@stencil/core':
         specifier: ^4.43.5
         version: 4.43.5
@@ -4923,11 +4923,11 @@ packages:
   '@speed-highlight/core@1.2.17':
     resolution: {integrity: sha512-Z92FwKpCtfaW1V0jTU/fh3QzYEZN8wDwrzRIBoADCJfn4mJCNcJN/XegifX7BDrQ8/h9Xh/JnbyMchL0FqXrkg==}
 
-  '@stencil/cli@5.0.0-beta.16':
-    resolution: {integrity: sha512-lrrgyv2scC7thW65uzbj6BoxBE4bHleWUmRbzZYCRV6IAdIKNDf3suv9eU/MMUQE4zMNrBRxozkNP8r9vjMhRg==}
+  '@stencil/cli@5.0.0-beta.18':
+    resolution: {integrity: sha512-JwYCVvTajA3wKZxIMuIemPd7DthGjB5MxmjVheZhHCtpkOlA09vtSloGvu0j72F0Zv0/O/Vz2+24yhCNiDbVsg==}
     hasBin: true
     peerDependencies:
-      '@stencil/core': ^5.0.0 || 5.0.0-beta.16
+      '@stencil/core': ^5.0.0 || 5.0.0-beta.18
 
   '@stencil/core@4.41.0':
     resolution: {integrity: sha512-KDVea3bjv7qJS+Pk8GcrWqRws6kAJAKiUPIxdDqK3KYH2yWPmzCzJO2XKsVyiBWmhdm2Q2KSdlb/EMFArfREiw==}
@@ -4939,15 +4939,15 @@ packages:
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
-  '@stencil/dev-server@5.0.0-beta.16':
-    resolution: {integrity: sha512-qPK1HGYmLUj0Xn6Yl5/SZRYqo+sW+lzT+maearo/KFhqcaBVFqm/6lnTNVkI6tM9sWELs3SfaZmy+OerYPcscQ==}
+  '@stencil/dev-server@5.0.0-beta.18':
+    resolution: {integrity: sha512-NFSATKsdXBVlWCHMsWKNMDKU8HKmUtSbgmDQUORzcvvl4432SVAihL7/PQ8fwcuwGN4bjBfozruAKUe7p/6FSw==}
     peerDependencies:
-      '@stencil/core': ^5.0.0 || 5.0.0-beta.16
+      '@stencil/core': ^5.0.0 || 5.0.0-beta.18
 
-  '@stencil/templates@5.0.0-beta.16':
-    resolution: {integrity: sha512-Jx4NkqKh1qXiBkiiDzznM3wdM6ZVPdhvvjgNysKC6NHfMEP3fthHD8mcNvkgntkbSstO1MlibraXz7hb5QAbmg==}
+  '@stencil/templates@5.0.0-beta.18':
+    resolution: {integrity: sha512-+1Bmit72okdaxr7oBayP3gCiCqhAWxQVF2uhgvjjCzP2MvJhrDA2FGDSsV3ROJF4c9Z5nv1M68yxWHS8g00Rew==}
     peerDependencies:
-      '@stencil/core': ^5.0.0 || 5.0.0-beta.16
+      '@stencil/core': ^5.0.0 || 5.0.0-beta.18
 
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
@@ -18595,12 +18595,12 @@ snapshots:
 
   '@speed-highlight/core@1.2.17': {}
 
-  '@stencil/cli@5.0.0-beta.16(@stencil/core@4.41.0)':
+  '@stencil/cli@5.0.0-beta.18(@stencil/core@4.41.0)':
     dependencies:
       '@clack/prompts': 1.7.0
       '@stencil/core': 4.41.0
-      '@stencil/dev-server': 5.0.0-beta.16(@stencil/core@4.41.0)
-      '@stencil/templates': 5.0.0-beta.16(@stencil/core@4.41.0)
+      '@stencil/dev-server': 5.0.0-beta.18(@stencil/core@4.41.0)
+      '@stencil/templates': 5.0.0-beta.18(@stencil/core@4.41.0)
       local-pkg: 1.2.1
       nypm: 0.3.12
       std-env: 3.10.0
@@ -18609,12 +18609,12 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@stencil/cli@5.0.0-beta.16(@stencil/core@4.43.5)':
+  '@stencil/cli@5.0.0-beta.18(@stencil/core@4.43.5)':
     dependencies:
       '@clack/prompts': 1.7.0
       '@stencil/core': 4.43.5
-      '@stencil/dev-server': 5.0.0-beta.16(@stencil/core@4.43.5)
-      '@stencil/templates': 5.0.0-beta.16(@stencil/core@4.43.5)
+      '@stencil/dev-server': 5.0.0-beta.18(@stencil/core@4.43.5)
+      '@stencil/templates': 5.0.0-beta.18(@stencil/core@4.43.5)
       local-pkg: 1.2.1
       nypm: 0.3.12
       std-env: 3.10.0
@@ -18645,7 +18645,7 @@ snapshots:
       '@rollup/rollup-win32-arm64-msvc': 4.44.0
       '@rollup/rollup-win32-x64-msvc': 4.44.0
 
-  '@stencil/dev-server@5.0.0-beta.16(@stencil/core@4.41.0)':
+  '@stencil/dev-server@5.0.0-beta.18(@stencil/core@4.41.0)':
     dependencies:
       '@stencil/core': 4.41.0
       launch-editor: 2.14.1
@@ -18655,7 +18655,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@stencil/dev-server@5.0.0-beta.16(@stencil/core@4.43.5)':
+  '@stencil/dev-server@5.0.0-beta.18(@stencil/core@4.43.5)':
     dependencies:
       '@stencil/core': 4.43.5
       launch-editor: 2.14.1
@@ -18665,11 +18665,11 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@stencil/templates@5.0.0-beta.16(@stencil/core@4.41.0)':
+  '@stencil/templates@5.0.0-beta.18(@stencil/core@4.41.0)':
     dependencies:
       '@stencil/core': 4.41.0
 
-  '@stencil/templates@5.0.0-beta.16(@stencil/core@4.43.5)':
+  '@stencil/templates@5.0.0-beta.18(@stencil/core@4.43.5)':
     dependencies:
       '@stencil/core': 4.43.5
 
@@ -22263,7 +22263,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.10
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
@@ -22293,7 +22293,7 @@ snapshots:
       tinyglobby: 0.2.17
       unrs-resolver: 1.12.2
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -22363,7 +22363,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
