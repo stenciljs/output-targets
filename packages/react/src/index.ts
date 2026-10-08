@@ -98,6 +98,14 @@ type BuildCtx = Parameters<OutputTargetCustom['generator']>[2];
 const TYPES_OUTPUT_TARGET = 'types';
 const TYPES_DEFAULT_DIR = 'dist/types';
 
+/**
+ * Turn an output directory into the form used inside an import specifier: relative to the
+ * project root, with forward slashes. `path.relative()` returns backslashes on Windows, which
+ * would otherwise end up in the generated imports.
+ */
+const toImportPath = (rootDir: string, dir: string): string =>
+  (isAbsolute(dir) ? relative(rootDir, dir) : dir).replace(/\\/g, '/');
+
 interface ReactOutputTarget extends OutputTargetCustom {
   __internal_getCustomElementsDir: () => string;
 }
@@ -174,12 +182,12 @@ export const reactOutputTarget = ({
            */
           const typesTarget = (config.outputTargets || []).find((o: any) => o.type === TYPES_OUTPUT_TARGET) as any;
           const rawTypesDir = typesTarget?.dir ?? TYPES_DEFAULT_DIR;
-          const typesDir = isAbsolute(rawTypesDir) ? relative(config.rootDir!, rawTypesDir) : rawTypesDir;
+          const typesDir = toImportPath(config.rootDir!, rawTypesDir);
           componentsTypesDir = `${typesDir}/components`;
           // customElementsDir stays as default (dist/components) unless standalone.dir is set
           if ((customElementsOutputTarget as any).dir !== undefined) {
             const dir = (customElementsOutputTarget as any).dir;
-            customElementsDir = isAbsolute(dir) ? relative(config.rootDir!, dir) : dir;
+            customElementsDir = toImportPath(config.rootDir!, dir);
           }
         } else if (customElementsOutputTarget.dir !== undefined) {
           /**
@@ -189,7 +197,7 @@ export const reactOutputTarget = ({
            * so convert it back to a rootDir-relative path for use in import specifiers.
            */
           const dir = customElementsOutputTarget.dir;
-          customElementsDir = isAbsolute(dir) ? relative(config.rootDir!, dir) : dir;
+          customElementsDir = toImportPath(config.rootDir!, dir);
           componentsTypesDir = customElementsDir;
         }
 
