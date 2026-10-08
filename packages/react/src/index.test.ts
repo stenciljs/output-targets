@@ -1,4 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { reactOutputTarget } from './index.js';
 
 describe('reactOutputTarget', () => {
@@ -178,25 +181,61 @@ describe('reactOutputTarget', () => {
 
   describe('export maps', () => {
     const run = async (config: Record<string, unknown>) => {
-      const target = reactOutputTarget({ outDir: 'out', stencilPackageName: 'my-components' });
+      // the generator saves its files to disk, so keep them out of the repo
+      const outDir = await mkdtemp(join(tmpdir(), 'react-output-target-'));
+      const target = reactOutputTarget({ outDir, stencilPackageName: 'my-components' });
       target.validate!(config as any, []);
       const written: Record<string, string> = {};
       await target.generator(
         config as any,
         { fs: { writeFile: async (file: string, text: string) => void (written[file] = text) } } as any,
         {
-          components: [{ tagName: 'my-button', componentClassName: 'MyButton', properties: [], events: [] }],
+          components: [
+            {
+              tagName: 'my-button',
+              componentClassName: 'MyButton',
+              properties: [],
+              events: [
+                {
+                  name: 'myPress',
+                  internal: false,
+                  complexType: { original: 'void', resolved: 'void', references: {} },
+                },
+              ],
+            },
+          ],
           createTimeSpan: () => ({ finish: () => {} }),
         } as any,
         {} as any
       );
+      await rm(outDir, { recursive: true, force: true });
       return Object.values(written).join('\n');
     };
+
+    it('imports every type from a custom types dir in Stencil v5 without an exports map', async () => {
+      const output = await run({
+        rootDir: '/',
+        outputTargets: [{ type: 'standalone' }, { type: 'types', dir: '/build/typings' }],
+      });
+      expect(output).toContain('import type { Components } from "my-components/build/typings/components"');
+      expect(output).toContain('import { type MyButtonCustomEvent } from "my-components/build/typings/components"');
+    });
+
+    it('imports every type from <pkg>/components with an exports map, whatever the types dir', async () => {
+      const output = await run({
+        rootDir: '/',
+        generateExportMaps: true,
+        outputTargets: [{ type: 'standalone' }, { type: 'types', dir: '/build/typings' }],
+      });
+      expect(output).toContain('import type { Components } from "my-components/components"');
+      expect(output).toContain('import { type MyButtonCustomEvent } from "my-components/components"');
+      expect(output).not.toContain('build/typings');
+    });
 
     it('imports through the exports map for a Stencil v5 project with generateExportMaps', async () => {
       const output = await run({ rootDir: '/', generateExportMaps: true, outputTargets: [{ type: 'standalone' }] });
       expect(output).toContain('from "my-components/my-button"');
-      expect(output).toContain('import type { Components } from "my-components/standalone"');
+      expect(output).toContain('import type { Components } from "my-components/components"');
     });
 
     it('keeps deep paths for a Stencil v4 project, even with generateExportMaps', async () => {
@@ -207,6 +246,8 @@ describe('reactOutputTarget', () => {
       });
       expect(output).toContain('from "my-components/dist/components/my-button.js"');
       expect(output).not.toContain('from "my-components/my-button"');
+      // v4 keeps importing event types from the package root
+      expect(output).toContain('import { type MyButtonCustomEvent } from "my-components"');
     });
   });
 });

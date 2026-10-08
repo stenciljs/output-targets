@@ -63,8 +63,66 @@ describe('createStencilReactComponents', () => {
     expect(result).toContain(
       `import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/my-component";`
     );
-    expect(result).toContain(`import type { Components } from "my-package/standalone";`);
+    expect(result).toContain(`import type { Components } from "my-package/components";`);
     expect(result).not.toContain('my-package/dist/');
+  });
+
+  it('imports event types from <pkg>/components when exportMaps is set', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-button',
+        componentClassName: 'MyButton',
+        properties: [],
+        events: [
+          {
+            name: 'myClick',
+            internal: false,
+            complexType: { original: 'void', resolved: 'void', references: {} },
+          },
+        ],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/standalone',
+      componentsTypesDir: 'dist/types/components',
+      exportMaps: true,
+    });
+
+    // The package root's types only include these when there's no `src/index.ts`, or it re-exports them.
+    expect(result).toContain(`import { type MyButtonCustomEvent } from "my-package/components";`);
+    expect(result).not.toContain(`from "my-package";`);
+  });
+
+  it('imports event types from the types dir in Stencil v5 without an exports map', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-button',
+        componentClassName: 'MyButton',
+        properties: [],
+        events: [
+          {
+            name: 'myClick',
+            internal: false,
+            complexType: { original: 'void', resolved: 'void', references: {} },
+          },
+        ],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/standalone',
+      componentsTypesDir: 'build/typings/components',
+      typesFromComponentsFile: true,
+    });
+
+    expect(result).toContain(`import type { Components } from "my-package/build/typings/components";`);
+    expect(result).toContain(`import { type MyButtonCustomEvent } from "my-package/build/typings/components";`);
+    expect(result).not.toContain(`from "my-package";`);
   });
 
   it('should generate a react component with events', () => {

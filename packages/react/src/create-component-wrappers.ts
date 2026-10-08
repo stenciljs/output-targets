@@ -21,6 +21,7 @@ export const createComponentWrappers = async ({
   serializeShadowRoot,
   transformTag,
   exportMaps,
+  typesFromComponentsFile,
 }: {
   stencilPackageName: string;
   components: ComponentCompilerMeta[];
@@ -36,6 +37,7 @@ export const createComponentWrappers = async ({
   serializeShadowRoot?: RenderToStringOptions['serializeShadowRoot'];
   transformTag?: boolean;
   exportMaps?: boolean;
+  typesFromComponentsFile?: boolean;
 }) => {
   const sourceFiles: SourceFile[] = [];
 
@@ -82,6 +84,7 @@ export const createComponentWrappers = async ({
       customElementsDir,
       componentsTypesDir,
       exportMaps,
+      typesFromComponentsFile,
       transformTag,
     });
     fileContents[outputPath] = stencilReactComponent;
@@ -107,6 +110,7 @@ export const createComponentWrappers = async ({
         customElementsDir,
         componentsTypesDir,
         exportMaps,
+        typesFromComponentsFile,
         hydrateModule,
         clientModule,
         serializeShadowRoot,
