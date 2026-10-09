@@ -1,3 +1,10 @@
+## [1.6.5](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.4...@stencil/react-output-target@1.6.5) (2026-10-09)
+
+
+### :bug: Bug Fix
+
+* **react:** wizard installs output-target as a dep (not devDep) ([f264c14](https://github.com/stenciljs/output-targets/commit/f264c14c92642cc679c4f11a015445bef5ff5ba5))
+
 ## [1.6.4](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.3...@stencil/react-output-target@1.6.4) (2026-10-08)
 
 
