@@ -171,4 +171,54 @@ describe('Vue wizard', () => {
 
     expect(textMock).toHaveBeenCalledWith(expect.objectContaining({ message: 'Wrapper package name?' }));
   });
+
+  describe('lazy-loading plugin', () => {
+    const run = async (mode: 'lazy' | 'standalone', config: Record<string, unknown> = {}) => {
+      const editor = makeFakeEditor();
+      const ctx = {
+        config: { rootDir: tmpDir, fsNamespace: 'my-app', ...config },
+        openStencilConfig: makeOpenStencilConfig(editor),
+        workspaceRoot: undefined,
+        prompts: makePrompts({
+          text: vi.fn().mockResolvedValueOnce('./my-app-vue'),
+          select: vi.fn().mockResolvedValueOnce(mode),
+        }),
+        nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+      };
+      await wizard.init.run(ctx as any);
+      const read = (file: string) => readFile(join(tmpDir, 'my-app-vue', 'src', file), 'utf8');
+      return { index: await read('index.ts'), plugin: await read('plugin.ts').catch(() => undefined) };
+    };
+
+    it('scaffolds a plugin that calls the lazy loader, and exports it', async () => {
+      const { index, plugin } = await run('lazy');
+
+      expect(plugin).toContain("import { defineCustomElements } from 'my-app/dist/loader-bundle/loader';");
+      expect(plugin).toContain('export const ComponentLibrary: Plugin = {');
+      expect(plugin).toContain('defineCustomElements();');
+      expect(index).toContain("export * from './components.js';");
+      expect(index).toContain("export * from './plugin.js';");
+    });
+
+    it('imports the loader through the exports map when the project generates one', async () => {
+      const { plugin } = await run('lazy', { generateExportMaps: true });
+
+      expect(plugin).toContain("import { defineCustomElements } from 'my-app/loader';");
+    });
+
+    it('follows a custom loader-bundle dir', async () => {
+      const { plugin } = await run('lazy', {
+        outputTargets: [{ type: 'loader-bundle', dir: join(tmpDir, 'build', 'lazy') }],
+      });
+
+      expect(plugin).toContain("import { defineCustomElements } from 'my-app/build/lazy/loader';");
+    });
+
+    it('does not scaffold a plugin in standalone mode', async () => {
+      const { index, plugin } = await run('standalone');
+
+      expect(plugin).toBeUndefined();
+      expect(index).not.toContain('plugin');
+    });
+  });
 });
