@@ -57,6 +57,10 @@ describe('React wizard', () => {
       ['@stencil/react-output-target'],
       expect.objectContaining({ cwd: tmpDir, dev: true })
     );
+    // the wrapper package needs it at runtime, so it's a regular dependency there
+    expect(nypm.addDependency).toHaveBeenCalledWith(['@stencil/react-output-target'], {
+      cwd: join(tmpDir, 'my-app-react'),
+    });
   });
 
   it('adds SSR output target and clientModule when SSR is enabled', async () => {
