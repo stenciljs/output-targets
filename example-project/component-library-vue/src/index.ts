@@ -599,12 +599,16 @@ export const MyToggle: StencilVueComponent<JSX.MyToggle> = /*@__PURE__*/ globalT
 
 
 export const MyToggleContent: StencilVueComponent<JSX.MyToggleContent> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyToggleContent>('my-toggle-content', defineMyToggleContent, [
-  'visible'
-], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyToggleContent>({
+  'visible',
+  'my-kebab-event'
+], [
+  'my-kebab-event'
+], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyToggleContent>({
   tagName: 'my-toggle-content',
   hydrateModule: import('component-library/hydrate'),
   props: {
-    'visible': [Boolean, "visible"]
+    'visible': [Boolean, "visible"],
+    'onMy-kebab-event': [Function]
   },
   getTagTransformer: getTagTransformer
 });

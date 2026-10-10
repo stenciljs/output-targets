@@ -798,6 +798,10 @@ export interface MyRangeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMyRangeElement;
 }
+export interface MyToggleContentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMyToggleContentElement;
+}
 declare global {
     interface HTMLMyButtonElementEventMap {
         "myFocus": void;
@@ -1070,7 +1074,18 @@ declare global {
         prototype: HTMLMyToggleElement;
         new (): HTMLMyToggleElement;
     };
+    interface HTMLMyToggleContentElementEventMap {
+        "my-kebab-event": string;
+    }
     interface HTMLMyToggleContentElement extends Components.MyToggleContent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMyToggleContentElementEventMap>(type: K, listener: (this: HTMLMyToggleContentElement, ev: MyToggleContentCustomEvent<HTMLMyToggleContentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMyToggleContentElementEventMap>(type: K, listener: (this: HTMLMyToggleContentElement, ev: MyToggleContentCustomEvent<HTMLMyToggleContentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLMyToggleContentElement: {
         prototype: HTMLMyToggleContentElement;
@@ -1906,6 +1921,7 @@ declare namespace LocalJSX {
     interface MyToggle {
     }
     interface MyToggleContent {
+        "onMy-kebab-event"?: (event: MyToggleContentCustomEvent<string>) => void;
         "visible"?: boolean;
     }
     interface MyTransformTest {

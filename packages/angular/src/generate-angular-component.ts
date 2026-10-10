@@ -34,6 +34,54 @@ function createPropertyDeclaration(
 }
 
 /**
+ * Converts an event name into the property name used by the generated Angular wrapper by
+ * collapsing `-` and `/` separators into camel case. Angular output metadata aliases that
+ * property back to the DOM event name, so the event name itself is never changed.
+ *
+ * Event names that contain other characters, end in a separator, or start with a digit do not
+ * yield a valid TypeScript identifier. Those are reported by `warnOnInvalidOutputPropertyNames`
+ * rather than rewritten, because any rewrite would have to invent a name that consumers cannot
+ * predict from the event name.
+ *
+ * `/` is used as a namespace separator for imperative events (e.g. Coveo Atomic's
+ * `atomic/resolveResult`), which are dispatched and observed with `addEventListener` rather than
+ * bound in a template — Angular's HTML lexer terminates an attribute name at `/`, so a binding can
+ * never form. Collapsing the separator is still required for the generated wrapper to be valid
+ * TypeScript. See https://github.com/stenciljs/output-targets/pull/482.
+ */
+const toOutputPropertyName = (eventName: string) =>
+  eventName.replace(/[-/]+([a-zA-Z0-9_$])/g, (_, character) => character.toUpperCase());
+
+/** Matches a property name that can be emitted as a bare class member. */
+const VALID_IDENTIFIER_REGEX = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+
+/**
+ * Warns about events whose names cannot be mapped to a valid TypeScript identifier. The wrapper
+ * is still generated so the rest of the output is unaffected, but it will not compile until the
+ * event is renamed, so the problem is surfaced at generation time instead of in the consumer's
+ * build output.
+ *
+ * @param tagName The tag name of the Stencil component (e.g. 'my-component').
+ * @param events The public events of the Stencil component.
+ */
+const warnOnInvalidOutputPropertyNames = (tagName: string, events: readonly ComponentCompilerEvent[]) => {
+  for (const event of events) {
+    const propertyName = toOutputPropertyName(event.name);
+
+    if (VALID_IDENTIFIER_REGEX.test(propertyName)) {
+      continue;
+    }
+
+    console.warn(
+      `[Angular Output Target] The event "${event.name}" on <${tagName}> maps to the property ` +
+        `"${propertyName}", which is not a valid TypeScript identifier, so the generated Angular ` +
+        `wrapper will not compile. Rename the event via @Event({ eventName: '...' }) using ` +
+        `letters, digits, "_" or "$", separated by "-". Names must not start with a digit.`
+    );
+  }
+};
+
+/**
  * The transform function to reference in generated code, exported from
  * `angular-component-lib/boolean-attribute`.
  */
@@ -92,8 +140,14 @@ export const createAngularComponentDefinition = (
   events: readonly ComponentCompilerEvent[] = []
 ) => {
   const tagNameAsPascal = dashToPascalCase(tagName);
+  const publicEvents = events.filter((event) => !event.internal);
 
-  const outputs = events.filter((event) => !event.internal).map((event) => event.name);
+  warnOnInvalidOutputPropertyNames(tagName, publicEvents);
+
+  const outputs = publicEvents.map((event) => {
+    const propertyName = toOutputPropertyName(event.name);
+    return propertyName === event.name ? propertyName : `${propertyName}: ${event.name}`;
+  });
 
   const hasInputs = inputs.length > 0;
   const hasOutputs = outputs.length > 0;
@@ -135,13 +189,11 @@ export const createAngularComponentDefinition = (
     createPropertyDeclaration(m, `Components.${tagNameAsPascal}['${m.name}']`, true)
   );
 
-  const outputDeclarations = events
-    .filter((event) => !event.internal)
-    .map((event) => {
-      const camelCaseOutput = event.name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-      const outputType = `EventEmitter<${tagNameAsPascal}CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
-      return `@Output() ${camelCaseOutput} = new ${outputType}();`;
-    });
+  const outputDeclarations = publicEvents.map((event) => {
+    const outputPropertyName = toOutputPropertyName(event.name);
+    const outputType = `EventEmitter<${tagNameAsPascal}CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`;
+    return `@Output() ${outputPropertyName} = new ${outputType}();`;
+  });
 
   const propertiesDeclarationText = [
     `protected el: HTML${tagNameAsPascal}Element;`,
@@ -155,6 +207,8 @@ export const createAngularComponentDefinition = (
    * Angular does not complain about the inputs property. The output target
    * uses the inputs property to define the inputs of the component instead of
    * having to use the @Input decorator (and manually define the type and default value).
+   * - Output bindings receive the native CustomEvent from the web component. The declared
+   *   EventEmitter is for Angular metadata and typing; emitting from it would deliver events twice.
    */
   const output = `@ProxyCmp({${proxyCmpOptions.join(',')}\n})
 @Component({
@@ -281,7 +335,7 @@ export const createComponentTypeDefinition = (
   });
   const eventTypes = publicEvents.map((event) =>
     createPropertyDeclaration(
-      event,
+      { ...event, name: toOutputPropertyName(event.name) },
       `EventEmitter<${tagNameAsPascal}CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`
     )
   );

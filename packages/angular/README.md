@@ -3,7 +3,7 @@
 Stencil can generate Angular component wrappers for your web components. This allows your Stencil components to be used within an Angular application. The benefits of using Stencil's component wrappers over the standard web components include:
 
 - Angular component wrappers will be detached from change detection, preventing unnecessary repaints of your web component.
-- Web component events will be converted to RxJS observables to align with Angular's @Output() and will not emit across component boundaries.
+- Web component events are available through Angular template event bindings with their original `CustomEvent` value.
 - Optionally, form control web components can be used as control value accessors with Angular's reactive forms or [ngModel].
 
 For a detailed guide on how to add the angular output target to a project, visit: https://stenciljs.com/docs/angular.
@@ -20,6 +20,38 @@ npm install @stencil/angular-output-target
 |------------------------------------|-----------------|
 | 0.10.2                             | v18.x and lower |
 | 1.0.0                              | v19.x and above |
+
+## Output events
+
+Generated wrappers declare component events as Angular outputs so Angular's compiler and Language
+Service can recognise template bindings and type `$event` as the component's `CustomEvent` type.
+Angular also registers a native DOM listener for event bindings on component hosts. The wrapper does
+not re-emit the event through the declared `EventEmitter`; the native listener delivers the original
+`CustomEvent` exactly once.
+
+For programmatic event handling, use the custom element's native event API:
+
+```ts
+element.addEventListener('myEvent', (event) => {
+  const customEvent = event as MyComponentCustomEvent<MyDetail>;
+  console.log(customEvent.detail);
+});
+```
+
+The generated Angular output property is intended for Angular template bindings and type checking.
+Subscribing to it from a component reference is not a supported way to observe the custom element's
+events; use `addEventListener` instead.
+
+Event names containing `-` are exposed as camel-cased wrapper properties with an Angular output
+metadata alias, so a DOM event named `my-event` is still bound as `(my-event)="handler($event)"`.
+
+Event names containing `/` are also camel-cased so the generated wrapper compiles, but they cannot be
+bound in an Angular template — Angular's HTML lexer terminates an attribute name at `/`. Use
+`addEventListener` for those, and prefer `-` if you control the event name.
+
+Event names that cannot be mapped to a valid TypeScript identifier — other punctuation, a trailing
+separator, or a leading digit — produce a warning at generation time and should be renamed via
+`@Event({ eventName: '...' })`.
 
 ## Usage
 

@@ -12,7 +12,7 @@ import { getTagTransformer } from './tag-transformer.js';
 import type { EventName, StencilReactComponent } from '@stencil/react-output-target/runtime';
 import { createComponent, type HydrateModule, type SerializeShadowRootOptions } from '@stencil/react-output-target/ssr';
 
-import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
+import { type CheckboxChangeEventDetail, type CheckboxChangeNestedEventDetail, type IMyComponent, type InputChangeEventDetail, type MyButtonCustomEvent, type MyButtonScopedCustomEvent, type MyCheckboxCustomEvent, type MyComponentCustomEvent, type MyComponentScopedCustomEvent, type MyCounterCustomEvent, type MyInputCustomEvent, type MyInputScopedCustomEvent, type MyPopoverCustomEvent, type MyRadioCustomEvent, type MyRadioGroupCustomEvent, type MyRangeCustomEvent, type MyToggleContentCustomEvent, type OverlayEventDetail, type RadioGroupChangeEventDetail, type RangeChangeEventDetail } from "component-library";
 // @ts-ignore - ignore potential type issues as the project is importing itself
 import * as clientComponents from "component-library-react";
 import type { Components } from "component-library/components";
@@ -429,7 +429,7 @@ export const MyToggle: StencilReactComponent<MyToggleElement, MyToggleEvents, Co
     getTagTransformer
 });
 
-export type MyToggleContentEvents = NonNullable<unknown>;
+export type MyToggleContentEvents = { onMyKebabEvent: EventName<MyToggleContentCustomEvent<string>> };
 
 export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent> = /*@__PURE__*/ createComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent>({
     tagName: 'my-toggle-content',

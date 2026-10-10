@@ -1332,11 +1332,13 @@ export declare interface MyToggle extends Components.MyToggle {}
   template: '<ng-content></ng-content>',
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [{ name: 'visible', transform: nullableBooleanAttribute }],
+  outputs: ['myKebabEvent: my-kebab-event'],
 })
 export class MyToggleContent {
   protected el: HTMLMyToggleContentElement;
   
   set visible(_: Components.MyToggleContent['visible']) {};
+  @Output() myKebabEvent = new EventEmitter<MyToggleContentCustomEvent<string>>();
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
     this.el = r.nativeElement;
@@ -1344,7 +1346,12 @@ export class MyToggleContent {
 }
 
 
-export declare interface MyToggleContent extends Components.MyToggleContent {}
+import type { MyToggleContentCustomEvent } from 'component-library/components';
+
+export declare interface MyToggleContent extends Components.MyToggleContent {
+
+  myKebabEvent: EventEmitter<MyToggleContentCustomEvent<string>>;
+}
 
 
 @ProxyCmp({

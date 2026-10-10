@@ -12,6 +12,13 @@
 | `visible` | `visible` |             | `boolean` | `undefined` |
 
 
+## Events
+
+| Event            | Description | Type                  |
+| ---------------- | ----------- | --------------------- |
+| `my-kebab-event` |             | `CustomEvent<string>` |
+
+
 ## Dependencies
 
 ### Used by
