@@ -4,53 +4,53 @@ exports[`complex-props-scoped > should correctly server side render complex prop
 "
 <div id="complex-props-scoped">
   <my-complex-props-scoped
-    class="hydrated sc-my-complex-props-scoped-h"
     grault="Infinity"
+    class="sc-my-complex-props-scoped-h hydrated"
     s-id="x"
   >
     <ul
-      c-id="x"
       class="sc-my-complex-props-scoped"
+      c-id="x"
     >
       <li
-        c-id="x"
         class="sc-my-complex-props-scoped"
+        c-id="x"
       >
         this.foo.bar: baz
       </li>
       <li
-        c-id="x"
         class="sc-my-complex-props-scoped"
+        c-id="x"
       >
         this.foo.loo: 1, 2, 3
       </li>
       <li
-        c-id="x"
         class="sc-my-complex-props-scoped"
+        c-id="x"
       >
         this.foo.qux: symbol
       </li>
       <li
-        c-id="x"
         class="sc-my-complex-props-scoped"
+        c-id="x"
       >
         this.baz.get('foo'): symbol
       </li>
       <li
-        c-id="x"
         class="sc-my-complex-props-scoped"
+        c-id="x"
       >
         this.quux.has('foo'): true
       </li>
       <li
-        c-id="x"
         class="sc-my-complex-props-scoped"
+        c-id="x"
       >
         this.grault: true
       </li>
       <li
-        c-id="x"
         class="sc-my-complex-props-scoped"
+        c-id="x"
       >
         this.waldo: true
       </li>
@@ -64,54 +64,54 @@ exports[`complex-props-shadow > should correctly server side render complex prop
 "
 <div id="complex-props-shadow">
   <my-complex-props
-    class="hydrated sc-my-complex-props-h"
     grault="Infinity"
+    class="sc-my-complex-props-h hydrated"
     s-id="x"
   >
     <template shadowrootmode="open">
       <ul
-        c-id="x"
         class="sc-my-complex-props"
+        c-id="x"
       >
         <li
-          c-id="x"
           class="sc-my-complex-props"
+          c-id="x"
         >
           this.foo.bar: baz
         </li>
         <li
-          c-id="x"
           class="sc-my-complex-props"
+          c-id="x"
         >
           this.foo.loo: 1, 2, 3
         </li>
         <li
-          c-id="x"
           class="sc-my-complex-props"
+          c-id="x"
         >
           this.foo.qux: symbol
         </li>
         <li
-          c-id="x"
           class="sc-my-complex-props"
+          c-id="x"
         >
           this.baz.get('foo'): symbol
         </li>
         <li
-          c-id="x"
           class="sc-my-complex-props"
+          c-id="x"
         >
           this.quux.has('foo'): true
         </li>
         <li
-          c-id="x"
           class="sc-my-complex-props"
+          c-id="x"
         >
           this.grault: true
         </li>
         <li
-          c-id="x"
           class="sc-my-complex-props"
+          c-id="x"
         >
           this.waldo: true
         </li>
@@ -126,33 +126,33 @@ exports[`nested-shadow > should correctly server side render 1`] = `
 "
 <div id="nested-shadow">
   <my-list
-    class="hydrated sc-my-list-h"
+    class="sc-my-list-h hydrated"
     s-id="x"
   >
     <template shadowrootmode="open">
       <ul
-        c-id="x"
         class="sc-my-list"
+        c-id="x"
       >
         <slot
-          c-id="x"
           class="sc-my-list"
+          c-id="x"
         >
         </slot>
       </ul>
     </template>
     <my-list-item
-      class="hydrated sc-my-list-item-h"
+      class="sc-my-list-item-h hydrated"
       s-id="x"
     >
       <template shadowrootmode="open">
         <li
-          c-id="x"
           class="sc-my-list-item"
+          c-id="x"
         >
           <slot
-            c-id="x"
             class="sc-my-list-item"
+            c-id="x"
           >
           </slot>
         </li>
@@ -160,17 +160,17 @@ exports[`nested-shadow > should correctly server side render 1`] = `
       Foo Shadow
     </my-list-item>
     <my-list-item
-      class="hydrated sc-my-list-item-h"
+      class="sc-my-list-item-h hydrated"
       s-id="x"
     >
       <template shadowrootmode="open">
         <li
-          c-id="x"
           class="sc-my-list-item"
+          c-id="x"
         >
           <slot
-            c-id="x"
             class="sc-my-list-item"
+            c-id="x"
           >
           </slot>
         </li>
@@ -178,17 +178,17 @@ exports[`nested-shadow > should correctly server side render 1`] = `
       Bar Shadow
     </my-list-item>
     <my-list-item
-      class="hydrated sc-my-list-item-h"
+      class="sc-my-list-item-h hydrated"
       s-id="x"
     >
       <template shadowrootmode="open">
         <li
-          c-id="x"
           class="sc-my-list-item"
+          c-id="x"
         >
           <slot
-            c-id="x"
             class="sc-my-list-item"
+            c-id="x"
           >
           </slot>
         </li>
@@ -204,17 +204,17 @@ exports[`single-children-scoped > should correctly server side render 1`] = `
 "
 <div id="single-children-scoped">
   <my-button-scoped
-    class="hydrated my-activatable my-focusable sc-my-button-scoped sc-my-button-scoped-h undefined undefined-outline"
     fill="outline"
+    class="sc-my-button-scoped-h undefined undefined-outline my-activatable my-focusable sc-my-button-scoped hydrated"
     s-id="x"
   >
     <button
-      c-id="x"
       class="button-native sc-my-button-scoped"
+      c-id="x"
     >
       <span
-        c-id="x"
         class="button-inner sc-my-button-scoped sc-my-button-scoped-s"
+        c-id="x"
       >
         Test
       </span>
@@ -228,17 +228,17 @@ exports[`single-children-shadow > should correctly server side render 1`] = `
 "
 <div id="single-children-shadow">
   <my-button
-    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-outline"
     fill="outline"
+    class="sc-my-button-h undefined undefined-outline my-activatable my-focusable sc-my-button hydrated"
     s-id="x"
   >
     <button
-      c-id="x"
       class="button-native sc-my-button"
+      c-id="x"
     >
       <span
-        c-id="x"
         class="button-inner sc-my-button sc-my-button-s"
+        c-id="x"
       >
         Test
       </span>
@@ -252,221 +252,221 @@ exports[`style-deduplication-scoped > should server side render component with s
 "
 <div id="style-deduplication-scoped">
   <my-counter
-    class="hydrated sc-my-counter-h"
-    s-id="x"
     start-value="1"
+    class="sc-my-counter-h hydrated"
+    s-id="x"
   >
     <div
-      c-id="x"
       class="sc-my-counter"
+      c-id="x"
     >
       <button
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         -
       </button>
       <span
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         1
       </span>
       <button
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         +
       </button>
     </div>
   </my-counter>
   <my-counter
-    class="hydrated sc-my-counter-h"
-    s-id="x"
     start-value="2"
+    class="sc-my-counter-h hydrated"
+    s-id="x"
   >
     <div
-      c-id="x"
       class="sc-my-counter"
+      c-id="x"
     >
       <button
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         -
       </button>
       <span
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         2
       </span>
       <button
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         +
       </button>
     </div>
   </my-counter>
   <my-counter
-    class="hydrated sc-my-counter-h"
-    s-id="x"
     start-value="3"
+    class="sc-my-counter-h hydrated"
+    s-id="x"
   >
     <div
-      c-id="x"
       class="sc-my-counter"
+      c-id="x"
     >
       <button
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         -
       </button>
       <span
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         3
       </span>
       <button
-        c-id="x"
         class="sc-my-counter"
+        c-id="x"
       >
         +
       </button>
     </div>
   </my-counter>
   <my-button
-    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-outline"
     fill="outline"
+    class="sc-my-button-h undefined undefined-outline my-activatable my-focusable sc-my-button hydrated"
     s-id="x"
   >
     <button
-      c-id="x"
       class="button-native sc-my-button"
+      c-id="x"
     >
       <span
-        c-id="x"
         class="button-inner sc-my-button sc-my-button-s"
+        c-id="x"
       >
         Button 1
       </span>
     </button>
   </my-button>
   <my-button
-    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-solid"
     fill="solid"
+    class="sc-my-button-h undefined undefined-solid my-activatable my-focusable sc-my-button hydrated"
     s-id="x"
   >
     <button
-      c-id="x"
       class="button-native sc-my-button"
+      c-id="x"
     >
       <span
-        c-id="x"
         class="button-inner sc-my-button sc-my-button-s"
+        c-id="x"
       >
         Button 2
       </span>
     </button>
   </my-button>
   <my-button
-    class="hydrated my-activatable my-focusable sc-my-button sc-my-button-h undefined undefined-clear"
     fill="clear"
+    class="sc-my-button-h undefined undefined-clear my-activatable my-focusable sc-my-button hydrated"
     s-id="x"
   >
     <button
-      c-id="x"
       class="button-native sc-my-button"
+      c-id="x"
     >
       <span
-        c-id="x"
         class="button-inner sc-my-button sc-my-button-s"
+        c-id="x"
       >
         Button 3
       </span>
     </button>
   </my-button>
   <my-component
-    class="hydrated sc-my-component-h"
     first="John"
-    last="Doe"
     middle-name="A"
+    last="Doe"
+    class="sc-my-component-h hydrated"
     s-id="x"
   >
     <div
-      c-id="x"
       class="sc-my-component"
+      c-id="x"
     >
       Hello, World! I'm John A Doe
     </div>
   </my-component>
   <my-component
-    class="hydrated sc-my-component-h"
     first="Jane"
-    last="Smith"
     middle-name="B"
+    last="Smith"
+    class="sc-my-component-h hydrated"
     s-id="x"
   >
     <div
-      c-id="x"
       class="sc-my-component"
+      c-id="x"
     >
       Hello, World! I'm Jane B Smith
     </div>
   </my-component>
   <my-component
-    class="hydrated sc-my-component-h"
     first="Bob"
-    last="Jones"
     middle-name="C"
+    last="Jones"
+    class="sc-my-component-h hydrated"
     s-id="x"
   >
     <div
-      c-id="x"
       class="sc-my-component"
+      c-id="x"
     >
       Hello, World! I'm Bob C Jones
     </div>
   </my-component>
   <my-radio
-    aria-checked="false"
-    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
-    role="radio"
-    s-id="x"
     value="option1"
+    class="sc-my-radio-h md radio-label-placement-undefined ion-activatable ion-focusable sc-my-radio hydrated"
+    role="radio"
+    aria-checked="false"
+    s-id="x"
   >
     <label
-      c-id="x"
       class="radio-wrapper sc-my-radio"
+      c-id="x"
     >
       <div
-        c-id="x"
         class="label-text-wrapper sc-my-radio sc-my-radio-s"
         part="label"
+        c-id="x"
       >
         Option 1
       </div>
       <div
-        c-id="x"
         class="native-wrapper sc-my-radio"
+        c-id="x"
       >
         <div
-          c-id="x"
           class="radio-icon sc-my-radio"
           part="container"
+          c-id="x"
         >
           <div
-            c-id="x"
             class="radio-inner sc-my-radio"
             part="mark"
+            c-id="x"
           >
           </div>
           <div
-            c-id="x"
             class="radio-ripple sc-my-radio"
+            c-id="x"
           >
           </div>
         </div>
@@ -474,41 +474,41 @@ exports[`style-deduplication-scoped > should server side render component with s
     </label>
   </my-radio>
   <my-radio
-    aria-checked="false"
-    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
-    role="radio"
-    s-id="x"
     value="option2"
+    class="sc-my-radio-h md radio-label-placement-undefined ion-activatable ion-focusable sc-my-radio hydrated"
+    role="radio"
+    aria-checked="false"
+    s-id="x"
   >
     <label
-      c-id="x"
       class="radio-wrapper sc-my-radio"
+      c-id="x"
     >
       <div
-        c-id="x"
         class="label-text-wrapper sc-my-radio sc-my-radio-s"
         part="label"
+        c-id="x"
       >
         Option 2
       </div>
       <div
-        c-id="x"
         class="native-wrapper sc-my-radio"
+        c-id="x"
       >
         <div
-          c-id="x"
           class="radio-icon sc-my-radio"
           part="container"
+          c-id="x"
         >
           <div
-            c-id="x"
             class="radio-inner sc-my-radio"
             part="mark"
+            c-id="x"
           >
           </div>
           <div
-            c-id="x"
             class="radio-ripple sc-my-radio"
+            c-id="x"
           >
           </div>
         </div>
@@ -516,41 +516,41 @@ exports[`style-deduplication-scoped > should server side render component with s
     </label>
   </my-radio>
   <my-radio
-    aria-checked="false"
-    class="hydrated ion-activatable ion-focusable md radio-label-placement-undefined sc-my-radio sc-my-radio-h"
-    role="radio"
-    s-id="x"
     value="option3"
+    class="sc-my-radio-h md radio-label-placement-undefined ion-activatable ion-focusable sc-my-radio hydrated"
+    role="radio"
+    aria-checked="false"
+    s-id="x"
   >
     <label
-      c-id="x"
       class="radio-wrapper sc-my-radio"
+      c-id="x"
     >
       <div
-        c-id="x"
         class="label-text-wrapper sc-my-radio sc-my-radio-s"
         part="label"
+        c-id="x"
       >
         Option 3
       </div>
       <div
-        c-id="x"
         class="native-wrapper sc-my-radio"
+        c-id="x"
       >
         <div
-          c-id="x"
           class="radio-icon sc-my-radio"
           part="container"
+          c-id="x"
         >
           <div
-            c-id="x"
             class="radio-inner sc-my-radio"
             part="mark"
+            c-id="x"
           >
           </div>
           <div
-            c-id="x"
             class="radio-ripple sc-my-radio"
+            c-id="x"
           >
           </div>
         </div>

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "target": "ES2017",
+    "lib": ["DOM", "ES2017"],
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "skipLibCheck": true
+  },
+  "include": ["*.tsx"]
+}

@@ -1,6 +1,6 @@
 import type { EventName, ReactWebComponent, WebComponentProps } from '@lit/react';
-import React, { Component, Fragment, JSXElementConstructor, ReactNode } from 'react';
-import { stringifyCSSProperties } from 'react-style-stringify';
+import React, { JSXElementConstructor, ReactNode } from 'react';
+import type { Element } from 'html-react-parser';
 
 import { createComponent as createComponentWrapper, StencilReactComponent } from './create-component.js';
 import { possibleStandardNames } from './constants.js';
@@ -85,12 +85,6 @@ type LazyComponent<T, P> = {
   _init: (payload: P) => T;
 };
 
-type ReactNodeExtended =
-  | ReactNode
-  | Component<any, any, any>
-  | LazyComponent<any, any>
-  | ((props: any, deprecatedLegacyContext?: any) => ReactNode);
-
 /**
  * returns true if the value is a primitive, e.g. string, number, boolean
  * @param value - the value to check
@@ -131,32 +125,62 @@ const isJSXClassElementConstructor = (
 const isLazyExoticComponent = (value: unknown): value is LazyComponent<any, any> =>
   !!value && typeof value === 'object' && '_payload' in value;
 
-/**
- * Returns true if the value is a React exotic component that react-dom/server handles
- * natively (forwardRef or memo). These must NOT be called directly as their render
- * functions use hooks, which are illegal outside of React's renderer.
- *
- * - React.forwardRef → { $$typeof: Symbol(react.forward_ref), render }
- * - React.memo       → { $$typeof: Symbol(react.memo), type, compare }
- *
- * We require $$typeof to be present to avoid false-positives on plain objects
- * that happen to have a 'render' or 'type' key.
- */
-const isNativelyRenderedExotic = (
-  value: unknown
-): value is React.ForwardRefExoticComponent<any> | React.MemoExoticComponent<any> =>
-  !!value &&
-  typeof value === 'object' &&
-  '$$typeof' in value &&
-  ('render' in value || ('type' in value && 'compare' in value));
+interface SerializationContext {
+  renderToString: RenderToString;
+  properties: Map<string, Record<string, unknown>>;
+  parseStyle: (style: string) => React.CSSProperties | undefined;
+}
+
+// Metadata belongs to the generated wrapper, without adding public fields to it.
+type ServerComponentMetadata = Omit<CreateComponentForServerSideRenderingOptions, 'renderToString'> & {
+  hydrateModule: Promise<HydrateModule> | undefined;
+};
+const serverComponents = new WeakMap<Function, ServerComponentMetadata>();
+const propertiesAttribute = 'data-stencil-react-props';
+
+function createLightDOMElement(
+  options: Pick<CreateComponentForServerSideRenderingOptions, 'tagName' | 'properties' | 'transformTag'>,
+  { children, ...props }: Record<string, unknown> & { children?: ReactNode },
+  context: SerializationContext
+) {
+  const attributes: Record<string, unknown> = {};
+  const properties: Record<string, unknown> = {};
+  for (const [name, value] of Object.entries(props)) {
+    if (name === 'ref' || value === false) continue;
+    if (name === 'style') {
+      attributes.style = typeof value === 'string' ? context.parseStyle(value) : value;
+    } else if (typeof value === 'string' || typeof value === 'number' || value === true) {
+      const attribute =
+        possibleStandardNames[name as keyof typeof possibleStandardNames] || options.properties[name] || name;
+      attributes[attribute] = value === true ? 'true' : value;
+    } else {
+      properties[name] = value;
+    }
+  }
+  if (Object.keys(properties).length) {
+    const id = String(context.properties.size);
+    context.properties.set(id, properties);
+    attributes[propertiesAttribute] = id;
+  }
+  const tagName = options.transformTag?.(options.tagName) ?? options.tagName;
+  return React.createElement(tagName, attributes, children);
+}
+
+function getInnerHTML(element: Element, html: string): string {
+  const first = element.children[0];
+  const last = element.children[element.children.length - 1];
+  if (!first || !last) return '';
+  if (first.startIndex === null || last.endIndex === null) throw new Error('Missing HTML parser offsets');
+  return html.slice(first.startIndex, last.endIndex + 1);
+}
 
 /**
  * Transform a React component into a Stencil component for server side rendering. This logic is executed
  * by a React framework e.g. Next.js in an Node.js environment. The function will:
  *
  *   - serialize the component (including the Light DOM) into a string (see `toSerializeWithChildren`)
- *   - transform the string with the Stencil component into a Declarative Shadow DOM component
- *   - parse the declarative shadow DOM component back into a React component
+ *   - render the Stencil subtree using the configured shadow-root serialization mode
+ *   - preserve the serialized HTML when returning the React component
  *   - return the React component
  *
  * Note: this code should only be loaded on the server side, as it uses heavy Node.js dependencies,
@@ -174,35 +198,17 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       throw new Error('`createComponentForServerSideRendering` can only be run on the server');
     }
 
-    /**
-     * compose element props into a string; complex (non-primitive) props are banked
-     * and applied via beforeHydrate; they never need to be attribute-serialized
-     */
-    let stringProps = '';
-    const complexProps: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(props)) {
-      if (typeof value === 'boolean' && value === false) {
-        continue;
-      }
-
-      /**
-       * parse the style object into a string
-       */
-      if (key === 'style' && typeof value === 'object' && value) {
-        const propName =
-          possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
-        stringProps += ` ${propName}="${stringifyCSSProperties(value)}"`;
-        continue;
-      }
-
-      if (isPrimitive(value)) {
-        const propName =
-          possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
-        stringProps += ` ${propName}="${value}"`;
-      } else {
-        complexProps[key] = value;
-      }
-    }
+    const { htmlToDOM, attributesToProps } = await import('html-react-parser');
+    const context: SerializationContext = {
+      renderToString: options.renderToString,
+      properties: new Map(),
+      parseStyle: (style) => attributesToProps({ style }).style,
+    };
+    const transformedTagName = options.transformTag?.(options.tagName) ?? options.tagName;
+    const { renderToString } = await import('react-dom/server');
+    const closingTag = `</${transformedTagName}>`;
+    const hostHTML = renderToString(createLightDOMElement(options, props, context));
+    const toSerialize = hostHTML.slice(0, -closingTag.length);
 
     /**
      * Attempt to serialize the components light DOM as it may have an impact on how the Stencil
@@ -210,23 +216,14 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      * if its light DOM contains other elements.
      */
     let serializedChildren = '';
-    const transformedTagName = options.transformTag ? options.transformTag(options.tagName) : options.tagName;
-    const toSerialize = `<${transformedTagName}${stringProps} suppressHydrationWarning="true">`;
     const originalConsoleError = console.error;
     try {
-      // Ignore potential console errors during serialization (for example if a hook is used, which
-      // is not allowed in SSR) as they are not relevant for the user and may cause confusion
       if (!process.env.STENCIL_SSR_DEBUG) {
         console.error = () => {};
       }
-      const awaitedChildren = await resolveComponentTypes(children);
-      const { renderToString } = await import('react-dom/server');
-      serializedChildren = renderToString(awaitedChildren)
-        /**
-         * collapse any newline + indentation sequences in the serialized children
-         * to prevent hydration mismatches from formatted React output
-         */
-        .replace(/\n\s+/g, '');
+      const awaitedChildren = await resolveChildren(children, context);
+      // Keep React's hoisted resource links inside the serialized light DOM.
+      serializedChildren = renderToString(awaitedChildren);
     } catch (err: unknown) {
       /**
        * if rendering the light DOM fails, we log a warning and continue to render the component
@@ -243,24 +240,19 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       console.error = originalConsoleError;
     }
 
-    const toSerializeWithChildren = `${toSerialize}${serializedChildren}</${transformedTagName}>`;
+    const toSerializeWithChildren = `${toSerialize}${serializedChildren}${closingTag}`;
 
-    /**
-     * first render the component with `prettyHtml` flag so it makes it easier to
-     * access the inner content of the component.
-     */
     const { html, styles } = await options.renderToString(toSerializeWithChildren, {
       fullDocument: false,
       serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
-      prettyHtml: true,
-      ...(Object.keys(complexProps).length > 0 && {
-        beforeHydrate: (doc: Document) => {
-          const el = doc.querySelector(transformedTagName) as any;
-          if (el) {
-            for (const [propName, value] of Object.entries(complexProps)) {
-              el[propName] = value;
-            }
-          }
+      prettyHtml: false,
+      ...(context.properties.size > 0 && {
+        beforeHydrate(document: Document) {
+          document.querySelectorAll(`[${propertiesAttribute}]`).forEach((element) => {
+            const properties = context.properties.get(element.getAttribute(propertiesAttribute)!);
+            element.removeAttribute(propertiesAttribute);
+            if (properties) Object.assign(element, properties);
+          });
         },
       }),
     });
@@ -269,194 +261,95 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       throw new Error('No HTML returned from renderToString');
     }
 
-    /**
-     * cut out the inner content of the component
-     */
-    const serializedComponentByLine = html.split('\n');
-    const hydrationComment = '<!--r.1-->';
-    const isShadowComponent = serializedComponentByLine[1].includes('shadowrootmode="open"');
-    const delegatesFocus = serializedComponentByLine[1].includes('shadowrootdelegatesfocus');
-    let templateContent: undefined | string = undefined;
-    if (isShadowComponent) {
-      const templateEndTag = '  </template>';
-      templateContent = serializedComponentByLine
-        .slice(2, serializedComponentByLine.lastIndexOf(templateEndTag))
-        .join('\n')
-        .trim();
-    }
+    const parserOptions = { withStartIndices: true, withEndIndices: true, lowerCaseAttributeNames: false };
+    const nodes = htmlToDOM(html, parserOptions);
+    const host = nodes.find((node): node is Element => 'attribs' in node && node.name === transformedTagName);
+    if (!host) throw new Error(`No <${transformedTagName}> returned from renderToString`);
+    const template = host.children.find(
+      (node): node is Element => 'attribs' in node && node.name === 'template' && node.attribs.shadowrootmode === 'open'
+    );
+    // Custom-element attributes must stay verbatim, especially `class` in React 18.
+    // Only style needs converting back to a React prop.
+    const hostProps = { ...host.attribs, style: context.parseStyle(host.attribs.style) };
+    const content = template
+      ? React.createElement(
+          transformedTagName,
+          { ...hostProps, suppressHydrationWarning: true },
+          React.createElement('template', {
+            ...template.attribs,
+            suppressHydrationWarning: true,
+            dangerouslySetInnerHTML: { __html: '<!--r.1-->' + getInnerHTML(template, html) },
+          }),
+          children
+        )
+      : React.createElement(transformedTagName, {
+          ...hostProps,
+          suppressHydrationWarning: true,
+          dangerouslySetInnerHTML: { __html: getInnerHTML(host, html) },
+        });
 
-    /**
-     * `html-react-parser` is a Node.js dependency so we should make sure to only import it when
-     * run on the server and when needed.
-     */
-    const { default: parse } = await import('html-react-parser');
-    const typedParse = parse as unknown as typeof parse.default;
-
-    /**
-     * Parse the string back into a React component
-     */
-    const StencilElement = () =>
-      typedParse(html, {
-        transform(reactNode, domNode) {
-          /**
-           * only render the component we have been serializing before
-           */
-          if ('name' in domNode && (domNode.name === transformedTagName || domNode.name === options.tagName)) {
-            const props = (reactNode as any).props;
-            /**
-             * remove the outer tag (e.g. `transformedTagName`) so we only have the inner content
-             */
-            const CustomTag = `${transformedTagName}`;
-
-            /**
-             * if the component is not a shadow component we can render it with the light DOM only
-             */
-            if (!isShadowComponent) {
-              const { children, ...customProps } = props || {};
-              const __html = serializedComponentByLine
-                /**
-                 * remove the components outer tags as we want to set the inner content only
-                 */
-                .slice(1, -1)
-                /**
-                 * bring the array back to a string
-                 */
-                .join('\n')
-                .trim()
-                /**
-                 * remove any whitespace between tags that may cause hydration errors
-                 */
-                .replace(/(?<=>)\s+(?=<)/g, '')
-                /**
-                 * collapse any remaining newline + indentation sequences not caught
-                 * by the previous regex (e.g. within text nodes or attribute boundaries)
-                 */
-                .replace(/\n\s+/g, '');
-
-              const renderStyles =
-                styles.length > 0 &&
-                styles.map((style, index) => {
-                  return (
-                    <style
-                      href={`stencil-${style.id || options.tagName}`}
-                      key={style.id || index}
-                      id={style.id}
-                      precedence="stencil"
-                      suppressHydrationWarning={true}
-                      dangerouslySetInnerHTML={{ __html: style.content || '' }}
-                    />
-                  );
-                });
-              return (
-                <Fragment>
-                  {renderStyles}
-                  <CustomTag {...customProps} suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html }} />
-                </Fragment>
-              );
-            }
-
-            /**
-             * return original component with given props and `suppressHydrationWarning` flag and
-             * set the template content based on our serialized Stencil component.
-             */
-            return (
-              <CustomTag {...props} suppressHydrationWarning={true}>
-                <template
-                  // @ts-expect-error
-                  shadowrootmode="open"
-                  {...(delegatesFocus ? { shadowrootdelegatesfocus: '' } : {})}
-                  suppressHydrationWarning={true}
-                  dangerouslySetInnerHTML={{ __html: hydrationComment + templateContent }}
-                ></template>
-                {children}
-              </CustomTag>
-            );
-          }
-
-          return;
-        },
-      });
-
-    return <StencilElement />;
+    return React.createElement(
+      React.Fragment,
+      null,
+      styles.map((style, index) =>
+        React.createElement('style', {
+          key: style.id || index,
+          id: style.id,
+          href: `stencil-${style.id || options.tagName}`,
+          precedence: 'stencil',
+          suppressHydrationWarning: true,
+          dangerouslySetInnerHTML: { __html: style.content || '' },
+        })
+      ),
+      content
+    );
   }) as unknown as ReactWebComponent<I, E>;
 };
 
-/**
- * Resolve the component types for server side rendering.
- *
- * It walks through all component children and resolves them, e.g. call `createComponentForServerSideRendering` to
- * create a React component which we can pass into `ReactDOMServer.renderToString`. This enables us to include
- * the Light DOM of a component as part of Stencils serialization process.
- *
- * @param children - the children to resolve
- * @returns the resolved children
- */
-async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
-  /**
-   * If the children are a empty or a primitive we can return them directly
-   * e.g. `Hello World` or `42` or `null`
-   */
-  if (isPrimitive(children) || isEmpty(children)) {
-    return children;
-  }
-
-  /**
-   * If the children are not iterable, make them an array
-   */
-  if (!isIterable(children)) {
-    children = [children];
-  }
-
-  return Promise.all(
-    Array.from(children).map(async (child) => {
-      if (isPrimitive(child) || isEmpty(child)) {
-        return child;
-      }
-
-      if (isIterable(child)) {
-        return resolveComponentTypes(child);
-      }
-
-      // Only ReactElements have type and props properties
-      if (!React.isValidElement(child)) {
-        return child;
-      }
-
-      const { type, props } = child as React.ReactElement<object & { children: ReactNode }>;
-
-      const resolvedType = await resolveType(type, props as any);
-
-      // If resolveType returned a fully rendered React element (e.g. from an async Stencil SSR
-      // component), return it directly — it is already the final output and must not be wrapped
-      // back into a new element with itself as the `type`.
-      if (React.isValidElement(resolvedType)) {
-        return resolvedType;
-      }
-
-      return {
-        ...child,
-        props: {
-          ...props,
-          children: await resolveComponentTypes(props.children),
-        },
-        type: resolvedType,
-      } as ReactNode;
-    })
-  );
+// Await nested promises before React.Children assigns keys; it traverses child arrays synchronously.
+async function awaitChildren(children: ReactNode): Promise<ReactNode> {
+  children = await children;
+  return Array.isArray(children) ? Promise.all(children.map(awaitChildren)) : children;
 }
 
-// Resolve the component type to a primitive element type
-const resolveType = async (type: string | React.JSXElementConstructor<any>, props: any): Promise<ReactNodeExtended> => {
-  let resolvedType: ReactNodeExtended = null;
+/**
+ * Resolve light-DOM children while preserving the props and content returned by components.
+ * Generated wrappers from the same hydrate module become custom elements for the parent's Stencil pass.
+ */
+async function resolveChildren(children: ReactNode, context: SerializationContext): Promise<ReactNode> {
+  children = await awaitChildren(children);
+  if (isPrimitive(children) || isEmpty(children)) return children;
+  if (isIterable(children)) {
+    return Promise.all(React.Children.toArray(children).map((child) => resolveChildren(child, context)));
+  }
+  if (!React.isValidElement(children)) return children;
 
-  if (typeof type === 'string') {
-    // Child is a primitive element like 'div'
-    return type;
-  } else if (isJSXClassElementConstructor(type)) {
-    // Child is a Class Component
-    const instance = new type(props, undefined);
-    resolvedType = instance.render ? instance.render() : instance;
-  } else if (isLazyExoticComponent(type)) {
+  const element = children as React.ReactElement<{ children?: ReactNode }>;
+  const resolved = await resolveElement(element, context);
+  // A component's returned root occupies the same list position as the component it replaces.
+  return React.isValidElement(resolved) && element.key !== null
+    ? React.cloneElement(resolved, { key: element.key })
+    : resolved;
+}
+
+async function resolveElement(
+  element: React.ReactElement<{ children?: ReactNode }>,
+  context: SerializationContext
+): Promise<ReactNode> {
+  const { type, props } = element;
+  const options = typeof type === 'function' ? serverComponents.get(type) : undefined;
+  if (options?.hydrateModule) {
+    const hydrateModule = await options.hydrateModule;
+    if (hydrateModule.renderToString === context.renderToString) {
+      return createLightDOMElement(
+        { ...options, transformTag: hydrateModule.transformTag },
+        { ...props, children: await resolveChildren(props.children, context) },
+        context
+      );
+    }
+  }
+
+  if (isLazyExoticComponent(type)) {
     // Handle React Lazy Component and Next.js RSC module references.
     // React.lazy payload: { _status: -1, _result: promiseFn } → call _result() when uninitialized.
     // Next.js RSC reference: { _result: undefined, _init: fn } → call _init(payload) to resolve.
@@ -464,38 +357,31 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
     const payload = type._payload;
     let lazyComponent: any;
     if (typeof (type as any)._init === 'function' && payload._result === undefined) {
-      // Next.js RSC module reference format: use _init to resolve the component
       const resolved = await (type as any)._init(payload);
       lazyComponent = resolved?.default ?? resolved;
     } else {
-      const { default: def } =
-        payload._status === -1 // Uninitialized = -1 so we need resolve the promise
-          ? await payload._result()
-          : payload._result;
+      const { default: def } = payload._status === -1 ? await payload._result() : payload._result;
       lazyComponent = def;
     }
-    // Now resolve the actual component type of the lazy component
-    resolvedType = await resolveType(lazyComponent, props);
-  } else if (isNativelyRenderedExotic(type)) {
-    // React.forwardRef and React.memo objects are handled natively by react-dom/server.
-    // Calling their inner render/type functions directly violates React's hook rules.
-    // Return the exotic object as-is; renderToString will render it correctly.
-    return type;
-  } else if (typeof type !== 'object') {
-    // Child is a Function Component because React Server
-    // Components can be a Promise we need to await it
-    resolvedType = await type(props);
+    return resolveChildren({ ...element, type: lazyComponent }, context);
   }
 
-  // Recursively resolve the component type until we have a primitive element type.
-  // React.isValidElement narrows to ReactElement, giving `.type` as `string | JSXElementConstructor<any>`.
-  // Exotic components return early above, so a valid element here still needs its type resolved.
-  if (!isEmpty(resolvedType) && !isPrimitive(resolvedType) && React.isValidElement(resolvedType)) {
-    resolvedType = await resolveType(resolvedType.type, props);
+  if (isJSXClassElementConstructor(type)) {
+    const instance = new type(props, undefined);
+    return resolveChildren(instance.render(), context);
+  }
+  if (typeof type === 'function') {
+    // Keep the returned tree, not just its root type with the caller's original props.
+    return resolveChildren(await type(props), context);
   }
 
-  return resolvedType;
-};
+  // Native elements, Fragments and exotic components are rendered by React.
+  // In particular, forwardRef/memo render functions may use hooks and must not be invoked here.
+  return {
+    ...element,
+    props: { ...props, children: await resolveChildren(props.children, context) },
+  };
+}
 
 type CreateComponentForSSROptions<
   I extends HTMLElement,
@@ -548,7 +434,7 @@ export const createComponent = <
    * Note: we want to lazy load the `./ssr` and `hydrateModule` modules to avoid
    * bundling them in the runtime and serving them in the browser.
    */
-  return (async (props: WebComponentProps<I>) => {
+  const component = async (props: WebComponentProps<I>) => {
     if (!options.hydrateModule) {
       throw new Error(
         '`hydrateModule` is required when rendering a Stencil component on the server. ' +
@@ -574,5 +460,7 @@ export const createComponent = <
       renderToString: resolvedHydrateModule.renderToString,
       ...options,
     })(props as any);
-  }) as unknown as StencilReactComponent<I, E, C, R>;
+  };
+  serverComponents.set(component, options);
+  return component as unknown as StencilReactComponent<I, E, C, R>;
 };
