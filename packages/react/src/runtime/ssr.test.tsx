@@ -306,6 +306,40 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
     ).resolves.toBeDefined();
   });
 
+  it('should serialize a nested Stencil SSR child shallowly instead of rendering it', async () => {
+    // The parent's light DOM pass must not run the child's hydrate render;
+    // that doubled the cost at every nesting level.
+    const { renderToString } = await import('react-dom/server');
+    const realRenderToString = (await vi.importActual<typeof import('react-dom/server')>('react-dom/server'))
+      .renderToString;
+    vi.mocked(renderToString).mockImplementationOnce((element) => realRenderToString(element as React.ReactElement));
+
+    const ParentComponent = createComponent({
+      tagName: 'my-button',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+    const ChildComponent = createComponent({
+      tagName: 'my-component',
+      properties: { iconName: 'icon-name' },
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+
+    await ParentComponent({
+      children: React.createElement(
+        ChildComponent as any,
+        { slot: 'start', iconName: 'home', disabled: false },
+        'Label'
+      ),
+    });
+
+    // Only the parent went through the hydrate module.
+    expect(capturedRenderToStringArgs).toHaveLength(1);
+    const [lightDom] = capturedRenderToStringArgs[0];
+    expect(lightDom).toContain('<my-component slot="start" icon-name="home">Label</my-component>');
+    expect(lightDom).not.toContain('<template');
+  });
+
   it('should resolve deeply nested async Stencil SSR grandchild without error', async () => {
     const grandchildOptions: CreateComponentForSSROptions<HTMLElement> = {
       tagName: 'my-counter',
