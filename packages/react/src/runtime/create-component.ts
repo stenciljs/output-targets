@@ -63,6 +63,79 @@ export const mergeClassNames = (
 // client-only anyway, so fall back to `useEffect` on the server.
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
+// Stencil attribute name for a prop: `iconStart` -> `icon-start`.
+const toAttributeName = (propName: string): string => propName.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+
+// Server render: emit Stencil props as attributes so the element upgrades in its final state.
+// Objects and functions stay client-only, `false` is omitted, matching `ssr.tsx`.
+const createServerComponent = <I extends HTMLElement, E extends EventNames, C, R extends keyof C>(
+  tagName: string,
+  elementClass: Options<I, E>['elementClass'],
+  properties: Record<string, string> | undefined,
+  displayName: string | undefined
+): StencilReactComponent<I, E, C, R> => {
+  const observedAttributes: unknown = (elementClass as { observedAttributes?: unknown }).observedAttributes;
+  const attributeNames = new Set<string>(Array.isArray(observedAttributes) ? observedAttributes : []);
+  // Stencil defines prop accessors on the component's own prototype chain, above HTMLElement.
+  // Anything inherited from the DOM (`id`, `title`, `slot`) is a pass-through prop.
+  const componentPrototypes: object[] = [];
+  const domPrototype: object | null = typeof HTMLElement === 'function' ? HTMLElement.prototype : null;
+  for (
+    let p: object | null = elementClass.prototype;
+    p && p !== Object.prototype && p !== domPrototype;
+    p = Object.getPrototypeOf(p)
+  ) {
+    componentPrototypes.push(p);
+  }
+  const isStencilProp = (propName: string): boolean =>
+    componentPrototypes.some((p) => Object.prototype.hasOwnProperty.call(p, propName));
+  // Generated wrappers pass the prop-to-attribute map (honours `@Prop({ attribute })`);
+  // without it, fall back to the kebab-case name checked against `observedAttributes`.
+  const attributeNameFor = (propName: string): string | undefined => {
+    if (properties) return properties[propName];
+    const attributeName = toAttributeName(propName);
+    return attributeNames.has(attributeName) ? attributeName : undefined;
+  };
+
+  const ServerComponent = React.forwardRef<I, StencilProps<I, E, C, R>>((props, _ref) => {
+    const {
+      className,
+      class: classProp,
+      children,
+      ...rest
+    } = props as StencilProps<I, E, C, R> & {
+      className?: string;
+      class?: string;
+      children?: React.ReactNode;
+    };
+    // The client render has no attributes; keep React from flagging a mismatch.
+    const attributes: Record<string, unknown> = { suppressHydrationWarning: true };
+    const classes = className ?? classProp;
+    if (classes) {
+      attributes.class = classes;
+    }
+
+    for (const [key, value] of Object.entries(rest)) {
+      if (value === null || value === undefined || typeof value === 'function') {
+        continue;
+      }
+      if (isStencilProp(key)) {
+        const attributeName = attributeNameFor(key);
+        if (attributeName && typeof value !== 'object' && value !== false) {
+          attributes[attributeName] = value === true ? '' : value;
+        }
+        continue;
+      }
+      attributes[key] = value;
+    }
+
+    return React.createElement(tagName, attributes, children);
+  });
+  ServerComponent.displayName = displayName ?? tagName;
+
+  return ServerComponent as unknown as StencilReactComponent<I, E, C, R>;
+};
+
 /**
  * Defines a custom element and creates a React component.
  * @public
@@ -74,17 +147,24 @@ export const createComponent = <
   R extends keyof C = never,
 >({
   defineCustomElement,
+  properties,
   tagName,
   transformTag,
   ...options
 }: Options<I, E> & {
   defineCustomElement: () => void;
+  properties?: Record<string, string>;
   transformTag?: (tagName: string) => string;
 }): StencilReactComponent<I, E, C, R> => {
   if (typeof defineCustomElement !== 'undefined') {
     defineCustomElement();
   }
   const finalTagName = transformTag ? transformTag(tagName) : tagName;
+
+  if (typeof window === 'undefined') {
+    return createServerComponent<I, E, C, R>(finalTagName, options.elementClass, properties, options.displayName);
+  }
+
   const ReactComponent = createComponentWrapper<I, E>({ ...options, tagName: finalTagName });
 
   /**
@@ -127,7 +207,8 @@ export const createComponent = <
       [ref]
     );
 
-    return React.createElement(ReactComponent, { ...restProps, ref: setRef } as any);
+    // Server HTML carries attributes this render does not set.
+    return React.createElement(ReactComponent, { ...restProps, ref: setRef, suppressHydrationWarning: true } as any);
   });
 
   WrappedComponent.displayName = options.displayName ?? finalTagName;
