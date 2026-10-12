@@ -182,6 +182,24 @@ describe('createComponent on the server', () => {
     }
   });
 
+  it('derives attribute names with digits the way Stencil does', async () => {
+    const { renderToString } = await import('react-dom/server');
+    class Digits {
+      static observedAttributes = ['line-1', 'icon-start'];
+      get line1() {
+        return '';
+      }
+      get iconStart() {
+        return '';
+      }
+    }
+    const Fake = make(Digits);
+
+    const html = renderToString(React.createElement(Fake, { line1: 'Gold', iconStart: 'home' }));
+
+    expect(html).toBe('<fake-element line-1="Gold" icon-start="home"></fake-element>');
+  });
+
   it('renders only pass-through props when the element class exposes no attributes', async () => {
     const { renderToString } = await import('react-dom/server');
     const Fake = make(class Bare {});
