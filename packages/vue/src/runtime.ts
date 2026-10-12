@@ -32,6 +32,7 @@ const ARIA_PROP_PREFIX = 'aria';
  */
 const EMPTY_PROP = Symbol();
 const DEFAULT_EMPTY_PROP = { default: EMPTY_PROP };
+const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 interface NavManager<T = any> {
   navigate: (options: T) => void;
@@ -230,7 +231,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
           let navigationPayload: any = { event: ev };
           for (const key in props) {
             const value = props[key as keyof InputProps<VModelType>];
-            if (props.hasOwnProperty(key) && key.startsWith(ROUTER_PROP_PREFIX) && value !== EMPTY_PROP) {
+            if (hasOwnProperty.call(props, key) && key.startsWith(ROUTER_PROP_PREFIX) && value !== EMPTY_PROP) {
               navigationPayload[key] = value;
             }
           }
@@ -269,7 +270,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
          */
         for (const key in props) {
           const value = props[key as keyof InputProps<VModelType>];
-          if ((props.hasOwnProperty(key) && value !== EMPTY_PROP) || key.startsWith(ARIA_PROP_PREFIX)) {
+          const isAriaProp = key.startsWith(ARIA_PROP_PREFIX);
+          if (hasOwnProperty.call(props, key) && value !== EMPTY_PROP && (!isAriaProp || value != null)) {
             propsToAdd[key as 'ariaLabel'] = value as string;
           }
 
@@ -278,7 +280,7 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
            */
           const eventHandlerKey = 'on' + key.slice(0, 1).toUpperCase() + key.slice(1);
           const eventHandler = attrs[eventHandlerKey] as EventListenerOrEventListenerObject;
-          if (containerRef.value && attrs.hasOwnProperty(eventHandlerKey) && 'addEventListener' in containerRef.value) {
+          if (containerRef.value && hasOwnProperty.call(attrs, eventHandlerKey) && 'addEventListener' in containerRef.value) {
             containerRef.value.addEventListener(key, eventHandler);
           }
         }

@@ -388,4 +388,53 @@ describe('defineContainer', () => {
       expect(navigate).not.toHaveBeenCalled();
     });
   });
+
+  describe('aria prop forwarding', () => {
+    it('should omit unset/default aria props while preserving explicit values', () => {
+      const MyComponent = defineContainer('my-component', undefined as any);
+
+      const wrapper = mount(MyComponent, {
+        props: {
+          ariaLabel: undefined,
+          ariaLabelDropdownButton: undefined,
+          'aria-label': 'Open dropdown',
+          'aria-hidden': false,
+        } as any,
+      });
+
+      expect(wrapper.attributes('aria-label')).toBe('Open dropdown');
+      expect(wrapper.attributes('aria-hidden')).toBe('false');
+      expect((wrapper.element as any).ariaLabelDropdownButton).toBeUndefined();
+    });
+
+    it('should not forward nullish aria properties but should keep empty strings and false values', () => {
+      const MyComponent = defineContainer('my-component', undefined as any);
+
+      const wrapper = mount(MyComponent, {
+        props: {
+          ariaLabel: '',
+          ariaLabelDropdownButton: null,
+          ariaExpanded: false,
+        } as any,
+      });
+
+      expect(wrapper.attributes('aria-label')).toBe('');
+      expect(wrapper.attributes('aria-expanded')).toBe('false');
+      expect((wrapper.element as any).ariaLabelDropdownButton).toBeUndefined();
+    });
+
+    it('should handle props objects with null prototype and own-property collisions safely', () => {
+      const MyComponent = defineContainer('my-component', undefined as any);
+
+      const props: any = Object.create(null);
+      props.hasOwnProperty = 'not-a-function';
+      props.ariaLabel = 'Custom label';
+      props.routerLink = '/route';
+
+      const wrapper = mount(MyComponent, { props } as any);
+
+      expect(wrapper.attributes('aria-label')).toBe('Custom label');
+      expect((wrapper.element as any).routerLink).toBeUndefined();
+    });
+  });
 });
