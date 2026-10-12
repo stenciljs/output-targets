@@ -217,17 +217,18 @@ export const createComponent = <
     });
 
     // Keep the server-rendered Stencil attributes in sync so none outlives its prop. `@lit/react`
-    // only sets properties, and Stencil does not reflect them back unless the prop opts in.
+    // only sets properties, and Stencil does not reflect them back unless the prop opts in. Only
+    // attributes already on the element are touched: client-rendered elements stay property-only.
     React.useLayoutEffect(() => {
       const element = elementRef.current;
       if (element === null) return;
       for (const [key, value] of Object.entries(restProps)) {
         if (!isStencilProp(key)) continue;
         const attributeName = attributeNameFor(key);
-        if (!attributeName) continue;
+        if (!attributeName || !element.hasAttribute(attributeName)) continue;
         const attributeValue = toAttributeValue(value);
         if (attributeValue === undefined) {
-          if (element.hasAttribute(attributeName)) element.removeAttribute(attributeName);
+          element.removeAttribute(attributeName);
         } else if (element.getAttribute(attributeName) !== attributeValue) {
           element.setAttribute(attributeName, attributeValue);
         }

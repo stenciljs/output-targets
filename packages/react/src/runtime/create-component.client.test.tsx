@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
 import React, { act } from 'react';
-import { hydrateRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { createComponent } from './create-component.js';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -36,12 +38,13 @@ const options = {
 
 // `createComponent` picks the server or client wrapper when it is called, so build the server
 // one while `window` is absent and the client one with the real jsdom window.
+type Props = { children?: React.ReactNode; disabled?: boolean; variant?: string };
+
 async function serverAndClient() {
-  const { createComponent } = await import('./create-component');
   vi.stubGlobal('window', undefined);
-  const Server = createComponent<HTMLElement>(options);
+  const Server = createComponent<HTMLElement, {}, Props>(options);
   vi.unstubAllGlobals();
-  const Client = createComponent<HTMLElement>(options);
+  const Client = createComponent<HTMLElement, {}, Props>(options);
   return { Server, Client };
 }
 
@@ -72,5 +75,18 @@ describe('createComponent hydration', () => {
     });
     expect(element.hasAttribute('disabled')).toBe(false);
     expect(element.getAttribute('variant')).toBe('solid');
+  });
+  it('does not add attributes to client-rendered elements', async () => {
+    const { Client } = await serverAndClient();
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    await act(async () => {
+      createRoot(container).render(React.createElement(Client, { disabled: true, variant: 'outline' }, 'Save'));
+    });
+    const element = container.querySelector('fake-element')!;
+    // Under the `node` export condition `@lit/react` ships its SSR build, which never assigns
+    // element properties, so only the attribute behaviour (ours) can be asserted here.
+    expect(element.hasAttribute('disabled')).toBe(false);
+    expect(element.hasAttribute('variant')).toBe(false);
   });
 });
