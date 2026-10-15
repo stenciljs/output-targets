@@ -241,7 +241,8 @@ export const wizard = {
       // Install React peer deps in the wrapper package
       if (shouldScaffold && (await pathExists(wrapperDir))) {
         log.info('Installing React peer dependencies in wrapper package...');
-        await nypm.addDependency(['@stencil/react-output-target'], { cwd: wrapperDir, dev: true });
+        // A regular dependency: the generated wrappers import its runtime (`/runtime`, `/ssr`).
+        await nypm.addDependency(['@stencil/react-output-target'], { cwd: wrapperDir });
         await nypm.addDependency(['react', 'react-dom', '@types/react', '@types/react-dom', 'typescript'], {
           cwd: wrapperDir,
           dev: true,

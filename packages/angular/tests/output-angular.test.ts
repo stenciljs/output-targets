@@ -417,14 +417,27 @@ describe('usesExportMaps', () => {
   });
 });
 
-describe('getPathToComponentTypes with an exports map', () => {
-  const config = { generateExportMaps: true, outputTargets: [{ type: 'standalone' }] } as any;
+describe('getPathToComponentTypes in Stencil v5', () => {
+  it.each(['standalone', 'scam', 'component'])(
+    'imports types for outputType "%s" from <pkg>/components with an exports map',
+    (outputType) => {
+      const config = {
+        generateExportMaps: true,
+        outputTargets: [{ type: 'standalone' }, { type: 'types', dir: 'build/typings' }],
+      } as any;
+      expect(getPathToComponentTypes(config, { componentCorePackage: 'my-lib', outputType } as any)).toBe(
+        'my-lib/components'
+      );
+    }
+  );
 
-  it.each([
-    ['standalone', 'my-lib/standalone'],
-    ['scam', 'my-lib/standalone'],
-    ['component', 'my-lib/loader'],
-  ])('imports types for outputType "%s" from %s', (outputType, expected) => {
-    expect(getPathToComponentTypes(config, { componentCorePackage: 'my-lib', outputType } as any)).toBe(expected);
+  it('imports types from the types dir without an exports map, following a custom dir', () => {
+    const config = {
+      rootDir: '/project',
+      outputTargets: [{ type: 'standalone' }, { type: 'types', dir: '/project/build/typings' }],
+    } as any;
+    expect(
+      getPathToComponentTypes(config, { componentCorePackage: 'my-lib', outputType: 'standalone' } as any)
+    ).toBe('my-lib/build/typings/components');
   });
 });

@@ -260,7 +260,7 @@ const createDocComment = (doc: CompilerJsDoc) => {
  * @param events The events to generate the interface properties for.
  * @param componentCorePackage The component core package.
  * @param customElementsDir The custom elements directory.
- * @param exportMaps Import through the package's `exports` map instead of a deep path.
+ * @param typesModule The module every component type is imported from (Stencil v5 only).
  * @returns The component interface type definition as a string.
  */
 export const createComponentTypeDefinition = (
@@ -269,7 +269,7 @@ export const createComponentTypeDefinition = (
   events: readonly ComponentCompilerEvent[],
   componentCorePackage: string,
   customElementsDir?: string,
-  exportMaps = false
+  typesModule?: string
 ) => {
   const publicEvents = events.filter((ev) => !ev.internal);
 
@@ -277,7 +277,7 @@ export const createComponentTypeDefinition = (
     componentCorePackage,
     customElementsDir,
     outputType,
-    exportMaps,
+    typesModule,
   });
   const eventTypes = publicEvents.map((event) =>
     createPropertyDeclaration(

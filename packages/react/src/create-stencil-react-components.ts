@@ -23,6 +23,7 @@ export const createStencilReactComponents = ({
   serializeShadowRoot,
   transformTag,
   exportMaps,
+  typesFromComponentsFile,
 }: {
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
@@ -34,14 +35,22 @@ export const createStencilReactComponents = ({
   transformTag?: boolean;
   /**
    * The Stencil project generates a package.json `exports` map, so import through its
-   * entries (`<pkg>/<tag>`, `<pkg>/standalone`) instead of deep `dist/` paths the map would block.
+   * entries (`<pkg>/<tag>`, `<pkg>/components`) instead of deep `dist/` paths the map would block.
    */
   exportMaps?: boolean;
+  /**
+   * `componentsTypesDir` points at the `types` output's `components.d.ts` (Stencil v5), so
+   * event types can come from there too instead of relying on the package root exporting them.
+   */
+  typesFromComponentsFile?: boolean;
 }) => {
   const isSSRModule = hydrateModule && clientModule;
   const componentsTypesModule = exportMaps
-    ? `${stencilPackageName}/standalone`
+    ? `${stencilPackageName}/components`
     : `${stencilPackageName}/${componentsTypesDir}`;
+
+  const eventTypesModule = exportMaps || typesFromComponentsFile ? componentsTypesModule : stencilPackageName;
+
   const imports: (string | false | undefined)[] = [
     !isSSRModule && `import React from 'react';`,
     ...(hydrateModule
@@ -206,7 +215,7 @@ export const createStencilReactComponents = ({
   const hasEvents = Boolean(importedEvents.size);
 
   imports.push(
-    hasEvents && `import type { ${Array.from(importedEvents).join(', ')} } from '${stencilPackageName}';`,
+    hasEvents && `import type { ${Array.from(importedEvents).join(', ')} } from '${eventTypesModule}';`,
     `import type { StencilReactComponent${hasEvents ? ', EventName' : ''} } from '@stencil/react-output-target/runtime';`
   );
 

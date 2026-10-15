@@ -212,16 +212,27 @@ describe('usesExportMaps', () => {
   });
 });
 
-describe('getPathToJSXTypes with an exports map', () => {
-  const config = { generateExportMaps: true, outputTargets: [{ type: 'standalone' }] } as unknown as Config;
+describe('getPathToJSXTypes in Stencil v5', () => {
+  it('imports types from <pkg>/components with an exports map, whichever output the proxies use', () => {
+    const config = {
+      generateExportMaps: true,
+      outputTargets: [{ type: 'standalone' }, { type: 'types', dir: 'build/typings' }],
+    } as unknown as Config;
 
-  it('imports types from the standalone entry for a custom elements build', () => {
     expect(
       getPathToJSXTypes(config, { componentCorePackage: 'my-lib', includeImportCustomElements: true } as any)
-    ).toBe('my-lib/standalone');
+    ).toBe('my-lib/components');
+    expect(getPathToJSXTypes(config, { componentCorePackage: 'my-lib' } as any)).toBe('my-lib/components');
   });
 
-  it('imports types from the loader entry otherwise', () => {
-    expect(getPathToJSXTypes(config, { componentCorePackage: 'my-lib' } as any)).toBe('my-lib/loader');
+  it('imports types from the types dir without an exports map, following a custom dir', () => {
+    const config = {
+      rootDir: '/project',
+      outputTargets: [{ type: 'standalone' }, { type: 'types', dir: '/project/build/typings' }],
+    } as unknown as Config;
+
+    expect(
+      getPathToJSXTypes(config, { componentCorePackage: 'my-lib', includeImportCustomElements: true } as any)
+    ).toBe('my-lib/build/typings/components');
   });
 });

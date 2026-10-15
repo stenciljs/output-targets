@@ -19,6 +19,7 @@ export const createComponentWrappers = async ({
   serializeShadowRoot,
   transformTag,
   exportMaps,
+  typesFromComponentsFile,
   writeFile,
 }: {
   stencilPackageName: string;
@@ -35,6 +36,7 @@ export const createComponentWrappers = async ({
   transformTag?: boolean;
   writeFile: (path: string, contents: string) => Promise<unknown>;
   exportMaps?: boolean;
+  typesFromComponentsFile?: boolean;
 }) => {
   const promises: Promise<unknown>[] = [];
 
@@ -76,6 +78,7 @@ export const createComponentWrappers = async ({
       customElementsDir,
       componentsTypesDir,
       exportMaps,
+      typesFromComponentsFile,
       transformTag,
     });
 
@@ -104,6 +107,7 @@ export const createComponentWrappers = async ({
         customElementsDir,
         componentsTypesDir,
         exportMaps,
+        typesFromComponentsFile,
         hydrateModule,
         clientModule,
         serializeShadowRoot,

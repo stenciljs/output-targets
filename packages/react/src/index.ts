@@ -97,6 +97,14 @@ type BuildCtx = Parameters<OutputTargetCustom['generator']>[2];
 const TYPES_OUTPUT_TARGET = 'types';
 const TYPES_DEFAULT_DIR = 'dist/types';
 
+/**
+ * Turn an output directory into the form used inside an import specifier: relative to the
+ * project root, with forward slashes. `path.relative()` returns backslashes on Windows, which
+ * would otherwise end up in the generated imports.
+ */
+const toImportPath = (rootDir: string, dir: string): string =>
+  (isAbsolute(dir) ? relative(rootDir, dir) : dir).replace(/\\/g, '/');
+
 interface ReactOutputTarget extends OutputTargetCustom {
   __internal_getCustomElementsDir: () => string;
 }
@@ -122,19 +130,27 @@ export const reactOutputTarget = ({
   let customElementsDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
   let componentsTypesDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
   let exportMaps = false;
+  let typesFromComponentsFile = false;
   return {
     type: 'custom',
     name: PLUGIN_NAME,
     validate(config) {
+      const isV5 = (config.outputTargets || []).some((o: any) =>
+        ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
+      );
+
       /**
        * When the Stencil project generates a package.json `exports` map, deep `dist/` imports
        * are blocked for consumers, so the wrappers import through the map's entries instead.
-       * Stencil v5 only: v4's map has no `./standalone` or `./ssr` entry, and its root types
-       * aren't guaranteed to export the component types.
+       * Stencil v5 only: v4's map has no `./components`, `./standalone` or `./ssr` entry.
        */
-      exportMaps =
-        (config as { generateExportMaps?: boolean }).generateExportMaps === true &&
-        (config.outputTargets || []).some((o: any) => ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type));
+      exportMaps = isV5 && (config as { generateExportMaps?: boolean }).generateExportMaps === true;
+
+      /**
+       * In Stencil v5 every component type lives in the `types` output's `components.d.ts`, so
+       * event types are imported from there too. v4 keeps importing them from the package root.
+       */
+      typesFromComponentsFile = isV5;
 
       /**
        * Validate the configuration to ensure that the dist-custom-elements
@@ -165,12 +181,12 @@ export const reactOutputTarget = ({
            */
           const typesTarget = (config.outputTargets || []).find((o: any) => o.type === TYPES_OUTPUT_TARGET) as any;
           const rawTypesDir = typesTarget?.dir ?? TYPES_DEFAULT_DIR;
-          const typesDir = isAbsolute(rawTypesDir) ? relative(config.rootDir!, rawTypesDir) : rawTypesDir;
+          const typesDir = toImportPath(config.rootDir!, rawTypesDir);
           componentsTypesDir = `${typesDir}/components`;
           // customElementsDir stays as default (dist/components) unless standalone.dir is set
           if ((customElementsOutputTarget as any).dir !== undefined) {
             const dir = (customElementsOutputTarget as any).dir;
-            customElementsDir = isAbsolute(dir) ? relative(config.rootDir!, dir) : dir;
+            customElementsDir = toImportPath(config.rootDir!, dir);
           }
         } else if (customElementsOutputTarget.dir !== undefined) {
           /**
@@ -180,7 +196,7 @@ export const reactOutputTarget = ({
            * so convert it back to a rootDir-relative path for use in import specifiers.
            */
           const dir = customElementsOutputTarget.dir;
-          customElementsDir = isAbsolute(dir) ? relative(config.rootDir!, dir) : dir;
+          customElementsDir = toImportPath(config.rootDir!, dir);
           componentsTypesDir = customElementsDir;
         }
 
@@ -259,6 +275,7 @@ export const reactOutputTarget = ({
         serializeShadowRoot,
         transformTag,
         exportMaps,
+        typesFromComponentsFile,
       });
 
       timespan.finish(`generate ${PLUGIN_NAME} finished`);

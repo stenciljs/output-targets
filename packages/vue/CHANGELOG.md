@@ -1,3 +1,17 @@
+## [0.14.6](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.5...@stencil/vue-output-target@0.14.6) (2026-10-09)
+
+
+### :bug: Bug Fix
+
+* **vue:** wizard generates a `plugin.ts` for loader integration ([df68a57](https://github.com/stenciljs/output-targets/commit/df68a57f6a7885b675fc74e43bff27f77398e7ea))
+
+## [0.14.5](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.4...@stencil/vue-output-target@0.14.5) (2026-10-08)
+
+
+### :bug: Bug Fix
+
+* **vue:** v5 always use unified `components.d.ts` for types ([e41cac6](https://github.com/stenciljs/output-targets/commit/e41cac6dd467b2a304d9b4e6fefad66f3407aad3))
+
 ## [0.14.4](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.3...@stencil/vue-output-target@0.14.4) (2026-10-06)
 
 
