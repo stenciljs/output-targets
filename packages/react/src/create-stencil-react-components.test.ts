@@ -92,8 +92,8 @@ describe('createStencilReactComponents', () => {
     });
 
     // The package root's types only include these when there's no `src/index.ts`, or it re-exports them.
-    expect(result).toContain(`import { type MyButtonCustomEvent } from "my-package/components";`);
-    expect(result).not.toContain(`from "my-package";`);
+    expect(result).toContain(`import type { MyButtonCustomEvent } from 'my-package/components';`);
+    expect(result).not.toContain(`from 'my-package';`);
   });
 
   it('imports event types from the types dir in Stencil v5 without an exports map', () => {
@@ -120,9 +120,9 @@ describe('createStencilReactComponents', () => {
       typesFromComponentsFile: true,
     });
 
-    expect(result).toContain(`import type { Components } from "my-package/build/typings/components";`);
-    expect(result).toContain(`import { type MyButtonCustomEvent } from "my-package/build/typings/components";`);
-    expect(result).not.toContain(`from "my-package";`);
+    expect(result).toContain(`import type { Components } from 'my-package/build/typings/components';`);
+    expect(result).toContain(`import type { MyButtonCustomEvent } from 'my-package/build/typings/components';`);
+    expect(result).not.toContain(`from 'my-package';`);
   });
 
   it('should generate a react component with events', () => {

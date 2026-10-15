@@ -217,8 +217,8 @@ describe('reactOutputTarget', () => {
         rootDir: '/',
         outputTargets: [{ type: 'standalone' }, { type: 'types', dir: '/build/typings' }],
       });
-      expect(output).toContain('import type { Components } from "my-components/build/typings/components"');
-      expect(output).toContain('import { type MyButtonCustomEvent } from "my-components/build/typings/components"');
+      expect(output).toContain(`import type { Components } from 'my-components/build/typings/components'`);
+      expect(output).toContain(`import type { MyButtonCustomEvent } from 'my-components/build/typings/components'`);
     });
 
     it('writes output dirs into imports with forward slashes (Windows paths)', async () => {
@@ -229,8 +229,8 @@ describe('reactOutputTarget', () => {
           { type: 'types', dir: 'build\\typings' },
         ],
       });
-      expect(output).toContain('import type { Components } from "my-components/build/typings/components"');
-      expect(output).toContain('from "my-components/build/elements/my-button.js"');
+      expect(output).toContain(`import type { Components } from 'my-components/build/typings/components'`);
+      expect(output).toContain(`from 'my-components/build/elements/my-button.js'`);
       expect(output).not.toContain('\\');
     });
 
@@ -240,8 +240,8 @@ describe('reactOutputTarget', () => {
         generateExportMaps: true,
         outputTargets: [{ type: 'standalone' }, { type: 'types', dir: '/build/typings' }],
       });
-      expect(output).toContain('import type { Components } from "my-components/components"');
-      expect(output).toContain('import { type MyButtonCustomEvent } from "my-components/components"');
+      expect(output).toContain(`import type { Components } from 'my-components/components'`);
+      expect(output).toContain(`import type { MyButtonCustomEvent } from 'my-components/components'`);
       expect(output).not.toContain('build/typings');
     });
 
@@ -260,7 +260,7 @@ describe('reactOutputTarget', () => {
       expect(output).toContain(`from 'my-components/dist/components/my-button.js'`);
       expect(output).not.toContain(`from 'my-components/my-button'`);
       // v4 keeps importing event types from the package root
-      expect(output).toContain(`import { type MyButtonCustomEvent } from 'my-components'`);
+      expect(output).toContain(`import type { MyButtonCustomEvent } from 'my-components'`);
     });
   });
 });
