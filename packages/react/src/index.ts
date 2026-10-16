@@ -278,7 +278,7 @@ export const reactOutputTarget = ({
       });
 
       await Promise.all(
-        Object.entries(sourceFiles).map(([path, sourceFile]) => compilerCtx.fs.writeFile(path, sourceFile))
+        Object.entries(sourceFiles).map(([filePath, sourceFile]) => compilerCtx.fs.writeFile(filePath, sourceFile))
       );
 
       timespan.finish(`generate ${PLUGIN_NAME} finished`);
