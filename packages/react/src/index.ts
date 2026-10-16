@@ -260,7 +260,7 @@ export const reactOutputTarget = ({
 
       const components = buildCtx.components;
 
-      await createComponentWrappers({
+      const sourceFiles = createComponentWrappers({
         outDir,
         components,
         stencilPackageName: stencilPackageName!,
@@ -268,7 +268,6 @@ export const reactOutputTarget = ({
         componentsTypesDir,
         excludeComponents,
         esModules: esModules === true,
-        writeFile: (filePath: string, content: string) => compilerCtx.fs.writeFile(filePath, content),
         hydrateModule,
         clientModule,
         excludeServerSideRenderingFor,
@@ -277,6 +276,10 @@ export const reactOutputTarget = ({
         exportMaps,
         typesFromComponentsFile,
       });
+
+      await Promise.all(
+        Object.entries(sourceFiles).map(([path, sourceFile]) => compilerCtx.fs.writeFile(path, sourceFile))
+      );
 
       timespan.finish(`generate ${PLUGIN_NAME} finished`);
     },

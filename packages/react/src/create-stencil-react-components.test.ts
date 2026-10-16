@@ -337,7 +337,7 @@ describe('createStencilReactComponents', () => {
 
     expect(result).toContain(`'use client';`);
     expect(result).toContain(`// @ts-ignore - ignore potential type issues as the project is importing itself`);
-    expect(result).toContain(`import { MyComponent as MyComponentReact } from './client';`);
+    expect(result).toContain(`import * as clientComponents from './client';`);
     expect(result).toContain(`from '@stencil/react-output-target/ssr'`);
     expect(result).toContain(`type HydrateModule`);
     expect(result).toContain(`type SerializeShadowRootOptions`);
@@ -349,7 +349,7 @@ describe('createStencilReactComponents', () => {
       value: 'value'
     },
     hydrateModule: typeof window === 'undefined' ? (import('my-package/hydrate') as Promise<HydrateModule>) : undefined,
-    clientModule: MyComponentReact as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
+    clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
     serializeShadowRoot,`);
   });
 
@@ -671,7 +671,7 @@ describe('createStencilReactComponents', () => {
 
     expect(result).toContain(`createComponent<MyTimerElement, MyTimerEvents, Components.MyTimer, 'hours'>(`);
     expect(result).toContain(
-      `clientModule: MyTimerReact as StencilReactComponent<MyTimerElement, MyTimerEvents, Components.MyTimer, 'hours'>`
+      `clientModule: clientComponents.MyTimer as StencilReactComponent<MyTimerElement, MyTimerEvents, Components.MyTimer, 'hours'>`
     );
   });
 });

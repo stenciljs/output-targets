@@ -72,15 +72,9 @@ export const createStencilReactComponents = ({
    * This import needs a @ts-ignore comment.
    */
   if (isSSRModule) {
-    const namedImports = components
-      .map(({ tagName }) => {
-        const reactTagName = kebabToPascalCase(tagName);
-        return `${reactTagName} as ${reactTagName}React`;
-      })
-      .join(', ');
     imports.push(
       '// @ts-ignore - ignore potential type issues as the project is importing itself',
-      `import { ${namedImports} } from '${clientModule}';`
+      `import * as clientComponents from '${clientModule}';`
     );
   }
 
@@ -198,7 +192,7 @@ export const createStencilReactComponents = ({
       `    tagName: '${tagName}',`,
       `    properties: {${serverProperties ? `\n      ${serverProperties}\n    ` : ''}},`,
       `    hydrateModule: typeof window === 'undefined' ? (import('${hydrateModule}') as Promise<HydrateModule>) : undefined,`,
-      `    clientModule: ${reactTagName}React as StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>,`,
+      `    clientModule: clientComponents.${reactTagName} as StencilReactComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>,`,
       `    serializeShadowRoot,`,
       transformTag && `    getTagTransformer,`,
       `})`,
