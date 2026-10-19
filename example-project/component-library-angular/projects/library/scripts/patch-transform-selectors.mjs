@@ -206,7 +206,7 @@ try {
 
     // Inject setTagTransformer call with the user's transformer
     // Find the export statement and add the call before it
-    const exportMatch = bundleContent.match(/export \{ setTagTransformer/);
+    const exportMatch = bundleContent.match(/export\s*\{[^}]*\bsetTagTransformer\b/);
     if (exportMatch && patchedCount > 0) {
       const transformerCode = `
 // Auto-injected by patch-transform-selectors
