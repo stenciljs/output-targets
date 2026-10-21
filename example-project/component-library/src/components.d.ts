@@ -150,6 +150,11 @@ export namespace Components {
          */
         "type": 'submit' | 'reset' | 'button';
     }
+    /**
+     * A minimal component with named slots, used to test slot assignment.
+     */
+    interface MyCard {
+    }
     interface MyCheckbox {
         /**
           * How to control the alignment of the checkbox and label on the cross axis. `"start"`: The label and control will appear on the left of the cross axis in LTR, and on the right side in RTL. `"center"`: The label and control will appear at the center of the cross axis in both LTR and RTL. Setting this property will change the checkbox `display` to `block`.
@@ -835,6 +840,15 @@ declare global {
         prototype: HTMLMyButtonScopedElement;
         new (): HTMLMyButtonScopedElement;
     };
+    /**
+     * A minimal component with named slots, used to test slot assignment.
+     */
+    interface HTMLMyCardElement extends Components.MyCard, HTMLStencilElement {
+    }
+    var HTMLMyCardElement: {
+        prototype: HTMLMyCardElement;
+        new (): HTMLMyCardElement;
+    };
     interface HTMLMyCheckboxElementEventMap {
         "ionChange": CheckboxChangeEventDetail;
         "ionChangeNested": CheckboxChangeNestedEventDetail;
@@ -1085,6 +1099,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "my-button": HTMLMyButtonElement;
         "my-button-scoped": HTMLMyButtonScopedElement;
+        "my-card": HTMLMyCardElement;
         "my-checkbox": HTMLMyCheckboxElement;
         "my-complex-props": HTMLMyComplexPropsElement;
         "my-complex-props-scoped": HTMLMyComplexPropsScopedElement;
@@ -1247,6 +1262,11 @@ declare namespace LocalJSX {
           * @default 'button'
          */
         "type"?: 'submit' | 'reset' | 'button';
+    }
+    /**
+     * A minimal component with named slots, used to test slot assignment.
+     */
+    interface MyCard {
     }
     interface MyCheckbox {
         /**
@@ -1917,6 +1937,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "my-button": MyButton;
         "my-button-scoped": MyButtonScoped;
+        "my-card": MyCard;
         "my-checkbox": MyCheckbox;
         "my-complex-props": MyComplexProps;
         "my-complex-props-scoped": MyComplexPropsScoped;
@@ -1945,6 +1966,10 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "my-button": LocalJSX.MyButton & JSXBase.HTMLAttributes<HTMLMyButtonElement>;
             "my-button-scoped": LocalJSX.MyButtonScoped & JSXBase.HTMLAttributes<HTMLMyButtonScopedElement>;
+            /**
+             * A minimal component with named slots, used to test slot assignment.
+             */
+            "my-card": LocalJSX.MyCard & JSXBase.HTMLAttributes<HTMLMyCardElement>;
             "my-checkbox": LocalJSX.MyCheckbox & JSXBase.HTMLAttributes<HTMLMyCheckboxElement>;
             "my-complex-props": LocalJSX.MyComplexProps & JSXBase.HTMLAttributes<HTMLMyComplexPropsElement>;
             "my-complex-props-scoped": LocalJSX.MyComplexPropsScoped & JSXBase.HTMLAttributes<HTMLMyComplexPropsScopedElement>;
