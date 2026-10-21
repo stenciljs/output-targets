@@ -10,6 +10,10 @@ describe('Next.js 14 React 18 SSR Integration', () => {
        */
       'input-scoped',
       /**
+       * The `@stencil/ssr` transform doesn't pass the children of scoped components to Stencil yet (see nested-scoped).
+       */
+      'nested-light-dom-scoped',
+      /**
        * Next.js always deduplicates styles (even in React 18), so this test doesn't apply.
        * This test expects NO deduplication (React 18 behavior without Next.js framework),
        * but Next.js has its own style deduplication that works regardless of React version.
