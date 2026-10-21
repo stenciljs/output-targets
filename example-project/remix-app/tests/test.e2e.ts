@@ -5,6 +5,10 @@ describe('Remix SSR Integration', () => {
     ignoreHydrationMismatchErrors: true,
     exclude: [
       'complex-props-scoped',
+      /**
+       * The `@stencil/ssr` transform doesn't pass the children of scoped components to Stencil yet (see nested-scoped).
+       */
+      'nested-light-dom-scoped',
       'style-deduplication-scoped',
       /**
        * Known issue: updating a prop does not trigger a rerender.

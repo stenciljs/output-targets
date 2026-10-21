@@ -2,7 +2,9 @@
 import os from 'node:os'
 import { browser, expect, $ } from '@wdio/globals'
 
-import { fetchSourceCode } from '../helpers.js'
+import { parse } from 'node-html-parser'
+
+import { fetchSourceCode, fetchFullPageHtml } from '../helpers.js'
 import type { ScopedComponents } from '../../src/TestComponent.js'
 
 export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
@@ -55,6 +57,24 @@ export const testScenarios: Record<ScopedComponents, () => void | undefined> = {
       const response = await fetch(url)
       const html = await response.text()
       expect(html).toContain(`tbd`)
+    })
+  },
+  'nested-light-dom-scoped': () => {
+    it('should server side render nested Stencil children with their props and the text between them', async () => {
+      const html = await fetchFullPageHtml('nested-light-dom-scoped')
+      const button = parse(html).querySelector('#nested-light-dom-scoped my-button')
+      expect(button?.textContent).toContain('I\'m John William Doe and this.foo.bar: baz')
+      expect(html).not.toContain('data-stencil-react-props')
+    })
+
+    it('should hydrate nested Stencil children', async () => {
+      await browser.url('/nested-light-dom-scoped')
+      await expect($('my-component').$('div')).toHaveText('Hello, World! I\'m John William Doe')
+      await expect($('my-complex-props').$('li')).toHaveText('this.foo.bar: baz')
+      const lightDomText = await browser.execute(
+        () => document.querySelector('#nested-light-dom-scoped my-button')?.textContent
+      )
+      expect(lightDomText).toContain(' and ')
     })
   },
   'complex-props-scoped': () => {
