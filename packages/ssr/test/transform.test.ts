@@ -48,3 +48,35 @@ describe('transform', () => {
     expect(removeFileNameLines(transformedCode)).toMatchSnapshot()
   })
 })
+
+describe('transform wrapper element', () => {
+  /**
+   * Components are rendered through a `display: contents` wrapper. A browser only assigns the direct
+   * children of a shadow host to a slot, so the wrapper has to carry the `slot` prop of the component
+   * it wraps. Otherwise a component passed to a named slot is never assigned to it.
+   */
+  const wrapperPattern = /jsxDEV\("div", \{ style: \{ display: "contents" \}[^\n]*/g
+
+  it.each([
+    { serializeShadowRoot: 'scoped', strategy: undefined },
+    { serializeShadowRoot: 'scoped', strategy: 'nextjs' },
+    { serializeShadowRoot: 'declarative-shadow-dom', strategy: 'nextjs' },
+  ] as const)('should forward the `slot` prop to every wrapper using "$serializeShadowRoot" and strategy "$strategy"', async ({ serializeShadowRoot, strategy }) => {
+    const transformedCode = await transform(code, templatePath, {
+      from: 'component-library-react',
+      module: import('component-library-react'),
+      hydrateModule: import('component-library/hydrate'),
+      serializeShadowRoot,
+      strategy,
+    })
+    if (!transformedCode) {
+      throw new Error('No transformed code')
+    }
+
+    const wrappers = removeFileNameLines(transformedCode).match(wrapperPattern) ?? []
+    expect(wrappers.length).toBeGreaterThan(0)
+    for (const wrapper of wrappers) {
+      expect(wrapper).toContain('slot: props.slot')
+    }
+  })
+})
