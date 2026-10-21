@@ -1,13 +1,19 @@
 export const createTagTransformer = ({
   stencilPackageName,
   customElementsDir,
+  exportMaps,
 }: {
   stencilPackageName: string;
   customElementsDir: string;
+  /** Import through the package's `exports` map (`<pkg>/standalone`) instead of a deep path. */
+  exportMaps?: boolean;
 }) => {
+  const standaloneModule = exportMaps
+    ? `${stencilPackageName}/standalone`
+    : `${stencilPackageName}/${customElementsDir}/index.js`;
   return `/* eslint-disable */
 /* tslint:disable */
-import { setTagTransformer as clientSetTagTransformer } from '${stencilPackageName}/${customElementsDir}/index.js';
+import { setTagTransformer as clientSetTagTransformer } from '${standaloneModule}';
 
 let tagTransformer: ((tagName: string) => string) | undefined;
 

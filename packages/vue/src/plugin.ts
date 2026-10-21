@@ -1,9 +1,14 @@
-import type { Config, OutputTargetCustom } from '@stencil/core/internal';
+import type { Config } from '@stencil/core';
 import { normalizePath } from './utils';
 import type { OutputTargetVue } from './types';
-import { vueProxyOutput } from './output-vue';
+import { usesExportMaps, vueProxyOutput } from './output-vue';
 import { createTagTransformer } from './create-tag-transformer';
 import path from 'path';
+
+// Stencil v5 removed the `@stencil/core/internal` entry point, so anything that ends up in
+// our public typings is derived from the root `Config` type, which v4 and v5 both export.
+type OutputTargetCustom = Extract<NonNullable<Config['outputTargets']>[number], { type: 'custom' }>;
+type PluginConfig = Parameters<OutputTargetCustom['generator']>[0];
 
 export const vueOutputTarget = (outputTarget: OutputTargetVue): OutputTargetCustom => ({
   type: 'custom',
@@ -23,6 +28,7 @@ export const vueOutputTarget = (outputTarget: OutputTargetVue): OutputTargetCust
       const tagTransformerContent = createTagTransformer({
         stencilPackageName: outputTarget.componentCorePackage,
         customElementsDir,
+        exportMaps: usesExportMaps(config),
       });
 
       const proxiesDir = path.dirname(outputTarget.proxiesFile);
@@ -34,7 +40,7 @@ export const vueOutputTarget = (outputTarget: OutputTargetVue): OutputTargetCust
   },
 });
 
-export function normalizeOutputTarget(config: Config, outputTarget: any) {
+export function normalizeOutputTarget(config: PluginConfig, outputTarget: any) {
   const results: OutputTargetVue = {
     ...outputTarget,
     excludeComponents: outputTarget.excludeComponents || [],

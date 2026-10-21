@@ -39,6 +39,7 @@ describe('Angular wizard', () => {
     await wizard.init.run(ctx as any);
 
     expect(editor.addImport).toHaveBeenCalledWith('@stencil/angular-output-target', ['angularOutputTarget']);
+    expect(editor.setProperty).not.toHaveBeenCalled();
     const targetCode = editor.addOutputTarget.mock.calls
       .map(([code]) => code)
       .find((code) => code.includes('angularOutputTarget('));

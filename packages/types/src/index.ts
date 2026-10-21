@@ -1,4 +1,4 @@
-import type { OutputTargetCustom } from '@stencil/core/internal';
+import type { Config } from '@stencil/core';
 import path from 'node:path';
 
 import { createReactTypes } from './generators/react.js';
@@ -6,6 +6,10 @@ import { createSvelteTypes } from './generators/svelte.js';
 import { createSolidTypes } from './generators/solid.js';
 import { createVueTypes } from './generators/vue.js';
 import { createPreactTypes } from './generators/preact.js';
+
+// Stencil v5 removed the `@stencil/core/internal` entry point, so anything that ends up in
+// our public typings is derived from the root `Config` type, which v4 and v5 both export.
+type OutputTargetCustom = Extract<NonNullable<Config['outputTargets']>[number], { type: 'custom' }>;
 
 const DEFAULT_FILENAMES = {
   react: 'react-native-types.d.ts',

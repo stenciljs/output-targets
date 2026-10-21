@@ -28,7 +28,7 @@ describe('createStencilReactComponents', () => {
     expect(result).toContain(`import { createComponent } from '@stencil/react-output-target/runtime';`);
     expect(result).toContain(`import type { StencilReactComponent } from '@stencil/react-output-target/runtime';`);
     expect(result).toContain(
-      `import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from "my-package/dist/custom-elements/my-component.js";`
+      `import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from 'my-package/dist/custom-elements/my-component.js';`
     );
     expect(result).toContain(`export type MyComponentEvents = NonNullable<unknown>;`);
     expect(result)
@@ -38,8 +38,91 @@ describe('createStencilReactComponents', () => {
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComponentEvents,
-    defineCustomElement: defineMyComponent
+    defineCustomElement: defineMyComponent,
 });`);
+  });
+
+  it('imports through the package exports map when exportMaps is set', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-component',
+        componentClassName: 'MyComponent',
+        properties: [],
+        events: [],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/standalone',
+      componentsTypesDir: 'dist/types/components',
+      exportMaps: true,
+    });
+
+    expect(result).toContain(
+      `import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from 'my-package/my-component';`
+    );
+    expect(result).toContain(`import type { Components } from 'my-package/components';`);
+    expect(result).not.toContain('my-package/dist/');
+  });
+
+  it('imports event types from <pkg>/components when exportMaps is set', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-button',
+        componentClassName: 'MyButton',
+        properties: [],
+        events: [
+          {
+            name: 'myClick',
+            internal: false,
+            complexType: { original: 'void', resolved: 'void', references: {} },
+          },
+        ],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/standalone',
+      componentsTypesDir: 'dist/types/components',
+      exportMaps: true,
+    });
+
+    // The package root's types only include these when there's no `src/index.ts`, or it re-exports them.
+    expect(result).toContain(`import type { MyButtonCustomEvent } from 'my-package/components';`);
+    expect(result).not.toContain(`from 'my-package';`);
+  });
+
+  it('imports event types from the types dir in Stencil v5 without an exports map', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-button',
+        componentClassName: 'MyButton',
+        properties: [],
+        events: [
+          {
+            name: 'myClick',
+            internal: false,
+            complexType: { original: 'void', resolved: 'void', references: {} },
+          },
+        ],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/standalone',
+      componentsTypesDir: 'build/typings/components',
+      typesFromComponentsFile: true,
+    });
+
+    expect(result).toContain(`import type { Components } from 'my-package/build/typings/components';`);
+    expect(result).toContain(`import type { MyButtonCustomEvent } from 'my-package/build/typings/components';`);
+    expect(result).not.toContain(`from 'my-package';`);
   });
 
   it('should generate a react component with events', () => {
@@ -77,7 +160,7 @@ describe('createStencilReactComponents', () => {
       customElementsDir: 'dist/components',
     });
 
-    expect(result).toContain(`import { type MyButtonCustomEvent } from "my-package";`);
+    expect(result).toContain(`import type { MyButtonCustomEvent } from 'my-package';`);
     expect(result).toContain(`onMyClick: EventName<MyButtonCustomEvent<void>>`);
     expect(result).toContain(`onMyHover: EventName<MyButtonCustomEvent<string>>`);
     expect(result).toContain(`onMyClick: 'myClick'`);
@@ -156,7 +239,7 @@ describe('createStencilReactComponents', () => {
       customElementsDir: 'dist/custom-elements',
     });
 
-    expect(result).toContain(`type MyEventDetail`);
+    expect(result).toContain(`import type { MyEventDetail, MyComponentCustomEvent } from 'my-package';`);
     expect(result).toContain(`EventName<MyComponentCustomEvent<MyEventDetail>>`);
   });
 
@@ -254,7 +337,7 @@ describe('createStencilReactComponents', () => {
 
     expect(result).toContain(`'use client';`);
     expect(result).toContain(`// @ts-ignore - ignore potential type issues as the project is importing itself`);
-    expect(result).toContain(`import * as clientComponents from "./client";`);
+    expect(result).toContain(`import * as clientComponents from './client';`);
     expect(result).toContain(`from '@stencil/react-output-target/ssr'`);
     expect(result).toContain(`type HydrateModule`);
     expect(result).toContain(`type SerializeShadowRootOptions`);
@@ -262,10 +345,12 @@ describe('createStencilReactComponents', () => {
       `export const serializeShadowRoot: SerializeShadowRootOptions = { default: "declarative-shadow-dom" };`
     );
     expect(result).toContain(`tagName: 'my-component',
-    properties: { value: 'value' },
+    properties: {
+      value: 'value'
+    },
     hydrateModule: typeof window === 'undefined' ? (import('my-package/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyComponent as StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>,
-    serializeShadowRoot`);
+    serializeShadowRoot,`);
   });
 
   it('should filter out properties without attributes for SSR', () => {
@@ -322,7 +407,7 @@ describe('createStencilReactComponents', () => {
       serializeShadowRoot: { default: 'scoped' },
     });
 
-    expect(result).toContain(`export const serializeShadowRoot: SerializeShadowRootOptions = { "default": "scoped" };`);
+    expect(result).toContain(`export const serializeShadowRoot: SerializeShadowRootOptions = {"default":"scoped"};`);
   });
 
   it('should handle kebab-case to PascalCase conversion', () => {
@@ -394,9 +479,7 @@ describe('createStencilReactComponents', () => {
       customElementsDir: 'dist/custom-elements',
     });
 
-    const sharedTypeImports = result.match(/type SharedType/g);
-    expect(sharedTypeImports).not.toBeNull();
-    expect(sharedTypeImports!.length).toBe(1);
+    expect(result).toContain("import type { SharedType, MyComponentCustomEvent } from 'my-package';");
   });
 
   it('should handle events with multiple type references', () => {
@@ -436,8 +519,7 @@ describe('createStencilReactComponents', () => {
       customElementsDir: 'dist/custom-elements',
     });
 
-    expect(result).toContain(`type TypeA`);
-    expect(result).toContain(`type TypeB`);
+    expect(result).toContain(`import type { TypeA, TypeB, MyComponentCustomEvent } from 'my-package';`);
   });
 
   it('should handle components with no events', () => {

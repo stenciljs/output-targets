@@ -1,6 +1,6 @@
-import type { BuildCtx, OutputTargetCustom, OutputTargetDistCustomElements } from '@stencil/core/internal';
+import type { Config } from '@stencil/core';
+import type { OutputTargetDistCustomElements } from '@stencil/core/internal';
 import { isAbsolute, relative } from 'node:path';
-import { Project } from 'ts-morph';
 import { createComponentWrappers } from './create-component-wrappers.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
 
@@ -89,8 +89,21 @@ const DIST_CUSTOM_ELEMENTS = 'dist-custom-elements';
 const STANDALONE = 'standalone';
 const HYDRATE_OUTPUT_TARGET = 'dist-hydrate-script';
 const SSR_OUTPUT_TARGET = 'ssr';
+// Stencil v5 removed the `@stencil/core/internal` entry point, so anything that ends up in
+// our public typings is derived from the root `Config` type, which v4 and v5 both export.
+type OutputTargetCustom = Extract<NonNullable<Config['outputTargets']>[number], { type: 'custom' }>;
+type BuildCtx = Parameters<OutputTargetCustom['generator']>[2];
+
 const TYPES_OUTPUT_TARGET = 'types';
 const TYPES_DEFAULT_DIR = 'dist/types';
+
+/**
+ * Turn an output directory into the form used inside an import specifier: relative to the
+ * project root, with forward slashes. `path.relative()` returns backslashes on Windows, which
+ * would otherwise end up in the generated imports.
+ */
+const toImportPath = (rootDir: string, dir: string): string =>
+  (isAbsolute(dir) ? relative(rootDir, dir) : dir).replace(/\\/g, '/');
 
 interface ReactOutputTarget extends OutputTargetCustom {
   __internal_getCustomElementsDir: () => string;
@@ -116,10 +129,29 @@ export const reactOutputTarget = ({
 }: ReactOutputTargetOptions): ReactOutputTarget => {
   let customElementsDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
   let componentsTypesDir = DIST_CUSTOM_ELEMENTS_DEFAULT_DIR;
+  let exportMaps = false;
+  let typesFromComponentsFile = false;
   return {
     type: 'custom',
     name: PLUGIN_NAME,
     validate(config) {
+      const isV5 = (config.outputTargets || []).some((o: any) =>
+        ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
+      );
+
+      /**
+       * When the Stencil project generates a package.json `exports` map, deep `dist/` imports
+       * are blocked for consumers, so the wrappers import through the map's entries instead.
+       * Stencil v5 only: v4's map has no `./components`, `./standalone` or `./ssr` entry.
+       */
+      exportMaps = isV5 && (config as { generateExportMaps?: boolean }).generateExportMaps === true;
+
+      /**
+       * In Stencil v5 every component type lives in the `types` output's `components.d.ts`, so
+       * event types are imported from there too. v4 keeps importing them from the package root.
+       */
+      typesFromComponentsFile = isV5;
+
       /**
        * Validate the configuration to ensure that the dist-custom-elements
        * output target is defined in the Stencil configuration.
@@ -149,12 +181,12 @@ export const reactOutputTarget = ({
            */
           const typesTarget = (config.outputTargets || []).find((o: any) => o.type === TYPES_OUTPUT_TARGET) as any;
           const rawTypesDir = typesTarget?.dir ?? TYPES_DEFAULT_DIR;
-          const typesDir = isAbsolute(rawTypesDir) ? relative(config.rootDir!, rawTypesDir) : rawTypesDir;
+          const typesDir = toImportPath(config.rootDir!, rawTypesDir);
           componentsTypesDir = `${typesDir}/components`;
           // customElementsDir stays as default (dist/components) unless standalone.dir is set
           if ((customElementsOutputTarget as any).dir !== undefined) {
             const dir = (customElementsOutputTarget as any).dir;
-            customElementsDir = isAbsolute(dir) ? relative(config.rootDir!, dir) : dir;
+            customElementsDir = toImportPath(config.rootDir!, dir);
           }
         } else if (customElementsOutputTarget.dir !== undefined) {
           /**
@@ -164,7 +196,7 @@ export const reactOutputTarget = ({
            * so convert it back to a rootDir-relative path for use in import specifiers.
            */
           const dir = customElementsOutputTarget.dir;
-          customElementsDir = isAbsolute(dir) ? relative(config.rootDir!, dir) : dir;
+          customElementsDir = toImportPath(config.rootDir!, dir);
           componentsTypesDir = customElementsDir;
         }
 
@@ -227,9 +259,8 @@ export const reactOutputTarget = ({
       const timespan = buildCtx.createTimeSpan(`generate ${PLUGIN_NAME} started`, true);
 
       const components = buildCtx.components;
-      const project = new Project();
 
-      const sourceFiles = await createComponentWrappers({
+      const sourceFiles = createComponentWrappers({
         outDir,
         components,
         stencilPackageName: stencilPackageName!,
@@ -237,16 +268,17 @@ export const reactOutputTarget = ({
         componentsTypesDir,
         excludeComponents,
         esModules: esModules === true,
-        project,
         hydrateModule,
         clientModule,
         excludeServerSideRenderingFor,
         serializeShadowRoot,
         transformTag,
+        exportMaps,
+        typesFromComponentsFile,
       });
 
       await Promise.all(
-        sourceFiles.map((sourceFile) => compilerCtx.fs.writeFile(sourceFile.getFilePath(), sourceFile.getFullText()))
+        Object.entries(sourceFiles).map(([filePath, sourceFile]) => compilerCtx.fs.writeFile(filePath, sourceFile))
       );
 
       timespan.finish(`generate ${PLUGIN_NAME} finished`);

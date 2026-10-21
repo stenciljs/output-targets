@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/stenciljs/output-targets/compare/@stencil/types-output-target@1.0.0...@stencil/types-output-target@1.0.1) (2026-10-06)
+
+
+### :bug: Bug Fix
+
+* **types:** v5 fix type - @stencil/core/internal no longer exported ([450bdea](https://github.com/stenciljs/output-targets/commit/450bdea6edb29bcf6cd7f40a769fd96694455a89))
+
+
 ## 1.0.0 (2026-06-25)
 
 ### :rocket: Enhancement

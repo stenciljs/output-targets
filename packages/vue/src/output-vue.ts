@@ -37,6 +37,31 @@ export async function vueProxyOutput(
   }
 }
 
+/**
+ * Whether the Stencil project generates a package.json `exports` map. Deep `dist/` imports are
+ * blocked for consumers then, so the proxies import through the map's entries instead
+ * (`<pkg>/<tag>`, `<pkg>/components`, `<pkg>/loader`, `<pkg>/standalone`).
+ */
+export function usesExportMaps(config: Config): boolean {
+  // Stencil v5 only: v4's map has no `./standalone` entry, and its root types aren't
+  // guaranteed to export the component types.
+  const isV5 = (config.outputTargets || []).some((o: any) =>
+    ['loader-bundle', 'standalone', 'ssr', 'types'].includes(o.type)
+  );
+  return isV5 && (config as { generateExportMaps?: boolean }).generateExportMaps === true;
+}
+
+/**
+ * The module specifier a proxy imports a component's `defineCustomElement` from.
+ */
+function getComponentModule(config: Config, outputTarget: OutputTargetVue, tagName: string): string {
+  const basePkg = normalizePath(outputTarget.componentCorePackage!);
+  if (usesExportMaps(config)) {
+    return `${basePkg}/${tagName}`;
+  }
+  return `${basePkg}/${outputTarget.customElementsDir || 'components'}/${tagName}.js`;
+}
+
 function getFilteredComponents(excludeComponents: string[] = [], cmps: ComponentCompilerMeta[]) {
   return sortBy<ComponentCompilerMeta>(cmps, (cmp: ComponentCompilerMeta) => cmp.tagName).filter(
     (c: ComponentCompilerMeta) => !excludeComponents.includes(c.tagName) && !c.internal
@@ -50,9 +75,6 @@ export function generateProxies(
   outputTarget: OutputTargetVue,
   rootDir: string
 ) {
-  const distTypesDir = path.dirname(pkgData.types);
-  const dtsFilePath = path.join(rootDir, distTypesDir, GENERATED_DTS);
-  const componentsTypeFile = relativeImport(outputTarget.proxiesFile, dtsFilePath, '.d.ts');
   const pathToCorePackageLoader = getPathToCorePackageLoader(config, outputTarget);
   const importKeys = [
     'defineContainer',
@@ -70,6 +92,10 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
       return `import type { ${IMPORT_TYPES} } from '${normalizePath(getPathToJSXTypes(config, outputTarget))}';\n`;
     }
 
+    // Only needed without a componentCorePackage - package.json may have no `types` otherwise
+    const distTypesDir = path.dirname(pkgData.types);
+    const dtsFilePath = path.join(rootDir, distTypesDir, GENERATED_DTS);
+    const componentsTypeFile = relativeImport(outputTarget.proxiesFile, dtsFilePath, '.d.ts');
     return `import type { ${IMPORT_TYPES} } from '${normalizePath(componentsTypeFile)}';\n`;
   };
 
@@ -82,9 +108,11 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
     const cmpImports = components.map((component) => {
       const pascalImport = dashToPascalCase(component.tagName);
 
-      return `import { defineCustomElement as define${pascalImport} } from '${normalizePath(
-        outputTarget.componentCorePackage!
-      )}/${outputTarget.customElementsDir || 'components'}/${component.tagName}.js';`;
+      return `import { defineCustomElement as define${pascalImport} } from '${getComponentModule(
+        config,
+        outputTarget,
+        component.tagName
+      )}';`;
     });
 
     sourceImports = cmpImports.join('\n');
@@ -126,7 +154,7 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
  * Generate a single component proxy file for ES modules output
  */
 export function generateComponentProxy(
-  _config: Config,
+  config: Config,
   component: ComponentCompilerMeta,
   _pkgData: PackageJSON,
   outputTarget: OutputTargetVue,
@@ -144,12 +172,13 @@ export function generateComponentProxy(
 /* auto-generated vue proxies */
 import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n`;
 
-  const dirPath = outputTarget.customElementsDir ? `/${outputTarget.customElementsDir}` : '';
-  const typeImports = `import type { ${IMPORT_TYPES} } from '${normalizePath(outputTarget.componentCorePackage!)}${dirPath}';\n`;
+  const typeImports = `import type { ${IMPORT_TYPES} } from '${getPathToJSXTypes(config, outputTarget)}';\n`;
 
-  const sourceImport = `import { defineCustomElement as define${pascalImport} } from '${normalizePath(
-    outputTarget.componentCorePackage!
-  )}/${outputTarget.customElementsDir || 'components'}/${component.tagName}.js';\n`;
+  const sourceImport = `import { defineCustomElement as define${pascalImport} } from '${getComponentModule(
+    config,
+    outputTarget,
+    component.tagName
+  )}';\n`;
 
   // Add transformTag import if enabled
   let transformTagImport = '';
@@ -192,6 +221,10 @@ export function getPathToCorePackageLoader(config: Config, outputTarget: OutputT
     return normalizePath(path.join(basePkg, outputTarget.loaderDir));
   }
 
+  if (usesExportMaps(config)) {
+    return normalizePath(`${basePkg}/loader`);
+  }
+
   // v5: loader-bundle (replaces dist)
   const loaderBundleTarget = config.outputTargets?.find((o: any) => o.type === 'loader-bundle') as any;
   if (loaderBundleTarget) {
@@ -220,6 +253,12 @@ export function getPathToCorePackageLoader(config: Config, outputTarget: OutputT
 
 export function getPathToJSXTypes(config: Config, outputTarget: OutputTargetVue): string {
   const basePkg = outputTarget.componentCorePackage || '';
+
+  // `components.d.ts` holds every component type, whichever output the proxies are built on
+  // and whatever a `src/index.ts` re-exports. With an exports map it's `<pkg>/components`.
+  if (usesExportMaps(config)) {
+    return `${normalizePath(basePkg)}/components`;
+  }
 
   // v5: types output target
   const typesTarget = config.outputTargets?.find((o: any) => o.type === 'types') as any;
