@@ -175,11 +175,11 @@ export const createStencilReactComponents = ({
       `/*@__PURE__*/ createComponent<${componentElement}, ${componentEventNamesType}, Components.${reactTagName}${requiredGeneric}>({`,
       `    tagName: '${tagName}',`,
       `    elementClass: ${componentElement},`,
+      propertiesLine,
       `    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.`,
       `    react: React,`,
       `    events: ${events.length ? `{\n      ${events.map((e) => `${e.name}: '${e.originalName}'`).join(',\n      ')}\n    }` : '{}'} as ${componentEventNamesType},`,
       `    defineCustomElement: define${reactTagName},`,
-      propertiesLine,
       transformTag && `    transformTag,`,
       `})`,
     ]

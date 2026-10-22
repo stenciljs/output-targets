@@ -45,19 +45,19 @@ export const MyButton: StencilReactComponent<MyButtonElement, MyButtonEvents, Co
     tagName: 'my-button',
     elementClass: MyButtonElement,
     properties: {
-        color: 'color',
-        buttonType: 'button-type',
-        disabled: 'disabled',
-        expand: 'expand',
-        fill: 'fill',
-        download: 'download',
-        href: 'href',
-        rel: 'rel',
-        shape: 'shape',
-        size: 'size',
-        strong: 'strong',
-        target: 'target',
-        type: 'type'
+      color: 'color',
+      buttonType: 'button-type',
+      disabled: 'disabled',
+      expand: 'expand',
+      fill: 'fill',
+      download: 'download',
+      href: 'href',
+      rel: 'rel',
+      shape: 'shape',
+      size: 'size',
+      strong: 'strong',
+      target: 'target',
+      type: 'type'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -78,19 +78,19 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
     tagName: 'my-button-scoped',
     elementClass: MyButtonScopedElement,
     properties: {
-        color: 'color',
-        buttonType: 'button-type',
-        disabled: 'disabled',
-        expand: 'expand',
-        fill: 'fill',
-        download: 'download',
-        href: 'href',
-        rel: 'rel',
-        shape: 'shape',
-        size: 'size',
-        strong: 'strong',
-        target: 'target',
-        type: 'type'
+      color: 'color',
+      buttonType: 'button-type',
+      disabled: 'disabled',
+      expand: 'expand',
+      fill: 'fill',
+      download: 'download',
+      href: 'href',
+      rel: 'rel',
+      shape: 'shape',
+      size: 'size',
+      strong: 'strong',
+      target: 'target',
+      type: 'type'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -113,15 +113,15 @@ export const MyCheckbox: StencilReactComponent<MyCheckboxElement, MyCheckboxEven
     tagName: 'my-checkbox',
     elementClass: MyCheckboxElement,
     properties: {
-        color: 'color',
-        name: 'name',
-        checked: 'checked',
-        indeterminate: 'indeterminate',
-        disabled: 'disabled',
-        value: 'value',
-        labelPlacement: 'label-placement',
-        justify: 'justify',
-        alignment: 'alignment'
+      color: 'color',
+      name: 'name',
+      checked: 'checked',
+      indeterminate: 'indeterminate',
+      disabled: 'disabled',
+      value: 'value',
+      labelPlacement: 'label-placement',
+      justify: 'justify',
+      alignment: 'alignment'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -140,7 +140,9 @@ export type MyComplexPropsEvents = NonNullable<unknown>;
 export const MyComplexProps: StencilReactComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps> = /*@__PURE__*/ createComponent<MyComplexPropsElement, MyComplexPropsEvents, Components.MyComplexProps>({
     tagName: 'my-complex-props',
     elementClass: MyComplexPropsElement,
-    properties: { grault: 'grault' },
+    properties: {
+      grault: 'grault'
+    },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComplexPropsEvents,
@@ -153,7 +155,9 @@ export type MyComplexPropsScopedEvents = NonNullable<unknown>;
 export const MyComplexPropsScoped: StencilReactComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped> = /*@__PURE__*/ createComponent<MyComplexPropsScopedElement, MyComplexPropsScopedEvents, Components.MyComplexPropsScoped>({
     tagName: 'my-complex-props-scoped',
     elementClass: MyComplexPropsScopedElement,
-    properties: { grault: 'grault' },
+    properties: {
+      grault: 'grault'
+    },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyComplexPropsScopedEvents,
@@ -169,9 +173,9 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     tagName: 'my-component',
     elementClass: MyComponentElement,
     properties: {
-        first: 'first',
-        middleName: 'middle-name',
-        last: 'last'
+      first: 'first',
+      middleName: 'middle-name',
+      last: 'last'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -203,9 +207,9 @@ export const MyComponentScoped: StencilReactComponent<MyComponentScopedElement, 
     tagName: 'my-component-scoped',
     elementClass: MyComponentScopedElement,
     properties: {
-        first: 'first',
-        middleName: 'middle-name',
-        last: 'last'
+      first: 'first',
+      middleName: 'middle-name',
+      last: 'last'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -223,7 +227,9 @@ export type MyCounterEvents = {
 export const MyCounter: StencilReactComponent<MyCounterElement, MyCounterEvents, Components.MyCounter> = /*@__PURE__*/ createComponent<MyCounterElement, MyCounterEvents, Components.MyCounter>({
     tagName: 'my-counter',
     elementClass: MyCounterElement,
-    properties: { startValue: 'start-value' },
+    properties: {
+      startValue: 'start-value'
+    },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {
@@ -244,32 +250,32 @@ export const MyInput: StencilReactComponent<MyInputElement, MyInputEvents, Compo
     tagName: 'my-input',
     elementClass: MyInputElement,
     properties: {
-        color: 'color',
-        accept: 'accept',
-        autocapitalize: 'autocapitalize',
-        autocomplete: 'autocomplete',
-        autocorrect: 'autocorrect',
-        autofocus: 'autofocus',
-        clearInput: 'clear-input',
-        clearOnEdit: 'clear-on-edit',
-        disabled: 'disabled',
-        enterkeyhint: 'enterkeyhint',
-        inputmode: 'inputmode',
-        max: 'max',
-        maxlength: 'maxlength',
-        min: 'min',
-        minlength: 'minlength',
-        multiple: 'multiple',
-        name: 'name',
-        pattern: 'pattern',
-        placeholder: 'placeholder',
-        readonly: 'readonly',
-        required: 'required',
-        spellcheck: 'spellcheck',
-        step: 'step',
-        size: 'size',
-        type: 'type',
-        value: 'value'
+      color: 'color',
+      accept: 'accept',
+      autocapitalize: 'autocapitalize',
+      autocomplete: 'autocomplete',
+      autocorrect: 'autocorrect',
+      autofocus: 'autofocus',
+      clearInput: 'clear-input',
+      clearOnEdit: 'clear-on-edit',
+      disabled: 'disabled',
+      enterkeyhint: 'enterkeyhint',
+      inputmode: 'inputmode',
+      max: 'max',
+      maxlength: 'maxlength',
+      min: 'min',
+      minlength: 'minlength',
+      multiple: 'multiple',
+      name: 'name',
+      pattern: 'pattern',
+      placeholder: 'placeholder',
+      readonly: 'readonly',
+      required: 'required',
+      spellcheck: 'spellcheck',
+      step: 'step',
+      size: 'size',
+      type: 'type',
+      value: 'value'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -294,32 +300,32 @@ export const MyInputScoped: StencilReactComponent<MyInputScopedElement, MyInputS
     tagName: 'my-input-scoped',
     elementClass: MyInputScopedElement,
     properties: {
-        color: 'color',
-        accept: 'accept',
-        autocapitalize: 'autocapitalize',
-        autocomplete: 'autocomplete',
-        autocorrect: 'autocorrect',
-        autofocus: 'autofocus',
-        clearInput: 'clear-input',
-        clearOnEdit: 'clear-on-edit',
-        disabled: 'disabled',
-        enterkeyhint: 'enterkeyhint',
-        inputmode: 'inputmode',
-        max: 'max',
-        maxlength: 'maxlength',
-        min: 'min',
-        minlength: 'minlength',
-        multiple: 'multiple',
-        name: 'name',
-        pattern: 'pattern',
-        placeholder: 'placeholder',
-        readonly: 'readonly',
-        required: 'required',
-        spellcheck: 'spellcheck',
-        step: 'step',
-        size: 'size',
-        type: 'type',
-        value: 'value'
+      color: 'color',
+      accept: 'accept',
+      autocapitalize: 'autocapitalize',
+      autocomplete: 'autocomplete',
+      autocorrect: 'autocorrect',
+      autofocus: 'autofocus',
+      clearInput: 'clear-input',
+      clearOnEdit: 'clear-on-edit',
+      disabled: 'disabled',
+      enterkeyhint: 'enterkeyhint',
+      inputmode: 'inputmode',
+      max: 'max',
+      maxlength: 'maxlength',
+      min: 'min',
+      minlength: 'minlength',
+      multiple: 'multiple',
+      name: 'name',
+      pattern: 'pattern',
+      placeholder: 'placeholder',
+      readonly: 'readonly',
+      required: 'required',
+      spellcheck: 'spellcheck',
+      step: 'step',
+      size: 'size',
+      type: 'type',
+      value: 'value'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -396,14 +402,14 @@ export const MyPopover: StencilReactComponent<MyPopoverElement, MyPopoverEvents,
     tagName: 'my-popover',
     elementClass: MyPopoverElement,
     properties: {
-        component: 'component',
-        keyboardClose: 'keyboard-close',
-        cssClass: 'css-class',
-        backdropDismiss: 'backdrop-dismiss',
-        event: 'event',
-        showBackdrop: 'show-backdrop',
-        translucent: 'translucent',
-        animated: 'animated'
+      component: 'component',
+      keyboardClose: 'keyboard-close',
+      cssClass: 'css-class',
+      backdropDismiss: 'backdrop-dismiss',
+      event: 'event',
+      showBackdrop: 'show-backdrop',
+      translucent: 'translucent',
+      animated: 'animated'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -426,13 +432,13 @@ export const MyRadio: StencilReactComponent<MyRadioElement, MyRadioEvents, Compo
     tagName: 'my-radio',
     elementClass: MyRadioElement,
     properties: {
-        color: 'color',
-        name: 'name',
-        disabled: 'disabled',
-        value: 'value',
-        labelPlacement: 'label-placement',
-        justify: 'justify',
-        alignment: 'alignment'
+      color: 'color',
+      name: 'name',
+      disabled: 'disabled',
+      value: 'value',
+      labelPlacement: 'label-placement',
+      justify: 'justify',
+      alignment: 'alignment'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -452,10 +458,10 @@ export const MyRadioGroup: StencilReactComponent<MyRadioGroupElement, MyRadioGro
     tagName: 'my-radio-group',
     elementClass: MyRadioGroupElement,
     properties: {
-        allowEmptySelection: 'allow-empty-selection',
-        compareWith: 'compare-with',
-        name: 'name',
-        value: 'value'
+      allowEmptySelection: 'allow-empty-selection',
+      compareWith: 'compare-with',
+      name: 'name',
+      value: 'value'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -476,18 +482,18 @@ export const MyRange: StencilReactComponent<MyRangeElement, MyRangeEvents, Compo
     tagName: 'my-range',
     elementClass: MyRangeElement,
     properties: {
-        color: 'color',
-        debounce: 'debounce',
-        name: 'name',
-        dualKnobs: 'dual-knobs',
-        min: 'min',
-        max: 'max',
-        pin: 'pin',
-        snaps: 'snaps',
-        step: 'step',
-        ticks: 'ticks',
-        disabled: 'disabled',
-        value: 'value'
+      color: 'color',
+      debounce: 'debounce',
+      name: 'name',
+      dualKnobs: 'dual-knobs',
+      min: 'min',
+      max: 'max',
+      pin: 'pin',
+      snaps: 'snaps',
+      step: 'step',
+      ticks: 'ticks',
+      disabled: 'disabled',
+      value: 'value'
     },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
@@ -518,7 +524,9 @@ export type MyToggleContentEvents = NonNullable<unknown>;
 export const MyToggleContent: StencilReactComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent> = /*@__PURE__*/ createComponent<MyToggleContentElement, MyToggleContentEvents, Components.MyToggleContent>({
     tagName: 'my-toggle-content',
     elementClass: MyToggleContentElement,
-    properties: { visible: 'visible' },
+    properties: {
+      visible: 'visible'
+    },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyToggleContentEvents,
@@ -531,7 +539,9 @@ export type MyTransformTestEvents = NonNullable<unknown>;
 export const MyTransformTest: StencilReactComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest> = /*@__PURE__*/ createComponent<MyTransformTestElement, MyTransformTestEvents, Components.MyTransformTest>({
     tagName: 'my-transform-test',
     elementClass: MyTransformTestElement,
-    properties: { message: 'message' },
+    properties: {
+      message: 'message'
+    },
     // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
     react: React,
     events: {} as MyTransformTestEvents,
