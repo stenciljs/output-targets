@@ -1,6 +1,5 @@
 /* eslint-disable */
 /* tslint:disable */
-import { fromEvent } from 'rxjs';
 
 export const proxyInputs = (Cmp: any, inputs: string[]) => {
   const Prototype = Cmp.prototype;
@@ -32,10 +31,6 @@ export const proxyMethods = (Cmp: any, methods: string[]) => {
       return this.z.runOutsideAngular(() => this.el[methodName].apply(this.el, args));
     };
   });
-};
-
-export const proxyOutputs = (instance: any, el: any, events: string[]) => {
-  events.forEach((eventName) => (instance[eventName] = fromEvent(el, eventName)));
 };
 
 export const defineCustomElement = (tagName: string, customElement: any) => {
