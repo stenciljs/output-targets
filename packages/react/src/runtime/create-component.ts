@@ -59,9 +59,102 @@ export const mergeClassNames = (
   return finalClassNames.join(' ');
 };
 
-// `useLayoutEffect` warns during server rendering and the reconciliation is
-// client-only anyway, so fall back to `useEffect` on the server.
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+// Stencil attribute name for a prop, matching Stencil's `toDashCase`: `iconStart` -> `icon-start`,
+// `line1` -> `line-1`.
+const toAttributeName = (propName: string): string =>
+  propName
+    .replace(/([A-Z0-9])/g, (match) => ` ${match[0]}`)
+    .trim()
+    .split(' ')
+    .join('-')
+    .toLowerCase();
+
+// Tells Stencil props apart from pass-through props and maps them to their attribute names.
+// Stencil defines prop accessors on the component's own prototype chain, above HTMLElement;
+// anything inherited from the DOM (`id`, `title`, `slot`) is a pass-through prop.
+const createPropResolver = <I extends HTMLElement, E extends EventNames>(
+  elementClass: Options<I, E>['elementClass'],
+  properties: Record<string, string> | undefined
+) => {
+  const observedAttributes: unknown = (elementClass as { observedAttributes?: unknown }).observedAttributes;
+  const attributeNames = new Set<string>(Array.isArray(observedAttributes) ? observedAttributes : []);
+  const componentPrototypes: object[] = [];
+  const domPrototype: object | null = typeof HTMLElement === 'function' ? HTMLElement.prototype : null;
+  for (
+    let p: object | null = elementClass.prototype;
+    p && p !== Object.prototype && p !== domPrototype;
+    p = Object.getPrototypeOf(p)
+  ) {
+    componentPrototypes.push(p);
+  }
+  const isStencilProp = (propName: string): boolean =>
+    componentPrototypes.some((p) => Object.prototype.hasOwnProperty.call(p, propName));
+  // Generated wrappers pass the prop-to-attribute map (honours `@Prop({ attribute })`);
+  // without it, fall back to the kebab-case name checked against `observedAttributes`.
+  const attributeNameFor = (propName: string): string | undefined => {
+    if (properties) return properties[propName];
+    const attributeName = toAttributeName(propName);
+    return attributeNames.has(attributeName) ? attributeName : undefined;
+  };
+  return { isStencilProp, attributeNameFor };
+};
+
+// Attribute value the server emits for a prop, or undefined when the prop stays client-only.
+const toAttributeValue = (value: unknown): string | undefined => {
+  if (value === null || value === undefined || value === false) return undefined;
+  if (typeof value === 'object' || typeof value === 'function') return undefined;
+  return value === true ? '' : String(value);
+};
+
+// Server render: emit Stencil props as attributes so the element upgrades in its final state.
+// Objects and functions stay client-only, `false` is omitted, matching `ssr.tsx`.
+const createServerComponent = <I extends HTMLElement, E extends EventNames, C, R extends keyof C>(
+  tagName: string,
+  elementClass: Options<I, E>['elementClass'],
+  properties: Record<string, string> | undefined,
+  displayName: string | undefined
+): StencilReactComponent<I, E, C, R> => {
+  const { isStencilProp, attributeNameFor } = createPropResolver(elementClass, properties);
+
+  const ServerComponent = React.forwardRef<I, StencilProps<I, E, C, R>>((props, _ref) => {
+    const {
+      className,
+      class: classProp,
+      children,
+      ...rest
+    } = props as StencilProps<I, E, C, R> & {
+      className?: string;
+      class?: string;
+      children?: React.ReactNode;
+    };
+    // The client render has no attributes; keep React from flagging a mismatch.
+    const attributes: Record<string, unknown> = { suppressHydrationWarning: true };
+    const classes = className ?? classProp;
+    if (classes) {
+      attributes.class = classes;
+    }
+
+    for (const [key, value] of Object.entries(rest)) {
+      if (value === null || value === undefined || typeof value === 'function') {
+        continue;
+      }
+      if (isStencilProp(key)) {
+        const attributeName = attributeNameFor(key);
+        const attributeValue = toAttributeValue(value);
+        if (attributeName && attributeValue !== undefined) {
+          attributes[attributeName] = attributeValue;
+        }
+        continue;
+      }
+      attributes[key] = value;
+    }
+
+    return React.createElement(tagName, attributes, children);
+  });
+  ServerComponent.displayName = displayName ?? tagName;
+
+  return ServerComponent as unknown as StencilReactComponent<I, E, C, R>;
+};
 
 /**
  * Defines a custom element and creates a React component.
@@ -74,18 +167,26 @@ export const createComponent = <
   R extends keyof C = never,
 >({
   defineCustomElement,
+  properties,
   tagName,
   transformTag,
   ...options
 }: Options<I, E> & {
   defineCustomElement: () => void;
+  properties?: Record<string, string>;
   transformTag?: (tagName: string) => string;
 }): StencilReactComponent<I, E, C, R> => {
   if (typeof defineCustomElement !== 'undefined') {
     defineCustomElement();
   }
   const finalTagName = transformTag ? transformTag(tagName) : tagName;
+
+  if (typeof window === 'undefined') {
+    return createServerComponent<I, E, C, R>(finalTagName, options.elementClass, properties, options.displayName);
+  }
+
   const ReactComponent = createComponentWrapper<I, E>({ ...options, tagName: finalTagName });
+  const { isStencilProp, attributeNameFor } = createPropResolver(options.elementClass, properties);
 
   /**
    * Withhold `className`/`class` from `@lit/react` so React never writes the
@@ -106,13 +207,32 @@ export const createComponent = <
     const elementRef = React.useRef<I | null>(null);
     const previousClassName = React.useRef<string>('');
 
-    useIsomorphicLayoutEffect(() => {
+    React.useLayoutEffect(() => {
       const element = elementRef.current;
       if (element === null || incomingClassName === previousClassName.current) {
         return;
       }
       element.className = mergeClassNames(Array.from(element.classList), incomingClassName, previousClassName.current);
       previousClassName.current = incomingClassName;
+    });
+
+    // Keep the server-rendered Stencil attributes in sync so none outlives its prop. `@lit/react`
+    // only sets properties, and Stencil does not reflect them back unless the prop opts in. Only
+    // attributes already on the element are touched: client-rendered elements stay property-only.
+    React.useLayoutEffect(() => {
+      const element = elementRef.current;
+      if (element === null) return;
+      for (const [key, value] of Object.entries(restProps)) {
+        if (!isStencilProp(key)) continue;
+        const attributeName = attributeNameFor(key);
+        if (!attributeName || !element.hasAttribute(attributeName)) continue;
+        const attributeValue = toAttributeValue(value);
+        if (attributeValue === undefined) {
+          element.removeAttribute(attributeName);
+        } else if (element.getAttribute(attributeName) !== attributeValue) {
+          element.setAttribute(attributeName, attributeValue);
+        }
+      }
     });
 
     const setRef = React.useCallback(
@@ -127,7 +247,9 @@ export const createComponent = <
       [ref]
     );
 
-    return React.createElement(ReactComponent, { ...restProps, ref: setRef } as any);
+    // Server HTML carries attributes this render does not set. `@lit/react` sets the same flag in
+    // its browser build only; its node build (jsdom, SSR layers) does not.
+    return React.createElement(ReactComponent, { ...restProps, ref: setRef, suppressHydrationWarning: true } as any);
   });
 
   WrappedComponent.displayName = options.displayName ?? finalTagName;
