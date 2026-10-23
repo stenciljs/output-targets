@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineContainer } from './runtime';
 import { defineComponent, h, ref } from 'vue';
+import { createMemoryHistory, createRouter, createWebHashHistory, type RouterHistory } from 'vue-router';
 
 describe('defineContainer', () => {
   it('should render a basic web component', () => {
@@ -386,6 +387,74 @@ describe('defineContainer', () => {
 
       expect(event.defaultPrevented).toBe(false);
       expect(navigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('routerLink href (issue ionic-framework#30848)', () => {
+    const mountWithVueRouter = (routerLink: unknown, history: RouterHistory = createMemoryHistory()) => {
+      const router = createRouter({
+        history,
+        routes: [
+          { path: '/', component: { render: () => null } },
+          { path: '/details', name: 'details', component: { render: () => null } },
+        ],
+      });
+      const MyComponent = defineContainer('my-component', undefined as any, ['routerLink']);
+
+      return mount(MyComponent, {
+        props: { routerLink } as any,
+        global: { plugins: [router] },
+      });
+    };
+
+    it('should render the resolved URL as the href of a route object', () => {
+      const wrapper = mountWithVueRouter({ name: 'details' });
+
+      expect(wrapper.find('my-component').attributes('href')).toBe('/details');
+    });
+
+    it('should not write the route object to the host as a routerlink attribute', () => {
+      const wrapper = mountWithVueRouter({ name: 'details' });
+
+      expect(wrapper.find('my-component').attributes('routerlink')).toBeUndefined();
+    });
+
+    it('should keep writing a string link to the host as a routerlink attribute', () => {
+      const wrapper = mountWithVueRouter('/details');
+
+      expect(wrapper.find('my-component').attributes('routerlink')).toBe('/details');
+    });
+
+    it('should not render an href for a null routerLink', () => {
+      const wrapper = mountWithVueRouter(null);
+
+      expect(wrapper.find('my-component').attributes('href')).toBeUndefined();
+    });
+
+    it('should render a string link as the URL the router would navigate to', () => {
+      const wrapper = mountWithVueRouter('/details', createWebHashHistory());
+
+      expect(wrapper.find('my-component').attributes('href')).toBe('#/details');
+    });
+
+    it('should not render an href when a named route does not exist', () => {
+      const wrapper = mountWithVueRouter({ name: 'missing' });
+
+      expect(wrapper.find('my-component').attributes('href')).toBeUndefined();
+    });
+
+    it('should render a string link as the href when Vue Router is not installed', () => {
+      const MyComponent = defineContainer('my-component', undefined as any, ['routerLink']);
+      const wrapper = mount(MyComponent, { props: { routerLink: '/details' } as any });
+
+      expect(wrapper.find('my-component').attributes('href')).toBe('/details');
+    });
+
+    it('should not render an href for a route object when Vue Router is not installed', () => {
+      const MyComponent = defineContainer('my-component', undefined as any, ['routerLink']);
+      const wrapper = mount(MyComponent, { props: { routerLink: { name: 'details' } } as any });
+
+      expect(wrapper.find('my-component').attributes('href')).toBeUndefined();
     });
   });
 });
