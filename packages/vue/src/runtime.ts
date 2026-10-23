@@ -10,6 +10,7 @@ import {
   ref,
   withDirectives,
 } from 'vue';
+import type { RouteLocationRaw } from 'vue-router';
 import type { InputProps } from './types';
 
 export { defineStencilSSRComponent } from './ssr';
@@ -202,6 +203,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
       const currentInstance = getCurrentInstance();
       const hasRouter = currentInstance?.appContext?.provides[NAV_MANAGER];
       const navManager: NavManager | undefined = hasRouter ? inject(NAV_MANAGER) : undefined;
+      // Read from globalProperties since vue-router is an optional peer and can't be imported here.
+      const router = currentInstance?.appContext?.config.globalProperties.$router;
 
       const handleRouterLink = (ev: Event) => {
         const { routerLink } = props;
@@ -269,6 +272,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
          */
         for (const key in props) {
           const value = props[key as keyof InputProps<VModelType>];
+          // A route object would stringify to "[object Object]"; it's rendered as the href below instead.
+          if (key === ROUTER_LINK_VALUE && typeof value !== 'string') continue;
           if ((props.hasOwnProperty(key) && value !== EMPTY_PROP) || key.startsWith(ARIA_PROP_PREFIX)) {
             propsToAdd[key as 'ariaLabel'] = value as string;
           }
@@ -302,7 +307,19 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
         // of components that should become activatable and
         // focusable with router link.
         if (ROUTER_LINK_VALUE in props && props[ROUTER_LINK_VALUE] !== EMPTY_PROP) {
-          propsToAdd.href = props[ROUTER_LINK_VALUE];
+          const routerLink = props[ROUTER_LINK_VALUE];
+          const isLocation = typeof routerLink === 'string' || (typeof routerLink === 'object' && routerLink !== null);
+          if (router && isLocation) {
+            /**
+             * resolve throws for an unknown route or a missing param. Leave the href
+             * off rather than fail the render; navigating still surfaces the error.
+             */
+            try {
+              propsToAdd.href = router.resolve(routerLink as RouteLocationRaw).href;
+            } catch {}
+          } else if (typeof routerLink === 'string') {
+            propsToAdd.href = routerLink;
+          }
         }
 
         /**
