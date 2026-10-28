@@ -1,3 +1,15 @@
+## [1.7.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.5...@stencil/react-output-target@1.7.0) (2026-10-28)
+
+
+### :rocket: Enhancement
+
+* **react:** improve performance pure string templates ([#847](https://github.com/stenciljs/output-targets/issues/847)) ([7ef2971](https://github.com/stenciljs/output-targets/commit/7ef297149c3efa3e6ed08d0840ca02bebc46afd4))
+
+
+### :zap: Performance
+
+* **react:** serialize nested Stencil SSR children shallowly ([723a289](https://github.com/stenciljs/output-targets/commit/723a28961d4f86f77bfd5c3b89ed5fb6702327f1)), closes [#849](https://github.com/stenciljs/output-targets/issues/849)
+
 ## [1.6.5](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.4...@stencil/react-output-target@1.6.5) (2026-10-09)
 
 
