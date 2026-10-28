@@ -1,3 +1,11 @@
+## [0.14.7](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.6...@stencil/vue-output-target@0.14.7) (2026-10-28)
+
+
+### :bug: Bug Fix
+
+* **vue:** resolve routerLink route objects to a real href via vue-router ([#866](https://github.com/stenciljs/output-targets/issues/866)) ([4895119](https://github.com/stenciljs/output-targets/commit/4895119cf794df74f9f686d4cc09cc89228461fc))
+
+
 ## [0.14.6](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.5...@stencil/vue-output-target@0.14.6) (2026-10-09)
 
 
