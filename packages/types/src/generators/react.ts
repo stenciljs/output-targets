@@ -24,7 +24,13 @@ const toLowercaseEventHandler = (eventName: string): string => {
  * The generated file augments the `react/jsx-runtime` module to provide proper
  * typing for custom elements when used directly in JSX without wrapper components.
  */
-export function createReactTypes({ components, stencilPackageName, excludeComponents }: ReactTypesOptions): string {
+export function createReactTypes({
+  components,
+  stencilPackageName,
+  excludeComponents,
+  importPath,
+  typesFilePath,
+}: ReactTypesOptions): string {
   const filteredComponents = filterComponents(components, excludeComponents);
 
   if (filteredComponents.length === 0) {
@@ -34,7 +40,7 @@ export function createReactTypes({ components, stencilPackageName, excludeCompon
   const lines: string[] = [];
 
   // Add header
-  lines.push(generateHeader('React 19+', stencilPackageName, 'react-native-types'));
+  lines.push(generateHeader('React 19+', stencilPackageName, importPath ?? 'react-native-types', typesFilePath));
 
   // Add React imports with @ts-ignore for non-React contexts
   lines.push(`// @ts-ignore - React types may not be available in all build contexts`);

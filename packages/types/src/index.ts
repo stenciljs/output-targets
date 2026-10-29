@@ -1,4 +1,5 @@
 import type { Config } from '@stencil/core';
+import fs from 'node:fs';
 import path from 'node:path';
 
 import { createReactTypes } from './generators/react.js';
@@ -131,6 +132,24 @@ function resolveOutputPath(pathOption: string, defaultFilename: string, rootDir?
 }
 
 /**
+ * Reads the library's npm package name, which consumers import the generated types through.
+ * `fsNamespace` drops any `@scope/`, so it's only a fallback.
+ */
+function readPackageName(packageJsonFilePath: string | undefined): string | undefined {
+  if (!packageJsonFilePath) {
+    return undefined;
+  }
+  try {
+    const name: unknown = JSON.parse(fs.readFileSync(packageJsonFilePath, 'utf-8')).name;
+    return typeof name === 'string' && name ? name : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const toPosix = (p: string) => p.split(path.sep).join('/');
+
+/**
  * Stencil output target for generating framework-specific type definitions.
  *
  * This output target generates TypeScript declaration files (.d.ts) that provide
@@ -178,76 +197,35 @@ export function typesOutputTarget(options: TypesOutputTargetOptions = {}): Outpu
         });
       }
     },
-    async generator(_config, compilerCtx, buildCtx) {
+    async generator(config, compilerCtx, buildCtx) {
       const timespan = buildCtx.createTimeSpan('generate types output target started', true);
 
       const components = buildCtx.components;
-      const stencilPackageName = _config.fsNamespace || 'component-library';
-      const rootDir = _config.rootDir;
+      const stencilPackageName =
+        readPackageName(config.packageJsonFilePath) ?? config.fsNamespace ?? 'component-library';
+      const rootDir = config.rootDir;
 
       const tasks: Promise<unknown>[] = [];
 
-      // Generate React types
-      if (options.reactTypesPath) {
-        const content = createReactTypes({
-          components,
-          stencilPackageName,
-          excludeComponents: options.excludeComponents,
-        });
-        if (content) {
-          const outputPath = resolveOutputPath(options.reactTypesPath, DEFAULT_FILENAMES.react, rootDir);
-          tasks.push(compilerCtx.fs.writeFile(outputPath, content));
+      for (const { framework, pathOption, create } of [
+        { framework: 'react', pathOption: options.reactTypesPath, create: createReactTypes },
+        { framework: 'svelte', pathOption: options.svelteTypesPath, create: createSvelteTypes },
+        { framework: 'solid', pathOption: options.solidTypesPath, create: createSolidTypes },
+        { framework: 'vue', pathOption: options.vueTypesPath, create: createVueTypes },
+        { framework: 'preact', pathOption: options.preactTypesPath, create: createPreactTypes },
+      ] as const) {
+        if (!pathOption) {
+          continue;
         }
-      }
-
-      // Generate Svelte types
-      if (options.svelteTypesPath) {
-        const content = createSvelteTypes({
+        const outputPath = resolveOutputPath(pathOption, DEFAULT_FILENAMES[framework], rootDir);
+        const content = create({
           components,
           stencilPackageName,
           excludeComponents: options.excludeComponents,
+          importPath: path.basename(outputPath, '.d.ts'),
+          typesFilePath: rootDir ? toPosix(path.relative(rootDir, outputPath)) : undefined,
         });
         if (content) {
-          const outputPath = resolveOutputPath(options.svelteTypesPath, DEFAULT_FILENAMES.svelte, rootDir);
-          tasks.push(compilerCtx.fs.writeFile(outputPath, content));
-        }
-      }
-
-      // Generate Solid types
-      if (options.solidTypesPath) {
-        const content = createSolidTypes({
-          components,
-          stencilPackageName,
-          excludeComponents: options.excludeComponents,
-        });
-        if (content) {
-          const outputPath = resolveOutputPath(options.solidTypesPath, DEFAULT_FILENAMES.solid, rootDir);
-          tasks.push(compilerCtx.fs.writeFile(outputPath, content));
-        }
-      }
-
-      // Generate Vue types
-      if (options.vueTypesPath) {
-        const content = createVueTypes({
-          components,
-          stencilPackageName,
-          excludeComponents: options.excludeComponents,
-        });
-        if (content) {
-          const outputPath = resolveOutputPath(options.vueTypesPath, DEFAULT_FILENAMES.vue, rootDir);
-          tasks.push(compilerCtx.fs.writeFile(outputPath, content));
-        }
-      }
-
-      // Generate Preact types
-      if (options.preactTypesPath) {
-        const content = createPreactTypes({
-          components,
-          stencilPackageName,
-          excludeComponents: options.excludeComponents,
-        });
-        if (content) {
-          const outputPath = resolveOutputPath(options.preactTypesPath, DEFAULT_FILENAMES.preact, rootDir);
           tasks.push(compilerCtx.fs.writeFile(outputPath, content));
         }
       }

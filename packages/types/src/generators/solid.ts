@@ -15,7 +15,13 @@ export interface SolidTypesOptions extends BaseTypesOptions {}
  * The generated file augments the `solid-js` module to provide proper
  * typing for custom elements when used in Solid JSX.
  */
-export function createSolidTypes({ components, stencilPackageName, excludeComponents }: SolidTypesOptions): string {
+export function createSolidTypes({
+  components,
+  stencilPackageName,
+  excludeComponents,
+  importPath,
+  typesFilePath,
+}: SolidTypesOptions): string {
   const filteredComponents = filterComponents(components, excludeComponents);
 
   if (filteredComponents.length === 0) {
@@ -25,7 +31,7 @@ export function createSolidTypes({ components, stencilPackageName, excludeCompon
   const lines: string[] = [];
 
   // Add header
-  lines.push(generateHeader('Solid', stencilPackageName, 'solid-native-types'));
+  lines.push(generateHeader('Solid', stencilPackageName, importPath ?? 'solid-native-types', typesFilePath));
 
   // Add Solid imports
   lines.push(`// @ts-ignore - Solid types may not be available in all build contexts`);

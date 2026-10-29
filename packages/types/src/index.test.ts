@@ -1,5 +1,10 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
+
+import { typesOutputTarget, type TypesOutputTargetOptions } from './index.js';
 
 import { createReactTypes } from './generators/react.js';
 import { createSvelteTypes } from './generators/svelte.js';
@@ -130,5 +135,70 @@ describe('excludeComponents', () => {
     });
 
     expect(result).toBe('');
+  });
+});
+
+describe('generated header', () => {
+  it('uses the given import path and shows the exports entry it needs', () => {
+    const result = createReactTypes({
+      components: [createMockComponent()],
+      stencilPackageName: '@acme/ui',
+      importPath: 'react-types',
+      typesFilePath: 'dist/types/react-types.d.ts',
+    });
+    expect(result).toContain(`import '@acme/ui/react-types';`);
+    expect(result).toContain(`"./react-types": { "types": "./dist/types/react-types.d.ts" }`);
+  });
+
+  it('falls back to the default file name and omits the exports hint', () => {
+    const result = createReactTypes({ components: [createMockComponent()], stencilPackageName: 'my-package' });
+    expect(result).toContain(`import 'my-package/react-native-types';`);
+    expect(result).not.toContain('exports');
+  });
+});
+
+type GeneratorArgs = Parameters<ReturnType<typeof typesOutputTarget>['generator']>;
+
+describe('typesOutputTarget generator', () => {
+  const runGenerator = async (options: TypesOutputTargetOptions, pkg: object | null) => {
+    const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'types-ot-'));
+    if (pkg) {
+      fs.writeFileSync(path.join(rootDir, 'package.json'), JSON.stringify(pkg));
+    }
+    const written = new Map<string, string>();
+    const config = { rootDir, fsNamespace: 'ui', packageJsonFilePath: path.join(rootDir, 'package.json') };
+    const compilerCtx = { fs: { writeFile: async (p: string, c: string) => void written.set(p, c) } };
+    const buildCtx = {
+      components: [createMockComponent()],
+      createTimeSpan: () => ({ finish: () => {} }),
+    };
+    // partial mocks: the generator only touches the fields above
+    await typesOutputTarget(options).generator(
+      config as unknown as GeneratorArgs[0],
+      compilerCtx as unknown as GeneratorArgs[1],
+      buildCtx as unknown as GeneratorArgs[2]
+    );
+    return { rootDir, written };
+  };
+
+  it('imports component types from the npm package name, not fsNamespace', async () => {
+    const { rootDir, written } = await runGenerator({ reactTypesPath: 'dist/types' }, { name: '@acme/ui' });
+    const content = written.get(path.join(rootDir, 'dist/types/react-native-types.d.ts'));
+    expect(content).toContain(`from '@acme/ui';`);
+    expect(content).toContain(`import '@acme/ui/react-native-types';`);
+    expect(content).toContain(`"./react-native-types": { "types": "./dist/types/react-native-types.d.ts" }`);
+  });
+
+  it('names a custom output file in the header', async () => {
+    const { written } = await runGenerator({ vueTypesPath: 'types/vue.d.ts' }, { name: '@acme/ui' });
+    const [content] = written.values();
+    expect(content).toContain(`import '@acme/ui/vue';`);
+    expect(content).toContain(`"./vue": { "types": "./types/vue.d.ts" }`);
+  });
+
+  it('falls back to fsNamespace without a package.json', async () => {
+    const { written } = await runGenerator({ reactTypesPath: 'dist/types' }, null);
+    const [content] = written.values();
+    expect(content).toContain(`from 'ui';`);
   });
 });
