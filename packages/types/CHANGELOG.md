@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/stenciljs/output-targets/compare/@stencil/types-output-target@1.0.1...@stencil/types-output-target@1.0.2) (2026-10-29)
+
+
+### :bug: Bug Fix
+
+* **types:** use correct stencil package scope for import statements ([72dca4a](https://github.com/stenciljs/output-targets/commit/72dca4aae473f02a5919ef76f691421f472db4a1))
+
+
 ## [1.0.1](https://github.com/stenciljs/output-targets/compare/@stencil/types-output-target@1.0.0...@stencil/types-output-target@1.0.1) (2026-10-06)
 
 

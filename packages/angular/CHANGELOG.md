@@ -1,3 +1,11 @@
+## [1.5.3](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.5.2...@stencil/angular-output-target@1.5.3) (2026-10-29)
+
+
+### :bug: Bug Fix
+
+* **angular:** wizard generates a bootstrap module for loader integration ([65a3b5e](https://github.com/stenciljs/output-targets/commit/65a3b5ecc6296ef5819f88456fd007324aa714fe))
+
+
 ## [1.5.2](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.5.1...@stencil/angular-output-target@1.5.2) (2026-10-08)
 
 
