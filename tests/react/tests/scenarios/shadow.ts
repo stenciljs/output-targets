@@ -1,6 +1,7 @@
 /// <reference types="webdriverio" />
 import os from 'os'
 import { browser, expect, $ } from '@wdio/globals'
+import { parse, type HTMLElement as ParsedElement } from 'node-html-parser'
 
 import { fetchSourceCode } from '../helpers.js'
 import type { ShadowComponents } from '../../src/TestComponent.js'
@@ -156,6 +157,63 @@ export const testScenarios: Record<ShadowComponents, () => void> = {
     it('should render without errors', async () => {
       await browser.url('/my-range-shadow')
       await expect($('my-range')).toBePresent()
+    })
+  },
+  'named-slot-shadow': () => {
+    /**
+     * A browser only assigns the direct children of a shadow host to a slot, so whatever carries
+     * the `slot` attribute has to be a direct child of the host. These tests make sure this holds
+     * for Stencil components passed to a named slot, not just for plain elements. The scenario
+     * uses `my-component` (serialized as `scoped`) and `my-list-item` (serialized as declarative
+     * shadow DOM), as both kinds of components are rendered through a different wrapper.
+     */
+    const getAssignedElements = () =>
+      browser.execute(() => {
+        const root = document.querySelector('my-card')!.shadowRoot!
+        const describeSlot = (selector: string) =>
+          (root.querySelector(selector) as HTMLSlotElement)
+            .assignedElements()
+            // the slotted component may be wrapped, so look for it inside the assigned element too
+            .map((el) => {
+              const component = el.matches('my-component, my-list-item') ? el : el.querySelector('my-component, my-list-item')
+              return (component ?? el).tagName.toLowerCase()
+            })
+        return {
+          start: describeSlot('slot[name="start"]'),
+          default: describeSlot('slot:not([name])'),
+          end: describeSlot('slot[name="end"]'),
+        }
+      })
+
+    it('should server side render slotted children as direct children of the host', async () => {
+      const response = await fetch(`${browser.options.baseUrl}/named-slot-shadow`)
+      const host = parse(await response.text()).querySelector('my-card')
+      const slots = (host?.childNodes ?? [])
+        .filter((node) => node.nodeType === 1)
+        .map((node) => (node as ParsedElement).getAttribute('slot'))
+        .filter(Boolean)
+        .sort()
+
+      // `start` is used by the scoped component and the plain element, `end` by the shadow component
+      expect(slots).toEqual(['end', 'start', 'start'])
+    })
+
+    it('should assign a scoped serialized Stencil component and a plain element to the named slot', async () => {
+      await browser.url('/named-slot-shadow')
+      await expect($('my-component')).toBePresent()
+      expect((await getAssignedElements()).start).toEqual(['my-component', 'span'])
+    })
+
+    it('should assign a shadow serialized Stencil component to the named slot', async () => {
+      await browser.url('/named-slot-shadow')
+      await expect($('my-list-item')).toBePresent()
+      expect((await getAssignedElements()).end).toEqual(['my-list-item'])
+    })
+
+    it('should only assign the default content to the default slot', async () => {
+      await browser.url('/named-slot-shadow')
+      await expect($('my-card')).toBePresent()
+      expect((await getAssignedElements()).default).toEqual(['p'])
     })
   },
   'my-toggle-shadow': () => {

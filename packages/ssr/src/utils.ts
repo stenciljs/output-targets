@@ -249,9 +249,13 @@ export function serializeScopedComponent(
   /**
    * In most cases we directly render the component through a wrapper that injects the styles
    * tag into an extra container.
+   *
+   * A browser only assigns the direct children of a shadow host to a slot, so a `slot` prop has
+   * to be set on the wrapper as well. Otherwise the wrapper (not the component) is what the
+   * parent sees, and the component never ends up in the named slot it was passed to.
    */
   const directlyRenderedComponent = `\nconst ${identifier} = ({ children, ...props }) => {
-     return (<div style={{ display: 'contents' }} ${suppressHydrationWarning}>
+     return (<div style={{ display: 'contents' }} ${suppressHydrationWarning} slot={props.slot}>
        <style href={${JSON.stringify(styleId)}} precedence="stencil" id={${JSON.stringify(tagName)}} dangerouslySetInnerHTML={{ __html: ${JSON.stringify(styles.join('\n'))} }} />
 
        ${cmpTag} {...props} ${suppressHydrationWarning} dangerouslySetInnerHTML={{ __html: \`${__html}\` }} />
@@ -401,10 +405,15 @@ export function serializeShadowComponent(
    *
    * Here we are wrapping the component into a new `div` with `display: contents` to ensure that
    * we can suppress hydration warnings.
+   *
+   * The `slot` prop is set on the wrapper too: slot assignment only considers the direct children of
+   * a shadow host, so without it a component passed to a named slot would be assigned (via its
+   * wrapper) to the default slot instead. It stays on the component as well because other code may
+   * look it up there (e.g. `querySelector('my-icon[slot="start"]')`).
    */
   const directlyRenderedComponent = `const ${identifier} = ({ children, ...props }) => {
     if (typeof window !== 'undefined') {
-      return <div style={{ display: 'contents' }} ${suppressHydrationWarning}>
+      return <div style={{ display: 'contents' }} ${suppressHydrationWarning} slot={props.slot}>
         <${cmpTagName} ${suppressHydrationWarning} {...props}>
           {children}
         </${cmpTagName}>
@@ -412,7 +421,7 @@ export function serializeShadowComponent(
     }
 
     return (
-      <div style={{ display: 'contents' }} ${suppressHydrationWarning}>
+      <div style={{ display: 'contents' }} ${suppressHydrationWarning} slot={props.slot}>
         ${htmlToJsxWithStyleObject(cmpTag, styleObject).slice(0, -1)} ${suppressHydrationWarning} {...props}>
           <template ${serializedTemplateAttributes}></template>
           {children}

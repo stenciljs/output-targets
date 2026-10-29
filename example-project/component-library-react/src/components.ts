@@ -13,6 +13,7 @@ import { createComponent } from '@stencil/react-output-target/runtime';
 import type { Components } from 'component-library/components';
 import { MyButton as MyButtonElement, defineCustomElement as defineMyButton } from 'component-library/components/my-button.js';
 import { MyButtonScoped as MyButtonScopedElement, defineCustomElement as defineMyButtonScoped } from 'component-library/components/my-button-scoped.js';
+import { MyCard as MyCardElement, defineCustomElement as defineMyCard } from 'component-library/components/my-card.js';
 import { MyCheckbox as MyCheckboxElement, defineCustomElement as defineMyCheckbox } from 'component-library/components/my-checkbox.js';
 import { MyComplexProps as MyComplexPropsElement, defineCustomElement as defineMyComplexProps } from 'component-library/components/my-complex-props.js';
 import { MyComplexPropsScoped as MyComplexPropsScopedElement, defineCustomElement as defineMyComplexPropsScoped } from 'component-library/components/my-complex-props-scoped.js';
@@ -69,6 +70,18 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
       onMyBlur: 'myBlur'
     } as MyButtonScopedEvents,
     defineCustomElement: defineMyButtonScoped,
+    transformTag,
+});
+
+export type MyCardEvents = NonNullable<unknown>;
+
+export const MyCard: StencilReactComponent<MyCardElement, MyCardEvents, Components.MyCard> = /*@__PURE__*/ createComponent<MyCardElement, MyCardEvents, Components.MyCard>({
+    tagName: 'my-card',
+    elementClass: MyCardElement,
+    // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
+    react: React,
+    events: {} as MyCardEvents,
+    defineCustomElement: defineMyCard,
     transformTag,
 });
 
