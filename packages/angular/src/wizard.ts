@@ -1,6 +1,6 @@
 import type { StencilWizardPlugin, WizardContext } from '@stencil/cli';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
-import { join, relative, dirname } from 'node:path';
+import { join, relative, dirname, isAbsolute } from 'node:path';
 
 // ---------------------------------------------------------------------------
 // pnpm build approval
@@ -85,13 +85,29 @@ function toPascalCase(s: string): string {
     .join('');
 }
 
+/**
+ * The module the lazy loader's `defineCustomElements()` is imported from: the `./loader` entry
+ * when the project generates an `exports` map, otherwise its place in the `loader-bundle` output.
+ */
+function getLoaderModule(config: WizardContext['config'], corePackageName: string): string {
+  if ((config as { generateExportMaps?: boolean }).generateExportMaps === true) {
+    return `${corePackageName}/loader`;
+  }
+  const target = (config.outputTargets as any[] | undefined)?.find((o) => o.type === 'loader-bundle');
+  const rawDir: string = target?.dir ?? 'dist/loader-bundle';
+  const dir = (isAbsolute(rawDir) ? relative(config.rootDir, rawDir) : rawDir).replace(/\\/g, '/');
+  return `${corePackageName}/${dir}/${target?.loaderPath || 'loader'}`;
+}
+
 async function scaffoldWrapperPackage(
   wrapperDir: string,
   packageName: string,
   corePackageName: string,
   corePkgVersion: string,
   namespace: string,
-  outputType: 'standalone' | 'component' | 'scam'
+  outputType: 'standalone' | 'component' | 'scam',
+  /** For the 'component' type: the module to import the loader's `defineCustomElements()` from. */
+  loaderModule?: string
 ): Promise<void> {
   const libDir = join(wrapperDir, 'src', 'lib');
   await mkdir(libDir, { recursive: true });
@@ -146,12 +162,23 @@ async function scaffoldWrapperPackage(
   // NgModule file — only needed for 'component' outputType
   let ngModuleTs: string | undefined;
   if (outputType === 'component') {
+    // The 'component' type's wrappers register nothing themselves: this module does it, with the
+    // lazy loader, when the consuming app starts. It's written once and never regenerated.
     ngModuleTs =
-      `import { NgModule } from '@angular/core';\n` +
+      `import { NgModule, provideAppInitializer } from '@angular/core';\n` +
+      `import { defineCustomElements } from '${loaderModule}';\n` +
       `import { DIRECTIVES } from './directives.array';\n\n` +
+      `/**\n` +
+      ` * Declares every component, and registers the custom elements when the app starts.\n` +
+      ` *\n` +
+      ` * This file is yours to edit - Stencil doesn't regenerate it. Do any setup your library\n` +
+      ` * needs before the components are defined in the initializer, e.g. \`setNonce()\` or\n` +
+      ` * \`setTagTransformer()\` (both exported by the loader).\n` +
+      ` */\n` +
       `@NgModule({\n` +
       `  declarations: [...DIRECTIVES],\n` +
       `  exports: [...DIRECTIVES],\n` +
+      `  providers: [provideAppInitializer(() => defineCustomElements())],\n` +
       `})\n` +
       `export class ${className}Module {}\n`;
   }
@@ -285,7 +312,8 @@ export const wizard = {
             componentCorePackage,
             corePkgVersion,
             config.fsNamespace,
-            selectedOutputType
+            selectedOutputType,
+            selectedOutputType === 'component' ? getLoaderModule(config, componentCorePackage) : undefined
           );
           s.stop('Wrapper package scaffolded');
         } catch (e) {
@@ -310,7 +338,8 @@ export const wizard = {
       // Build target config
       const lines = [
         `componentCorePackage: '${componentCorePackage}'`,
-        `customElementsDir: '${customElementsDir}'`,
+        // only the types built on the `standalone` output import from it
+        ...(selectedOutputType !== 'component' ? [`customElementsDir: '${customElementsDir}'`] : []),
         `directivesProxyFile: '${directivesProxyFile}'`,
         ...(directivesArrayFile ? [`directivesArrayFile: '${directivesArrayFile}'`] : []),
         ...(selectedOutputType !== 'standalone' ? [`outputType: '${selectedOutputType}'`] : []),
@@ -326,7 +355,17 @@ export const wizard = {
           editor.outputTargetsContains('type: "standalone"') ||
           editor.outputTargetsContains("type: 'dist-custom-elements'") ||
           editor.outputTargetsContains('type: "dist-custom-elements"');
-        if (!hasStandalone) editor.addOutputTarget("{ type: 'standalone' }");
+        const hasLoaderBundle =
+          editor.outputTargetsContains("type: 'loader-bundle'") ||
+          editor.outputTargetsContains('type: "loader-bundle"') ||
+          editor.outputTargetsContains("type: 'dist'") ||
+          editor.outputTargetsContains('type: "dist"');
+        // 'component' wrappers rely on the lazy loader; the other types import from `standalone`
+        if (selectedOutputType === 'component') {
+          if (!hasLoaderBundle) editor.addOutputTarget("{ type: 'loader-bundle' }");
+        } else if (!hasStandalone) {
+          editor.addOutputTarget("{ type: 'standalone' }");
+        }
 
         if (!editor.replaceOutputTarget('angularOutputTarget(', targetCode)) {
           editor.addOutputTarget(targetCode);
@@ -362,6 +401,13 @@ export const wizard = {
           { cwd: wrapperDir, dev: true }
         );
         log.success('Angular dependencies installed');
+      }
+
+      if (selectedOutputType === 'component' && !shouldScaffold) {
+        log.info(
+          `NgModule components: your Angular package's module needs to call defineCustomElements() ` +
+            `from '${getLoaderModule(config, componentCorePackage)}' when the app starts, e.g. with provideAppInitializer().`
+        );
       }
 
       outro('Angular output target configured');
