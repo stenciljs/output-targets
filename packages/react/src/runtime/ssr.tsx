@@ -75,6 +75,54 @@ interface CreateComponentForServerSideRenderingOptions {
   transformTag?: (tagName: string) => string;
 }
 
+// Marks SSR components so `resolveType` can serialize nested ones shallowly.
+const stencilSsrOptions = Symbol('stencil-react-ssr-options');
+type ShallowComponentOptions = {
+  tagName: string;
+  properties: Record<string, string>;
+  transformTag?: (tag: string) => string;
+};
+type MarkedSsrComponent = { [stencilSsrOptions]: ShallowComponentOptions };
+
+type AttributeValue = string | number | boolean | Record<string, unknown>;
+
+// Splits props into attribute values (primitives, `style`) keyed by attribute name and
+// complex values applied as properties via `beforeHydrate`. `false` is dropped.
+const splitProps = (props: Record<string, unknown>, properties: Record<string, string>) => {
+  const attributes: Record<string, AttributeValue> = {};
+  const complexProps: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(props)) {
+    if (typeof value === 'boolean' && value === false) {
+      continue;
+    }
+    const attributeName = possibleStandardNames[key as keyof typeof possibleStandardNames] || properties[key] || key;
+    if (key === 'style' && typeof value === 'object' && value) {
+      attributes[attributeName] = value as Record<string, unknown>;
+      continue;
+    }
+    if (isPrimitive(value)) {
+      attributes[attributeName] = value;
+    } else {
+      complexProps[key] = value;
+    }
+  }
+  return { attributes, complexProps };
+};
+
+const isStencilSsrComponent = (type: unknown): type is MarkedSsrComponent =>
+  typeof type === 'function' && stencilSsrOptions in type;
+
+// Parents only need nested Stencil children as tags with attributes. Rendering them fully
+// here ran each child once per ancestor level; the child renders itself once as a real child.
+const createShallowComponent =
+  (options: ShallowComponentOptions) =>
+  ({ children, ...props }: { children?: ReactNode } & Record<string, unknown>) => {
+    const { attributes } = splitProps(props, options.properties);
+    const transformTag = options.transformTag ?? hydrateModuleCache?.transformTag;
+    const tagName = transformTag ? transformTag(options.tagName) : options.tagName;
+    return React.createElement(tagName, { ...attributes, suppressHydrationWarning: true }, children);
+  };
+
 type StencilProps<I extends HTMLElement> = WebComponentProps<I>;
 
 // Definition comes from React but is not exported or part of the types package
@@ -178,30 +226,11 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      * compose element props into a string; complex (non-primitive) props are banked
      * and applied via beforeHydrate; they never need to be attribute-serialized
      */
+    const { attributes, complexProps } = splitProps(props, options.properties);
     let stringProps = '';
-    const complexProps: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(props)) {
-      if (typeof value === 'boolean' && value === false) {
-        continue;
-      }
-
-      /**
-       * parse the style object into a string
-       */
-      if (key === 'style' && typeof value === 'object' && value) {
-        const propName =
-          possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
-        stringProps += ` ${propName}="${stringifyCSSProperties(value)}"`;
-        continue;
-      }
-
-      if (isPrimitive(value)) {
-        const propName =
-          possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
-        stringProps += ` ${propName}="${value}"`;
-      } else {
-        complexProps[key] = value;
-      }
+    for (const [attributeName, value] of Object.entries(attributes)) {
+      const serialized = typeof value === 'object' ? stringifyCSSProperties(value) : value;
+      stringProps += ` ${attributeName}="${serialized}"`;
     }
 
     /**
@@ -449,6 +478,11 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
 const resolveType = async (type: string | React.JSXElementConstructor<any>, props: any): Promise<ReactNodeExtended> => {
   let resolvedType: ReactNodeExtended = null;
 
+  if (isStencilSsrComponent(type)) {
+    // Nested Stencil SSR component: emit its tag shallowly instead of running its hydrate pass.
+    return createShallowComponent(type[stencilSsrOptions]);
+  }
+
   if (typeof type === 'string') {
     // Child is a primitive element like 'div'
     return type;
@@ -548,7 +582,7 @@ export const createComponent = <
    * Note: we want to lazy load the `./ssr` and `hydrateModule` modules to avoid
    * bundling them in the runtime and serving them in the browser.
    */
-  return (async (props: WebComponentProps<I>) => {
+  const ServerComponent = (async (props: WebComponentProps<I>) => {
     if (!options.hydrateModule) {
       throw new Error(
         '`hydrateModule` is required when rendering a Stencil component on the server. ' +
@@ -574,5 +608,8 @@ export const createComponent = <
       renderToString: resolvedHydrateModule.renderToString,
       ...options,
     })(props as any);
-  }) as unknown as StencilReactComponent<I, E, C, R>;
+  }) as unknown as StencilReactComponent<I, E, C, R> & MarkedSsrComponent;
+  ServerComponent[stencilSsrOptions] = options;
+
+  return ServerComponent;
 };

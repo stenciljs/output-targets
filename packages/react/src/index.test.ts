@@ -217,8 +217,8 @@ describe('reactOutputTarget', () => {
         rootDir: '/',
         outputTargets: [{ type: 'standalone' }, { type: 'types', dir: '/build/typings' }],
       });
-      expect(output).toContain('import type { Components } from "my-components/build/typings/components"');
-      expect(output).toContain('import { type MyButtonCustomEvent } from "my-components/build/typings/components"');
+      expect(output).toContain(`import type { Components } from 'my-components/build/typings/components'`);
+      expect(output).toContain(`import type { MyButtonCustomEvent } from 'my-components/build/typings/components'`);
     });
 
     it('writes output dirs into imports with forward slashes (Windows paths)', async () => {
@@ -229,8 +229,8 @@ describe('reactOutputTarget', () => {
           { type: 'types', dir: 'build\\typings' },
         ],
       });
-      expect(output).toContain('import type { Components } from "my-components/build/typings/components"');
-      expect(output).toContain('from "my-components/build/elements/my-button.js"');
+      expect(output).toContain(`import type { Components } from 'my-components/build/typings/components'`);
+      expect(output).toContain(`from 'my-components/build/elements/my-button.js'`);
       expect(output).not.toContain('\\');
     });
 
@@ -240,15 +240,15 @@ describe('reactOutputTarget', () => {
         generateExportMaps: true,
         outputTargets: [{ type: 'standalone' }, { type: 'types', dir: '/build/typings' }],
       });
-      expect(output).toContain('import type { Components } from "my-components/components"');
-      expect(output).toContain('import { type MyButtonCustomEvent } from "my-components/components"');
+      expect(output).toContain(`import type { Components } from 'my-components/components'`);
+      expect(output).toContain(`import type { MyButtonCustomEvent } from 'my-components/components'`);
       expect(output).not.toContain('build/typings');
     });
 
     it('imports through the exports map for a Stencil v5 project with generateExportMaps', async () => {
       const output = await run({ rootDir: '/', generateExportMaps: true, outputTargets: [{ type: 'standalone' }] });
-      expect(output).toContain('from "my-components/my-button"');
-      expect(output).toContain('import type { Components } from "my-components/components"');
+      expect(output).toContain(`from 'my-components/my-button'`);
+      expect(output).toContain(`import type { Components } from 'my-components/components'`);
     });
 
     it('keeps deep paths for a Stencil v4 project, even with generateExportMaps', async () => {
@@ -257,10 +257,10 @@ describe('reactOutputTarget', () => {
         generateExportMaps: true,
         outputTargets: [{ type: 'dist-custom-elements', externalRuntime: false }],
       });
-      expect(output).toContain('from "my-components/dist/components/my-button.js"');
-      expect(output).not.toContain('from "my-components/my-button"');
+      expect(output).toContain(`from 'my-components/dist/components/my-button.js'`);
+      expect(output).not.toContain(`from 'my-components/my-button'`);
       // v4 keeps importing event types from the package root
-      expect(output).toContain('import { type MyButtonCustomEvent } from "my-components"');
+      expect(output).toContain(`import type { MyButtonCustomEvent } from 'my-components'`);
     });
   });
 });
