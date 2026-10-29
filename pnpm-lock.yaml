@@ -872,6 +872,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0
       npm-run-all2:
         specifier: ^6.2.6
         version: 6.2.6
