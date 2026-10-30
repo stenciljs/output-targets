@@ -24,14 +24,17 @@ export const config: WebdriverIO.Config = {
     const { spawn } = await import('child_process');
     const isWindows = process.platform === 'win32';
 
+    // NG_CONFIGURATION=lazy serves the app against the wrappers generated with `lazyDefine`.
+    const startArgs = process.env.NG_CONFIGURATION ? ['start', '--configuration', process.env.NG_CONFIGURATION] : ['start'];
+
     // On Windows, use shell mode with the full command string
     const ngServe = isWindows
-      ? spawn('pnpm start', {
+      ? spawn(`pnpm ${startArgs.join(' ')}`, {
           cwd: process.cwd(),
           stdio: 'inherit',
           shell: true
         })
-      : spawn('pnpm', ['start'], {
+      : spawn('pnpm', startArgs, {
           cwd: process.cwd(),
           stdio: 'inherit'
         });

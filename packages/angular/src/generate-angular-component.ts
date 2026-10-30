@@ -80,6 +80,8 @@ function formatInputs(inputs: readonly ComponentInputProperty[]): string {
  * @param standalone Whether to define the component as a standalone component.
  * @param inlineComponentProps List of properties that should be inlined into the component definition.
  * @param events The events of the Stencil component for generating outputs.
+ * @param lazyComponentModule When set, the module the wrapper imports its element from when it is first created,
+ * instead of defining the element when the wrapper module is evaluated.
  * @returns The component declaration as a string.
  */
 export const createAngularComponentDefinition = (
@@ -89,7 +91,8 @@ export const createAngularComponentDefinition = (
   includeImportCustomElements = false,
   standalone = false,
   inlineComponentProps: readonly ComponentCompilerProperty[] = [],
-  events: readonly ComponentCompilerEvent[] = []
+  events: readonly ComponentCompilerEvent[] = [],
+  lazyComponentModule?: string
 ) => {
   const tagNameAsPascal = dashToPascalCase(tagName);
 
@@ -111,7 +114,7 @@ export const createAngularComponentDefinition = (
 
   const proxyCmpOptions = [];
 
-  if (includeImportCustomElements) {
+  if (includeImportCustomElements && lazyComponentModule === undefined) {
     const defineCustomElementFn = `define${tagNameAsPascal}`;
 
     proxyCmpOptions.push(`\n  defineCustomElementFn: ${defineCustomElementFn}`);
@@ -156,7 +159,14 @@ export const createAngularComponentDefinition = (
    * uses the inputs property to define the inputs of the component instead of
    * having to use the @Input decorator (and manually define the type and default value).
    */
-  const output = `@ProxyCmp({${proxyCmpOptions.join(',')}\n})
+  const proxyCmpDecorator = lazyComponentModule === undefined ? 'ProxyCmp' : 'LazyProxyCmp';
+
+  const defineOnCreate =
+    lazyComponentModule === undefined
+      ? ''
+      : `\n    defineOnCreate(this, [${proxyCmpFormattedInputs}], () => import('${lazyComponentModule}'));`;
+
+  const output = `@${proxyCmpDecorator}({${proxyCmpOptions.join(',')}\n})
 @Component({
   selector: '${tagName}',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -168,7 +178,7 @@ export class ${tagNameAsPascal} {
   ${propertiesDeclarationText}
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
-    this.el = r.nativeElement;
+    this.el = r.nativeElement;${defineOnCreate}
   }
 }`;
 

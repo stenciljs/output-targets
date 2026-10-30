@@ -111,6 +111,28 @@ function getComponentModule(config: Config, outputTarget: OutputTargetAngular, t
 }
 
 /**
+ * Whether wrappers import their element when they are first created rather than when their module
+ * is evaluated. Only custom elements builds import elements, and only when the package is known.
+ */
+function usesLazyDefine(outputTarget: OutputTargetAngular): boolean {
+  return (
+    outputTarget.lazyDefine === true &&
+    isOutputTypeCustomElementsBuild(outputTarget.outputType!) &&
+    outputTarget.componentCorePackage !== undefined
+  );
+}
+
+/**
+ * The imports from `angular-component-lib` the proxies need for their decorator.
+ */
+function createComponentLibImport(outputTarget: OutputTargetAngular): string {
+  if (usesLazyDefine(outputTarget)) {
+    return createImportStatement(['LazyProxyCmp', 'defineOnCreate'], './angular-component-lib/lazy-define');
+  }
+  return createImportStatement(['ProxyCmp'], './angular-component-lib/utils');
+}
+
+/**
  * The relative import of the project's own `components.d.ts`, for when there's no
  * `componentCorePackage`. Only resolved when needed: package.json may have no `types` field.
  */
@@ -135,6 +157,7 @@ export async function angularDirectiveProxyOutput(
 
   const tasks: Promise<any>[] = [
     copyResources(config, outputTarget),
+    copyLazyDefine(config, outputTarget),
     generateValueAccessors(compilerCtx, filteredComponents, outputTarget, config),
   ];
 
@@ -194,6 +217,33 @@ async function copyResources(config: Config, outputTarget: OutputTargetAngular) 
   );
 }
 
+/**
+ * Copies the lazy define helper next to `angular-component-lib/utils.ts`. It is only copied when
+ * `lazyDefine` is enabled, so projects that don't use it are left with exactly the files they had.
+ */
+async function copyLazyDefine(config: Config, outputTarget: OutputTargetAngular) {
+  if (!usesLazyDefine(outputTarget)) {
+    return;
+  }
+  if (!config.sys || !config.sys.copy) {
+    throw new Error('stencil is not properly initialized at this step. Notify the developer');
+  }
+  const destDirectory = path.join(path.dirname(outputTarget.directivesProxyFile), 'angular-component-lib');
+
+  return config.sys.copy(
+    [
+      {
+        src: path.join(__dirname, '..', 'resources', 'lazy-define', 'lazy-define.ts'),
+        dest: path.join(destDirectory, 'lazy-define.ts'),
+        keepDirStructure: false,
+        warn: false,
+        ignore: [],
+      },
+    ],
+    destDirectory
+  );
+}
+
 export function generateProxies(
   components: ComponentCompilerMeta[],
   pkgData: PackageJSON,
@@ -219,11 +269,6 @@ export function generateProxies(
   angularCoreImports.push('NgZone');
 
   /**
-   * The collection of named imports from the angular-component-lib/utils.
-   */
-  const componentLibImports = ['ProxyCmp'];
-
-  /**
    * The input transform lives in its own module so that it carries no runtime imports.
    */
   let transformImport = '';
@@ -242,7 +287,7 @@ export function generateProxies(
 /* auto-generated angular directive proxies */
 ${createImportStatement(angularCoreImports, '@angular/core')}
 
-${createImportStatement(componentLibImports, './angular-component-lib/utils')}${transformImport}\n`;
+${createComponentLibImport(outputTarget)}${transformImport}\n`;
 
   /**
    * Generate JSX import type from correct location.
@@ -267,7 +312,9 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
    * IonButton would be imported as IonButtonCmp so as to not conflict with the
    * IonButton Angular Component that takes in the Web Component as a parameter.
    */
-  if (isCustomElementsBuild && outputTarget.componentCorePackage !== undefined) {
+  const lazyDefine = usesLazyDefine(outputTarget);
+
+  if (isCustomElementsBuild && outputTarget.componentCorePackage !== undefined && !lazyDefine) {
     const cmpImports = components.map((component) => {
       const pascalImport = dashToPascalCase(component.tagName);
 
@@ -323,7 +370,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
       isCustomElementsBuild,
       isStandaloneBuild,
       inlineComponentProps,
-      cmpMeta.events || []
+      cmpMeta.events || [],
+      lazyDefine ? getComponentModule(config, outputTarget, cmpMeta.tagName) : undefined
     );
     const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
     const componentTypeDefinition = createComponentTypeDefinition(
@@ -376,8 +424,6 @@ export function generateComponentProxy(
 
   const booleanAttributes = outputTarget.booleanAttributes === true;
 
-  const componentLibImports = ['ProxyCmp'];
-
   // The input transform lives in its own module so that it carries no runtime imports.
   let transformImport = '';
   if (usesInputTransform([cmpMeta], booleanAttributes)) {
@@ -388,7 +434,7 @@ export function generateComponentProxy(
 /* auto-generated angular directive proxies */
 ${createImportStatement(angularCoreImports, '@angular/core')}
 
-${createImportStatement(componentLibImports, './angular-component-lib/utils')}${transformImport}\n`;
+${createComponentLibImport(outputTarget)}${transformImport}\n`;
 
   // Type imports
   const importLocation = componentCorePackage
@@ -397,8 +443,9 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
   const typeImports = `import ${isCustomElementsBuild ? 'type ' : ''}{ ${IMPORT_TYPES} } from '${importLocation}';\n`;
 
   // defineCustomElement import
+  const lazyDefine = usesLazyDefine(outputTarget);
   let sourceImport = '';
-  if (isCustomElementsBuild && componentCorePackage !== undefined) {
+  if (isCustomElementsBuild && componentCorePackage !== undefined && !lazyDefine) {
     sourceImport = `import { defineCustomElement as define${tagNameAsPascal} } from '${getComponentModule(
       config,
       outputTarget,
@@ -433,7 +480,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     isCustomElementsBuild,
     isStandaloneBuild,
     inlineComponentProps,
-    cmpMeta.events || []
+    cmpMeta.events || [],
+    lazyDefine ? getComponentModule(config, outputTarget, cmpMeta.tagName) : undefined
   );
 
   const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);

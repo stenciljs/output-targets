@@ -6,6 +6,8 @@ import { CheckboxTests } from './checkbox-tests/checkbox-tests';
 import { ComplexPropsTests } from './complex-props-tests/complex-props-tests';
 import { InputFormTests } from './input-form-tests/input-form-tests';
 import { RangeTests } from './range-tests/range-tests';
+import { DeferTests } from '../defer-tests/defer-tests';
+import { ProbeModule } from '../probe.module';
 
 @Component({
   selector: 'app-component-tests',
@@ -22,6 +24,8 @@ import { RangeTests } from './range-tests/range-tests';
     ButtonTests,
     ComplexPropsTests,
     RangeTests,
+    DeferTests,
+    ProbeModule,
     FormsModule,
     SelectValueAccessor
   ],
