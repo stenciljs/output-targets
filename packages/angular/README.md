@@ -58,6 +58,66 @@ export const config: Config = {
 | `customElementsDir`    | This is the directory where the custom elements are imported from when using the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements). Defaults to the `components` directory. Only applies for `outputType: "scam"` or `outputType: "standalone"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `inlineProperties` | Experimental. When true, tries to inline the properties of components. This is required to enable Angular Language Service to type-check and show jsdocs when using the components in html-templates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `booleanAttributes`    | When `true`, boolean properties are declared with an Angular input transform so they can be set by attribute presence, e.g. `<my-component disabled>` instead of `<my-component [disabled]="true">`. Type-checking the attribute form also requires `inlineProperties`. Defaults to `false`. Refer to [Boolean attributes](#boolean-attributes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `lazyDefine`           | When `true`, each wrapper imports its component's element with `import()` the first time Angular creates the wrapper, instead of importing and defining it when the wrapper module is evaluated. Only applies for `outputType: "scam"` or `outputType: "standalone"`, and requires Angular 19 or later. Defaults to `false`. Refer to [Lazy define](#lazy-define). |
+
+## Lazy define
+
+With `outputType: 'standalone'` or `'scam'`, every wrapper statically imports its component's
+`defineCustomElement` and calls it when the wrapper module is evaluated. A component's code
+therefore lands wherever Angular keeps its wrapper, and Angular keeps wrappers in the initial
+bundle in a few common cases:
+
+- an `NgModule` that lists the wrappers keeps all of them
+- an `@defer` block imports the wrapper library's whole entry point, so every wrapper becomes part
+  of the initial bundle
+- a lazy route shares the wrapper library's entry point with the rest of the app, so the wrappers
+  it uses stay in the initial bundle
+
+`esModules` does not change this when the wrapper library is built with ng-packagr, which bundles
+each entry point into a single file.
+
+Setting `lazyDefine: true` moves each component's code behind an `import()` in its wrapper's
+constructor:
+
+```ts
+angularOutputTarget({
+  componentCorePackage: 'component-library',
+  directivesProxyFile: '../component-library-angular/src/directives/proxies.ts',
+  outputType: 'standalone',
+  lazyDefine: true,
+});
+```
+
+A component's code is then loaded the first time a wrapper for it is created, and code for
+components the app keeps but never renders is never downloaded. The wrappers themselves are
+unchanged for consumers: the same selectors, inputs, outputs and methods.
+
+While a component's code loads, its wrappers:
+
+- hold the inputs Angular and value accessors set, and pass them to the element once it is
+  defined, before its first render
+- make method calls wait until the element is defined. Stencil methods return a `Promise`, so
+  callers already await them.
+- keep the application unstable through Angular's `PendingTasks`, so `ApplicationRef.whenStable()`,
+  `fixture.whenStable()` and server-side rendering wait for the code
+- report a failed load to Angular's `ErrorHandler` once, reject the method calls that are waiting,
+  and try again when the next wrapper for that component is created
+
+Nothing is loaded when the component is already defined, or when there is no custom elements
+registry, as in Angular's server-side DOM.
+
+### Costs
+
+- **First render.** Every component's code is a separate chunk, including the components on the
+  first page. They are defined one round trip after the app starts rather than with it. Style
+  `:not(:defined)` if the undefined elements shouldn't show.
+- **Files.** The build emits a chunk for each component whose wrapper is kept, even if it is never
+  downloaded.
+- **Stability.** The application becomes stable later on the first render, so anything waiting
+  for stability, such as a service worker registered with `registerWhenStable`, waits longer.
+- **Synchronous access.** Code that read element state or called element methods synchronously
+  right after creating a wrapper has to wait for the element to be defined first, for example
+  with `customElements.whenDefined()`.
 
 ## Boolean attributes
 

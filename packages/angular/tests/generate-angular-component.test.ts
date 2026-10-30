@@ -183,6 +183,41 @@ export class MyComponent {
     });
   });
 
+  describe('lazy define', () => {
+    it('imports the element when the wrapper is created instead of defining it from the decorator', () => {
+      const component = createAngularComponentDefinition(
+        'my-component',
+        [{ name: 'my-input', required: false }, { name: 'myOtherInput', required: true }],
+        ['setFocus'],
+        true,
+        true,
+        [],
+        [],
+        'component-library/components/my-component.js'
+      );
+
+      expect(component).toEqual(`@LazyProxyCmp({
+  inputs: ['my-input', 'myOtherInput'],
+  methods: ['setFocus']
+})
+@Component({
+  selector: 'my-component',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: ['my-input', { name: 'myOtherInput', required: true }],
+})
+export class MyComponent {
+  protected el: HTMLMyComponentElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+    defineOnCreate(this, ['my-input', 'myOtherInput'], () => import('component-library/components/my-component.js'));
+  }
+}`);
+    });
+  });
+
   describe('custom elements output', () => {
     it('generates a component', () => {
       const component = createAngularComponentDefinition('my-component', [], [], true, false, [], []);

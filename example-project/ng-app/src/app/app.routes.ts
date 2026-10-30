@@ -6,4 +6,8 @@ export const routes: Routes = [
     path: '',
     component: ComponentTests,
   },
+  {
+    path: 'lazy',
+    loadComponent: () => import('./lazy-page/lazy-page').then((m) => m.LazyPage),
+  },
 ];

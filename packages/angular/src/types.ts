@@ -132,6 +132,24 @@ export interface OutputTargetAngular {
    * @default false
    */
   booleanAttributes?: boolean;
+  /**
+   * When `true`, each wrapper imports its element with `import()` the first time Angular creates
+   * the wrapper, instead of statically importing and defining it when the wrapper module is
+   * evaluated. Element code for components that are only rendered inside `@defer` blocks or lazy
+   * routes, or that are only listed in an `NgModule`, then stays out of the initial bundle.
+   *
+   * While the element loads, the wrapper:
+   * - keeps the application unstable through Angular's `PendingTasks`
+   * - re-applies inputs that were set before the element was defined
+   * - makes method calls wait until the element is defined
+   * - reports a failed load to Angular's `ErrorHandler`, and retries on the next wrapper it creates
+   *
+   * Requires Angular 19 or later. Only applies when `outputType` is `'scam'` or `'standalone'`.
+   * Refer to the README for what it costs.
+   *
+   * @default false
+   */
+  lazyDefine?: boolean;
 }
 
 export type ValueAccessorTypes = 'text' | 'radio' | 'select' | 'number' | 'boolean';
