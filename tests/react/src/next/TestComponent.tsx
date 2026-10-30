@@ -31,6 +31,7 @@ const testComponents = [
   'single-no-child-scoped',
   'single-children-scoped',
   'nested-scoped',
+  'nested-light-dom-scoped',
   'complex-props-scoped',
   'input-scoped',
   // style deduplication tests
@@ -108,6 +109,14 @@ const TestComponent = ({ name }: TestComponentProps) => {
         <MyListItemScoped>Bar Scoped</MyListItemScoped>
         <MyListItemScoped>Loo Scoped</MyListItemScoped>
       </MyListScoped>
+    );
+  }
+  if (name === 'nested-light-dom-scoped') {
+    return (
+      <MyButton>
+        <MyComponent first="John" middleName="William" last="Doe" /> and{' '}
+        <MyComplexProps foo={{ bar: 'baz', loo: [1, 2, 3], qux: { quux: Symbol('quux') } }} />
+      </MyButton>
     );
   }
   if (name === 'transform-scoped-to-shadow') {

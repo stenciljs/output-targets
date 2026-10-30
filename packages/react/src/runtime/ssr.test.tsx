@@ -1,3 +1,4 @@
+import { createDocument, serializeNodeToHtml } from '@stencil/core/mock-doc';
 import React from 'react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createComponent } from './ssr.js';
@@ -17,9 +18,8 @@ vi.mock('react-dom/server', () => ({
   renderToString: vi.fn(() => '<div>mocked children</div>'),
 }));
 
-vi.mock('html-react-parser', () => ({
-  default: vi.fn(() => React.createElement('div', { 'data-testid': 'parsed' }, 'parsed content')),
-}));
+const { renderToString: realRenderToString } =
+  await vi.importActual<typeof import('react-dom/server')>('react-dom/server');
 
 vi.mock('react-style-stringify', () => ({
   stringifyCSSProperties: vi.fn((styles) =>
@@ -41,10 +41,33 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
   let originalProcess: any;
   let originalWindow: any;
   let capturedRenderToStringArgs: [string, any][] = [];
+  // The first hydrate module stays cached across tests, so tests change its output through this.
+  let renderStencilOutput: (html: string, options: any) => string | Promise<string>;
+
+  // Stands in for Stencil's `renderToString` without components: runs `beforeHydrate` and serializes the
+  // document with Stencil's own serializer, so `prettyHtml` formats the output as in a real render.
+  const serializeLikeStencil = async (html: string, options: any, shadowRootHTML?: string) => {
+    const doc = createDocument(html);
+    if (shadowRootHTML !== undefined) {
+      doc.body.firstElementChild!.attachShadow({ mode: 'open' }).innerHTML = shadowRootHTML;
+    }
+    await options.beforeHydrate?.(doc);
+    return serializeNodeToHtml(doc, {
+      fullDocument: false,
+      prettyHtml: options.prettyHtml,
+      serializeShadowRoot: options.serializeShadowRoot,
+    });
+  };
 
   beforeEach(() => {
     // Reset captured args
     capturedRenderToStringArgs = [];
+    renderStencilOutput = () => `<test-component>
+  <template shadowrootmode="open">
+    <div>Shadow content</div>
+  </template>
+  <div>mocked children</div>
+</test-component>`;
 
     // Mock server environment
     originalProcess = (globalThis as any).process;
@@ -55,16 +78,9 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
 
     // Create mock hydrate module with proper argument capture
     mockHydrateModule = {
-      renderToString: vi.fn().mockImplementation((html: string, options: any) => {
+      renderToString: vi.fn().mockImplementation(async (html: string, options: any) => {
         capturedRenderToStringArgs.push([html, options]);
-        return Promise.resolve({
-          html: `<test-component>
-  <template shadowrootmode="open">
-    <div>Shadow content</div>
-  </template>
-  <div>mocked children</div>
-</test-component>`,
-        });
+        return { html: await renderStencilOutput(html, options), styles: [] };
       }),
       transformTag: vi.fn((tag) => tag),
       setTagTransformer: vi.fn(),
@@ -109,34 +125,24 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
   });
 
   it('should include shadowrootdelegatesfocus when present in Stencil output', async () => {
-    // Mock hydrate module that returns HTML with shadowrootdelegatesfocus
-    const mockWithDelegatesFocus = {
-      ...mockHydrateModule,
-      renderToString: vi.fn().mockImplementation((html: string, options: any) => {
-        capturedRenderToStringArgs.push([html, options]);
-        return Promise.resolve({
-          html: `<test-component>
+    renderStencilOutput = () => `<test-component>
   <template shadowrootmode="open" shadowrootdelegatesfocus>
     <div>Shadow content with focus delegation</div>
   </template>
   <div>mocked children</div>
-</test-component>`,
-        });
-      }),
-    };
+</test-component>`;
 
     const options: CreateComponentForSSROptions<HTMLElement> = {
       tagName: 'test-component',
       properties: {},
-      hydrateModule: Promise.resolve(mockWithDelegatesFocus),
+      hydrateModule: Promise.resolve(mockHydrateModule),
     };
 
     const Component = createComponent(options);
     const result = await Component({});
 
-    // Verify the component was created successfully
-    expect(result).toBeDefined();
     expect(capturedRenderToStringArgs).toHaveLength(1);
+    expect(realRenderToString(result)).toContain('<template shadowrootmode="open" shadowrootdelegatesfocus=""');
   });
 
   it('should not include shadowrootdelegatesfocus when absent from Stencil output', async () => {
@@ -150,9 +156,8 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
     const Component = createComponent(options);
     const result = await Component({});
 
-    // Verify the component was created successfully
-    expect(result).toBeDefined();
     expect(capturedRenderToStringArgs).toHaveLength(1);
+    expect(realRenderToString(result)).not.toContain('shadowrootdelegatesfocus');
   });
 
   it('should serialize children that are React.forwardRef components without throwing', async () => {
@@ -310,8 +315,6 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
     // The parent's light DOM pass must not run the child's hydrate render;
     // that doubled the cost at every nesting level.
     const { renderToString } = await import('react-dom/server');
-    const realRenderToString = (await vi.importActual<typeof import('react-dom/server')>('react-dom/server'))
-      .renderToString;
     vi.mocked(renderToString).mockImplementationOnce((element) => realRenderToString(element as React.ReactElement));
 
     const ParentComponent = createComponent({
@@ -338,6 +341,138 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
     const [lightDom] = capturedRenderToStringArgs[0];
     expect(lightDom).toContain('<my-component slot="start" icon-name="home">Label</my-component>');
     expect(lightDom).not.toContain('<template');
+  });
+
+  it('should pass complex props of the host and nested Stencil SSR children to Stencil', async () => {
+    // In scoped mode the parent's Stencil render is the only render of its nested children.
+    const { renderToString } = await import('react-dom/server');
+    vi.mocked(renderToString).mockImplementationOnce((element) => realRenderToString(element as React.ReactElement));
+
+    const ParentComponent = createComponent({
+      tagName: 'my-button',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+    const ChildComponent = createComponent({
+      tagName: 'my-component',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+    const parentData = { label: 'parent' };
+    const childData = { label: 'child' };
+
+    await ParentComponent({
+      data: parentData,
+      children: React.createElement(ChildComponent as any, { data: childData }),
+    } as any);
+
+    const [html, { beforeHydrate }] = capturedRenderToStringArgs[0];
+    const doc = createDocument(html);
+    await beforeHydrate(doc);
+    expect((doc.querySelector('my-button') as any).data).toBe(parentData);
+    expect((doc.querySelector('my-component') as any).data).toBe(childData);
+    expect(doc.querySelector('[data-stencil-react-props]')).toBeNull();
+  });
+
+  it('should serialize a string style of a nested Stencil SSR child', async () => {
+    const { renderToString } = await import('react-dom/server');
+    vi.mocked(renderToString).mockImplementationOnce((element) => realRenderToString(element as React.ReactElement));
+
+    const ParentComponent = createComponent({
+      tagName: 'my-button',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+    const ChildComponent = createComponent({
+      tagName: 'my-component',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+
+    await ParentComponent({ children: React.createElement(ChildComponent as any, { style: 'color: red' }) });
+
+    const [lightDom] = capturedRenderToStringArgs[0];
+    expect(lightDom).toContain('<my-component style="color:red"></my-component>');
+  });
+
+  it('should keep the whitespace of the light DOM in scoped output', async () => {
+    const { renderToString } = await import('react-dom/server');
+    vi.mocked(renderToString).mockImplementationOnce((element) => realRenderToString(element as React.ReactElement));
+    renderStencilOutput = serializeLikeStencil;
+    const ParentComponent = createComponent({
+      tagName: 'my-button',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+      serializeShadowRoot: 'scoped',
+    });
+    const ChildComponent = createComponent({
+      tagName: 'my-component',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+
+    const result = await ParentComponent({
+      children: [
+        React.createElement(ChildComponent as any, { key: 'child' }, 'child'),
+        ' ',
+        'text',
+        React.createElement('pre', { key: 'pre' }, 'line 1\n  line 2'),
+      ],
+    });
+
+    const host = createDocument(realRenderToString(result)).querySelector('my-button');
+    expect(host?.textContent).toBe('child textline 1\n  line 2');
+  });
+
+  it('should keep the whitespace of the shadow root in declarative shadow DOM output', async () => {
+    renderStencilOutput = (html, options) => serializeLikeStencil(html, options, '<p>two  spaces <slot></slot></p>');
+    const Component = createComponent({
+      tagName: 'my-button',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+
+    const result = await Component({});
+
+    expect(realRenderToString(result)).toContain(
+      '<template shadowrootmode="open"><!--r.1--><p>two  spaces <slot></slot></p></template>'
+    );
+  });
+
+  it('should remove only the markers of nested Stencil SSR children that Stencil cannot assign complex props to', async () => {
+    const { renderToString } = await import('react-dom/server');
+    vi.mocked(renderToString).mockImplementationOnce((element) => realRenderToString(element as React.ReactElement));
+    renderStencilOutput = serializeLikeStencil;
+    const ParentComponent = createComponent({
+      tagName: 'my-button',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+      serializeShadowRoot: 'scoped',
+    });
+    const ChildComponent = createComponent({
+      tagName: 'my-component',
+      properties: {},
+      hydrateModule: Promise.resolve(mockHydrateModule),
+    });
+
+    const child = (label: string) => React.createElement(ChildComponent as any, { data: { label } });
+    const TemplateWrapper = React.memo(({ children }: { children?: React.ReactNode }) =>
+      React.createElement('template', {}, children)
+    );
+
+    const result = await ParentComponent({
+      children: [
+        React.createElement('div', { key: 'div' }, child('div')),
+        React.createElement('p', { key: 'p' }, 'text data-stencil-react-props="0"'),
+        React.createElement('template', { key: 'template' }, child('template')),
+        React.createElement('noscript', { key: 'noscript' }, child('noscript')),
+        React.createElement(TemplateWrapper, { key: 'memo' }, child('memo')),
+      ],
+    });
+
+    const html = realRenderToString(result);
+    expect(html).not.toMatch(/<my-component [^>]*data-stencil-react-props/);
+    expect(html).toContain('<p>text data-stencil-react-props="0"</p>');
   });
 
   it('should resolve deeply nested async Stencil SSR grandchild without error', async () => {
