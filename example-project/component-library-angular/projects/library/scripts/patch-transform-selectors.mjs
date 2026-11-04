@@ -93,6 +93,7 @@ if (existsSync(configPath)) {
 const TAG_MAPPINGS = {
   'my-button': 'MyButton',
   'my-button-scoped': 'MyButtonScoped',
+  'my-card': 'MyCard',
   'my-checkbox': 'MyCheckbox',
   'my-complex-props': 'MyComplexProps',
   'my-complex-props-scoped': 'MyComplexPropsScoped',
