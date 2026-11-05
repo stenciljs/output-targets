@@ -76,6 +76,19 @@ export const config: Config = {
       booleanAttributes: true,
       inlineProperties: true,
     }),
+    /**
+     * The same wrappers again, as the `component-library-angular/lazy` entry point, with each
+     * wrapper importing its element when it is first created. ng-app's `lazy` build configuration
+     * swaps this entry point in, so the e2e tests and the bundle check run against both.
+     */
+    angularOutputTarget({
+      componentCorePackage: 'component-library',
+      directivesProxyFile: '../component-library-angular/projects/library/lazy/src/directives/proxies.ts',
+      valueAccessorConfigs: angularValueAccessorBindings,
+      booleanAttributes: true,
+      inlineProperties: true,
+      lazyDefine: true,
+    }),
     reactOutputTarget({
       outDir: '../component-library-react/src',
       hydrateModule: 'component-library/hydrate',
