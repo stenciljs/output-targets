@@ -48,6 +48,11 @@ export interface RenderToStringOptions {
    * @default 'declarative-shadow-dom'
    */
   serializeShadowRoot?: SerializeShadowRootOptions;
+  /**
+   * Render into one long-lived window instead of creating one for every call, so the SSR runtime
+   * and components are set up once. Stencil v5+ only (see {@link HydrateModule.resetReusableWindows}).
+   */
+  reuseWindow?: boolean;
   /** @deprecated use `beforeSsr` — kept for v4/v5 compatibility */
   beforeHydrate?: (document: Document) => void | Promise<void>;
 }
@@ -66,13 +71,31 @@ export type HydrateModule = {
   renderToString: RenderToString;
   transformTag: (tagName: string) => string;
   setTagTransformer: (transformer: (tagName: string) => string) => void;
+  /**
+   * Exported by SSR modules that support the `reuseWindow` render option (Stencil v5+). Its
+   * presence is how we detect that support: older modules don't have it.
+   */
+  resetReusableWindows?: () => void;
 };
+
+/**
+ * Whether an SSR module supports the `reuseWindow` render option.
+ * @param hydrateModule the SSR module
+ * @returns true for Stencil v5+ SSR modules
+ */
+const supportsReuseWindow = (hydrateModule: HydrateModule) => typeof hydrateModule.resetReusableWindows === 'function';
 interface CreateComponentForServerSideRenderingOptions {
   tagName: string;
   properties: Record<string, string>;
   renderToString: RenderToString;
   serializeShadowRoot?: SerializeShadowRootOptions;
   transformTag?: (tagName: string) => string;
+  /**
+   * Pass `reuseWindow: true` to `renderToString`. Every Stencil component renders with its own
+   * `renderToString` call, so setting the SSR runtime up once instead of per call is a large share
+   * of each render.
+   */
+  reuseWindow?: boolean;
 }
 
 // Marks SSR components so `resolveType` can serialize nested ones shallowly.
@@ -282,6 +305,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       fullDocument: false,
       serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
       prettyHtml: true,
+      ...(options.reuseWindow && { reuseWindow: true }),
       ...(Object.keys(complexProps).length > 0 && {
         beforeHydrate: (doc: Document) => {
           const el = doc.querySelector(transformedTagName) as any;
@@ -606,6 +630,7 @@ export const createComponent = <
 
     return createComponentForServerSideRendering<I, E>({
       renderToString: resolvedHydrateModule.renderToString,
+      reuseWindow: supportsReuseWindow(resolvedHydrateModule),
       ...options,
     })(props as any);
   }) as unknown as StencilReactComponent<I, E, C, R> & MarkedSsrComponent;
