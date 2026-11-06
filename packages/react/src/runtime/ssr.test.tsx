@@ -459,3 +459,68 @@ describe('SSR Boolean attributes & shadowrootdelegatesfocus', () => {
     expect(spy).toHaveBeenCalled();
   });
 });
+
+describe('SSR reuseWindow', () => {
+  let originalProcess: any;
+  let originalWindow: any;
+
+  beforeEach(() => {
+    originalProcess = (globalThis as any).process;
+    originalWindow = (globalThis as any).window;
+    (globalThis as any).process = { env: {} };
+    (globalThis as any).window = undefined;
+    // `ssr.js` caches the first SSR module it loads, so each test needs a fresh copy
+    vi.resetModules();
+  });
+
+  afterEach(() => {
+    (globalThis as any).process = originalProcess;
+    (globalThis as any).window = originalWindow;
+    vi.clearAllMocks();
+  });
+
+  const mockSsrModule = (extra: Partial<HydrateModule> = {}) => {
+    const calls: any[] = [];
+    const module: HydrateModule = {
+      renderToString: vi.fn().mockImplementation((_html: string, options: any) => {
+        calls.push(options);
+        return Promise.resolve({
+          html: `<test-component>
+  <template shadowrootmode="open">
+    <div>Shadow content</div>
+  </template>
+</test-component>`,
+          styles: [],
+        });
+      }),
+      transformTag: vi.fn((tag) => tag),
+      setTagTransformer: vi.fn(),
+      ...extra,
+    };
+    return { module, calls };
+  };
+
+  const renderWith = async (module: HydrateModule) => {
+    const { createComponent: create } = await import('./ssr.js');
+    const Component = create({
+      tagName: 'test-component',
+      properties: {},
+      hydrateModule: Promise.resolve(module),
+    });
+    await (Component as any)({});
+  };
+
+  it('passes reuseWindow to SSR modules that support it (Stencil v5+)', async () => {
+    const { module, calls } = mockSsrModule({ resetReusableWindows: vi.fn() });
+    await renderWith(module);
+    expect(calls).toHaveLength(1);
+    expect(calls[0].reuseWindow).toBe(true);
+  });
+
+  it("doesn't pass reuseWindow to SSR modules without it (Stencil v4)", async () => {
+    const { module, calls } = mockSsrModule();
+    await renderWith(module);
+    expect(calls).toHaveLength(1);
+    expect('reuseWindow' in calls[0]).toBe(false);
+  });
+});
