@@ -8,7 +8,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "pretest": "pnpm patcher",
-    "test": "wdio run ./wdio.conf.ts",
+    "test": "wdio run ./wdio.conf.ts && wdio run ./wdio.lazy.conf.ts && pnpm run test.lazy-bundle",
+    "test.lazy-bundle": "ng build --configuration production,lazy --stats-json --output-path dist/ng-app-lazy && node scripts/check-lazy-bundle.mjs dist/ng-app-lazy/stats.json",
     "patcher": "node node_modules/component-library-angular/scripts/patch-transform-selectors.mjs || echo '[patcher] patch-transform-selectors not found, skipping'"
   },
   "private": true,

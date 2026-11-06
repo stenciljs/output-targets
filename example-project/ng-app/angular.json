@@ -76,6 +76,9 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "lazy": {
+              "tsConfig": "tsconfig.lazy.json"
             }
           },
           "defaultConfiguration": "production"
@@ -88,6 +91,9 @@
             },
             "development": {
               "buildTarget": "ng-app:build:development"
+            },
+            "lazy": {
+              "buildTarget": "ng-app:build:development,lazy"
             }
           },
           "defaultConfiguration": "development"

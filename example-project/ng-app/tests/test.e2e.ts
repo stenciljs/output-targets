@@ -91,4 +91,19 @@ describe('Stencil Angular Integration', () => {
     const message = await transformedElement.getText();
     await expect(message).toContain('This component\'s tag should be transformed');
   });
+
+  it('should render components inside a @defer block once it is triggered', async () => {
+    await expect($('my-list')).not.toExist();
+    await $('[data-testid="load-deferred"]').click();
+
+    const list = $('[data-testid="deferred-list"]');
+    await expect(list).toExist();
+    await browser.execute(async () => await customElements.whenDefined('my-list-item'));
+    await expect($('[data-testid="deferred-list"] my-list-item')).toHaveText('Deferred item');
+  });
+
+  it('should render components used only on a lazy route', async () => {
+    await browser.url('/lazy');
+    await expect($('my-component-scoped')).toHaveText("Hello, World! I'm Lazy Loaded Route");
+  });
 });
