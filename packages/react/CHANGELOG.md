@@ -1,3 +1,10 @@
+## [1.8.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.7.0...@stencil/react-output-target@1.8.0) (2026-11-06)
+
+
+### :rocket: Enhancement
+
+* **react:** support v5's `reuseWindow` ([#872](https://github.com/stenciljs/output-targets/issues/872)) ([52f7b76](https://github.com/stenciljs/output-targets/commit/52f7b76a2d42b339bcd137a0bae9fc07ff49490b))
+
 ## [1.7.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.5...@stencil/react-output-target@1.7.0) (2026-10-28)
 
 
