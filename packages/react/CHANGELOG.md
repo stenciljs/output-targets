@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.8.0...@stencil/react-output-target@1.8.1) (2026-11-09)
+
+
+### :bug: Bug Fix
+
+* **react:** more robust ssr template splitting (supports stencil v5 lightDom component `<style>` tags) ([#874](https://github.com/stenciljs/output-targets/issues/874)) ([32abab3](https://github.com/stenciljs/output-targets/commit/32abab3479dd62249a28f6f52e72c6e0fbde7a13))
+
 ## [1.8.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.7.0...@stencil/react-output-target@1.8.0) (2026-11-06)
 
 
