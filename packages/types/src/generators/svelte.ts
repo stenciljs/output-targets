@@ -9,12 +9,11 @@ import {
 export interface SvelteTypesOptions extends BaseTypesOptions {}
 
 /**
- * Converts an event name to a Svelte event handler prop name.
- * Svelte uses "on:eventname" syntax in templates, but for type definitions
- * we use the "oneventname" format (lowercase).
+ * Converts an event name to a Svelte 5 event attribute name. Svelte listens for the name after
+ * `on` exactly as written, so the case is kept: `oncountChanged` for a `countChanged` event.
  */
 const toSvelteEventHandler = (eventName: string): string => {
-  return `on${eventName.toLowerCase()}`;
+  return `on${eventName}`;
 };
 
 /**

@@ -13,7 +13,8 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: ['@stencil/core', 'node:path', 'node:fs/promises', 'ts-morph'],
+      // every Node built-in: a missing one is replaced with an empty object in the bundle
+      external: ['@stencil/core', /^node:/, 'ts-morph'],
     },
   },
   plugins: [dts()],

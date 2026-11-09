@@ -8,7 +8,8 @@ export interface SolidTypesOptions extends BaseTypesOptions {}
  * for using Stencil web components as native custom elements in Solid.
  *
  * Solid distinguishes between:
- * - Properties (prop:): Set via JavaScript property
+ * - Plain bindings: set as a property in the browser, and rendered as an attribute on the server
+ * - Properties (prop:): Set via JavaScript property, in the browser only
  * - Attributes (attr:): Set via HTML attribute
  * - Events (on:): Custom event handlers
  *
@@ -62,6 +63,9 @@ export function createSolidTypes({
       const propType = normalizeTypeString(prop.complexType?.original || 'any');
       const docs = prop.docs?.text?.trim();
       const docsComment = docs ? `  /** ${docs} */\n` : '';
+
+      // plain binding: the one that works with server-side rendering
+      interfaceProperties.push(`${docsComment}  '${prop.name}'?: ${propType};`);
 
       // JavaScript property (always available)
       interfaceProperties.push(`${docsComment}  'prop:${prop.name}'?: ${propType};`);

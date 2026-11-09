@@ -7,6 +7,7 @@ import { createSvelteTypes } from './generators/svelte.js';
 import { createSolidTypes } from './generators/solid.js';
 import { createVueTypes } from './generators/vue.js';
 import { createPreactTypes } from './generators/preact.js';
+import { createAstroTypes } from './generators/astro.js';
 
 // Stencil v5 removed the `@stencil/core/internal` entry point, so anything that ends up in
 // our public typings is derived from the root `Config` type, which v4 and v5 both export.
@@ -18,6 +19,7 @@ const DEFAULT_FILENAMES = {
   solid: 'solid-native-types.d.ts',
   vue: 'vue-native-types.d.ts',
   preact: 'preact-native-types.d.ts',
+  astro: 'astro-native-types.d.ts',
 } as const;
 
 export interface TypesOutputTargetOptions {
@@ -115,6 +117,19 @@ export interface TypesOutputTargetOptions {
    * ```
    */
   preactTypesPath?: string;
+
+  /**
+   * Path to generate Astro type definitions.
+   *
+   * This can be either:
+   * - A full file path ending in `.d.ts` (e.g., `'dist/types/astro-types.d.ts'`)
+   * - A directory path (e.g., `'dist/types'`), which will generate `astro-native-types.d.ts`
+   *
+   * Astro templates render on the server only, so the types cover attributes, and props with no
+   * attribute (objects, arrays) by name, for the library's `ssrProp()`. There are no event types:
+   * listen for events in a client script.
+   */
+  astroTypesPath?: string;
 }
 
 /**
@@ -184,7 +199,8 @@ export function typesOutputTarget(options: TypesOutputTargetOptions = {}): Outpu
         options.svelteTypesPath ||
         options.solidTypesPath ||
         options.vueTypesPath ||
-        options.preactTypesPath;
+        options.preactTypesPath ||
+        options.astroTypesPath;
 
       if (!hasAnyPath) {
         diagnostics.push({
@@ -192,7 +208,7 @@ export function typesOutputTarget(options: TypesOutputTargetOptions = {}): Outpu
           type: 'config',
           messageText:
             "The 'types-output-target' requires at least one framework path to be specified " +
-            '(reactTypesPath, svelteTypesPath, solidTypesPath, vueTypesPath, or preactTypesPath).',
+            '(reactTypesPath, svelteTypesPath, solidTypesPath, vueTypesPath, preactTypesPath, or astroTypesPath).',
           lines: [],
         });
       }
@@ -213,6 +229,7 @@ export function typesOutputTarget(options: TypesOutputTargetOptions = {}): Outpu
         { framework: 'solid', pathOption: options.solidTypesPath, create: createSolidTypes },
         { framework: 'vue', pathOption: options.vueTypesPath, create: createVueTypes },
         { framework: 'preact', pathOption: options.preactTypesPath, create: createPreactTypes },
+        { framework: 'astro', pathOption: options.astroTypesPath, create: createAstroTypes },
       ] as const) {
         if (!pathOption) {
           continue;
@@ -243,3 +260,4 @@ export { createSvelteTypes } from './generators/svelte.js';
 export { createSolidTypes } from './generators/solid.js';
 export { createVueTypes } from './generators/vue.js';
 export { createPreactTypes } from './generators/preact.js';
+export { createAstroTypes } from './generators/astro.js';

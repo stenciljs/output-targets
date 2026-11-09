@@ -11,6 +11,7 @@ import { createSvelteTypes } from './generators/svelte.js';
 import { createSolidTypes } from './generators/solid.js';
 import { createVueTypes } from './generators/vue.js';
 import { createPreactTypes } from './generators/preact.js';
+import { createAstroTypes } from './generators/astro.js';
 
 const createMockComponent = (overrides: Partial<ComponentCompilerMeta> = {}): ComponentCompilerMeta =>
   ({
@@ -47,7 +48,9 @@ describe('createReactTypes', () => {
     expect(result).toContain(`declare module 'react/jsx-runtime'`);
     expect(result).toContain(`interface MyButtonNativeProps`);
     expect(result).toContain(`'disabled'?: boolean;`);
-    expect(result).toContain(`'onmyclick'?:`); // lowercase event handler
+    // React 19 listens for the name after `on` as written, so the case is kept
+    expect(result).toContain(`'onmyClick'?:`);
+    expect(result).not.toContain(`'onmyclick'?:`);
     expect(result).toContain(`'my-button': DetailedHTMLProps`);
   });
 
@@ -80,12 +83,14 @@ describe('createSvelteTypes', () => {
     expect(result).toContain(`declare module 'svelte/elements'`);
     expect(result).toContain(`interface SvelteHTMLElements`);
     expect(result).toContain(`interface MyButtonNativeProps`);
-    expect(result).toContain(`'onmyclick'?:`);
+    // Svelte 5 listens for the name after `on` as written, so the case is kept
+    expect(result).toContain(`'onmyClick'?:`);
+    expect(result).not.toContain(`'onmyclick'?:`);
   });
 });
 
 describe('createSolidTypes', () => {
-  it('should generate Solid native types with prop: and attr: prefixes', () => {
+  it('should generate Solid native types with plain, prop: and attr: bindings', () => {
     const result = createSolidTypes({
       components: [createMockComponent()],
       stencilPackageName: 'my-package',
@@ -93,9 +98,61 @@ describe('createSolidTypes', () => {
 
     expect(result).toContain(`declare module 'solid-js'`);
     expect(result).toContain(`interface MyButtonNativeProps`);
+    // plain bindings are the ones Solid renders on the server
+    expect(result).toContain(`  'disabled'?: boolean;`);
     expect(result).toContain(`'prop:disabled'?: boolean;`);
     expect(result).toContain(`'attr:disabled'?: string;`);
     expect(result).toContain(`'on:myClick'?:`);
+  });
+});
+
+describe('createAstroTypes', () => {
+  const component = createMockComponent({
+    properties: [
+      ...createMockComponent().properties,
+      {
+        name: 'chartData',
+        attribute: undefined,
+        internal: false,
+        complexType: {
+          original: 'ChartPoint[]',
+          resolved: 'ChartPoint[]',
+          references: { ChartPoint: { location: 'import', path: './types', id: 'x' } },
+        },
+        docs: { text: '', tags: [] },
+      },
+      {
+        name: 'buttonLabel',
+        attribute: 'button-label',
+        internal: false,
+        complexType: { original: 'string', resolved: 'string', references: {} },
+        docs: { text: '', tags: [] },
+      },
+    ] as ComponentCompilerMeta['properties'],
+  });
+
+  it("should augment Astro's global JSX namespace", () => {
+    const result = createAstroTypes({ components: [component], stencilPackageName: 'my-package' });
+
+    expect(result).toContain(`declare global {`);
+    expect(result).toContain(`namespace astroHTML.JSX {`);
+    expect(result).toContain(`'my-button': astroHTML.JSX.HTMLAttributes & MyButtonNativeProps;`);
+  });
+
+  it('should key props by attribute name, and attribute-less props by name', () => {
+    const result = createAstroTypes({ components: [component], stencilPackageName: 'my-package' });
+
+    expect(result).toContain(`'disabled'?: boolean;`);
+    expect(result).toContain(`'button-label'?: string;`);
+    expect(result).toContain(`'chartData'?: ChartPoint[];`);
+    expect(result).toContain(`import type { ChartPoint } from 'my-package';`);
+  });
+
+  it('should have no event handlers', () => {
+    const result = createAstroTypes({ components: [component], stencilPackageName: 'my-package' });
+
+    expect(result).not.toContain(`myClick`);
+    expect(result).not.toContain(`CustomEvent`);
   });
 });
 
