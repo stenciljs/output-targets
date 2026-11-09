@@ -1,0 +1,9 @@
+/* Builds the app against `component-library-angular/lazy`, the wrappers generated with `lazyDefine`. */
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "paths": {
+      "component-library-angular": ["./src/component-library-angular-lazy.ts"]
+    }
+  }
+}

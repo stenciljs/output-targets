@@ -40,4 +40,24 @@ describe('normalizeOutputTarget', () => {
 
     expect(results.customElementsDir).toEqual('components');
   });
+
+  it('should throw when lazyDefine is used with outputType component', () => {
+    expect(() =>
+      normalizeOutputTarget(config, {
+        directivesProxyFile: '',
+        outputType: 'component',
+        lazyDefine: true,
+      } as OutputTargetAngular)
+    ).toThrow("The 'lazyDefine' option requires outputType 'standalone' or 'scam'.");
+  });
+
+  it.each(['standalone', 'scam'] as const)('should accept lazyDefine with outputType %s', (outputType) => {
+    const results = normalizeOutputTarget(config, {
+      directivesProxyFile: '',
+      outputType,
+      lazyDefine: true,
+    } as OutputTargetAngular);
+
+    expect(results.lazyDefine).toBe(true);
+  });
 });

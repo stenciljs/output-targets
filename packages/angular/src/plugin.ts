@@ -59,5 +59,11 @@ export function normalizeOutputTarget(config: PluginConfig, outputTarget: Output
     );
   }
 
+  if (outputTarget.lazyDefine === true && results.outputType === OutputTypes.Component) {
+    throw new Error(
+      "The 'lazyDefine' option requires outputType 'standalone' or 'scam'. outputType 'component' already loads components through Stencil's lazy loader."
+    );
+  }
+
   return results;
 }

@@ -364,6 +364,125 @@ describe('generateComponentProxy', () => {
   });
 });
 
+describe('lazyDefine', () => {
+  const pkgData: PackageJSON = {
+    types: 'dist/types/index.d.ts',
+  };
+  const rootDir: string = '';
+
+  const components = [
+    {
+      tagName: 'my-button',
+      properties: [{ name: 'color', type: 'string', internal: false }],
+      events: [],
+      methods: [{ name: 'setFocus', internal: false }],
+      virtualProperties: [],
+    },
+    {
+      tagName: 'my-list',
+      properties: [],
+      events: [],
+      methods: [],
+      virtualProperties: [],
+    },
+  ] as unknown as ComponentCompilerMeta[];
+
+  const createOutputTarget = (overrides: Partial<OutputTargetAngular> = {}): OutputTargetAngular => ({
+    componentCorePackage: 'component-library',
+    directivesProxyFile: '../component-library-angular/src/proxies.ts',
+    outputType: 'standalone',
+    customElementsDir: 'components',
+    lazyDefine: true,
+    ...overrides,
+  });
+
+  it.each(['standalone', 'scam'] as const)(
+    'does not import any element statically for outputType "%s"',
+    (outputType) => {
+      const finalText = generateProxies(components, pkgData, createOutputTarget({ outputType }), rootDir, emptyConfig);
+
+      expect(finalText).not.toContain('defineCustomElement');
+      expect(finalText).not.toContain("import { ProxyCmp } from './angular-component-lib/utils';");
+      expect(finalText).toContain(
+        "import { LazyProxyCmp, defineOnCreate } from './angular-component-lib/lazy-define';"
+      );
+      expect(finalText).toContain(
+        "defineOnCreate(this, ['color'], () => import('component-library/components/my-button.js'));"
+      );
+      expect(finalText).toContain("defineOnCreate(this, [], () => import('component-library/components/my-list.js'));");
+    }
+  );
+
+  it('keeps the NgModule for each component with outputType "scam"', () => {
+    const finalText = generateProxies(
+      components,
+      pkgData,
+      createOutputTarget({ outputType: 'scam' }),
+      rootDir,
+      emptyConfig
+    );
+
+    expect(finalText).toContain('export class MyButtonModule');
+    expect(finalText).toContain('export class MyListModule');
+  });
+
+  it('imports the element when the wrapper is created with esModules', () => {
+    const result = generateComponentProxy(components[0], pkgData, createOutputTarget(), rootDir, emptyConfig);
+
+    expect(result).not.toContain('defineCustomElement');
+    expect(result).toContain("import { LazyProxyCmp, defineOnCreate } from './angular-component-lib/lazy-define';");
+    expect(result).toContain(
+      "defineOnCreate(this, ['color'], () => import('component-library/components/my-button.js'));"
+    );
+  });
+
+  it('imports the element through the exports map in Stencil v5', () => {
+    const config = { generateExportMaps: true, outputTargets: [{ type: 'standalone' }] } as any;
+
+    const finalText = generateProxies(components, pkgData, createOutputTarget(), rootDir, config);
+    const result = generateComponentProxy(components[0], pkgData, createOutputTarget(), rootDir, config);
+
+    expect(finalText).toContain("defineOnCreate(this, ['color'], () => import('component-library/my-button'));");
+    expect(result).toContain("defineOnCreate(this, ['color'], () => import('component-library/my-button'));");
+  });
+
+  it('follows customElementsDir', () => {
+    const finalText = generateProxies(
+      components,
+      pkgData,
+      createOutputTarget({ customElementsDir: 'custom-elements' }),
+      rootDir,
+      emptyConfig
+    );
+
+    expect(finalText).toContain("() => import('component-library/custom-elements/my-button.js')");
+  });
+
+  it.each(['standalone', 'scam'] as const)(
+    'generates the same output for outputType "%s" when it is false as when it is not set',
+    (outputType) => {
+      const withoutOption = createOutputTarget({ outputType });
+      delete withoutOption.lazyDefine;
+
+      const expected = generateProxies(components, pkgData, withoutOption, rootDir, emptyConfig);
+      const actual = generateProxies(
+        components,
+        pkgData,
+        createOutputTarget({ outputType, lazyDefine: false }),
+        rootDir,
+        emptyConfig
+      );
+
+      expect(actual).toEqual(expected);
+      expect(actual).toContain(
+        "import { defineCustomElement as defineMyButton } from 'component-library/components/my-button.js';"
+      );
+      expect(actual).toContain('defineCustomElementFn: defineMyButton');
+      expect(actual).not.toContain('defineOnCreate');
+    }
+  );
+});
+
 describe('generateBarrelFile', () => {
   it('should generate a barrel file that re-exports all components for standalone', () => {
     const components: ComponentCompilerMeta[] = [
