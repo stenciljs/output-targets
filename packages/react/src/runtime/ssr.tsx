@@ -162,6 +162,62 @@ type ReactNodeExtended =
   | LazyComponent<any, any>
   | ((props: any, deprecatedLegacyContext?: any) => ReactNode);
 
+type ParseHTML = typeof import('html-react-parser').htmlToDOM;
+type ParsedNode = ReturnType<ParseHTML>[number];
+type ParsedElement = import('html-react-parser').Element;
+
+const isParsedElement = (node: ParsedNode): node is ParsedElement => 'name' in node && 'attribs' in node;
+
+/**
+ * Split a component rendered with `renderToString({ fullDocument: false })` into its parts. The
+ * fragment is parsed (so quotes, comments and `<` in attribute values are handled) and the parts
+ * are sliced from the original string, so they keep Stencil's markup exactly.
+ *
+ * Stencil v5 starts a fragment with the `<style>`s its scoped components need (e.g. a scoped
+ * child in the light DOM); those are skipped, as they're also in the results' `styles` and each
+ * nested Stencil component renders its own.
+ *
+ * @param rendered - the fragment
+ * @param tagNames - the tag names the component may have been rendered with
+ * @param parseHTML - `htmlToDOM` from `html-react-parser`, which is only imported on the server
+ * @returns the component's own HTML, its light DOM (when it has no shadow root), its
+ * declarative shadow root (if any)
+ */
+export const splitRenderedComponent = (rendered: string, tagNames: string[], parseHTML: ParseHTML) => {
+  // `htmlToDOM` passes its options to the `DomHandler` too, which records where each node is
+  const indices = { withStartIndices: true, withEndIndices: true } as Parameters<ParseHTML>[1];
+  const nodes = parseHTML(rendered, indices);
+  const host = nodes.find((node): node is ParsedElement => isParsedElement(node) && tagNames.includes(node.name));
+  if (!host) {
+    throw new Error(`Could not find <${tagNames[0]}> in the HTML returned from renderToString`);
+  }
+  const source = (from: ParsedNode[]) =>
+    from.length === 0 ? '' : rendered.slice(from[0].startIndex!, from[from.length - 1].endIndex! + 1);
+
+  const html = source([host]);
+
+  // the shadow root is the host's first element child
+  const firstElement = (host.children as ParsedNode[]).find(isParsedElement);
+  if (firstElement?.name !== 'template' || firstElement.attribs.shadowrootmode !== 'open') {
+    return { html, lightDom: source(host.children as ParsedNode[]), template: undefined };
+  }
+  return {
+    html,
+    lightDom: undefined,
+    template: {
+      delegatesFocus: 'shadowrootdelegatesfocus' in firstElement.attribs,
+      content: source(firstElement.children as ParsedNode[]),
+    },
+  };
+};
+
+/**
+ * Escape a value for a double-quoted HTML attribute.
+ * @param value - the attribute value
+ * @returns the escaped value
+ */
+const escapeAttribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+
 /**
  * returns true if the value is a primitive, e.g. string, number, boolean
  * @param value - the value to check
@@ -253,7 +309,7 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
     let stringProps = '';
     for (const [attributeName, value] of Object.entries(attributes)) {
       const serialized = typeof value === 'object' ? stringifyCSSProperties(value) : value;
-      stringProps += ` ${attributeName}="${serialized}"`;
+      stringProps += ` ${attributeName}="${escapeAttribute(String(serialized))}"`;
     }
 
     /**
@@ -297,14 +353,9 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
 
     const toSerializeWithChildren = `${toSerialize}${serializedChildren}</${transformedTagName}>`;
 
-    /**
-     * first render the component with `prettyHtml` flag so it makes it easier to
-     * access the inner content of the component.
-     */
-    const { html, styles } = await options.renderToString(toSerializeWithChildren, {
+    const { html: renderedHtml, styles } = await options.renderToString(toSerializeWithChildren, {
       fullDocument: false,
       serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
-      prettyHtml: true,
       ...(options.reuseWindow && { reuseWindow: true }),
       ...(Object.keys(complexProps).length > 0 && {
         beforeHydrate: (doc: Document) => {
@@ -318,32 +369,26 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       }),
     });
 
-    if (!html) {
+    if (!renderedHtml) {
       throw new Error('No HTML returned from renderToString');
-    }
-
-    /**
-     * cut out the inner content of the component
-     */
-    const serializedComponentByLine = html.split('\n');
-    const hydrationComment = '<!--r.1-->';
-    const isShadowComponent = serializedComponentByLine[1].includes('shadowrootmode="open"');
-    const delegatesFocus = serializedComponentByLine[1].includes('shadowrootdelegatesfocus');
-    let templateContent: undefined | string = undefined;
-    if (isShadowComponent) {
-      const templateEndTag = '  </template>';
-      templateContent = serializedComponentByLine
-        .slice(2, serializedComponentByLine.lastIndexOf(templateEndTag))
-        .join('\n')
-        .trim();
     }
 
     /**
      * `html-react-parser` is a Node.js dependency so we should make sure to only import it when
      * run on the server and when needed.
      */
-    const { default: parse } = await import('html-react-parser');
+    const { default: parse, htmlToDOM } = await import('html-react-parser');
     const typedParse = parse as unknown as typeof parse.default;
+
+    const { html, lightDom, template } = splitRenderedComponent(
+      renderedHtml,
+      [transformedTagName, options.tagName],
+      htmlToDOM
+    );
+    const isShadowComponent = template !== undefined;
+    const delegatesFocus = !!template?.delegatesFocus;
+    const hydrationComment = '<!--r.1-->';
+    const templateContent = template?.content ?? '';
 
     /**
      * Parse the string back into a React component
@@ -366,25 +411,8 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
              */
             if (!isShadowComponent) {
               const { children, ...customProps } = props || {};
-              const __html = serializedComponentByLine
-                /**
-                 * remove the components outer tags as we want to set the inner content only
-                 */
-                .slice(1, -1)
-                /**
-                 * bring the array back to a string
-                 */
-                .join('\n')
-                .trim()
-                /**
-                 * remove any whitespace between tags that may cause hydration errors
-                 */
-                .replace(/(?<=>)\s+(?=<)/g, '')
-                /**
-                 * collapse any remaining newline + indentation sequences not caught
-                 * by the previous regex (e.g. within text nodes or attribute boundaries)
-                 */
-                .replace(/\n\s+/g, '');
+              // exactly as Stencil rendered it: whitespace in a light DOM component can be content
+              const __html = lightDom ?? '';
 
               const renderStyles =
                 styles.length > 0 &&
