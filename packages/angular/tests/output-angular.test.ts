@@ -328,6 +328,8 @@ describe('ssrPropModule', () => {
     expect(finalText).not.toContain('ssr:');
     expect(finalText).not.toContain('ssrProp');
     expect(finalText).not.toContain('markServer');
+    // no blank line where the ssrProp import would go
+    expect(finalText).toMatch(/my-component\.js';\n@ProxyCmp/);
   });
 });
 

@@ -394,7 +394,13 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     proxyFileOutput.push(componentTypeDefinition, '\n');
   }
 
-  const final: string[] = [imports, typeImports, sourceImports, ssrImports.source, ...proxyFileOutput];
+  const final: string[] = [
+    imports,
+    typeImports,
+    sourceImports,
+    ...(ssrImports.source ? [ssrImports.source] : []),
+    ...proxyFileOutput,
+  ];
 
   return final.join('\n') + '\n';
 }
@@ -507,7 +513,13 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
   }
   proxyFileOutput.push(componentTypeDefinition, '\n');
 
-  const final: string[] = [imports, typeImports, sourceImport, ssrImports.source, ...proxyFileOutput];
+  const final: string[] = [
+    imports,
+    typeImports,
+    sourceImport,
+    ...(ssrImports.source ? [ssrImports.source] : []),
+    ...proxyFileOutput,
+  ];
 
   return final.join('\n') + '\n';
 }
