@@ -71,6 +71,16 @@ function formatInputs(inputs: readonly ComponentInputProperty[]): string {
 }
 
 /**
+ * What a wrapper needs to write its inputs as attributes during server rendering.
+ */
+export interface SsrInputs {
+  /** Inputs whose attribute isn't the dash-cased prop name, mapped to that attribute. */
+  attributes: Record<string, string>;
+  /** Inputs whose every value goes through `ssrProp()`: no attribute, or not a primitive type. */
+  refs: string[];
+}
+
+/**
  * Creates an Angular component declaration from formatted Stencil compiler metadata.
  *
  * @param tagName The tag name of the component.
@@ -80,6 +90,9 @@ function formatInputs(inputs: readonly ComponentInputProperty[]): string {
  * @param standalone Whether to define the component as a standalone component.
  * @param inlineComponentProps List of properties that should be inlined into the component definition.
  * @param events The events of the Stencil component for generating outputs.
+ * @param ssr When set, the wrapper writes its inputs as attributes during server rendering.
+ * `attributes` maps the inputs whose attribute isn't the dash-cased prop name to that attribute,
+ * and `refs` lists the inputs whose every value goes through `ssrProp()`.
  * @returns The component declaration as a string.
  */
 export const createAngularComponentDefinition = (
@@ -89,7 +102,8 @@ export const createAngularComponentDefinition = (
   includeImportCustomElements = false,
   standalone = false,
   inlineComponentProps: readonly ComponentCompilerProperty[] = [],
-  events: readonly ComponentCompilerEvent[] = []
+  events: readonly ComponentCompilerEvent[] = [],
+  ssr?: SsrInputs
 ) => {
   const tagNameAsPascal = dashToPascalCase(tagName);
 
@@ -123,6 +137,14 @@ export const createAngularComponentDefinition = (
 
   if (hasMethods) {
     proxyCmpOptions.push(`\n  methods: [${formattedMethods}]`);
+  }
+
+  if (ssr && hasInputs) {
+    const ssrOptions = ['ssrProp'];
+    const attributes = Object.entries(ssr.attributes).map(([prop, attr]) => `'${prop}': '${attr}'`);
+    if (attributes.length) ssrOptions.push(`attributes: { ${attributes.join(', ')} }`);
+    if (ssr.refs.length) ssrOptions.push(`refs: [${formatToQuotedList(ssr.refs)}]`);
+    proxyCmpOptions.push(`\n  ssr: { ${ssrOptions.join(', ')} }`);
   }
 
   let standaloneOption = '';
@@ -168,7 +190,7 @@ export class ${tagNameAsPascal} {
   ${propertiesDeclarationText}
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
-    this.el = r.nativeElement;
+    this.el = r.nativeElement;${ssr && hasInputs ? '\n    markServer(this);' : ''}
   }
 }`;
 

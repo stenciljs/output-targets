@@ -826,6 +826,9 @@ importers:
       rollup:
         specifier: ^2.80.0
         version: 2.80.0
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
       stencil-output-targets-shared:
         specifier: workspace:*
         version: link:../shared

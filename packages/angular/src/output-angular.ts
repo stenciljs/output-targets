@@ -19,6 +19,7 @@ import {
   createAngularComponentDefinition,
   createComponentTypeDefinition,
   INPUT_TRANSFORM_FUNCTION,
+  type SsrInputs,
 } from './generate-angular-component';
 import { generateAngularDirectivesFile } from './generate-angular-directives-file';
 import generateValueAccessors from './generate-value-accessors';
@@ -26,6 +27,55 @@ import { generateAngularModuleForComponent } from './generate-angular-modules';
 import { generateTransformTagScript } from './generate-transformtag-script';
 
 const filterInternalProps = (prop: { name: string; internal: boolean }) => !prop.internal;
+
+/**
+ * Stencil's own prop name to attribute name conversion (`prop1` -> `prop-1`).
+ */
+const toDashCase = (str: string): string =>
+  str
+    .replace(/([A-Z0-9])/g, (match) => ` ${match[0]}`)
+    .trim()
+    .split(' ')
+    .join('-')
+    .toLowerCase();
+
+/**
+ * With `ssrPropModule` set, what the wrapper needs to write its inputs as attributes during
+ * server rendering. Otherwise `undefined`.
+ *
+ * Stencil only converts an attribute for a prop typed exactly `string`, `number` or `boolean`. Any
+ * other prop (`any`, which covers mixed unions like `string | boolean`, or `unknown`) gets the
+ * attribute's string as it is, so it's a ref: every value goes through `ssrProp()`. So is a prop
+ * with no attribute, which Stencil never reads.
+ */
+const LITERAL_ATTRIBUTE_TYPES: readonly string[] = ['string', 'number', 'boolean'];
+
+const getSsrInputs = (
+  outputTarget: OutputTargetAngular,
+  props: readonly ComponentCompilerProperty[]
+): SsrInputs | undefined => {
+  if (!outputTarget.ssrPropModule) return undefined;
+  const ssr: SsrInputs = { attributes: {}, refs: [] };
+  for (const prop of props) {
+    if (!prop.attribute || !LITERAL_ATTRIBUTE_TYPES.includes(prop.type)) ssr.refs.push(prop.name);
+    else if (prop.attribute !== toDashCase(prop.name)) ssr.attributes[prop.name] = prop.attribute;
+  }
+  return ssr;
+};
+
+/**
+ * Whether a component's wrapper has inputs: its properties and virtual properties.
+ */
+const hasInputs = (cmp: ComponentCompilerMeta) =>
+  (cmp.properties ?? []).some(filterInternalProps) || (cmp.virtualProperties ?? []).length > 0;
+
+/**
+ * The extra imports a proxy file needs for `ssrPropModule`.
+ */
+const getSsrImports = (outputTarget: OutputTargetAngular, components: readonly ComponentCompilerMeta[]) =>
+  outputTarget.ssrPropModule && components.some(hasInputs)
+    ? { componentLib: ['markServer'], source: `import { ssrProp } from '${outputTarget.ssrPropModule}';\n` }
+    : { componentLib: [], source: '' };
 
 /**
  * Whether a property declares an input transform.
@@ -221,7 +271,8 @@ export function generateProxies(
   /**
    * The collection of named imports from the angular-component-lib/utils.
    */
-  const componentLibImports = ['ProxyCmp'];
+  const ssrImports = getSsrImports(outputTarget, components);
+  const componentLibImports = ['ProxyCmp', ...ssrImports.componentLib];
 
   /**
    * The input transform lives in its own module so that it carries no runtime imports.
@@ -323,7 +374,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
       isCustomElementsBuild,
       isStandaloneBuild,
       inlineComponentProps,
-      cmpMeta.events || []
+      cmpMeta.events || [],
+      getSsrInputs(outputTarget, internalProps)
     );
     const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
     const componentTypeDefinition = createComponentTypeDefinition(
@@ -342,7 +394,13 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     proxyFileOutput.push(componentTypeDefinition, '\n');
   }
 
-  const final: string[] = [imports, typeImports, sourceImports, ...proxyFileOutput];
+  const final: string[] = [
+    imports,
+    typeImports,
+    sourceImports,
+    ...(ssrImports.source ? [ssrImports.source] : []),
+    ...proxyFileOutput,
+  ];
 
   return final.join('\n') + '\n';
 }
@@ -376,7 +434,8 @@ export function generateComponentProxy(
 
   const booleanAttributes = outputTarget.booleanAttributes === true;
 
-  const componentLibImports = ['ProxyCmp'];
+  const ssrImports = getSsrImports(outputTarget, [cmpMeta]);
+  const componentLibImports = ['ProxyCmp', ...ssrImports.componentLib];
 
   // The input transform lives in its own module so that it carries no runtime imports.
   let transformImport = '';
@@ -433,7 +492,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     isCustomElementsBuild,
     isStandaloneBuild,
     inlineComponentProps,
-    cmpMeta.events || []
+    cmpMeta.events || [],
+    getSsrInputs(outputTarget, internalProps)
   );
 
   const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
@@ -453,7 +513,13 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
   }
   proxyFileOutput.push(componentTypeDefinition, '\n');
 
-  const final: string[] = [imports, typeImports, sourceImport, ...proxyFileOutput];
+  const final: string[] = [
+    imports,
+    typeImports,
+    sourceImport,
+    ...(ssrImports.source ? [ssrImports.source] : []),
+    ...proxyFileOutput,
+  ];
 
   return final.join('\n') + '\n';
 }
