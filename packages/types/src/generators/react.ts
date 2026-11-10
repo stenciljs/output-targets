@@ -9,12 +9,12 @@ import {
 export interface ReactTypesOptions extends BaseTypesOptions {}
 
 /**
- * Converts an event name to a lowercase React 19 event handler prop name.
- * React 19 lowercases the prop name (minus "on") to get the event name.
- * So for event "myFocus", the handler prop should be "onmyfocus".
+ * Converts an event name to a React 19 event handler prop name. On a custom element, React
+ * listens for the prop name minus "on", as written (`addEventListener(key.slice(2))`), so the
+ * case is kept: for event "myFocus", the handler prop is "onmyFocus".
  */
-const toLowercaseEventHandler = (eventName: string): string => {
-  return `on${eventName.toLowerCase()}`;
+const toEventHandler = (eventName: string): string => {
+  return `on${eventName}`;
 };
 
 /**
@@ -67,10 +67,10 @@ export function createReactTypes({
       interfaceProperties.push(`${docs}  '${prop.name}'?: ${prop.type};`);
     }
 
-    // Add events with lowercase naming (React 19 style)
+    // React 19 listens for the name after `on` as written: `oncountChanged` for `countChanged`
     for (const event of info.events) {
       const docs = event.docs ? `  /** Event: ${event.name} - ${event.docs} */\n` : `  /** Event: ${event.name} */\n`;
-      const handlerName = toLowercaseEventHandler(event.name);
+      const handlerName = toEventHandler(event.name);
       interfaceProperties.push(`${docs}  '${handlerName}'?: (event: ${info.customEventType}<${event.type}>) => void;`);
     }
 
