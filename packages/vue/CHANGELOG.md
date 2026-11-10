@@ -1,3 +1,10 @@
+## [0.15.0](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.7...@stencil/vue-output-target@0.15.0) (2026-11-10)
+
+
+### :rocket: Enhancement
+
+* **vue:** server-render wrapper props for Stencil v5 SSR ([#880](https://github.com/stenciljs/output-targets/issues/880)) ([893a856](https://github.com/stenciljs/output-targets/commit/893a8561ba90cfbd523cee2f19394fde02669d00))
+
 ## [0.14.7](https://github.com/stenciljs/output-targets/compare/@stencil/vue-output-target@0.14.6...@stencil/vue-output-target@0.14.7) (2026-10-28)
 
 
