@@ -102,6 +102,9 @@ In the browser, inputs are set as properties, as usual. Some things to know:
   later updates the property, not the attribute.
 - Reading an input back on the server returns the value you set.
 
+For a working setup, see the [Angular example](https://github.com/stenciljs/ssr-examples/tree/main/examples/angular)
+in the Stencil SSR examples.
+
 ## Boolean attributes
 
 Angular resolves a bare attribute to the empty string, so a boolean property has to be bound

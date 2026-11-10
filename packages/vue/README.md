@@ -46,7 +46,36 @@ export const config: Config = {
 | `includeDefineCustomElements` | If `true`, all Web Components will automatically be registered with the Custom Elements Registry. This can only be used when lazy loading Web Components and will not work when `includeImportCustomElements` is `true`.                                                                                                         |
 | `includeImportCustomElements` | If `true`, the output target will import the custom element instance and register it with the Custom Elements Registry when the component is imported inside of a user's app. This can only be used with the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements) and will not work with lazy loaded components. |
 | `customElementsDir`           | This is the directory where the custom elements are imported from when using the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements). Defaults to the `components` directory. Only applies when `includeImportCustomElements` is `true`.                                                                        |
-| `hydrateModule`               | To enable server side rendering, provide the path to the hydrate module, e.g. `my-component/hydrate`. By default, this value is undefined and server side rendering is disabled.                                                                                                                                                 |
+| `hydrateModule`               | **Deprecated, not recommended: it will be removed.** For server rendering, use Stencil's `ssr` output target with `ssrPropModule` instead. To enable server side rendering, provide the path to the hydrate module, e.g. `my-component/hydrate`. By default, this value is undefined and server side rendering is disabled. |
+| `ssrPropModule`               | The component library's `ssr-prop` module (e.g. `'component-library/ssr-prop'`), from Stencil's `ssr` output target. Set it when apps server-render the wrappers (e.g. Nuxt) and pass the page through the library's `renderToString()`. Refer to [Server-side rendering](#server-side-rendering). |
+
+## Server-side rendering
+
+If apps server-render your wrappers (with Nuxt, for example) and pass the page through the
+`renderToString()` of Stencil's `ssr` output target, set `ssrPropModule` to your library's
+`ssr-prop` module:
+
+```ts
+vueOutputTarget({
+  componentCorePackage: 'component-library',
+  proxiesFile: '../component-library-vue/src/proxies.ts',
+  includeImportCustomElements: true,
+  ssrPropModule: 'component-library/ssr-prop',
+}),
+```
+
+Without it, Vue's server render leaves objects and arrays out of the HTML, along with props whose
+names have capitals (`firstName`), so the components render on the server without them. With it,
+every prop reaches the server render.
+
+For an object or array to still be there when a component hydrates, the component has to carry
+it in its attribute, for example with `@Prop({ serialize: 'json' })`.
+
+Don't use the deprecated `hydrateModule` option: it's not recommended, and will be removed. It
+can't be combined with `ssrPropModule`.
+
+For a working setup, see the [Nuxt example](https://github.com/stenciljs/ssr-examples/tree/main/examples/nuxt)
+in the Stencil SSR examples.
 
 ## Interfaces
 

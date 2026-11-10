@@ -73,6 +73,12 @@ export function normalizeOutputTarget(config: PluginConfig, outputTarget: any) {
     );
   }
 
+  if (outputTarget.hydrateModule !== undefined && outputTarget.ssrPropModule !== undefined) {
+    throw new Error(
+      "`hydrateModule` and `ssrPropModule` cannot be used together: with `hydrateModule`, the wrappers render on the server through the hydrate module and never use `ssrPropModule`. For Stencil's `ssr` output target, remove `hydrateModule`."
+    );
+  }
+
   if (outputTarget.includeImportCustomElements && outputTarget.includePolyfills) {
     throw new Error(
       'includePolyfills cannot be used at the same time as includeImportCustomElements. Set `includePolyfills: false` in your Vue output target config to resolve this.'

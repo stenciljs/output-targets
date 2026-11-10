@@ -68,6 +68,14 @@ function getFilteredComponents(excludeComponents: string[] = [], cmps: Component
   );
 }
 
+/**
+ * The `ssrProp` import, when `ssrPropModule` is set and a component has props.
+ */
+const getSsrImport = (outputTarget: OutputTargetVue, components: readonly ComponentCompilerMeta[]) =>
+  outputTarget.ssrPropModule && components.some((cmp) => cmp.properties?.length)
+    ? `import { ssrProp } from '${outputTarget.ssrPropModule}';\n`
+    : '';
+
 export function generateProxies(
   config: Config,
   components: ComponentCompilerMeta[],
@@ -141,6 +149,7 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
     imports,
     typeImports,
     sourceImports,
+    ...[getSsrImport(outputTarget, components)].filter(Boolean),
     transformTagImport,
     registerCustomElements,
     components.map(createComponentDefinition(IMPORT_TYPES, outputTarget)).join('\n'),
@@ -188,7 +197,14 @@ import { ${importKeys.join(', ')} } from '@stencil/vue-output-target/runtime';\n
 
   const componentDefinition = createComponentDefinition(IMPORT_TYPES, outputTarget)(component);
 
-  const final: string[] = [imports, typeImports, sourceImport, transformTagImport, componentDefinition];
+  const final: string[] = [
+    imports,
+    typeImports,
+    sourceImport,
+    ...[getSsrImport(outputTarget, [component])].filter(Boolean),
+    transformTagImport,
+    componentDefinition,
+  ];
 
   return final.join('\n') + '\n';
 }
