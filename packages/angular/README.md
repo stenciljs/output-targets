@@ -58,6 +58,49 @@ export const config: Config = {
 | `customElementsDir`    | This is the directory where the custom elements are imported from when using the [Custom Elements Bundle](https://stenciljs.com/docs/custom-elements). Defaults to the `components` directory. Only applies for `outputType: "scam"` or `outputType: "standalone"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `inlineProperties` | Experimental. When true, tries to inline the properties of components. This is required to enable Angular Language Service to type-check and show jsdocs when using the components in html-templates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `booleanAttributes`    | When `true`, boolean properties are declared with an Angular input transform so they can be set by attribute presence, e.g. `<my-component disabled>` instead of `<my-component [disabled]="true">`. Type-checking the attribute form also requires `inlineProperties`. Defaults to `false`. Refer to [Boolean attributes](#boolean-attributes).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `ssrPropModule`        | The component library's `ssr-prop` module (e.g. `'component-library/ssr-prop'`), from Stencil's `ssr` output target. Set it when apps server-render the wrappers with Angular SSR. Refer to [Server-side rendering](#server-side-rendering). |
+
+## Server-side rendering
+
+With Stencil's `ssr` output target, an Angular SSR app passes each rendered page through the
+library's `renderToString()`, which renders the components into it. That needs the wrappers'
+inputs in the HTML, but Angular's server DOM never writes properties to the HTML, so
+`<my-chart [data]="points">` would reach `renderToString()` with no `data`.
+
+Set `ssrPropModule` to the library's `ssr-prop` module:
+
+```ts
+angularOutputTarget({
+  componentCorePackage: 'component-library',
+  directivesProxyFile: '../component-library-angular/src/proxies.ts',
+  ssrPropModule: 'component-library/ssr-prop',
+}),
+```
+
+A wrapper rendering on the server then writes each input into the element's attributes, under
+the prop's attribute name:
+
+| Input value | Written as |
+|---|---|
+| a string or number | the attribute's value |
+| `true` | an empty attribute |
+| `null` or `undefined` | no attribute |
+| `false`, an object, an array, a function, or any value for a prop with no attribute or not typed exactly `string`, `number` or `boolean` | an `ssrProp()` reference |
+
+Strings, numbers and `true` stay in the HTML, so the components' first render in the browser
+sees them too. A reference hands `renderToString()` the exact value and is removed from the HTML.
+(`false` can't be an attribute: Stencil reads any attribute on a boolean prop as `true`. And
+Stencil only converts an attribute for a prop of one of those three types: for a `string | boolean`
+prop, `""` would stay a string.)
+
+In the browser, inputs are set as properties, as usual. Some things to know:
+
+- To keep an object or array after the components hydrate, the component has to carry it in its
+  attribute, for example with `@Prop({ serialize: 'json' })`. A function never reaches the
+  browser this way, but Angular sets it as a property when the app hydrates.
+- The attributes written on the server stay on the element after it hydrates. Setting the input
+  later updates the property, not the attribute.
+- Reading an input back on the server returns the value you set.
 
 ## Boolean attributes
 

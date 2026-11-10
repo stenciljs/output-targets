@@ -18,6 +18,42 @@ const createMockEvent = (name: string, type: string = 'any'): ComponentCompilerE
 });
 
 describe('createAngularComponentDefinition()', () => {
+  describe('with ssr inputs', () => {
+    const input = [{ name: 'value', required: false }];
+
+    it('passes ssrProp to ProxyCmp and marks server instances', () => {
+      const component = createAngularComponentDefinition('my-component', input, [], true, true, [], [], { attributes: {}, refs: [] });
+
+      expect(component).toContain(`  inputs: ['value'],\n  ssr: { ssrProp }\n})`);
+      expect(component).toContain(`    this.el = r.nativeElement;\n    markServer(this);\n  }`);
+      // no instance field, which could hide a prop of the same name
+      expect(component).not.toMatch(/\bssr\s*=/);
+    });
+
+    it('lists custom attributes and inputs with no attribute', () => {
+      const component = createAngularComponentDefinition('my-component', input, [], true, true, [], [], {
+        attributes: { value: 'data-value' },
+        refs: ['items'],
+      });
+
+      expect(component).toContain(`ssr: { ssrProp, attributes: { 'value': 'data-value' }, refs: ['items'] }`);
+    });
+
+    it('adds nothing for a component without inputs', () => {
+      const component = createAngularComponentDefinition('my-component', [], [], true, true, [], [], { attributes: {}, refs: [] });
+
+      expect(component).not.toContain('ssr:');
+      expect(component).not.toContain('markServer');
+    });
+
+    it('adds nothing without ssr inputs', () => {
+      const component = createAngularComponentDefinition('my-component', input, [], true, true, [], []);
+
+      expect(component).not.toContain('ssr:');
+      expect(component).not.toContain('markServer');
+    });
+  });
+
   describe('www output', () => {
     it('generates a component', () => {
       const component = createAngularComponentDefinition('my-component', [], [], false, false, [], []);

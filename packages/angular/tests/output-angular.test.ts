@@ -260,6 +260,77 @@ describe('generateProxies', () => {
   });
 });
 
+describe('ssrPropModule', () => {
+  const pkgData: PackageJSON = { types: 'dist/types/index.d.ts' };
+  const components = [
+    {
+      tagName: 'my-component',
+      properties: [
+        { name: 'firstName', type: 'string', attribute: 'first-name', internal: false },
+        { name: 'item2', type: 'string', attribute: 'item-2', internal: false },
+        { name: 'label', type: 'string', attribute: 'data-label', internal: false },
+        { name: 'items', type: 'unknown', internal: false },
+        { name: 'flag', type: 'any', attribute: 'flag', internal: false },
+      ],
+      virtualProperties: [],
+      events: [],
+      methods: [],
+    },
+  ] as unknown as ComponentCompilerMeta[];
+
+  const createOutputTarget = (ssrPropModule?: string): OutputTargetAngular => ({
+    componentCorePackage: 'component-library',
+    directivesProxyFile: '../component-library-angular/src/proxies.ts',
+    outputType: 'standalone',
+    customElementsDir: 'components',
+    ssrPropModule,
+  });
+
+  // `flag` is `any` (a mixed union such as `string | boolean`): Stencil doesn't convert its attribute
+  it('imports ssrProp and markServer, and lists custom attributes and refs', () => {
+    const finalText = generateProxies(components, pkgData, createOutputTarget('component-library/ssr-prop'), '', emptyConfig);
+
+    expect(finalText).toContain(`import { ProxyCmp, markServer } from './angular-component-lib/utils';`);
+    expect(finalText).toContain(`import { ssrProp } from 'component-library/ssr-prop';`);
+    expect(finalText).toContain(`ssr: { ssrProp, attributes: { 'label': 'data-label' }, refs: ['items', 'flag'] }`);
+    expect(finalText).toContain('markServer(this);');
+  });
+
+  it('does the same for a single component proxy file', () => {
+    const result = generateComponentProxy(components[0], pkgData, createOutputTarget('component-library/ssr-prop'), '', emptyConfig);
+
+    expect(result).toContain(`import { ssrProp } from 'component-library/ssr-prop';`);
+    expect(result).toContain('markServer(this);');
+  });
+
+  it('imports what it uses for a component with only virtual properties', () => {
+    const virtualOnly = [
+      {
+        tagName: 'my-component',
+        properties: [],
+        virtualProperties: [{ name: 'mode', type: 'string', docs: '' }],
+        events: [],
+        methods: [],
+      },
+    ] as unknown as ComponentCompilerMeta[];
+
+    const finalText = generateProxies(virtualOnly, pkgData, createOutputTarget('component-library/ssr-prop'), '', emptyConfig);
+
+    expect(finalText).toContain('ssr: { ssrProp }');
+    expect(finalText).toContain(`import { ProxyCmp, markServer } from './angular-component-lib/utils';`);
+    expect(finalText).toContain(`import { ssrProp } from 'component-library/ssr-prop';`);
+  });
+
+  it('changes nothing when not set', () => {
+    const finalText = generateProxies(components, pkgData, createOutputTarget(), '', emptyConfig);
+
+    expect(finalText).toContain(`import { ProxyCmp } from './angular-component-lib/utils';`);
+    expect(finalText).not.toContain('ssr:');
+    expect(finalText).not.toContain('ssrProp');
+    expect(finalText).not.toContain('markServer');
+  });
+});
+
 describe('generateComponentProxy', () => {
   const pkgData: PackageJSON = {
     types: 'dist/types/index.d.ts',

@@ -53,6 +53,20 @@ export interface OutputTargetAngular {
    */
   inlineProperties?: boolean;
   /**
+   * The component library's `ssr-prop` module, e.g. `'component-library/ssr-prop'`, from the
+   * `ssr` output target. Set it when apps render the wrappers with Angular SSR and pass the page
+   * through the library's `renderToString()`.
+   *
+   * Angular's server DOM never writes properties to the HTML, so `[value]="..."` bindings would
+   * be missing from the server render. With this set, a wrapper rendering on the server writes
+   * each input into the element's attributes instead. For a prop typed `string`, `number` or
+   * `boolean`, a string or number is written as is and `true` as an empty attribute. Everything
+   * else goes through `ssrProp()`: `false`, objects, arrays, functions, and any value for a prop
+   * of another type or with no attribute. In the browser, inputs are still set as properties.
+   * See the README's "Server-side rendering" section.
+   */
+  ssrPropModule?: string;
+  /**
    * Use `transformTag` to generate a build-time script.
    * This script patches Angular `@Component` selectors in any installed Angular wrapper library
    * enabling run-time tag transformation. Run the script as a postinstall script in your app.
