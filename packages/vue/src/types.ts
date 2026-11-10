@@ -62,8 +62,19 @@ export interface OutputTargetVue {
   /**
    * To enable server side rendering, provide the path to the hydrate module, e.g. `my-component/hydrate`.
    * By default, this value is undefined and server side rendering is disabled.
+   *
+   * @deprecated Not recommended, and will be removed. For server rendering, use Stencil's `ssr`
+   * output target with `ssrPropModule` instead.
    */
   hydrateModule?: string;
+  /**
+   * The component library's `ssr-prop` module, e.g. `'component-library/ssr-prop'`, from the
+   * `ssr` output target. Set it when apps server-render the wrappers (with Nuxt, for example) and
+   * pass the page through the library's `renderToString()`: without it, objects, arrays and props
+   * with capitals in their names never reach the server render. See the README's
+   * "Server-side rendering" section.
+   */
+  ssrPropModule?: string;
   /**
    * Use `transformTag` to enable runtime tag name transformation for your components.
    * When enabled, the output target will import `transformTag` from your component library
