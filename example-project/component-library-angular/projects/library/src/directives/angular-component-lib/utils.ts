@@ -1,7 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
 import { inject, PLATFORM_ID } from '@angular/core';
-import { fromEvent } from 'rxjs';
 
 /**
  * Server rendering options (the output target's `ssrPropModule`).
@@ -97,10 +96,6 @@ export const proxyMethods = (Cmp: any, methods: string[]) => {
       return this.z.runOutsideAngular(() => this.el[methodName].apply(this.el, args));
     };
   });
-};
-
-export const proxyOutputs = (instance: any, el: any, events: string[]) => {
-  events.forEach((eventName) => (instance[eventName] = fromEvent(el, eventName)));
 };
 
 export const defineCustomElement = (tagName: string, customElement: any) => {
