@@ -78,6 +78,12 @@ npm install typescript@5 --save-dev
 
 That's it! You can now import and use your Stencil components as React components in your React application or library.
 
+### Server-side rendering
+
+When a wrapper is rendered on the server (Next.js, Remix, Vite SSR), it emits the component's props as attributes on the host tag, for example `<my-button variant="outline">`. The element then upgrades in its final state on the client instead of flashing its defaults until React hydrates.
+
+This covers host attributes only. Shadow DOM and styles are still created in the browser. To render the full component on the server, use the `hydrateModule` option (see below) or [@stencil/ssr](https://github.com/stenciljs/output-targets/tree/main/packages/ssr).
+
 ## Output Target Options
 
 | Property                | Description                                                                                                                                                                                                                                                                    |
