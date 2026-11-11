@@ -8,14 +8,21 @@ export interface SolidTypesOptions extends BaseTypesOptions {}
  * for using Stencil web components as native custom elements in Solid.
  *
  * Solid distinguishes between:
- * - Properties (prop:): Set via JavaScript property
+ * - Plain bindings: set as a property in the browser, and rendered as an attribute on the server
+ * - Properties (prop:): Set via JavaScript property, in the browser only
  * - Attributes (attr:): Set via HTML attribute
  * - Events (on:): Custom event handlers
  *
  * The generated file augments the `solid-js` module to provide proper
  * typing for custom elements when used in Solid JSX.
  */
-export function createSolidTypes({ components, stencilPackageName, excludeComponents }: SolidTypesOptions): string {
+export function createSolidTypes({
+  components,
+  stencilPackageName,
+  excludeComponents,
+  importPath,
+  typesFilePath,
+}: SolidTypesOptions): string {
   const filteredComponents = filterComponents(components, excludeComponents);
 
   if (filteredComponents.length === 0) {
@@ -25,7 +32,7 @@ export function createSolidTypes({ components, stencilPackageName, excludeCompon
   const lines: string[] = [];
 
   // Add header
-  lines.push(generateHeader('Solid', stencilPackageName, 'solid-native-types'));
+  lines.push(generateHeader('Solid', stencilPackageName, importPath ?? 'solid-native-types', typesFilePath));
 
   // Add Solid imports
   lines.push(`// @ts-ignore - Solid types may not be available in all build contexts`);
@@ -56,6 +63,9 @@ export function createSolidTypes({ components, stencilPackageName, excludeCompon
       const propType = normalizeTypeString(prop.complexType?.original || 'any');
       const docs = prop.docs?.text?.trim();
       const docsComment = docs ? `  /** ${docs} */\n` : '';
+
+      // plain binding: the one that works with server-side rendering
+      interfaceProperties.push(`${docsComment}  '${prop.name}'?: ${propType};`);
 
       // JavaScript property (always available)
       interfaceProperties.push(`${docsComment}  'prop:${prop.name}'?: ${propType};`);

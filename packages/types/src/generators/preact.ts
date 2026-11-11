@@ -18,7 +18,13 @@ const toPreactEventHandler = (eventName: string): string => {
  * The generated file augments the `preact` module to provide proper
  * typing for custom elements when used in Preact JSX.
  */
-export function createPreactTypes({ components, stencilPackageName, excludeComponents }: PreactTypesOptions): string {
+export function createPreactTypes({
+  components,
+  stencilPackageName,
+  excludeComponents,
+  importPath,
+  typesFilePath,
+}: PreactTypesOptions): string {
   const filteredComponents = filterComponents(components, excludeComponents);
 
   if (filteredComponents.length === 0) {
@@ -28,7 +34,7 @@ export function createPreactTypes({ components, stencilPackageName, excludeCompo
   const lines: string[] = [];
 
   // Add header
-  lines.push(generateHeader('Preact', stencilPackageName, 'preact-native-types'));
+  lines.push(generateHeader('Preact', stencilPackageName, importPath ?? 'preact-native-types', typesFilePath));
 
   // Add Preact imports
   lines.push(`// @ts-ignore - Preact types may not be available in all build contexts`);

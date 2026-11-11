@@ -9,12 +9,11 @@ import {
 export interface SvelteTypesOptions extends BaseTypesOptions {}
 
 /**
- * Converts an event name to a Svelte event handler prop name.
- * Svelte uses "on:eventname" syntax in templates, but for type definitions
- * we use the "oneventname" format (lowercase).
+ * Converts an event name to a Svelte 5 event attribute name. Svelte listens for the name after
+ * `on` exactly as written, so the case is kept: `oncountChanged` for a `countChanged` event.
  */
 const toSvelteEventHandler = (eventName: string): string => {
-  return `on${eventName.toLowerCase()}`;
+  return `on${eventName}`;
 };
 
 /**
@@ -24,7 +23,13 @@ const toSvelteEventHandler = (eventName: string): string => {
  * The generated file augments the `svelte/elements` module to provide proper
  * typing for custom elements when used in Svelte templates.
  */
-export function createSvelteTypes({ components, stencilPackageName, excludeComponents }: SvelteTypesOptions): string {
+export function createSvelteTypes({
+  components,
+  stencilPackageName,
+  excludeComponents,
+  importPath,
+  typesFilePath,
+}: SvelteTypesOptions): string {
   const filteredComponents = filterComponents(components, excludeComponents);
 
   if (filteredComponents.length === 0) {
@@ -34,7 +39,7 @@ export function createSvelteTypes({ components, stencilPackageName, excludeCompo
   const lines: string[] = [];
 
   // Add header
-  lines.push(generateHeader('Svelte', stencilPackageName, 'svelte-native-types'));
+  lines.push(generateHeader('Svelte', stencilPackageName, importPath ?? 'svelte-native-types', typesFilePath));
 
   // Add Svelte imports
   lines.push(`// @ts-ignore - Svelte types may not be available in all build contexts`);

@@ -8,8 +8,10 @@ import {
   PropType,
   Ref,
   ref,
+  ssrContextKey,
   withDirectives,
 } from 'vue';
+import type { RouteLocationRaw } from 'vue-router';
 import type { InputProps } from './types';
 
 export { defineStencilSSRComponent } from './ssr';
@@ -32,6 +34,73 @@ const ARIA_PROP_PREFIX = 'aria';
  */
 const EMPTY_PROP = Symbol();
 const DEFAULT_EMPTY_PROP = { default: EMPTY_PROP };
+
+/**
+ * Server rendering options (the output target's `ssrPropModule`).
+ */
+interface SsrOptions {
+  /** The component library's `ssrProp()`, which hands a value to Stencil's server render. */
+  ssrProp: (value: any) => any;
+  /** Props whose attribute isn't Stencil's dash-cased prop name. */
+  attributes?: Record<string, string>;
+  /** Props whose every value goes through `ssrProp()`: no attribute, or not a primitive type. */
+  refs?: string[];
+}
+
+/**
+ * Stencil's own prop name to attribute name conversion (`prop1` -> `prop-1`).
+ */
+const toDashCase = (str: string): string =>
+  str
+    .replace(/([A-Z0-9])/g, (match) => ` ${match[0]}`)
+    .trim()
+    .split(' ')
+    .join('-')
+    .toLowerCase();
+
+/**
+ * HTML's boolean attributes, as Vue's server renderer lists them (`isBooleanAttr` in
+ * `@vue/shared`). It renders any of these by presence alone, even on a custom element: a truthy
+ * value as a bare attribute, and `false` not at all. Its check is case-sensitive, though, and it
+ * keeps a custom element's attribute names as written, so `Selected` gets past it. HTML attribute
+ * names aren't case-sensitive: Stencil's parser (and the browser) read it as `selected`.
+ */
+const HTML_BOOLEAN_ATTRIBUTES = new Set(
+  (
+    'itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly,async,autofocus,autoplay,' +
+    'controls,default,defer,disabled,hidden,inert,loop,open,required,reversed,scoped,seamless,checked,muted,' +
+    'multiple,selected'
+  ).split(',')
+);
+
+/**
+ * The attribute a prop is server-rendered as, for Stencil's `renderToString()` to read. Vue's
+ * server renderer drops objects and keeps a custom element's prop names as written (`firstName`
+ * parses as `firstname`), so each prop is written under its attribute name:
+ * - a string or number as itself, and `true` as an empty attribute, so the component's first
+ *   render in the browser sees them too;
+ * - `false`, anything that isn't a primitive, and any value for a prop in `refs` through
+ *   `ssrProp()`, which gives the server render the exact value and leaves no attribute behind.
+ *   (Stencil reads any attribute on a boolean prop as `true`.)
+ *
+ * An HTML boolean attribute name such as `selected` is written capitalised (`Selected`), so Vue
+ * renders its value instead of only its presence.
+ *
+ * @returns `[name, value]`, or `undefined` to leave the attribute off
+ */
+const toServerAttribute = (prop: string, value: unknown, ssr: SsrOptions): [string, string] | undefined => {
+  if (value == null) return undefined;
+  let name = ssr.attributes?.[prop] ?? toDashCase(prop);
+  if (HTML_BOOLEAN_ATTRIBUTES.has(name)) name = name[0].toUpperCase() + name.slice(1);
+  if (
+    ssr.refs?.includes(prop) ||
+    value === false ||
+    (typeof value !== 'string' && typeof value !== 'number' && value !== true)
+  ) {
+    return [name, ssr.ssrProp(value)];
+  }
+  return [name, value === true ? '' : String(value)];
+};
 
 interface NavManager<T = any> {
   navigate: (options: T) => void;
@@ -110,6 +179,9 @@ const syncElementClasses = (
  * @prop modelProp - The prop that v-model binds to (i.e. value)
  * @prop modelUpdateEvent - The event that is fired from your Web Component when the value changes (i.e. ionChange)
  * @prop modelUpdateEventAttribute - Property to read value from when the value changes.
+ * @prop transformTagFn - Transforms the tag name at render time.
+ * @prop ssr - Set when the output target's `ssrPropModule` is: how to write the props during
+ * server rendering, for Stencil's `renderToString()`.
  */
 export const defineContainer = <Props, VModelType = string | number | boolean>(
   name: string,
@@ -119,7 +191,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
   modelProp?: string,
   modelUpdateEvent?: string,
   modelUpdateEventAttribute?: string,
-  transformTagFn?: (tagName: string) => string
+  transformTagFn?: (tagName: string) => string,
+  ssr?: SsrOptions
 ) => {
   /**
    * Create a Vue component wrapper around a Web Component.
@@ -149,6 +222,19 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
       let modelPropValue = modelProp ? props[modelProp as keyof InputProps<VModelType>] : undefined;
       const containerRef = ref<HTMLElement>();
       const previousVueClasses = new Set<string>();
+      const currentInstance = getCurrentInstance();
+
+      /**
+       * While Vue hydrates, the vnode already points at the server-rendered element. Read its
+       * classes from the first render (Stencil's `hydrated` and scope classes, which aren't
+       * Vue's), or Vue's hydration replaces the element's classes with only its own.
+       */
+      if (currentInstance?.vnode.el) {
+        containerRef.value = currentInstance.vnode.el as HTMLElement;
+      }
+
+      // Vue's `renderToString()` provides the SSR context: only set while server rendering
+      const isServer = ssr !== undefined && inject(ssrContextKey, null) != null;
 
       onMounted(() => {
         /**
@@ -199,9 +285,10 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
         },
       };
 
-      const currentInstance = getCurrentInstance();
       const hasRouter = currentInstance?.appContext?.provides[NAV_MANAGER];
       const navManager: NavManager | undefined = hasRouter ? inject(NAV_MANAGER) : undefined;
+      // Read from globalProperties since vue-router is an optional peer and can't be imported here.
+      const router = currentInstance?.appContext?.config.globalProperties.$router;
 
       const handleRouterLink = (ev: Event) => {
         const { routerLink } = props;
@@ -269,6 +356,8 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
          */
         for (const key in props) {
           const value = props[key as keyof InputProps<VModelType>];
+          // A route object would stringify to "[object Object]"; it's rendered as the href below instead.
+          if (key === ROUTER_LINK_VALUE && typeof value !== 'string') continue;
           if ((props.hasOwnProperty(key) && value !== EMPTY_PROP) || key.startsWith(ARIA_PROP_PREFIX)) {
             propsToAdd[key as 'ariaLabel'] = value as string;
           }
@@ -302,7 +391,31 @@ export const defineContainer = <Props, VModelType = string | number | boolean>(
         // of components that should become activatable and
         // focusable with router link.
         if (ROUTER_LINK_VALUE in props && props[ROUTER_LINK_VALUE] !== EMPTY_PROP) {
-          propsToAdd.href = props[ROUTER_LINK_VALUE];
+          const routerLink = props[ROUTER_LINK_VALUE];
+          const isLocation = typeof routerLink === 'string' || (typeof routerLink === 'object' && routerLink !== null);
+          if (router && isLocation) {
+            /**
+             * resolve throws for an unknown route or a missing param. Leave the href
+             * off rather than fail the render; navigating still surfaces the error.
+             */
+            try {
+              propsToAdd.href = router.resolve(routerLink as RouteLocationRaw).href;
+            } catch {}
+          } else if (typeof routerLink === 'string') {
+            propsToAdd.href = routerLink;
+          }
+        }
+
+        if (isServer) {
+          for (const prop of componentProps) {
+            // event names are in the prop list too
+            if (emitProps.includes(prop) || !(prop in propsToAdd)) continue;
+            const value = propsToAdd[prop];
+            delete propsToAdd[prop];
+            if (value === EMPTY_PROP) continue;
+            const attribute = toServerAttribute(prop, value, ssr!);
+            if (attribute) propsToAdd[attribute[0]] = attribute[1];
+          }
         }
 
         /**

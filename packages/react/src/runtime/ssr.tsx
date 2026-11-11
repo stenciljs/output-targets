@@ -48,6 +48,11 @@ export interface RenderToStringOptions {
    * @default 'declarative-shadow-dom'
    */
   serializeShadowRoot?: SerializeShadowRootOptions;
+  /**
+   * Render into one long-lived window instead of creating one for every call, so the SSR runtime
+   * and components are set up once. Stencil v5+ only (see {@link HydrateModule.resetReusableWindows}).
+   */
+  reuseWindow?: boolean;
   /** @deprecated use `beforeSsr` — kept for v4/v5 compatibility */
   beforeHydrate?: (document: Document) => void | Promise<void>;
 }
@@ -66,14 +71,80 @@ export type HydrateModule = {
   renderToString: RenderToString;
   transformTag: (tagName: string) => string;
   setTagTransformer: (transformer: (tagName: string) => string) => void;
+  /**
+   * Exported by SSR modules that support the `reuseWindow` render option (Stencil v5+). Its
+   * presence is how we detect that support: older modules don't have it.
+   */
+  resetReusableWindows?: () => void;
 };
+
+/**
+ * Whether an SSR module supports the `reuseWindow` render option.
+ * @param hydrateModule the SSR module
+ * @returns true for Stencil v5+ SSR modules
+ */
+const supportsReuseWindow = (hydrateModule: HydrateModule) => typeof hydrateModule.resetReusableWindows === 'function';
 interface CreateComponentForServerSideRenderingOptions {
   tagName: string;
   properties: Record<string, string>;
   renderToString: RenderToString;
   serializeShadowRoot?: SerializeShadowRootOptions;
   transformTag?: (tagName: string) => string;
+  /**
+   * Pass `reuseWindow: true` to `renderToString`. Every Stencil component renders with its own
+   * `renderToString` call, so setting the SSR runtime up once instead of per call is a large share
+   * of each render.
+   */
+  reuseWindow?: boolean;
 }
+
+// Marks SSR components so `resolveType` can serialize nested ones shallowly.
+const stencilSsrOptions = Symbol('stencil-react-ssr-options');
+type ShallowComponentOptions = {
+  tagName: string;
+  properties: Record<string, string>;
+  transformTag?: (tag: string) => string;
+};
+type MarkedSsrComponent = { [stencilSsrOptions]: ShallowComponentOptions };
+
+type AttributeValue = string | number | boolean | Record<string, unknown>;
+
+// Splits props into attribute values (primitives, `style`) keyed by attribute name and
+// complex values applied as properties via `beforeHydrate`. `false` is dropped.
+const splitProps = (props: Record<string, unknown>, properties: Record<string, string>) => {
+  const attributes: Record<string, AttributeValue> = {};
+  const complexProps: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(props)) {
+    if (typeof value === 'boolean' && value === false) {
+      continue;
+    }
+    const attributeName = possibleStandardNames[key as keyof typeof possibleStandardNames] || properties[key] || key;
+    if (key === 'style' && typeof value === 'object' && value) {
+      attributes[attributeName] = value as Record<string, unknown>;
+      continue;
+    }
+    if (isPrimitive(value)) {
+      attributes[attributeName] = value;
+    } else {
+      complexProps[key] = value;
+    }
+  }
+  return { attributes, complexProps };
+};
+
+const isStencilSsrComponent = (type: unknown): type is MarkedSsrComponent =>
+  typeof type === 'function' && stencilSsrOptions in type;
+
+// Parents only need nested Stencil children as tags with attributes. Rendering them fully
+// here ran each child once per ancestor level; the child renders itself once as a real child.
+const createShallowComponent =
+  (options: ShallowComponentOptions) =>
+  ({ children, ...props }: { children?: ReactNode } & Record<string, unknown>) => {
+    const { attributes } = splitProps(props, options.properties);
+    const transformTag = options.transformTag ?? hydrateModuleCache?.transformTag;
+    const tagName = transformTag ? transformTag(options.tagName) : options.tagName;
+    return React.createElement(tagName, { ...attributes, suppressHydrationWarning: true }, children);
+  };
 
 type StencilProps<I extends HTMLElement> = WebComponentProps<I>;
 
@@ -90,6 +161,62 @@ type ReactNodeExtended =
   | Component<any, any, any>
   | LazyComponent<any, any>
   | ((props: any, deprecatedLegacyContext?: any) => ReactNode);
+
+type ParseHTML = typeof import('html-react-parser').htmlToDOM;
+type ParsedNode = ReturnType<ParseHTML>[number];
+type ParsedElement = import('html-react-parser').Element;
+
+const isParsedElement = (node: ParsedNode): node is ParsedElement => 'name' in node && 'attribs' in node;
+
+/**
+ * Split a component rendered with `renderToString({ fullDocument: false })` into its parts. The
+ * fragment is parsed (so quotes, comments and `<` in attribute values are handled) and the parts
+ * are sliced from the original string, so they keep Stencil's markup exactly.
+ *
+ * Stencil v5 starts a fragment with the `<style>`s its scoped components need (e.g. a scoped
+ * child in the light DOM); those are skipped, as they're also in the results' `styles` and each
+ * nested Stencil component renders its own.
+ *
+ * @param rendered - the fragment
+ * @param tagNames - the tag names the component may have been rendered with
+ * @param parseHTML - `htmlToDOM` from `html-react-parser`, which is only imported on the server
+ * @returns the component's own HTML, its light DOM (when it has no shadow root), its
+ * declarative shadow root (if any)
+ */
+export const splitRenderedComponent = (rendered: string, tagNames: string[], parseHTML: ParseHTML) => {
+  // `htmlToDOM` passes its options to the `DomHandler` too, which records where each node is
+  const indices = { withStartIndices: true, withEndIndices: true } as Parameters<ParseHTML>[1];
+  const nodes = parseHTML(rendered, indices);
+  const host = nodes.find((node): node is ParsedElement => isParsedElement(node) && tagNames.includes(node.name));
+  if (!host) {
+    throw new Error(`Could not find <${tagNames[0]}> in the HTML returned from renderToString`);
+  }
+  const source = (from: ParsedNode[]) =>
+    from.length === 0 ? '' : rendered.slice(from[0].startIndex!, from[from.length - 1].endIndex! + 1);
+
+  const html = source([host]);
+
+  // the shadow root is the host's first element child
+  const firstElement = (host.children as ParsedNode[]).find(isParsedElement);
+  if (firstElement?.name !== 'template' || firstElement.attribs.shadowrootmode !== 'open') {
+    return { html, lightDom: source(host.children as ParsedNode[]), template: undefined };
+  }
+  return {
+    html,
+    lightDom: undefined,
+    template: {
+      delegatesFocus: 'shadowrootdelegatesfocus' in firstElement.attribs,
+      content: source(firstElement.children as ParsedNode[]),
+    },
+  };
+};
+
+/**
+ * Escape a value for a double-quoted HTML attribute.
+ * @param value - the attribute value
+ * @returns the escaped value
+ */
+const escapeAttribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
 /**
  * returns true if the value is a primitive, e.g. string, number, boolean
@@ -178,30 +305,11 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
      * compose element props into a string; complex (non-primitive) props are banked
      * and applied via beforeHydrate; they never need to be attribute-serialized
      */
+    const { attributes, complexProps } = splitProps(props, options.properties);
     let stringProps = '';
-    const complexProps: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(props)) {
-      if (typeof value === 'boolean' && value === false) {
-        continue;
-      }
-
-      /**
-       * parse the style object into a string
-       */
-      if (key === 'style' && typeof value === 'object' && value) {
-        const propName =
-          possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
-        stringProps += ` ${propName}="${stringifyCSSProperties(value)}"`;
-        continue;
-      }
-
-      if (isPrimitive(value)) {
-        const propName =
-          possibleStandardNames[key as keyof typeof possibleStandardNames] || options.properties[key] || key;
-        stringProps += ` ${propName}="${value}"`;
-      } else {
-        complexProps[key] = value;
-      }
+    for (const [attributeName, value] of Object.entries(attributes)) {
+      const serialized = typeof value === 'object' ? stringifyCSSProperties(value) : value;
+      stringProps += ` ${attributeName}="${escapeAttribute(String(serialized))}"`;
     }
 
     /**
@@ -245,14 +353,10 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
 
     const toSerializeWithChildren = `${toSerialize}${serializedChildren}</${transformedTagName}>`;
 
-    /**
-     * first render the component with `prettyHtml` flag so it makes it easier to
-     * access the inner content of the component.
-     */
-    const { html, styles } = await options.renderToString(toSerializeWithChildren, {
+    const { html: renderedHtml, styles } = await options.renderToString(toSerializeWithChildren, {
       fullDocument: false,
       serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
-      prettyHtml: true,
+      ...(options.reuseWindow && { reuseWindow: true }),
       ...(Object.keys(complexProps).length > 0 && {
         beforeHydrate: (doc: Document) => {
           const el = doc.querySelector(transformedTagName) as any;
@@ -265,32 +369,26 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       }),
     });
 
-    if (!html) {
+    if (!renderedHtml) {
       throw new Error('No HTML returned from renderToString');
-    }
-
-    /**
-     * cut out the inner content of the component
-     */
-    const serializedComponentByLine = html.split('\n');
-    const hydrationComment = '<!--r.1-->';
-    const isShadowComponent = serializedComponentByLine[1].includes('shadowrootmode="open"');
-    const delegatesFocus = serializedComponentByLine[1].includes('shadowrootdelegatesfocus');
-    let templateContent: undefined | string = undefined;
-    if (isShadowComponent) {
-      const templateEndTag = '  </template>';
-      templateContent = serializedComponentByLine
-        .slice(2, serializedComponentByLine.lastIndexOf(templateEndTag))
-        .join('\n')
-        .trim();
     }
 
     /**
      * `html-react-parser` is a Node.js dependency so we should make sure to only import it when
      * run on the server and when needed.
      */
-    const { default: parse } = await import('html-react-parser');
+    const { default: parse, htmlToDOM } = await import('html-react-parser');
     const typedParse = parse as unknown as typeof parse.default;
+
+    const { html, lightDom, template } = splitRenderedComponent(
+      renderedHtml,
+      [transformedTagName, options.tagName],
+      htmlToDOM
+    );
+    const isShadowComponent = template !== undefined;
+    const delegatesFocus = !!template?.delegatesFocus;
+    const hydrationComment = '<!--r.1-->';
+    const templateContent = template?.content ?? '';
 
     /**
      * Parse the string back into a React component
@@ -313,25 +411,8 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
              */
             if (!isShadowComponent) {
               const { children, ...customProps } = props || {};
-              const __html = serializedComponentByLine
-                /**
-                 * remove the components outer tags as we want to set the inner content only
-                 */
-                .slice(1, -1)
-                /**
-                 * bring the array back to a string
-                 */
-                .join('\n')
-                .trim()
-                /**
-                 * remove any whitespace between tags that may cause hydration errors
-                 */
-                .replace(/(?<=>)\s+(?=<)/g, '')
-                /**
-                 * collapse any remaining newline + indentation sequences not caught
-                 * by the previous regex (e.g. within text nodes or attribute boundaries)
-                 */
-                .replace(/\n\s+/g, '');
+              // exactly as Stencil rendered it: whitespace in a light DOM component can be content
+              const __html = lightDom ?? '';
 
               const renderStyles =
                 styles.length > 0 &&
@@ -449,6 +530,11 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
 const resolveType = async (type: string | React.JSXElementConstructor<any>, props: any): Promise<ReactNodeExtended> => {
   let resolvedType: ReactNodeExtended = null;
 
+  if (isStencilSsrComponent(type)) {
+    // Nested Stencil SSR component: emit its tag shallowly instead of running its hydrate pass.
+    return createShallowComponent(type[stencilSsrOptions]);
+  }
+
   if (typeof type === 'string') {
     // Child is a primitive element like 'div'
     return type;
@@ -548,7 +634,7 @@ export const createComponent = <
    * Note: we want to lazy load the `./ssr` and `hydrateModule` modules to avoid
    * bundling them in the runtime and serving them in the browser.
    */
-  return (async (props: WebComponentProps<I>) => {
+  const ServerComponent = (async (props: WebComponentProps<I>) => {
     if (!options.hydrateModule) {
       throw new Error(
         '`hydrateModule` is required when rendering a Stencil component on the server. ' +
@@ -572,7 +658,11 @@ export const createComponent = <
 
     return createComponentForServerSideRendering<I, E>({
       renderToString: resolvedHydrateModule.renderToString,
+      reuseWindow: supportsReuseWindow(resolvedHydrateModule),
       ...options,
     })(props as any);
-  }) as unknown as StencilReactComponent<I, E, C, R>;
+  }) as unknown as StencilReactComponent<I, E, C, R> & MarkedSsrComponent;
+  ServerComponent[stencilSsrOptions] = options;
+
+  return ServerComponent;
 };

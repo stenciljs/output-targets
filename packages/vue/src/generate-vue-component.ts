@@ -2,6 +2,45 @@ import { dashToPascalCase } from './utils';
 import { ComponentCompilerMeta } from '@stencil/core/internal';
 import { OutputTargetVue } from './types';
 
+/**
+ * Stencil's own prop name to attribute name conversion (`prop1` -> `prop-1`).
+ */
+const toDashCase = (str: string): string =>
+  str
+    .replace(/([A-Z0-9])/g, (match) => ` ${match[0]}`)
+    .trim()
+    .split(' ')
+    .join('-')
+    .toLowerCase();
+
+const LITERAL_ATTRIBUTE_TYPES: readonly string[] = ['string', 'number', 'boolean'];
+
+/**
+ * With `ssrPropModule` set, the `ssr` argument of `defineContainer()`: the props whose attribute
+ * isn't the dash-cased prop name, and the props whose every value goes through `ssrProp()`.
+ *
+ * Stencil only converts an attribute for a prop typed exactly `string`, `number` or `boolean`. Any
+ * other prop (`any`, which covers mixed unions like `string | boolean`, or `unknown`) gets the
+ * attribute's string as it is, so it's a ref. So is a prop with no attribute, which Stencil never
+ * reads.
+ */
+const createSsrArgument = (
+  outputTarget: OutputTargetVue,
+  properties: ComponentCompilerMeta['properties'] | undefined
+): string | undefined => {
+  if (!outputTarget.ssrPropModule || !properties?.length) return undefined;
+  const attributes: string[] = [];
+  const refs: string[] = [];
+  for (const prop of properties) {
+    if (!prop.attribute || !LITERAL_ATTRIBUTE_TYPES.includes(prop.type)) refs.push(`'${prop.name}'`);
+    else if (prop.attribute !== toDashCase(prop.name)) attributes.push(`'${prop.name}': '${prop.attribute}'`);
+  }
+  const options = ['ssrProp'];
+  if (attributes.length) options.push(`attributes: { ${attributes.join(', ')} }`);
+  if (refs.length) options.push(`refs: [${refs.join(', ')}]`);
+  return `{ ${options.join(', ')} }`;
+};
+
 export const createComponentDefinition =
   (importTypes: string, outputTarget: OutputTargetVue) =>
   (cmpMeta: Pick<ComponentCompilerMeta, 'properties' | 'tagName' | 'methods' | 'events'>) => {
@@ -119,6 +158,20 @@ export const ${tagNameAsPascal}: StencilVueComponent<${componentType}${modelType
     } else if (outputTarget.transformTag) {
       // If transformTag is enabled but there's no v-model, we need to pass undefined for the model parameters
       templateString += `, undefined, undefined, undefined, transformTag`;
+    }
+
+    const ssrArgument = createSsrArgument(outputTarget, cmpMeta.properties);
+    if (ssrArgument) {
+      // fill the positional parameters before `ssr` that weren't passed
+      if (emits.length === 0 && !findModel && !outputTarget.transformTag) {
+        templateString += `, []`;
+      }
+      if (!findModel && !outputTarget.transformTag) {
+        templateString += `, undefined, undefined, undefined, undefined`;
+      } else if (!outputTarget.transformTag) {
+        templateString += `, undefined`;
+      }
+      templateString += `, ${ssrArgument}`;
     }
 
     templateString += `)${ssrCondition};\n`;

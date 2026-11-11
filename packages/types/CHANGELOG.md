@@ -1,3 +1,23 @@
+## [1.1.0](https://github.com/stenciljs/output-targets/compare/@stencil/types-output-target@1.0.2...@stencil/types-output-target@1.1.0) (2026-11-09)
+
+
+### :bug: Bug Fix
+
+* **types:** fixes for react, svelte and solid ([8488930](https://github.com/stenciljs/output-targets/commit/8488930801ab161d7cb004091f1c179e9cde916c))
+
+
+### :rocket: Enhancement
+
+* **types:** add astro generator ([ae216a6](https://github.com/stenciljs/output-targets/commit/ae216a626a0f5a095959edbece31f7fdf53c3038))
+
+## [1.0.2](https://github.com/stenciljs/output-targets/compare/@stencil/types-output-target@1.0.1...@stencil/types-output-target@1.0.2) (2026-10-29)
+
+
+### :bug: Bug Fix
+
+* **types:** use correct stencil package scope for import statements ([72dca4a](https://github.com/stenciljs/output-targets/commit/72dca4aae473f02a5919ef76f691421f472db4a1))
+
+
 ## [1.0.1](https://github.com/stenciljs/output-targets/compare/@stencil/types-output-target@1.0.0...@stencil/types-output-target@1.0.1) (2026-10-06)
 
 

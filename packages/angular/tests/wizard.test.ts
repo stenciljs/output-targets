@@ -74,6 +74,57 @@ describe('Angular wizard', () => {
     const moduleTs = await readFile(join(tmpDir, 'my-app-angular', 'src', 'lib', 'my-app.module.ts'), 'utf8');
     expect(moduleTs).toContain('class MyAppModule');
     expect(moduleTs).toContain("import { DIRECTIVES } from './directives.array'");
+
+    // 'component' wrappers register nothing themselves: the module does it with the lazy loader
+    expect(moduleTs).toContain("import { defineCustomElements } from 'my-app/dist/loader-bundle/loader';");
+    expect(moduleTs).toContain('providers: [provideAppInitializer(() => defineCustomElements())],');
+
+    // ...so it's built on loader-bundle, not standalone
+    expect(editor.addOutputTarget).toHaveBeenCalledWith("{ type: 'loader-bundle' }");
+    expect(editor.addOutputTarget).not.toHaveBeenCalledWith("{ type: 'standalone' }");
+    expect(targetCode).not.toContain('customElementsDir');
+  });
+
+  it('imports the loader through the exports map for the NgModule type when the project generates one', async () => {
+    const editor = makeFakeEditor();
+    const ctx = {
+      config: { rootDir: tmpDir, fsNamespace: 'my-app', generateExportMaps: true },
+      openStencilConfig: makeOpenStencilConfig(editor),
+      workspaceRoot: undefined,
+      prompts: makePrompts({
+        text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
+        select: vi.fn().mockResolvedValueOnce('component'),
+      }),
+      nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+    };
+
+    await wizard.init.run(ctx as any);
+
+    const moduleTs = await readFile(join(tmpDir, 'my-app-angular', 'src', 'lib', 'my-app.module.ts'), 'utf8');
+    expect(moduleTs).toContain("import { defineCustomElements } from 'my-app/loader';");
+  });
+
+  it('keeps the standalone output target and customElementsDir for standalone components', async () => {
+    const editor = makeFakeEditor();
+    const ctx = {
+      config: { rootDir: tmpDir, fsNamespace: 'my-app' },
+      openStencilConfig: makeOpenStencilConfig(editor),
+      workspaceRoot: undefined,
+      prompts: makePrompts({
+        text: vi.fn().mockResolvedValueOnce('./my-app-angular'),
+        select: vi.fn().mockResolvedValueOnce('standalone'),
+      }),
+      nypm: { addDependency: vi.fn().mockResolvedValue(undefined) },
+    };
+
+    await wizard.init.run(ctx as any);
+
+    const targetCode = editor.addOutputTarget.mock.calls
+      .map(([code]) => code)
+      .find((code) => code.includes('angularOutputTarget('));
+    expect(editor.addOutputTarget).toHaveBeenCalledWith("{ type: 'standalone' }");
+    expect(editor.addOutputTarget).not.toHaveBeenCalledWith("{ type: 'loader-bundle' }");
+    expect(targetCode).toContain("customElementsDir: 'dist/standalone'");
   });
 
   it('generates SCAM config with outputType:scam and no NgModule file', async () => {

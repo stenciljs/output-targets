@@ -1,3 +1,18 @@
+## [1.6.0](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.5.3...@stencil/angular-output-target@1.6.0) (2026-11-10)
+
+
+### :rocket: Enhancement
+
+* **angular:** server-render wrapper inputs for Stencil v5 SSR ([#879](https://github.com/stenciljs/output-targets/issues/879)) ([c062a15](https://github.com/stenciljs/output-targets/commit/c062a1549a5ad01340fef44827bab29a480d98ae))
+
+## [1.5.3](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.5.2...@stencil/angular-output-target@1.5.3) (2026-10-29)
+
+
+### :bug: Bug Fix
+
+* **angular:** wizard generates a bootstrap module for loader integration ([65a3b5e](https://github.com/stenciljs/output-targets/commit/65a3b5ecc6296ef5819f88456fd007324aa714fe))
+
+
 ## [1.5.2](https://github.com/stenciljs/output-targets/compare/@stencil/angular-output-target@1.5.1...@stencil/angular-output-target@1.5.2) (2026-10-08)
 
 

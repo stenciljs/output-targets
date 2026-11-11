@@ -7,6 +7,7 @@ Automate the creation of type definitions for your Stencil web components.
 - Solid
 - Svelte
 - Preact
+- Astro
 
 ## Setup
 
@@ -32,6 +33,7 @@ export const config: Config = {
       solidTypesPath: 'dist/types',
       svelteTypesPath: 'dist/types',
       preactTypesPath: 'dist/types',
+      astroTypesPath: 'dist/types',
     }),
   ],
 };
@@ -62,9 +64,33 @@ Ensure that your Stencil component library's `package.json` includes the necessa
 
 ### Using the Generated Types
 
-Your users can now import the generated type definitions in their projects to get type support for your Stencil web components in their chosen framework. 
-For example, in a React project:
+With a directory path like `dist/types`, each framework gets its own file: `react-native-types.d.ts`, `vue-native-types.d.ts`, `svelte-native-types.d.ts`, `solid-native-types.d.ts`, `preact-native-types.d.ts` and `astro-native-types.d.ts`. Pass a full `.d.ts` path instead to choose the file name.
+
+Expose each file through your library's `package.json` `exports` so consumers can import it:
+
+```json
+"exports": {
+  "./react-native-types": {
+    "types": "./dist/types/react-native-types.d.ts"
+  }
+}
+```
+
+Your users can then import the generated type definitions to get type support for your Stencil web components in their framework. For example, in a React project:
 
 ```tsx
-import 'your-component-library/react-types';
+import 'your-component-library/react-native-types';
+```
+
+Each generated file's header comment shows its import path and the `exports` entry it needs.
+
+### Astro
+
+Astro templates render on the server only, so the Astro types cover what a template can pass:
+attributes, keyed by attribute name, and props without an attribute (objects, arrays), keyed by
+prop name, for use with the library's `ssrProp()`. They include no event handlers; listen for
+events in a client `<script>`. Import the file from your project's `src/env.d.ts`:
+
+```ts
+import 'your-component-library/astro-native-types';
 ```

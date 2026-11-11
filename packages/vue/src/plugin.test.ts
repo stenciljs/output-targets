@@ -31,6 +31,19 @@ describe('normalizeOutputTarget', () => {
     }).toThrow(expect.objectContaining({ message: expect.stringContaining('cannot both be set to `false`') }));
   });
 
+  it('should fail if hydrateModule and ssrPropModule are both set', () => {
+    expect(() => {
+      normalizeOutputTarget(config, {
+        proxiesFile: '../component-library-vue/src/components.ts',
+        includeImportCustomElements: true,
+        includeDefineCustomElements: false,
+        includePolyfills: false,
+        hydrateModule: 'component-library/hydrate',
+        ssrPropModule: 'component-library/ssr-prop',
+      });
+    }).toThrow(expect.objectContaining({ message: expect.stringContaining('cannot be used together') }));
+  });
+
   it('should return defaults for excludedComponents, includePolyfills, and includeDefineCustomElements', () => {
     const results: OutputTargetVue = normalizeOutputTarget(config, {
       proxiesFile: '../component-library-vue/src/components.ts',

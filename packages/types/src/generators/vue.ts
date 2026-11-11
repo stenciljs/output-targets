@@ -10,7 +10,13 @@ export interface VueTypesOptions extends BaseTypesOptions {}
  * Vue uses kebab-case event names with @ prefix in templates (e.g., @my-event).
  * The generated file augments Vue's GlobalComponents interface.
  */
-export function createVueTypes({ components, stencilPackageName, excludeComponents }: VueTypesOptions): string {
+export function createVueTypes({
+  components,
+  stencilPackageName,
+  excludeComponents,
+  importPath,
+  typesFilePath,
+}: VueTypesOptions): string {
   const filteredComponents = filterComponents(components, excludeComponents);
 
   if (filteredComponents.length === 0) {
@@ -20,7 +26,7 @@ export function createVueTypes({ components, stencilPackageName, excludeComponen
   const lines: string[] = [];
 
   // Add header
-  lines.push(generateHeader('Vue 3', stencilPackageName, 'vue-native-types'));
+  lines.push(generateHeader('Vue 3', stencilPackageName, importPath ?? 'vue-native-types', typesFilePath));
 
   // Add Vue imports
   lines.push(`// @ts-ignore - Vue types may not be available in all build contexts`);

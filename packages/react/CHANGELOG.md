@@ -1,3 +1,29 @@
+## [1.8.1](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.8.0...@stencil/react-output-target@1.8.1) (2026-11-09)
+
+
+### :bug: Bug Fix
+
+* **react:** more robust ssr template splitting (supports stencil v5 lightDom component `<style>` tags) ([#874](https://github.com/stenciljs/output-targets/issues/874)) ([32abab3](https://github.com/stenciljs/output-targets/commit/32abab3479dd62249a28f6f52e72c6e0fbde7a13))
+
+## [1.8.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.7.0...@stencil/react-output-target@1.8.0) (2026-11-06)
+
+
+### :rocket: Enhancement
+
+* **react:** support v5's `reuseWindow` ([#872](https://github.com/stenciljs/output-targets/issues/872)) ([52f7b76](https://github.com/stenciljs/output-targets/commit/52f7b76a2d42b339bcd137a0bae9fc07ff49490b))
+
+## [1.7.0](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.5...@stencil/react-output-target@1.7.0) (2026-10-28)
+
+
+### :rocket: Enhancement
+
+* **react:** improve performance pure string templates ([#847](https://github.com/stenciljs/output-targets/issues/847)) ([7ef2971](https://github.com/stenciljs/output-targets/commit/7ef297149c3efa3e6ed08d0840ca02bebc46afd4))
+
+
+### :zap: Performance
+
+* **react:** serialize nested Stencil SSR children shallowly ([723a289](https://github.com/stenciljs/output-targets/commit/723a28961d4f86f77bfd5c3b89ed5fb6702327f1)), closes [#849](https://github.com/stenciljs/output-targets/issues/849)
+
 ## [1.6.5](https://github.com/stenciljs/output-targets/compare/@stencil/react-output-target@1.6.4...@stencil/react-output-target@1.6.5) (2026-10-09)
 
 
