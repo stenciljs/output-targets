@@ -7,6 +7,7 @@ import type { JSX } from 'component-library';
 
 import { defineCustomElement as defineMyButton } from 'component-library/components/my-button.js';
 import { defineCustomElement as defineMyButtonScoped } from 'component-library/components/my-button-scoped.js';
+import { defineCustomElement as defineMyCard } from 'component-library/components/my-card.js';
 import { defineCustomElement as defineMyCheckbox } from 'component-library/components/my-checkbox.js';
 import { defineCustomElement as defineMyComplexProps } from 'component-library/components/my-complex-props.js';
 import { defineCustomElement as defineMyComplexPropsScoped } from 'component-library/components/my-complex-props-scoped.js';
@@ -112,6 +113,16 @@ export const MyButtonScoped: StencilVueComponent<JSX.MyButtonScoped> = /*@__PURE
     'type': [String, "type"],
     'onMyFocus': [Function],
     'onMyBlur': [Function]
+  },
+  getTagTransformer: getTagTransformer
+});
+
+
+export const MyCard: StencilVueComponent<JSX.MyCard> = /*@__PURE__*/ globalThis.window ? defineContainer<JSX.MyCard>('my-card', defineMyCard, [], [], undefined, undefined, undefined, transformTag) : defineStencilSSRComponent<JSX.MyCard>({
+  tagName: 'my-card',
+  hydrateModule: import('component-library/hydrate'),
+  props: {
+    
   },
   getTagTransformer: getTagTransformer
 });

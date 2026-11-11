@@ -14,6 +14,7 @@ import type { Components } from 'component-library/components';
 import * as clientComponents from 'component-library-react';
 import { MyButton as MyButtonElement } from 'component-library/components/my-button.js';
 import { MyButtonScoped as MyButtonScopedElement } from 'component-library/components/my-button-scoped.js';
+import { MyCard as MyCardElement } from 'component-library/components/my-card.js';
 import { MyCheckbox as MyCheckboxElement } from 'component-library/components/my-checkbox.js';
 import { MyComplexProps as MyComplexPropsElement } from 'component-library/components/my-complex-props.js';
 import { MyComplexPropsScoped as MyComplexPropsScopedElement } from 'component-library/components/my-complex-props-scoped.js';
@@ -91,6 +92,17 @@ export const MyButtonScoped: StencilReactComponent<MyButtonScopedElement, MyButt
     },
     hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
     clientModule: clientComponents.MyButtonScoped as StencilReactComponent<MyButtonScopedElement, MyButtonScopedEvents, Components.MyButtonScoped>,
+    serializeShadowRoot,
+    getTagTransformer,
+});
+
+export type MyCardEvents = NonNullable<unknown>;
+
+export const MyCard: StencilReactComponent<MyCardElement, MyCardEvents, Components.MyCard> = /*@__PURE__*/ createComponent<MyCardElement, MyCardEvents, Components.MyCard>({
+    tagName: 'my-card',
+    properties: {},
+    hydrateModule: typeof window === 'undefined' ? (import('component-library/hydrate') as Promise<HydrateModule>) : undefined,
+    clientModule: clientComponents.MyCard as StencilReactComponent<MyCardElement, MyCardEvents, Components.MyCard>,
     serializeShadowRoot,
     getTagTransformer,
 });

@@ -15,6 +15,7 @@ import {
   MyTransformTest,
   MyCheckbox,
   MyRange,
+  MyCard,
   MyToggle,
   MyRadio,
 } from 'component-library-react/next';
@@ -55,6 +56,7 @@ const testComponents = [
   'my-counter-shadow',
   'my-list-shadow',
   'my-range-shadow',
+  'named-slot-shadow',
   'my-toggle-shadow',
 ] as const;
 export type TestComponent = (typeof testComponents)[number];
@@ -216,6 +218,28 @@ const TestComponent = ({ name }: TestComponentProps) => {
       <MyRange name="test-range" min={0} max={100} value={50}>
         Range Label
       </MyRange>
+    );
+  }
+  if (name === 'named-slot-shadow') {
+    /**
+     * Stencil components and a plain element placed in the named slots of another Stencil
+     * component, next to some default slot content. The example projects serialize
+     * `my-component` as `scoped` and `my-list-item` as declarative shadow DOM.
+     *
+     * The `key`s prevent React from warning about missing keys for the children that are
+     * passed on to the generated wrapper.
+     */
+    return (
+      <MyCard>
+        <MyComponent key="start" slot="start" first="Slotted" last="Component" />
+        <span key="start-element" slot="start">
+          Slotted element
+        </span>
+        <MyListItem key="end" slot="end">
+          Slotted list item
+        </MyListItem>
+        <p key="default">Default content</p>
+      </MyCard>
     );
   }
   if (name === 'my-toggle-shadow') {

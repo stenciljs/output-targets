@@ -9,6 +9,7 @@ import type { Components } from 'component-library/components';
 
 import { defineCustomElement as defineMyButton } from 'component-library/components/my-button.js';
 import { defineCustomElement as defineMyButtonScoped } from 'component-library/components/my-button-scoped.js';
+import { defineCustomElement as defineMyCard } from 'component-library/components/my-card.js';
 import { defineCustomElement as defineMyCheckbox } from 'component-library/components/my-checkbox.js';
 import { defineCustomElement as defineMyComplexProps } from 'component-library/components/my-complex-props.js';
 import { defineCustomElement as defineMyComplexPropsScoped } from 'component-library/components/my-complex-props-scoped.js';
@@ -229,6 +230,28 @@ export declare interface MyButtonScoped extends Components.MyButtonScoped {
    */
   myBlur: EventEmitter<MyButtonScopedCustomEvent<void>>;
 }
+
+
+@ProxyCmp({
+  defineCustomElementFn: defineMyCard
+})
+@Component({
+  selector: 'my-card',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '<ng-content></ng-content>',
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
+  inputs: [],
+})
+export class MyCard {
+  protected el: HTMLMyCardElement;
+  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+    c.detach();
+    this.el = r.nativeElement;
+  }
+}
+
+
+export declare interface MyCard extends Components.MyCard {}
 
 
 @ProxyCmp({
