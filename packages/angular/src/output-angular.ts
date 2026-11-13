@@ -14,7 +14,7 @@ import {
   isOutputTypeCustomElementsBuild,
   OutputTypes,
   mapPropName,
-  eraseEventTypeParameters,
+  getTypeParameters,
 } from './utils';
 import {
   createAngularComponentDefinition,
@@ -375,17 +375,19 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
       isCustomElementsBuild,
       isStandaloneBuild,
       inlineComponentProps,
-      eraseEventTypeParameters(cmpMeta),
-      getSsrInputs(outputTarget, internalProps)
+      cmpMeta.events || [],
+      getSsrInputs(outputTarget, internalProps),
+      getTypeParameters(cmpMeta)
     );
     const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
     const componentTypeDefinition = createComponentTypeDefinition(
       outputType!,
       tagNameAsPascal,
-      eraseEventTypeParameters(cmpMeta),
+      cmpMeta.events,
       componentCorePackage,
       customElementsDir,
-      getEventTypesModule(config, outputTarget)
+      getEventTypesModule(config, outputTarget),
+      getTypeParameters(cmpMeta)
     );
 
     proxyFileOutput.push(componentDefinition, '\n');
@@ -493,8 +495,9 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     isCustomElementsBuild,
     isStandaloneBuild,
     inlineComponentProps,
-    eraseEventTypeParameters(cmpMeta),
-    getSsrInputs(outputTarget, internalProps)
+    cmpMeta.events || [],
+    getSsrInputs(outputTarget, internalProps),
+    getTypeParameters(cmpMeta)
   );
 
   const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
@@ -502,10 +505,11 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
   const componentTypeDefinition = createComponentTypeDefinition(
     outputType!,
     tagNameAsPascal,
-    eraseEventTypeParameters(cmpMeta),
+    cmpMeta.events,
     componentCorePackage,
     customElementsDir,
-    getEventTypesModule(config, outputTarget)
+    getEventTypesModule(config, outputTarget),
+    getTypeParameters(cmpMeta)
   );
 
   const proxyFileOutput = [componentDefinition, '\n'];

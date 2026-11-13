@@ -142,6 +142,8 @@ export const createComponentEventTypeImports = (
      * `components.d.ts`). When not set, v4's own locations are used.
      */
     typesModule?: string;
+    /** Types referenced in a constraint or default of a type parameter get imported as well. */
+    typeParameters?: readonly ComponentTypeParameter[];
   }
 ) => {
   const { componentCorePackage, customElementsDir } = options;
@@ -161,8 +163,13 @@ export const createComponentEventTypeImports = (
     imports.push(`import type { ${componentTagName}CustomEvent } from '${importPathName}';`);
   }
 
-  events.forEach((event) => {
-    Object.entries(event.complexType.references).forEach(([typeName, refObject]) => {
+  const references = [
+    ...events.map((event) => event.complexType.references),
+    ...(options.typeParameters ?? []).map((typeParameter) => typeParameter.references ?? {}),
+  ];
+
+  references.forEach((typeReferences) => {
+    Object.entries(typeReferences).forEach(([typeName, refObject]) => {
       if (refObject.location === 'local' || refObject.location === 'import') {
         const newTypeName = `I${componentTagName}${typeName}`;
         // Prevents duplicate imports for the same type.
@@ -181,41 +188,47 @@ const EXTENDED_PATH_REGEX = /^\\\\\?\\/;
 const NON_ASCII_REGEX = /[^\x00-\x80]+/;
 const SLASH_REGEX = /\\/g;
 
+export interface ComponentTypeParameter {
+  name: string;
+  constraint?: string;
+  default?: string;
+  references?: Record<string, { location: string }>;
+}
+
 /**
- * Replaces the type parameters of a component class (e.g. `T` in `class MyTable<T> {}`) with `any`.
- * Prop and event types are copied as written in the component, but the generated file
- * doesn't declare the class's type parameters.
- *
- * `typeParameters` is only set by Stencil versions that support generic components.
+ * The type parameters of a component class, e.g. `T` in `class MyTable<T> {}`.
+ * Only Stencil versions that support generic components set them.
  */
-export const eraseTypeParameters = (type: string, component: ComponentCompilerMeta): string => {
-  const typeParameters = (component as { typeParameters?: { name: string }[] }).typeParameters ?? [];
-  return typeParameters.reduce(
-    (result, { name }) =>
-      result.replace(
-        new RegExp(`(?<![\\w$.'"\`])${name.replace(/\$/g, '\\$')}(?![\\w$'"\`])`, 'g'),
-        (match: string, offset: number) => (isPropertyKey(result, offset, match.length) ? match : 'any')
-      ),
-    type
-  );
+export const getTypeParameters = (cmpMeta: ComponentCompilerMeta): ComponentTypeParameter[] =>
+  (cmpMeta as { typeParameters?: ComponentTypeParameter[] }).typeParameters ?? [];
+
+/**
+ * Renders type parameters for a declaration (`<T extends IMyTableRow = IMyTableRow>`) and for a
+ * reference (`<T>`). Referenced types get the same prefix as in {@link createComponentEventTypeImports}.
+ * A parameter without a default gets `any`, like in `components.d.ts`, so every reference
+ * without type arguments stays valid.
+ */
+export const formatTypeParameters = (componentTagName: string, typeParameters: readonly ComponentTypeParameter[]) => {
+  if (typeParameters.length === 0) {
+    return { declaration: '', usage: '' };
+  }
+  const declarations = typeParameters.map(({ name, constraint, default: defaultType, references = {} }) => {
+    const format = (type: string) =>
+      Object.entries(references)
+        .filter(([, refObject]) => refObject.location === 'local' || refObject.location === 'import')
+        .reduce(
+          (result, [typeName]) =>
+            result.replace(
+              new RegExp(`(?<![\\w$.'"\`])${typeName.replace(/\$/g, '\\$')}(?![\\w$'"\`])`, 'g'),
+              `I${componentTagName}${typeName}`
+            ),
+          type.replace(/\s+/g, ' ').trim()
+        );
+    const extendsClause = constraint ? ` extends ${format(constraint)}` : '';
+    return `${name}${extendsClause} = ${defaultType ? format(defaultType) : 'any'}`;
+  });
+  return {
+    declaration: `<${declarations.join(', ')}>`,
+    usage: `<${typeParameters.map(({ name }) => name).join(', ')}>`,
+  };
 };
-
-/**
- * Whether the identifier at `offset` is a property or parameter name, like `T` in `{ T: string }`.
- */
-const isPropertyKey = (type: string, offset: number, length: number) =>
-  /^\s*\??\s*:/.test(type.slice(offset + length)) && /([{;,(\[]|\breadonly)$/.test(type.slice(0, offset).trimEnd());
-
-/**
- * Returns the events of a component with its class type parameters replaced by `any`,
- * see {@link eraseTypeParameters}.
- */
-export const eraseEventTypeParameters = (cmpMeta: ComponentCompilerMeta): ComponentCompilerEvent[] =>
-  (cmpMeta.events || []).map((event) =>
-    event.complexType
-      ? {
-          ...event,
-          complexType: { ...event.complexType, original: eraseTypeParameters(event.complexType.original, cmpMeta) },
-        }
-      : event
-  );

@@ -30,7 +30,8 @@ export const eraseTypeParameters = (type: string, component: ComponentCompilerMe
   return typeParameters.reduce(
     (result, { name }) =>
       result.replace(
-        new RegExp(`(?<![\\w$.'"\`])${name.replace(/\$/g, '\\$')}(?![\\w$'"\`])`, 'g'),
+        // `Foo.T` is a different type, `...T` in a variadic tuple is the type parameter
+        new RegExp(`(?<![\\w$'"\`]|(?<!\\.)\\.)${name.replace(/\$/g, '\\$')}(?![\\w$'"\`])`, 'g'),
         (match: string, offset: number) => (isPropertyKey(result, offset, match.length) ? match : 'any')
       ),
     type

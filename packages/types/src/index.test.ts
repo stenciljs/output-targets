@@ -278,6 +278,12 @@ describe('generic components', () => {
         complexType: { original: 'T', resolved: 'T', references: {} },
         docs: { text: '', tags: [] },
       },
+      {
+        name: 'rowsChange',
+        internal: false,
+        complexType: { original: '[...T[], Foo.T]', resolved: '[...T[], Foo.T]', references: {} },
+        docs: { text: '', tags: [] },
+      },
     ],
     // `typeParameters` is only known to Stencil versions that support generic components
     typeParameters: [{ name: 'T', constraint: 'Row', references: {} }],
@@ -295,7 +301,8 @@ describe('generic components', () => {
 
     expect(result).toContain(`any[]`);
     expect(result).toContain(`MyButtonCustomEvent<any>`);
-    expect(result).not.toMatch(/\bT\b/);
+    expect(result).toContain(`MyButtonCustomEvent<[...any[], Foo.T]>`);
+    expect(result.replace('Foo.T', '')).not.toMatch(/\bT\b/);
   });
 
   it('replaces the class type parameters with any (astro)', () => {

@@ -76,7 +76,7 @@ describe('generateProxies', () => {
     expect(finalText.includes(`import { ProxyCmp } from './angular-component-lib/utils';`)).toBeTruthy();
   });
 
-  it('should replace the class type parameters in output types with any', () => {
+  it('should generate a generic component for a component with type parameters', () => {
     const outputTarget: OutputTargetAngular = {
       componentCorePackage: 'component-library',
       directivesProxyFile: '../component-library-angular/src/proxies.ts',
@@ -84,7 +84,10 @@ describe('generateProxies', () => {
     const components = [
       {
         tagName: 'my-table',
-        typeParameters: [{ name: 'T', constraint: 'Row', references: {} }],
+        typeParameters: [
+          { name: 'T', constraint: 'Row', default: 'Row', references: { Row: { location: 'import' } } },
+          { name: 'K', constraint: 'keyof T', references: {} },
+        ],
         events: [
           {
             name: 'rowClick',
@@ -97,8 +100,13 @@ describe('generateProxies', () => {
     ] as unknown as ComponentCompilerMeta[];
 
     const finalText = generateProxies(components, pkgData, outputTarget, rootDir, emptyConfig);
-    expect(finalText).toContain(`@Output() rowClick = new EventEmitter<MyTableCustomEvent<any>>();`);
-    expect(finalText).toContain(`rowClick: EventEmitter<MyTableCustomEvent<any>>;`);
+    expect(finalText).toContain(`import type { Row as IMyTableRow } from 'component-library';`);
+    expect(finalText).toContain(`export class MyTable<T extends IMyTableRow = IMyTableRow, K extends keyof T = any> {`);
+    expect(finalText).toContain(`@Output() rowClick = new EventEmitter<MyTableCustomEvent<T>>();`);
+    expect(finalText).toContain(
+      `export declare interface MyTable<T extends IMyTableRow = IMyTableRow, K extends keyof T = any> extends Components.MyTable<T, K> {`
+    );
+    expect(finalText).toContain(`rowClick: EventEmitter<MyTableCustomEvent<T>>;`);
   });
 
   it('should not include output related imports when there is component with no events or internal ones', () => {

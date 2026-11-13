@@ -4,7 +4,8 @@ import {
   createComponentEventTypeImports,
   formatToQuotedList,
   isOutputTypeCustomElementsBuild,
-  eraseEventTypeParameters,
+  formatTypeParameters,
+  getTypeParameters,
 } from '../src/utils';
 
 describe('createImportStatement()', () => {
@@ -154,26 +155,47 @@ describe('isOutputTypeCustomElementsBuild', () => {
   });
 });
 
-describe('eraseEventTypeParameters()', () => {
-  const event = (original: string) =>
-    ({ name: 'rowClick', internal: false, complexType: { original, resolved: original, references: {} } }) as any;
-
-  it('should replace the class type parameters in event types with any', () => {
-    const cmpMeta = {
-      typeParameters: [{ name: 'T', references: {} }],
-      events: [event('T'), event('{ row: T; T: string }'), event('MyT')],
-    } as any;
-
-    expect(eraseEventTypeParameters(cmpMeta).map((e) => e.complexType.original)).toEqual([
-      'any',
-      '{ row: any; T: string }',
-      'MyT',
-    ]);
+describe('formatTypeParameters()', () => {
+  it('should render the declaration and the usage with prefixed type references', () => {
+    expect(
+      formatTypeParameters('MyTable', [
+        {
+          name: 'T',
+          constraint: 'Row',
+          default: 'Row',
+          references: { Row: { location: 'import' } },
+        },
+        { name: 'K', constraint: 'keyof T', references: {} },
+        { name: 'U', constraint: 'Array<\n  Row\n>', references: { Row: { location: 'import' } } },
+      ])
+    ).toEqual({
+      declaration: '<T extends IMyTableRow = IMyTableRow, K extends keyof T = any, U extends Array< IMyTableRow > = any>',
+      usage: '<T, K, U>',
+    });
   });
 
-  it('should return the events unchanged without type parameters', () => {
-    const cmpMeta = { events: [event('T')] } as any;
+  it('should keep global types and other identifiers', () => {
+    expect(
+      formatTypeParameters('MyTable', [
+        { name: 'T', constraint: 'HTMLElement | MyRow', references: { HTMLElement: { location: 'global' } } },
+      ]).declaration
+    ).toEqual('<T extends HTMLElement | MyRow = any>');
+  });
 
-    expect(eraseEventTypeParameters(cmpMeta).map((e) => e.complexType.original)).toEqual(['T']);
+  it('should render nothing without type parameters', () => {
+    expect(formatTypeParameters('MyTable', [])).toEqual({ declaration: '', usage: '' });
+    expect(getTypeParameters({} as any)).toEqual([]);
+  });
+});
+
+describe('createComponentEventTypeImports() with type parameters', () => {
+  it('should import the types referenced by type parameters', () => {
+    const imports = createComponentEventTypeImports('MyTable', [], {
+      componentCorePackage: '@ionic/core',
+      outputType: 'component',
+      typeParameters: [{ name: 'T', constraint: 'Row', references: { Row: { location: 'import' } } }],
+    });
+
+    expect(imports).toEqual(`import type { Row as IMyTableRow } from '@ionic/core';`);
   });
 });

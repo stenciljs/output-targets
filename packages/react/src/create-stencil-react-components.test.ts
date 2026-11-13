@@ -167,23 +167,21 @@ describe('createStencilReactComponents', () => {
     expect(result).toContain(`onMyHover: 'myHover'`);
   });
 
-  it('should replace the class type parameters in event types with any', () => {
+  it('should generate a generic wrapper for a component with type parameters', () => {
     const components: ComponentCompilerMeta[] = [
       {
         tagName: 'my-table',
         componentClassName: 'MyTable',
         properties: [],
-        typeParameters: [{ name: 'T', constraint: 'Row', references: {} }],
+        typeParameters: [
+          { name: 'T', constraint: 'Row', default: 'Row', references: { Row: { location: 'import', path: './row' } } },
+          { name: 'K', constraint: 'keyof T', references: {} },
+        ],
         events: [
           {
             name: 'rowClick',
             internal: false,
             complexType: { original: 'T', resolved: 'T', references: {} },
-          },
-          {
-            name: 'rowsChange',
-            internal: false,
-            complexType: { original: 'Array<T>', resolved: 'Array<T>', references: {} },
           },
         ],
       } as any,
@@ -195,8 +193,37 @@ describe('createStencilReactComponents', () => {
       customElementsDir: 'dist/components',
     });
 
-    expect(result).toContain(`onRowClick: EventName<MyTableCustomEvent<any>>`);
-    expect(result).toContain(`onRowsChange: EventName<MyTableCustomEvent<Array<any>>>`);
+    expect(result).toContain(`import type { Row, MyTableCustomEvent } from 'my-package';`);
+    expect(result).toContain(`export type MyTableEvents = {\n  onRowClick: EventName<MyTableCustomEvent<any>>\n};`);
+    expect(result).toContain(
+      `}) as <T extends Row = Row, K extends keyof T = any>(props: Parameters<StencilReactComponent<MyTableElement, { onRowClick: EventName<MyTableCustomEvent<T>> }, Components.MyTable<T, K>>>[0]) => ReturnType<StencilReactComponent<MyTableElement, MyTableEvents, Components.MyTable>>;`
+    );
+    expect(result).not.toContain(`export const MyTable: StencilReactComponent`);
+  });
+
+  it('should import types of type parameters without importing EventName when there are no events', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-list',
+        componentClassName: 'MyList',
+        properties: [],
+        events: [],
+        typeParameters: [{ name: 'T', constraint: 'Row', references: { Row: { location: 'import', path: './row' } } }],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/components',
+    });
+
+    expect(result).toContain(`import type { Row } from 'my-package';`);
+    expect(result).toContain(`import type { StencilReactComponent } from '@stencil/react-output-target/runtime';`);
+    expect(result).toContain(`export type MyListEvents = NonNullable<unknown>;`);
+    expect(result).toContain(
+      `}) as <T extends Row = any>(props: Parameters<StencilReactComponent<MyListElement, MyListEvents, Components.MyList<T>>>[0]) => ReturnType<StencilReactComponent<MyListElement, MyListEvents, Components.MyList>>;`
+    );
   });
 
   it('should filter out internal events', () => {

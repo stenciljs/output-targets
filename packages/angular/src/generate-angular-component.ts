@@ -1,6 +1,13 @@
 import type { CompilerJsDoc, ComponentCompilerEvent, ComponentCompilerProperty } from '@stencil/core/internal';
 
-import { createComponentEventTypeImports, dashToPascalCase, formatToQuotedList, mapPropName } from './utils';
+import {
+  type ComponentTypeParameter,
+  createComponentEventTypeImports,
+  dashToPascalCase,
+  formatToQuotedList,
+  formatTypeParameters,
+  mapPropName,
+} from './utils';
 import type { ComponentInputProperty, OutputType } from './types';
 
 /**
@@ -93,6 +100,7 @@ export interface SsrInputs {
  * @param ssr When set, the wrapper writes its inputs as attributes during server rendering.
  * `attributes` maps the inputs whose attribute isn't the dash-cased prop name to that attribute,
  * and `refs` lists the inputs whose every value goes through `ssrProp()`.
+ * @param typeParameters The type parameters of the component class.
  * @returns The component declaration as a string.
  */
 export const createAngularComponentDefinition = (
@@ -103,9 +111,11 @@ export const createAngularComponentDefinition = (
   standalone = false,
   inlineComponentProps: readonly ComponentCompilerProperty[] = [],
   events: readonly ComponentCompilerEvent[] = [],
-  ssr?: SsrInputs
+  ssr?: SsrInputs,
+  typeParameters: readonly ComponentTypeParameter[] = []
 ) => {
   const tagNameAsPascal = dashToPascalCase(tagName);
+  const { declaration, usage } = formatTypeParameters(tagNameAsPascal, typeParameters);
 
   const outputs = events.filter((event) => !event.internal).map((event) => event.name);
 
@@ -154,7 +164,7 @@ export const createAngularComponentDefinition = (
   }
 
   const propertyDeclarations = inlineComponentProps.map((m) =>
-    createPropertyDeclaration(m, `Components.${tagNameAsPascal}['${m.name}']`, true)
+    createPropertyDeclaration(m, `Components.${tagNameAsPascal}${usage}['${m.name}']`, true)
   );
 
   const outputDeclarations = events
@@ -186,7 +196,7 @@ export const createAngularComponentDefinition = (
   // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: [${formattedInputs}],${hasOutputs ? `\n  outputs: [${formattedOutputs}],` : ''}${standaloneOption}
 })
-export class ${tagNameAsPascal} {
+export class ${tagNameAsPascal}${declaration} {
   ${propertiesDeclarationText}
   constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
     c.detach();
@@ -283,6 +293,7 @@ const createDocComment = (doc: CompilerJsDoc) => {
  * @param componentCorePackage The component core package.
  * @param customElementsDir The custom elements directory.
  * @param typesModule The module every component type is imported from (Stencil v5 only).
+ * @param typeParameters The type parameters of the component class.
  * @returns The component interface type definition as a string.
  */
 export const createComponentTypeDefinition = (
@@ -291,15 +302,18 @@ export const createComponentTypeDefinition = (
   events: readonly ComponentCompilerEvent[],
   componentCorePackage: string,
   customElementsDir?: string,
-  typesModule?: string
+  typesModule?: string,
+  typeParameters: readonly ComponentTypeParameter[] = []
 ) => {
   const publicEvents = events.filter((ev) => !ev.internal);
+  const { declaration, usage } = formatTypeParameters(tagNameAsPascal, typeParameters);
 
   const eventTypeImports = createComponentEventTypeImports(tagNameAsPascal, publicEvents, {
     componentCorePackage,
     customElementsDir,
     outputType,
     typesModule,
+    typeParameters,
   });
   const eventTypes = publicEvents.map((event) =>
     createPropertyDeclaration(
@@ -307,7 +321,7 @@ export const createComponentTypeDefinition = (
       `EventEmitter<${tagNameAsPascal}CustomEvent<${formatOutputType(tagNameAsPascal, event)}>>`
     )
   );
-  const interfaceDeclaration = `export declare interface ${tagNameAsPascal} extends Components.${tagNameAsPascal} {`;
+  const interfaceDeclaration = `export declare interface ${tagNameAsPascal}${declaration} extends Components.${tagNameAsPascal}${usage} {`;
 
   const typeDefinition =
     (eventTypeImports.length > 0 ? `${eventTypeImports + '\n\n'}` : '') +
