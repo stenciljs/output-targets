@@ -1,5 +1,5 @@
 import { type BaseTypesOptions, filterComponents, collectImportTypes, generateHeader } from './base.js';
-import { kebabToPascalCase, normalizeTypeString } from '../utils/string-utils.js';
+import { eraseTypeParameters, kebabToPascalCase, normalizeTypeString } from '../utils/string-utils.js';
 
 export interface VueTypesOptions extends BaseTypesOptions {}
 
@@ -52,7 +52,7 @@ export function createVueTypes({
     // Add properties
     const publicProperties = (component.properties || []).filter((p) => !p.internal);
     for (const prop of publicProperties) {
-      const propType = normalizeTypeString(prop.complexType?.original || 'any');
+      const propType = normalizeTypeString(eraseTypeParameters(prop.complexType?.original || 'any', component));
       const docs = prop.docs?.text?.trim();
       const docsComment = docs ? `  /** ${docs} */\n` : '';
       interfaceProperties.push(`${docsComment}  '${prop.name}'?: ${propType};`);
@@ -61,7 +61,7 @@ export function createVueTypes({
     // Add events using Vue's onEventName convention
     const publicEvents = (component.events || []).filter((e) => !e.internal);
     for (const event of publicEvents) {
-      const eventType = normalizeTypeString(event.complexType?.original || 'void');
+      const eventType = normalizeTypeString(eraseTypeParameters(event.complexType?.original || 'void', component));
       const docs = event.docs?.text?.trim();
       const docsComment = docs ? `  /** Event: ${event.name} - ${docs} */\n` : `  /** Event: ${event.name} */\n`;
       // Vue uses onEventName format for event handlers in props (onMyEvent for @my-event)

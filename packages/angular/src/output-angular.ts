@@ -14,6 +14,7 @@ import {
   isOutputTypeCustomElementsBuild,
   OutputTypes,
   mapPropName,
+  getTypeParameters,
 } from './utils';
 import {
   createAngularComponentDefinition,
@@ -375,7 +376,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
       isStandaloneBuild,
       inlineComponentProps,
       cmpMeta.events || [],
-      getSsrInputs(outputTarget, internalProps)
+      getSsrInputs(outputTarget, internalProps),
+      getTypeParameters(cmpMeta)
     );
     const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
     const componentTypeDefinition = createComponentTypeDefinition(
@@ -384,7 +386,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
       cmpMeta.events,
       componentCorePackage,
       customElementsDir,
-      getEventTypesModule(config, outputTarget)
+      getEventTypesModule(config, outputTarget),
+      getTypeParameters(cmpMeta)
     );
 
     proxyFileOutput.push(componentDefinition, '\n');
@@ -493,7 +496,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     isStandaloneBuild,
     inlineComponentProps,
     cmpMeta.events || [],
-    getSsrInputs(outputTarget, internalProps)
+    getSsrInputs(outputTarget, internalProps),
+    getTypeParameters(cmpMeta)
   );
 
   const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
@@ -504,7 +508,8 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     cmpMeta.events,
     componentCorePackage,
     customElementsDir,
-    getEventTypesModule(config, outputTarget)
+    getEventTypesModule(config, outputTarget),
+    getTypeParameters(cmpMeta)
   );
 
   const proxyFileOutput = [componentDefinition, '\n'];

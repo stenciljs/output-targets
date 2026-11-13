@@ -1,5 +1,5 @@
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
-import { kebabToPascalCase, normalizeTypeString } from '../utils/string-utils.js';
+import { eraseTypeParameters, kebabToPascalCase, normalizeTypeString } from '../utils/string-utils.js';
 
 export interface BaseTypesOptions {
   components: ComponentCompilerMeta[];
@@ -59,13 +59,13 @@ export function extractComponentInfo(component: ComponentCompilerMeta): Componen
 
   const properties: PropertyInfo[] = publicProperties.map((prop) => ({
     name: prop.name,
-    type: normalizeTypeString(prop.complexType?.original || 'any'),
+    type: normalizeTypeString(eraseTypeParameters(prop.complexType?.original || 'any', component)),
     docs: prop.docs?.text?.trim(),
   }));
 
   const events: EventInfo[] = publicEvents.map((event) => ({
     name: event.name,
-    type: normalizeTypeString(event.complexType?.original || 'void'),
+    type: normalizeTypeString(eraseTypeParameters(event.complexType?.original || 'void', component)),
     docs: event.docs?.text?.trim(),
   }));
 
