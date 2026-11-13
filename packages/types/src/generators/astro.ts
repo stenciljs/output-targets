@@ -1,5 +1,5 @@
 import { type BaseTypesOptions, filterComponents, collectImportTypes, generateHeader } from './base.js';
-import { kebabToPascalCase, normalizeTypeString } from '../utils/string-utils.js';
+import { eraseTypeParameters, kebabToPascalCase, normalizeTypeString } from '../utils/string-utils.js';
 
 export interface AstroTypesOptions extends BaseTypesOptions {}
 
@@ -44,7 +44,7 @@ export function createAstroTypes({
     const interfaceProperties: string[] = [];
 
     for (const prop of (component.properties || []).filter((p) => !p.internal)) {
-      const propType = normalizeTypeString(prop.complexType?.original || 'any');
+      const propType = normalizeTypeString(eraseTypeParameters(prop.complexType?.original || 'any', component));
       const docs = prop.docs?.text?.trim();
       const docsComment = docs ? `  /** ${docs} */\n` : '';
       interfaceProperties.push(`${docsComment}  '${prop.attribute ?? prop.name}'?: ${propType};`);

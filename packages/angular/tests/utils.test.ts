@@ -4,6 +4,7 @@ import {
   createComponentEventTypeImports,
   formatToQuotedList,
   isOutputTypeCustomElementsBuild,
+  eraseEventTypeParameters,
 } from '../src/utils';
 
 describe('createImportStatement()', () => {
@@ -150,5 +151,29 @@ describe('isOutputTypeCustomElementsBuild', () => {
   });
   it('should return false if the output type is component', () => {
     expect(isOutputTypeCustomElementsBuild('component')).toEqual(false);
+  });
+});
+
+describe('eraseEventTypeParameters()', () => {
+  const event = (original: string) =>
+    ({ name: 'rowClick', internal: false, complexType: { original, resolved: original, references: {} } }) as any;
+
+  it('should replace the class type parameters in event types with any', () => {
+    const cmpMeta = {
+      typeParameters: [{ name: 'T', references: {} }],
+      events: [event('T'), event('{ row: T; T: string }'), event('MyT')],
+    } as any;
+
+    expect(eraseEventTypeParameters(cmpMeta).map((e) => e.complexType.original)).toEqual([
+      'any',
+      '{ row: any; T: string }',
+      'MyT',
+    ]);
+  });
+
+  it('should return the events unchanged without type parameters', () => {
+    const cmpMeta = { events: [event('T')] } as any;
+
+    expect(eraseEventTypeParameters(cmpMeta).map((e) => e.complexType.original)).toEqual(['T']);
   });
 });

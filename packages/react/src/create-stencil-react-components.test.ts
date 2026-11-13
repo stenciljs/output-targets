@@ -167,6 +167,38 @@ describe('createStencilReactComponents', () => {
     expect(result).toContain(`onMyHover: 'myHover'`);
   });
 
+  it('should replace the class type parameters in event types with any', () => {
+    const components: ComponentCompilerMeta[] = [
+      {
+        tagName: 'my-table',
+        componentClassName: 'MyTable',
+        properties: [],
+        typeParameters: [{ name: 'T', constraint: 'Row', references: {} }],
+        events: [
+          {
+            name: 'rowClick',
+            internal: false,
+            complexType: { original: 'T', resolved: 'T', references: {} },
+          },
+          {
+            name: 'rowsChange',
+            internal: false,
+            complexType: { original: 'Array<T>', resolved: 'Array<T>', references: {} },
+          },
+        ],
+      } as any,
+    ];
+
+    const result = createStencilReactComponents({
+      components,
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/components',
+    });
+
+    expect(result).toContain(`onRowClick: EventName<MyTableCustomEvent<any>>`);
+    expect(result).toContain(`onRowsChange: EventName<MyTableCustomEvent<Array<any>>>`);
+  });
+
   it('should filter out internal events', () => {
     const components: ComponentCompilerMeta[] = [
       {

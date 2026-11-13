@@ -14,6 +14,7 @@ import {
   isOutputTypeCustomElementsBuild,
   OutputTypes,
   mapPropName,
+  eraseEventTypeParameters,
 } from './utils';
 import {
   createAngularComponentDefinition,
@@ -374,14 +375,14 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
       isCustomElementsBuild,
       isStandaloneBuild,
       inlineComponentProps,
-      cmpMeta.events || [],
+      eraseEventTypeParameters(cmpMeta),
       getSsrInputs(outputTarget, internalProps)
     );
     const moduleDefinition = generateAngularModuleForComponent(cmpMeta.tagName);
     const componentTypeDefinition = createComponentTypeDefinition(
       outputType!,
       tagNameAsPascal,
-      cmpMeta.events,
+      eraseEventTypeParameters(cmpMeta),
       componentCorePackage,
       customElementsDir,
       getEventTypesModule(config, outputTarget)
@@ -492,7 +493,7 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
     isCustomElementsBuild,
     isStandaloneBuild,
     inlineComponentProps,
-    cmpMeta.events || [],
+    eraseEventTypeParameters(cmpMeta),
     getSsrInputs(outputTarget, internalProps)
   );
 
@@ -501,7 +502,7 @@ ${createImportStatement(componentLibImports, './angular-component-lib/utils')}${
   const componentTypeDefinition = createComponentTypeDefinition(
     outputType!,
     tagNameAsPascal,
-    cmpMeta.events,
+    eraseEventTypeParameters(cmpMeta),
     componentCorePackage,
     customElementsDir,
     getEventTypesModule(config, outputTarget)

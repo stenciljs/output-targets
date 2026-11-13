@@ -1,4 +1,4 @@
-import { ComponentCompilerEvent, Config } from '@stencil/core/internal';
+import { ComponentCompilerEvent, ComponentCompilerMeta, Config } from '@stencil/core/internal';
 import path from 'path';
 import { OutputType, PackageJSON } from './types';
 
@@ -180,3 +180,42 @@ export const createComponentEventTypeImports = (
 const EXTENDED_PATH_REGEX = /^\\\\\?\\/;
 const NON_ASCII_REGEX = /[^\x00-\x80]+/;
 const SLASH_REGEX = /\\/g;
+
+/**
+ * Replaces the type parameters of a component class (e.g. `T` in `class MyTable<T> {}`) with `any`.
+ * Prop and event types are copied as written in the component, but the generated file
+ * doesn't declare the class's type parameters.
+ *
+ * `typeParameters` is only set by Stencil versions that support generic components.
+ */
+export const eraseTypeParameters = (type: string, component: ComponentCompilerMeta): string => {
+  const typeParameters = (component as { typeParameters?: { name: string }[] }).typeParameters ?? [];
+  return typeParameters.reduce(
+    (result, { name }) =>
+      result.replace(
+        new RegExp(`(?<![\\w$.'"\`])${name.replace(/\$/g, '\\$')}(?![\\w$'"\`])`, 'g'),
+        (match: string, offset: number) => (isPropertyKey(result, offset, match.length) ? match : 'any')
+      ),
+    type
+  );
+};
+
+/**
+ * Whether the identifier at `offset` is a property or parameter name, like `T` in `{ T: string }`.
+ */
+const isPropertyKey = (type: string, offset: number, length: number) =>
+  /^\s*\??\s*:/.test(type.slice(offset + length)) && /([{;,(\[]|\breadonly)$/.test(type.slice(0, offset).trimEnd());
+
+/**
+ * Returns the events of a component with its class type parameters replaced by `any`,
+ * see {@link eraseTypeParameters}.
+ */
+export const eraseEventTypeParameters = (cmpMeta: ComponentCompilerMeta): ComponentCompilerEvent[] =>
+  (cmpMeta.events || []).map((event) =>
+    event.complexType
+      ? {
+          ...event,
+          complexType: { ...event.complexType, original: eraseTypeParameters(event.complexType.original, cmpMeta) },
+        }
+      : event
+  );

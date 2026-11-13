@@ -76,6 +76,31 @@ describe('generateProxies', () => {
     expect(finalText.includes(`import { ProxyCmp } from './angular-component-lib/utils';`)).toBeTruthy();
   });
 
+  it('should replace the class type parameters in output types with any', () => {
+    const outputTarget: OutputTargetAngular = {
+      componentCorePackage: 'component-library',
+      directivesProxyFile: '../component-library-angular/src/proxies.ts',
+    } as OutputTargetAngular;
+    const components = [
+      {
+        tagName: 'my-table',
+        typeParameters: [{ name: 'T', constraint: 'Row', references: {} }],
+        events: [
+          {
+            name: 'rowClick',
+            internal: false,
+            docs: { text: '', tags: [] },
+            complexType: { original: 'T', resolved: 'T', references: {} } as ComponentCompilerEventComplexType,
+          },
+        ],
+      },
+    ] as unknown as ComponentCompilerMeta[];
+
+    const finalText = generateProxies(components, pkgData, outputTarget, rootDir, emptyConfig);
+    expect(finalText).toContain(`@Output() rowClick = new EventEmitter<MyTableCustomEvent<any>>();`);
+    expect(finalText).toContain(`rowClick: EventEmitter<MyTableCustomEvent<any>>;`);
+  });
+
   it('should not include output related imports when there is component with no events or internal ones', () => {
     const outputTarget: OutputTargetAngular = {
       componentCorePackage: 'component-library',

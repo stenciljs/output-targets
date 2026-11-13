@@ -259,3 +259,49 @@ describe('typesOutputTarget generator', () => {
     expect(content).toContain(`from 'ui';`);
   });
 });
+
+describe('generic components', () => {
+  const genericComponent = createMockComponent({
+    properties: [
+      {
+        name: 'data',
+        attribute: undefined,
+        internal: false,
+        complexType: { original: 'T[]', resolved: 'T[]', references: {} },
+        docs: { text: '', tags: [] },
+      },
+    ],
+    events: [
+      {
+        name: 'rowClick',
+        internal: false,
+        complexType: { original: 'T', resolved: 'T', references: {} },
+        docs: { text: '', tags: [] },
+      },
+    ],
+    // `typeParameters` is only known to Stencil versions that support generic components
+    typeParameters: [{ name: 'T', constraint: 'Row', references: {} }],
+  } as Partial<ComponentCompilerMeta>);
+
+  const generators = {
+    react: createReactTypes,
+    solid: createSolidTypes,
+    vue: createVueTypes,
+    preact: createPreactTypes,
+  };
+
+  it.each(Object.entries(generators))('replaces the class type parameters with any (%s)', (_, generate) => {
+    const result = generate({ components: [genericComponent], stencilPackageName: 'my-package' });
+
+    expect(result).toContain(`any[]`);
+    expect(result).toContain(`MyButtonCustomEvent<any>`);
+    expect(result).not.toMatch(/\bT\b/);
+  });
+
+  it('replaces the class type parameters with any (astro)', () => {
+    const result = createAstroTypes({ components: [genericComponent], stencilPackageName: 'my-package' });
+
+    expect(result).toContain(`any[]`);
+    expect(result).not.toMatch(/\bT\b/);
+  });
+});

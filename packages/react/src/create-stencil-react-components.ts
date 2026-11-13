@@ -1,5 +1,10 @@
 import type { ComponentCompilerMeta } from '@stencil/core/internal';
-import { eventListenerName, kebabToPascalCase, normalizeTypeString } from './utils/string-utils.js';
+import {
+  eraseTypeParameters,
+  eventListenerName,
+  kebabToPascalCase,
+  normalizeTypeString,
+} from './utils/string-utils.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
 
 interface ReactEvent {
@@ -137,7 +142,7 @@ export const createStencilReactComponents = ({
       events.push({
         originalName: event.name,
         name: eventListenerName(event.name),
-        type: `EventName<${componentCustomEvent}<${normalizeTypeString(original)}>>`,
+        type: `EventName<${componentCustomEvent}<${normalizeTypeString(eraseTypeParameters(original, component))}>>`,
       });
     }
 
