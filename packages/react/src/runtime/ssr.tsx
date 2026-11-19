@@ -109,9 +109,26 @@ type MarkedSsrComponent = { [stencilSsrOptions]: ShallowComponentOptions };
 
 type AttributeValue = string | number | boolean | Record<string, unknown>;
 
-// Splits props into attribute values (primitives, `style`) keyed by attribute name and
-// complex values applied as properties via `beforeHydrate`. `false` is dropped.
-const splitProps = (props: Record<string, unknown>, properties: Record<string, string>) => {
+// Ties an element in the HTML passed to Stencil to its complex props, which `beforeHydrate` assigns.
+const complexPropsAttribute = 'data-stencil-react-props';
+const complexPropsMarker = new RegExp(` ${complexPropsAttribute}="\\d+"`, 'g');
+
+// What one Stencil render collects from the props of its host and of the Stencil children in its light DOM.
+interface SerializationContext {
+  // complex props by the value of their element's `complexPropsAttribute`
+  complexProps: Map<string, Record<string, unknown>>;
+  // `attributesToProps` from `html-react-parser`, which is only imported on the server
+  attributesToProps: typeof import('html-react-parser').attributesToProps;
+}
+
+// Splits props into attribute values (primitives, `style`) keyed by attribute name and complex
+// values, which `context` keeps for `beforeHydrate`; their element gets a `complexPropsAttribute`
+// with their id. `false` is dropped.
+const splitProps = (
+  props: Record<string, unknown>,
+  properties: Record<string, string>,
+  context: SerializationContext
+) => {
   const attributes: Record<string, AttributeValue> = {};
   const complexProps: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(props)) {
@@ -129,18 +146,28 @@ const splitProps = (props: Record<string, unknown>, properties: Record<string, s
       complexProps[key] = value;
     }
   }
-  return { attributes, complexProps };
+  if (Object.keys(complexProps).length > 0) {
+    const id = String(context.complexProps.size);
+    context.complexProps.set(id, complexProps);
+    attributes[complexPropsAttribute] = id;
+  }
+  return attributes;
 };
 
 const isStencilSsrComponent = (type: unknown): type is MarkedSsrComponent =>
   typeof type === 'function' && stencilSsrOptions in type;
 
-// Parents only need nested Stencil children as tags with attributes. Rendering them fully
-// here ran each child once per ancestor level; the child renders itself once as a real child.
+// Parents only need nested Stencil children as tags with their attributes; their complex props go
+// through `context`. Rendering them fully here ran each child once per ancestor level; the child
+// renders itself once as a real child.
 const createShallowComponent =
-  (options: ShallowComponentOptions) =>
+  (options: ShallowComponentOptions, context: SerializationContext) =>
   ({ children, ...props }: { children?: ReactNode } & Record<string, unknown>) => {
-    const { attributes } = splitProps(props, options.properties);
+    const attributes = splitProps(props, options.properties, context);
+    // React only accepts a `style` object, but callers without type checks can pass a string
+    if (typeof attributes.style === 'string') {
+      attributes.style = context.attributesToProps({ style: attributes.style }).style ?? {};
+    }
     const transformTag = options.transformTag ?? hydrateModuleCache?.transformTag;
     const tagName = transformTag ? transformTag(options.tagName) : options.tagName;
     return React.createElement(tagName, { ...attributes, suppressHydrationWarning: true }, children);
@@ -302,10 +329,18 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
     }
 
     /**
+     * `html-react-parser` is a Node.js dependency so we should make sure to only import it when
+     * run on the server and when needed.
+     */
+    const { default: parse, htmlToDOM, attributesToProps } = await import('html-react-parser');
+    const typedParse = parse as unknown as typeof parse.default;
+    const context: SerializationContext = { complexProps: new Map(), attributesToProps };
+
+    /**
      * compose element props into a string; complex (non-primitive) props are banked
      * and applied via beforeHydrate; they never need to be attribute-serialized
      */
-    const { attributes, complexProps } = splitProps(props, options.properties);
+    const attributes = splitProps(props, options.properties, context);
     let stringProps = '';
     for (const [attributeName, value] of Object.entries(attributes)) {
       const serialized = typeof value === 'object' ? stringifyCSSProperties(value) : value;
@@ -327,14 +362,9 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       if (!process.env.STENCIL_SSR_DEBUG) {
         console.error = () => {};
       }
-      const awaitedChildren = await resolveComponentTypes(children);
+      const awaitedChildren = await resolveComponentTypes(children, context);
       const { renderToString } = await import('react-dom/server');
-      serializedChildren = renderToString(awaitedChildren)
-        /**
-         * collapse any newline + indentation sequences in the serialized children
-         * to prevent hydration mismatches from formatted React output
-         */
-        .replace(/\n\s+/g, '');
+      serializedChildren = renderToString(awaitedChildren);
     } catch (err: unknown) {
       /**
        * if rendering the light DOM fails, we log a warning and continue to render the component
@@ -357,14 +387,12 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       fullDocument: false,
       serializeShadowRoot: options.serializeShadowRoot ?? 'declarative-shadow-dom',
       ...(options.reuseWindow && { reuseWindow: true }),
-      ...(Object.keys(complexProps).length > 0 && {
+      ...(context.complexProps.size > 0 && {
         beforeHydrate: (doc: Document) => {
-          const el = doc.querySelector(transformedTagName) as any;
-          if (el) {
-            for (const [propName, value] of Object.entries(complexProps)) {
-              el[propName] = value;
-            }
-          }
+          doc.querySelectorAll(`[${complexPropsAttribute}]`).forEach((el) => {
+            Object.assign(el, context.complexProps.get(el.getAttribute(complexPropsAttribute)!));
+            el.removeAttribute(complexPropsAttribute);
+          });
         },
       }),
     });
@@ -373,15 +401,11 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
       throw new Error('No HTML returned from renderToString');
     }
 
-    /**
-     * `html-react-parser` is a Node.js dependency so we should make sure to only import it when
-     * run on the server and when needed.
-     */
-    const { default: parse, htmlToDOM } = await import('html-react-parser');
-    const typedParse = parse as unknown as typeof parse.default;
-
+    // `beforeHydrate` doesn't reach the markers in `<template>` content, which isn't part of the
+    // document, nor in `<noscript>`, whose content Stencil parses as text
+    const unmarkedHtml = context.complexProps.size > 0 ? renderedHtml.replace(complexPropsMarker, '') : renderedHtml;
     const { html, lightDom, template } = splitRenderedComponent(
-      renderedHtml,
+      unmarkedHtml,
       [transformedTagName, options.tagName],
       htmlToDOM
     );
@@ -470,9 +494,10 @@ const createComponentForServerSideRendering = <I extends HTMLElement, E extends 
  * the Light DOM of a component as part of Stencils serialization process.
  *
  * @param children - the children to resolve
+ * @param context - collects what the parent's Stencil render needs from the children
  * @returns the resolved children
  */
-async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
+async function resolveComponentTypes(children: ReactNode, context: SerializationContext): Promise<ReactNode> {
   /**
    * If the children are a empty or a primitive we can return them directly
    * e.g. `Hello World` or `42` or `null`
@@ -495,7 +520,7 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
       }
 
       if (isIterable(child)) {
-        return resolveComponentTypes(child);
+        return resolveComponentTypes(child, context);
       }
 
       // Only ReactElements have type and props properties
@@ -505,7 +530,7 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
 
       const { type, props } = child as React.ReactElement<object & { children: ReactNode }>;
 
-      const resolvedType = await resolveType(type, props as any);
+      const resolvedType = await resolveType(type, props as any, context);
 
       // If resolveType returned a fully rendered React element (e.g. from an async Stencil SSR
       // component), return it directly — it is already the final output and must not be wrapped
@@ -518,7 +543,7 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
         ...child,
         props: {
           ...props,
-          children: await resolveComponentTypes(props.children),
+          children: await resolveComponentTypes(props.children, context),
         },
         type: resolvedType,
       } as ReactNode;
@@ -527,12 +552,16 @@ async function resolveComponentTypes(children: ReactNode): Promise<ReactNode> {
 }
 
 // Resolve the component type to a primitive element type
-const resolveType = async (type: string | React.JSXElementConstructor<any>, props: any): Promise<ReactNodeExtended> => {
+const resolveType = async (
+  type: string | React.JSXElementConstructor<any>,
+  props: any,
+  context: SerializationContext
+): Promise<ReactNodeExtended> => {
   let resolvedType: ReactNodeExtended = null;
 
   if (isStencilSsrComponent(type)) {
     // Nested Stencil SSR component: emit its tag shallowly instead of running its hydrate pass.
-    return createShallowComponent(type[stencilSsrOptions]);
+    return createShallowComponent(type[stencilSsrOptions], context);
   }
 
   if (typeof type === 'string') {
@@ -561,7 +590,7 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
       lazyComponent = def;
     }
     // Now resolve the actual component type of the lazy component
-    resolvedType = await resolveType(lazyComponent, props);
+    resolvedType = await resolveType(lazyComponent, props, context);
   } else if (isNativelyRenderedExotic(type)) {
     // React.forwardRef and React.memo objects are handled natively by react-dom/server.
     // Calling their inner render/type functions directly violates React's hook rules.
@@ -577,7 +606,7 @@ const resolveType = async (type: string | React.JSXElementConstructor<any>, prop
   // React.isValidElement narrows to ReactElement, giving `.type` as `string | JSXElementConstructor<any>`.
   // Exotic components return early above, so a valid element here still needs its type resolved.
   if (!isEmpty(resolvedType) && !isPrimitive(resolvedType) && React.isValidElement(resolvedType)) {
-    resolvedType = await resolveType(resolvedType.type, props);
+    resolvedType = await resolveType(resolvedType.type, props, context);
   }
 
   return resolvedType;
