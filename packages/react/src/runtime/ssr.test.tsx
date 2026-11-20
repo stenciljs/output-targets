@@ -1,8 +1,9 @@
+import { createDocument, serializeNodeToHtml } from '@stencil/core/mock-doc';
 import React from 'react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { htmlToDOM } from 'html-react-parser';
 import { createComponent, splitRenderedComponent } from './ssr.js';
-import type { HydrateModule } from './ssr.js';
+import type { HydrateModule, RenderToStringOptions } from './ssr.js';
 
 // Type for the options passed to createComponent
 type CreateComponentForSSROptions<I extends HTMLElement> = {
@@ -608,6 +609,93 @@ describe('SSR fragment handling', () => {
       '<test-component><template shadowrootmode="open"><slot></slot></template></test-component>'
     );
     expect(shadowRootOf(host())).toBe('<!--r.1--><slot></slot>');
+  });
+});
+
+describe('SSR scoped light DOM', () => {
+  let originalProcess: any;
+  let originalWindow: any;
+
+  beforeEach(() => {
+    originalProcess = (globalThis as any).process;
+    originalWindow = (globalThis as any).window;
+    (globalThis as any).process = { env: {} };
+    (globalThis as any).window = undefined;
+    vi.resetModules();
+  });
+
+  afterEach(() => {
+    (globalThis as any).process = originalProcess;
+    (globalThis as any).window = originalWindow;
+    vi.clearAllMocks();
+  });
+
+  /**
+   * Renders the children of a scoped `test-component`, with an SSR module that stands in for Stencil: it
+   * parses the input, runs `beforeHydrate` and serializes the document with Stencil's own serializer.
+   * `children` gets a nested Stencil component, `test-child`, from the same module instance.
+   */
+  const render = async (children: (Child: any) => React.ReactNode) => {
+    const { renderToString } = await import('react-dom/server');
+    const { renderToString: realRenderToString } =
+      await vi.importActual<typeof import('react-dom/server')>('react-dom/server');
+    vi.mocked(renderToString).mockImplementationOnce((element) => realRenderToString(element as React.ReactElement));
+
+    const inputs: string[] = [];
+    const documents: Document[] = [];
+    const module: HydrateModule = {
+      renderToString: vi.fn().mockImplementation(async (input: string, options: RenderToStringOptions) => {
+        inputs.push(input);
+        const doc = createDocument(input);
+        documents.push(doc);
+        await options.beforeHydrate?.(doc);
+        return { html: serializeNodeToHtml(doc, { fullDocument: false }), styles: [] };
+      }),
+      transformTag: vi.fn((tag) => tag),
+      setTagTransformer: vi.fn(),
+    };
+    const { createComponent: create } = await import('./ssr.js');
+    const hydrateModule = Promise.resolve(module);
+    const Parent = create({ tagName: 'test-component', properties: {}, hydrateModule, serializeShadowRoot: 'scoped' });
+    const Child = create({ tagName: 'test-child', properties: {}, hydrateModule });
+
+    const element = await (Parent as any)({ data: { label: 'parent' }, children: children(Child) });
+    // render the returned element so `html-react-parser` (mocked) receives the HTML it returns
+    const { default: parse } = await import('html-react-parser');
+    (element.type as () => unknown)();
+    const [html] = vi.mocked(parse as unknown as typeof parse.default).mock.calls.at(-1)!;
+    return { input: inputs[0], document: documents[0], html: html as string };
+  };
+
+  it('should keep line breaks in the light DOM', async () => {
+    const { html } = await render(() => <pre>{'line 1\n  line 2'}</pre>);
+    expect(html).toContain('<pre>line 1\n  line 2</pre>');
+  });
+
+  it('should pass complex props of the host and nested Stencil children to Stencil', async () => {
+    const childData = { label: 'child' };
+    const { document, html } = await render((Child) => <Child data={childData} />);
+    expect((document.querySelector('test-component') as any).data).toEqual({ label: 'parent' });
+    expect((document.querySelector('test-child') as any).data).toBe(childData);
+    expect(html).not.toContain('data-stencil-react-props');
+  });
+
+  it('should remove the markers of nested Stencil children that Stencil does not parse as elements', async () => {
+    const { html } = await render((Child) => [
+      <template key="template">
+        <Child data={{ label: 'template' }} />
+      </template>,
+      <noscript key="noscript">
+        <Child data={{ label: 'noscript' }} />
+      </noscript>,
+    ]);
+    expect(html).toContain('<template><test-child></test-child></template>');
+    expect(html).not.toContain('data-stencil-react-props');
+  });
+
+  it('should serialize a string style of a nested Stencil child', async () => {
+    const { input } = await render((Child) => <Child style="color: red" />);
+    expect(input).toContain('<test-child style="color:red"></test-child>');
   });
 });
 
