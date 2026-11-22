@@ -24,6 +24,7 @@ export const createStencilReactComponents = ({
   transformTag,
   exportMaps,
   typesFromComponentsFile,
+  standaloneModule,
 }: {
   components: ComponentCompilerMeta[];
   stencilPackageName: string;
@@ -43,6 +44,11 @@ export const createStencilReactComponents = ({
    * event types can come from there too instead of relying on the package root exporting them.
    */
   typesFromComponentsFile?: boolean;
+  /**
+   * The Stencil custom elements entry point. When set, `setAssetPath` is re-exported from it
+   * so consumers can configure the asset path through the React package.
+   */
+  standaloneModule?: string;
 }) => {
   const isSSRModule = hydrateModule && clientModule;
   const componentsTypesModule = exportMaps
@@ -66,6 +72,10 @@ export const createStencilReactComponents = ({
   ];
 
   const exports: (string | false)[] = [];
+
+  if (standaloneModule) {
+    exports.push(`export { setAssetPath } from '${standaloneModule}';`);
+  }
 
   /**
    * Add imports for react client components if hydrateModule is provided.

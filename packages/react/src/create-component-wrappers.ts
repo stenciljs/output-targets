@@ -2,7 +2,7 @@ import type { ComponentCompilerMeta } from '@stencil/core/internal';
 import path from 'node:path';
 import { createEsModulesComponentsFile } from './create-es-modules-components-file.js';
 import { createStencilReactComponents } from './create-stencil-react-components.js';
-import { createTagTransformer } from './create-tag-transformer.js';
+import { createTagTransformer, getStandaloneModule } from './create-tag-transformer.js';
 import type { RenderToStringOptions } from './runtime/ssr.js';
 
 export const createComponentWrappers = ({
@@ -57,6 +57,12 @@ export const createComponentWrappers = ({
   }
 
   /**
+   * The client barrel (`components.ts`) re-exports `setAssetPath` from this module
+   * so consumers can configure where the Stencil components load their assets from.
+   */
+  const standaloneModule = getStandaloneModule({ stencilPackageName, customElementsDir, exportMaps });
+
+  /**
    * create a single file with all components or a separate file for each component
    * @param components - the components to create the file for
    * @param filename - the filename of the file to create
@@ -78,6 +84,7 @@ export const createComponentWrappers = ({
       exportMaps,
       typesFromComponentsFile,
       transformTag,
+      standaloneModule: filename === 'components' ? standaloneModule : undefined,
     });
 
     /**
@@ -119,7 +126,10 @@ export const createComponentWrappers = ({
     for (const component of filteredComponents) {
       createComponentFile([component], component.tagName);
     }
-    files[path.join(outDir, 'components.ts')] = createEsModulesComponentsFile({ components: filteredComponents });
+    files[path.join(outDir, 'components.ts')] = createEsModulesComponentsFile({
+      components: filteredComponents,
+      standaloneModule,
+    });
 
     /**
      * Server barrel — mirrors the client barrel but points at `*.server.js` and

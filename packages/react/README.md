@@ -78,6 +78,16 @@ npm install typescript@5 --save-dev
 
 That's it! You can now import and use your Stencil components as React components in your React application or library.
 
+### Assets
+
+If your components load static assets via `getAssetPath`, the generated `components.ts` file re-exports Stencil's `setAssetPath` so you can tell the components where those assets are served from:
+
+```ts
+import { setAssetPath } from 'my-react-library';
+
+setAssetPath(`${window.location.origin}/`);
+```
+
 ## Output Target Options
 
 | Property                | Description                                                                                                                                                                                                                                                                    |
