@@ -36,6 +36,8 @@ import { MyTransformTest as MyTransformTestElement, defineCustomElement as defin
 import type { MyButtonCustomEvent, MyButtonScopedCustomEvent, CheckboxChangeEventDetail, CheckboxChangeNestedEventDetail, MyCheckboxCustomEvent, MyComponentCustomEvent, IMyComponent, MyComponentScopedCustomEvent, MyCounterCustomEvent, InputChangeEventDetail, MyInputCustomEvent, MyInputScopedCustomEvent, OverlayEventDetail, MyPopoverCustomEvent, MyRadioCustomEvent, RadioGroupChangeEventDetail, MyRadioGroupCustomEvent, RangeChangeEventDetail, MyRangeCustomEvent } from 'component-library';
 import type { StencilReactComponent, EventName } from '@stencil/react-output-target/runtime';
 
+export { setAssetPath } from 'component-library/components/index.js';
+
 export type MyButtonEvents = {
   onMyFocus: EventName<MyButtonCustomEvent<void>>,
   onMyBlur: EventName<MyButtonCustomEvent<void>>

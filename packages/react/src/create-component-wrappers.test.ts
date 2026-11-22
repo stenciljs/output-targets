@@ -48,6 +48,8 @@ import type { Components } from 'my-package/dist/custom-elements';
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from 'my-package/dist/custom-elements/my-component.js';
 import type { StencilReactComponent } from '@stencil/react-output-target/runtime';
 
+export { setAssetPath } from 'my-package/dist/custom-elements/index.js';
+
 export type MyComponentEvents = NonNullable<unknown>;
 
 export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentEvents, Components.MyComponent> = /*@__PURE__*/ createComponent<MyComponentElement, MyComponentEvents, Components.MyComponent>({
@@ -91,6 +93,7 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
  */
 
 /* eslint-disable */
+export { setAssetPath } from 'my-package/dist/custom-elements/index.js';
 export { MyComponent } from './my-component.js';
 
 `);
@@ -218,6 +221,8 @@ import type { Components } from 'my-package/dist/custom-elements';
 import { MyComponent as MyComponentElement, defineCustomElement as defineMyComponent } from 'my-package/dist/custom-elements/my-component.js';
 import type { IButton, MyComponentCustomEvent } from 'my-package';
 import type { StencilReactComponent, EventName } from '@stencil/react-output-target/runtime';
+
+export { setAssetPath } from 'my-package/dist/custom-elements/index.js';
 
 export type MyComponentEvents = {
   onMyEvent: EventName<MyComponentCustomEvent<IButton>>
@@ -392,8 +397,57 @@ export const MyComponent: StencilReactComponent<MyComponentElement, MyComponentE
     expect(serverBarrel).toContain(`export { MyComponentB } from './my-component-b.server.js';`);
     expect(serverBarrel).not.toContain('my-component-a.server.js');
     expect(serverBarrel).not.toContain('MyComponentA');
+    expect(serverBarrel).not.toContain('setAssetPath');
+    expect(clientBarrel).toContain(`export { setAssetPath } from 'my-package/dist/custom-elements/index.js';`);
 
     // Sanity check: the excluded per-component path is not silently used.
     expect(serverPerComponentA).toBeDefined(); // still emitted, but with no exports
+  });
+
+  it('should re-export setAssetPath only from the client components file', () => {
+    const files = createComponentWrappers({
+      components: [
+        {
+          tagName: 'my-component',
+          componentClassName: 'MyComponent',
+          properties: [],
+          events: [],
+        } as any,
+      ],
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/custom-elements',
+      componentsTypesDir: 'dist/custom-elements',
+      outDir,
+      esModules: false,
+      hydrateModule: 'my-package/hydrate',
+      clientModule: 'my-react-package',
+    });
+
+    expect(getFile(files, 'components')).toContain(
+      `export { setAssetPath } from 'my-package/dist/custom-elements/index.js';`
+    );
+    expect(getFile(files, 'components.server')).not.toContain('setAssetPath');
+  });
+
+  it('should re-export setAssetPath through the package exports map when exportMaps is set', () => {
+    const files = createComponentWrappers({
+      components: [
+        {
+          tagName: 'my-component',
+          componentClassName: 'MyComponent',
+          properties: [],
+          events: [],
+        } as any,
+      ],
+      stencilPackageName: 'my-package',
+      customElementsDir: 'dist/components',
+      componentsTypesDir: 'dist/types/components',
+      outDir,
+      esModules: true,
+      exportMaps: true,
+    });
+
+    expect(getFile(files, 'components')).toContain(`export { setAssetPath } from 'my-package/standalone';`);
+    expect(getFile(files, 'my-component')).not.toContain('setAssetPath');
   });
 });
