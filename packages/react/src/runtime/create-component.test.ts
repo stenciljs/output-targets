@@ -1,4 +1,5 @@
 import React from 'react';
+import { renderToString } from 'react-dom/server';
 import { vi, describe, it, expect } from 'vitest';
 
 import { createComponent, mergeClassNames } from './create-component';
@@ -17,6 +18,31 @@ describe('createComponent', () => {
     });
 
     expect(defineCustomElement).toHaveBeenCalled();
+  });
+
+  describe('server rendering', () => {
+    const MyComponent = createComponent({
+      defineCustomElement: () => {},
+      tagName: 'my-component',
+      elementClass: class Foo {} as any,
+      react: React,
+      events: {},
+    });
+
+    it('renders className as the class attribute', () => {
+      const html = renderToString(React.createElement(MyComponent, { className: 'foo bar' }));
+      expect(html).toBe('<my-component class="foo bar"></my-component>');
+    });
+
+    it('renders the class prop as the class attribute', () => {
+      const html = renderToString(React.createElement(MyComponent, { class: 'foo' } as any));
+      expect(html).toBe('<my-component class="foo"></my-component>');
+    });
+
+    it('omits the class attribute when there is no className', () => {
+      expect(renderToString(React.createElement(MyComponent))).toBe('<my-component></my-component>');
+      expect(renderToString(React.createElement(MyComponent, { className: '' }))).toBe('<my-component></my-component>');
+    });
   });
 });
 

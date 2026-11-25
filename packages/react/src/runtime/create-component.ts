@@ -127,7 +127,10 @@ export const createComponent = <
       [ref]
     );
 
-    return React.createElement(ReactComponent, { ...restProps, ref: setRef } as any);
+    // Effects don't run on the server, so render the class there.
+    const serverProps = typeof window === 'undefined' && incomingClassName ? { className: incomingClassName } : {};
+
+    return React.createElement(ReactComponent, { ...restProps, ...serverProps, ref: setRef } as any);
   });
 
   WrappedComponent.displayName = options.displayName ?? finalTagName;
