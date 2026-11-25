@@ -127,7 +127,16 @@ export const createComponent = <
       [ref]
     );
 
-    return React.createElement(ReactComponent, { ...restProps, ref: setRef } as any);
+    // Effects don't run on the server, so render the class there. The client
+    // renders without it and the effect adopts it, so the hydration mismatch
+    // on `class` is expected.
+    const classNameProps = !incomingClassName
+      ? {}
+      : typeof window === 'undefined'
+        ? { className: incomingClassName }
+        : { suppressHydrationWarning: true };
+
+    return React.createElement(ReactComponent, { ...classNameProps, ...restProps, ref: setRef } as any);
   });
 
   WrappedComponent.displayName = options.displayName ?? finalTagName;
